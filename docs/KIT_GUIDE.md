@@ -105,6 +105,25 @@ these and plain MeshInstance3D/GPUParticles3D under a `VfxNode` (auto-frees afte
 needs readable, satisfying visuals in the champion's colors (projectiles with trails, impact bursts, telegraphs
 for delayed effects, a big moment for the ultimate). Keep effects bright (additive) but not screen-filling.
 
+### League VFX (preferred): `LolVfx` (src/vfx/lol_vfx.gd)
+Every champion's original League particle systems are imported to `data/vfx/<alias>.json` (+ textures/meshes in
+`assets/vfx/`) by `tools/lol/extract_vfx.py`; shared systems (click marker, summoners, turrets, minions, relic,
+structures) are in `data/vfx/shared.json`. Use these instead of procedural visuals:
+- `LolVfx.spawn(m, name, pos, {"dir", "scale", "loop", "center", "length"})` world-space effect;
+  `LolVfx.attach(unit, name, opts)` follows (and faces with) a unit; `LolVfx.make(name, opts)` for missile visuals.
+  `center` raises the non-ground emitters (effects are anchored at the unit's feet); `length` sizes beams.
+  Looping effects: keep the node and call `stop()` when the buff/zone ends (or assign it to `buff.vfx`).
+- Automatic hooks (by League naming `<Alias>_Base_<key>`): `BA_mis`/`BA_crit_mis`, `BA_tar`/`BA_crit_tar`,
+  `<K>_cas` (on cast), `<K>_mis` (K helper missiles), `<K>_tar` (spell damage). Override/disable per kit with
+  `func vfx_map() -> Dictionary` (`""` disables a key); force one missile's visual with K helper opts `{"lol": name}`.
+- Preview without disturbing the desktop: `tools/preview.sh 150 -- --champ=<Alias> --vfxtest=<Name1>,<Name2>
+  --vfxdir=<dir>` (serialized, off-screen; screenshots in `%APPDATA%/Godot/app_userdata/ARAM- Mayhem/<dir>/`).
+
+### Audio: `GameAudio` (src/audio/game_audio.gd)
+League's SFX/VO/announcer are extracted to `data/audio/*.json` (+ `assets/audio/game/`, regenerate with
+`python tools/lol/extract_game_audio.py --extras`). Attacks, casts, spell hits, deaths, kills, announcer lines and
+structure sounds are hooked automatically; play anything else with `m.audio.play("<Wwise event name>", pos)`.
+
 ## GDScript gotchas (these cause compile errors)
 - `var x := owner.something` fails: `owner` (and anything from untyped arrays/dicts) is untyped. Use
   `var x: float = ...` / `var u: Unit = ...` or plain `var x = ...`.
