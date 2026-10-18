@@ -212,6 +212,19 @@ func _exit_tree() -> void:
 	Vfx.clear_cache()
 	LolVfx._shaders.clear()
 	LolTrail._mats.clear()
+	# resources held in static vars must be released before the servers shut down (exit segfault otherwise)
+	UIScreen._fv_cache.clear()
+	UIScreen._glow_cache.clear()
+	ItemDB._plan_cache.clear()
+	ItemFxExtra._makers.clear()   # Callables bound to item part scripts
+	ItemFxExtra.PARTS.clear()     # Script resources held statically
+	ItemFx._makers.clear()
+	Assets._hidden_mat = null
+	MapBuilder.grass_material = null
+	LolVfx._proc_shader = null
+	Vfx._soft_tex = null
+	Vfx._spark_tex = null
+	Vfx._ring_tex = null
 
 
 func _process(delta: float) -> void:
