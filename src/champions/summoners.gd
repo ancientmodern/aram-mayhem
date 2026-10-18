@@ -42,19 +42,8 @@ static func set_spell(c, slot_index: int, name: String) -> void:
 	c.summoners[slot_index] = a
 
 
-## League particle systems for Flash / Barrier, extracted into data/vfx/shared.json by the vfx pipeline
-## (tools/lol/extract_vfx.py). Candidate names in League's naming; the first one present is used, otherwise the
-## procedural fallback. TODO(vfx): if the extracted names differ, add them to these lists.
-const FLASH_DEPART_VFX := ["Global_SS_Flash", "Summoner_Flash", "Global_SS_Flash_01"]
-const FLASH_ARRIVE_VFX := ["Global_SS_Flash_02", "Summoner_Flash_Arrival", "Global_SS_Flash_Arrive"]
-const BARRIER_VFX := ["Global_SS_Barrier", "Summoner_Barrier", "Global_SS_Barrier_Shield"]
-
-
-static func lol_vfx_name(candidates: Array) -> String:
-	for n in candidates:
-		if LolVfx.has(n):
-			return n
-	return ""
+## Summoner VFX are League systems: Flash / Barrier / Ignite from data/vfx/shared.json, Heal / Clarity / Cleanse / Ghost from
+## data/vfx/summoners.json (tools/lol/extract_summoner_vfx.py); K.attach_fx / K.spawn_fx load the sets on demand.
 
 
 class FlashSpell extends Ability:
@@ -81,15 +70,12 @@ class FlashSpell extends Ability:
 		if not m.nav.is_walkable(dest):
 			dest = m.nav.nearest_walkable(dest)
 		var fdir := G.flat_dir(o, t.pos)
-		var dep := Summoners.lol_vfx_name(Summoners.FLASH_DEPART_VFX)
-		if dep == "" or LolVfx.spawn(m, dep, o, {"dir": fdir}) == null:
-			Vfx.burst(m, o + Vector3(0, 0.8, 0), Color(1.0, 0.9, 0.4), 0.9, {"ring": false, "sparks": 16})
+		# League: Global_SS_Flash stays at the departure point, Global_SS_Flash_02 plays on the champion on arrival
+		K.spawn_fx(m, "Global_SS_Flash", o, {"dir": fdir})
 		owner.teleport(dest)
 		owner.cancel_windup()
 		owner.face_toward(o + fdir * 10.0, 100.0)
-		var arr := Summoners.lol_vfx_name(Summoners.FLASH_ARRIVE_VFX)
-		if arr == "" or LolVfx.attach(owner, arr, {"dir": fdir}) == null:
-			Vfx.burst(m, dest + Vector3(0, 0.8, 0), Color(1.0, 0.9, 0.4), 0.9, {"ring": false, "sparks": 16})
+		K.attach_fx(owner, {"lol": "Global_SS_Flash_02", "dir": fdir}, false)
 		for e in owner.effects.duplicate():
 			e.on_dash(o, dest)
 			e.on_summoner_cast(self)
@@ -157,8 +143,7 @@ class MarkSpell extends Ability:
 						e.on_snowball_dash_arrive(tgt)
 				if dash_fx != null and is_instance_valid(dash_fx):
 					dash_fx.stop()
-				if LolVfx.spawn(m, "Summoner_Snowball_Dash_Arrival", owner.global_position) == null:
-					Vfx.burst(m, owner.global_position + Vector3(0, 0.5, 0), Color(0.8, 0.95, 1.0), 1.2)})
+				LolVfx.spawn(m, "Summoner_Snowball_Dash_Arrival", owner.global_position)})
 			start_cooldown()
 			notify_cast(t)
 			return
@@ -168,15 +153,14 @@ class MarkSpell extends Ability:
 		mi.hits_minions = true
 		var ally_view: bool = G.player == null or owner.team == G.player.team
 		var lv := LolVfx.make("Summoner_Snowball_Mis" if ally_view else "Summoner_Snowball_Mis_Enemy", {"loop": true})
-		mi.visual = lv if lv != null else Vfx.orb(Color(0.85, 0.95, 1.0), 0.45, false)
+		mi.visual = lv if lv != null else Node3D.new()
 		mi.custom["keep_visual"] = true
 		mi.on_hit = func(_m, u):
 			hit(u, damage(), G.DmgType.TRUE, {"is_spell": false, "is_proc": true, "tag": "snowball"})
 			marked = u
 			recast_window = 3.0
 			cd = 0.0
-			if LolVfx.spawn(m, "Summoner_Snowball_Explosion", u.global_position + Vector3(0, 1.0, 0)) == null:
-				Vfx.burst(m, u.global_position + Vector3(0, 1.0, 0), Color(0.85, 0.95, 1.0), 1.0, {"ring": false})
+			LolVfx.spawn(m, "Summoner_Snowball_Explosion", u.global_position + Vector3(0, 1.0, 0))
 			if tag_fx != null and is_instance_valid(tag_fx):
 				tag_fx.stop()
 			tag_fx = LolVfx.attach(u, "Summoner_Snowball_Tagged", {"loop": true})
@@ -224,9 +208,9 @@ class GhostSpell extends Ability:
 		b.stats = {"ms%": 0.24 + 0.24 * (owner.level - 1) / 17.0}
 		b.icon = icon
 		owner.add_buff(b, owner)
-		b.vfx = LolVfx.attach(owner, "Global_Haste", {"loop": true})
-		if b.vfx == null:
-			Vfx.rising(owner, Color(0.6, 0.85, 1.0), 1.0, 30)
+		# Global_SS_Ghost is a faint swirl on its own; League layers it with the generic speed lines
+		b.vfx = K.attach_fx(owner, "Global_Haste")
+		b.extra_fx.append(K.attach_fx(owner, "Global_SS_Ghost"))
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -262,8 +246,7 @@ class HealSpell extends Ability:
 			b.stats = {"ms%": 0.3}
 			b.display_name = "Heal"
 			u.add_buff(b, owner)
-			if LolVfx.attach(u, "Item_Redemption_Hit_Heal") == null:
-				Vfx.rising(u, Color(0.4, 1.0, 0.45), 0.5, 30)
+			K.attach_fx(u, "Global_SS_Heal" if u == owner else "Global_SS_Heal_02", false)
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -285,11 +268,7 @@ class BarrierSpell extends Ability:
 		var amt: float = 105.0 + 18.0 * (owner.level - 1)
 		var sh: Dictionary = Combat.shield(owner, owner, amt, 2.5)
 		# the bubble disappears when the barrier breaks (it used to stay the full 2.5 s)
-		var nm := Summoners.lol_vfx_name(Summoners.BARRIER_VFX)
-		var fx: Node = LolVfx.attach(owner, nm, {"loop": true}) if nm != "" else null
-		if fx == null:
-			fx = Vfx.shield_bubble(owner, Color(1.0, 0.9, 0.5), 2.5, 1.1)
-		K.track_shield_fx(owner, sh, fx)
+		K.track_shield_fx(owner, sh, K.attach_fx(owner, "Global_SS_Barrier"))
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -317,8 +296,7 @@ class CleanseSpell extends Ability:
 		var b := Buff.new("cleanse", 3.0)
 		b.stats = {"tenacity": 0.65}
 		owner.add_buff(b, owner)
-		if LolVfx.attach(owner, "Jade_Summoner_Cleanse") == null:
-			Vfx.rising(owner, Color(0.7, 0.9, 1.0), 0.4, 30)
+		K.attach_fx(owner, "Jade_Summoner_Cleanse", false)
 		notify_cast(t)
 
 	func ai_consider(_ctx) -> Dictionary:
@@ -361,9 +339,7 @@ class IgniteSpell extends Ability:
 		gw.display_name = "Grievous Wounds"
 		u.add_buff(gw, owner)
 		if got != null and (got.vfx == null or not is_instance_valid(got.vfx)):
-			got.vfx = LolVfx.attach(u, "Global_SS_Ignite", {"loop": true})
-			if got.vfx == null:
-				got.vfx = Vfx.rising(u, Color(1.0, 0.5, 0.15), 5.0, 25, 0.4)
+			got.vfx = K.attach_fx(u, "Global_SS_Ignite")
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -383,10 +359,11 @@ class ClaritySpell extends Ability:
 
 	func execute(t: Dictionary) -> void:
 		owner.mana = minf(owner.stats.max_mana, owner.mana + owner.stats.max_mana * 0.5)
+		K.attach_fx(owner, "Global_SS_Clarity", false)
 		for a in owner.match_ref.allies_in_radius(owner.team, owner.global_position, range_m()):
 			if a != owner:
 				a.mana = minf(a.stats.max_mana, a.mana + a.stats.max_mana * 0.25)
-		Vfx.ring(owner.match_ref, owner.global_position, Color(0.4, 0.6, 1.0), 6.0, 0.6)
+				K.attach_fx(a, "Global_SS_Clarity", false)
 		notify_cast(t)
 
 	func ai_consider(_ctx) -> Dictionary:

@@ -26,13 +26,19 @@ static func line_missile(ab: Ability, from: Vector3, dir: Vector3, speed: float,
 		mi.on_end = opts.on_end
 	if opts.has("on_move"):
 		mi.on_move = opts.on_move
-	var vis = opts.get("visual")
-	if vis == null:
-		vis = Vfx.orb(opts.get("color", Color(0.6, 0.8, 1.0)), opts.get("size", 0.45), opts.get("light", false))
-	mi.visual = vis
+	mi.visual = _missile_visual(opts)
 	_lol_visual(mi, opts)
 	o.match_ref.add_missile(mi, from)
 	return mi
+
+
+## Missile visual: an explicit opts.visual node, else an invisible placeholder. League systems arrive through
+## opts "lol" (below) or the automatic "<K>_mis" mapping in LolVfx.missile_visual; there is no procedural fallback.
+static func _missile_visual(opts: Dictionary) -> Node3D:
+	var vis = opts.get("visual")
+	if vis == null:
+		vis = Node3D.new()
+	return vis
 
 
 ## opts "lol": League VFX system name for this missile's visual; "keep_visual": keep the kit visual as is.
@@ -59,10 +65,7 @@ static func homing_missile(ab: Ability, from: Vector3, target: Unit, speed: floa
 	mi.on_hit = on_hit
 	if opts.has("on_end"):
 		mi.on_end = opts.on_end
-	var vis = opts.get("visual")
-	if vis == null:
-		vis = Vfx.orb(opts.get("color", Color(0.6, 0.8, 1.0)), opts.get("size", 0.35), opts.get("light", false))
-	mi.visual = vis
+	mi.visual = _missile_visual(opts)
 	_lol_visual(mi, opts)
 	o.match_ref.add_missile(mi, from)
 	return mi
@@ -76,10 +79,7 @@ static func arc_missile(ab: Ability, from: Vector3, to: Vector3, flight_time: fl
 	mi.setup_arc(o, from, to, flight_time, opts.get("arc", 3.0))
 	mi.height = opts.get("height", 1.0)
 	mi.on_end = on_land
-	var vis = opts.get("visual")
-	if vis == null:
-		vis = Vfx.orb(opts.get("color", Color(1.0, 0.6, 0.2)), opts.get("size", 0.5), opts.get("light", true))
-	mi.visual = vis
+	mi.visual = _missile_visual(opts)
 	_lol_visual(mi, opts)
 	o.match_ref.add_missile(mi, from)
 	return mi
@@ -87,6 +87,96 @@ static func arc_missile(ab: Ability, from: Vector3, to: Vector3, flight_time: fl
 
 static func cast_pos(u: Unit, height: float = 1.0) -> Vector3:
 	return u.global_position + Vector3(0, height, 0) + u.facing * u.radius * 0.6
+
+
+# ===================================================================== League visuals
+## Every visual helper below takes a League particle system by name. A "visual spec" is a String (system name) or a
+## Dictionary {"lol": name, "bone": League bone, "height": m, "center": m, "scale": f, "loop": bool, "dir": Vector3,
+## "max_life": s}; anything else (null, "", a legacy Color) means "no visual": the only fallback is an invisible no-op.
+static func _spec_name(spec) -> String:
+	if spec is String:
+		return spec
+	if spec is Dictionary:
+		return String(spec.get("lol", ""))
+	return ""
+
+
+static func _spec_opts(spec, loop: bool) -> Dictionary:
+	var o := {"loop": loop}
+	if spec is Dictionary:
+		for k in spec:
+			if k != "lol":
+				o[k] = spec[k]
+	return o
+
+
+## Make sure the sets that can hold `nm` are loaded (champion set by name prefix, shared, summoner systems).
+static func ensure_fx(nm: String) -> bool:
+	if nm == "":
+		return false
+	if LolVfx.has(nm):
+		return true
+	LolVfx.load_set(nm.get_slice("_", 0).to_lower())
+	if not LolVfx.has(nm):
+		LolVfx.load_set("shared")
+		LolVfx.load_set("summoners")
+	return LolVfx.has(nm)
+
+
+## Attach a League system to `u` (follows and faces it). Returns the LolVfx or null.
+static func attach_fx(u, spec, loop: bool = true) -> LolVfx:
+	var nm := _spec_name(spec)
+	if u == null or not is_instance_valid(u) or not ensure_fx(nm):
+		return null
+	return LolVfx.attach(u, nm, _spec_opts(spec, loop))
+
+
+## Spawn a League system in world space at `pos` (feet / ground point; "center" raises non-ground emitters).
+static func spawn_fx(m, spec, pos: Vector3, opts: Dictionary = {}) -> LolVfx:
+	var nm := _spec_name(spec)
+	if m == null or not ensure_fx(nm):
+		return null
+	var o := _spec_opts(spec, false)
+	o.merge(opts, true)
+	return LolVfx.spawn(m, nm, pos, o)
+
+
+## Permanent skin particles of a champion (League SkinCharacterDataProperties: effect key + bone), e.g. Leona's sword /
+## shield flames or Ahri's orb. Attached for the champion's life: removed on death, restored on respawn.
+## `list`: Array of visual specs {"lol": name, "bone": League bone, ...}.
+class IdleFx extends Effect:
+	var list: Array = []
+	var nodes: Array = []
+
+	func _init(p_list: Array = []) -> void:
+		id = "kit_idle_fx"
+		hidden = true
+		list = p_list
+
+	func on_attach(u) -> void:
+		_attach(u)
+
+	func _attach(u) -> void:
+		_clear()
+		for spec in list:
+			var n := K.attach_fx(u, spec)
+			if n != null:
+				nodes.append(n)
+
+	func _clear() -> void:
+		for n in nodes:
+			K.kill_fx(n, 0.0)
+		nodes.clear()
+
+	func on_death(_killer) -> void:
+		_clear()
+
+	func on_respawn() -> void:
+		if owner != null:
+			_attach(owner)
+
+	func on_detach(_u) -> void:
+		_clear()
 
 
 # ===================================================================== areas
@@ -117,14 +207,13 @@ static func damage_circle(ab: Ability, center: Vector3, radius_units: float, amo
 	return hit
 
 
-## Telegraphed circle that triggers after `delay`. on_trigger(units: Array, pos: Vector3).
-static func delayed_circle(ab: Ability, pos: Vector3, radius_units: float, delay: float, color: Color, on_trigger: Callable, show: bool = true) -> void:
+## Circle that triggers after `delay`. on_trigger(units: Array, pos: Vector3).
+## `tele`: visual spec (String / Dictionary, see above) of the League ground telegraph spawned at `pos` (a legacy Color
+## or null shows nothing; `show = false` too).
+static func delayed_circle(ab: Ability, pos: Vector3, radius_units: float, delay: float, tele, on_trigger: Callable, show: bool = true) -> void:
 	var m = ab.owner.match_ref
 	if show:
-		var g := Vfx.ground_circle(m, pos, radius_units * G.U, Color(color.r, color.g, color.b, 0.7), delay + 0.05, 0.18)
-		var mat: ShaderMaterial = g.get_meta("mat")
-		var tw := g.create_tween()
-		tw.tween_method(func(v): mat.set_shader_parameter("fill", v), 0.05, 0.45, delay)
+		spawn_fx(m, tele, pos)
 	m.after(delay, func():
 		if not is_instance_valid(ab.owner):
 			return
@@ -147,23 +236,22 @@ static func _cc(target: Unit, id: String, name: String, flags: int, duration: fl
 static func stun(target: Unit, duration: float, src) -> Buff:
 	var b := _cc(target, "stun", "Stunned", Buff.CC.STUN, duration, src)
 	if b != null and b.vfx == null:
-		b.vfx = LolVfx.attach(target, "LOC_Stun", {"loop": true, "center": target.height})
-		if b.vfx == null:
-			b.vfx = Vfx.stun_stars(target, b.duration)
+		b.vfx = attach_fx(target, {"lol": "LOC_Stun", "center": target.height})
 	return b
 
 
-static func root(target: Unit, duration: float, src, color: Color = Color(1.0, 0.95, 0.5)) -> Buff:
+## Root. League roots have no generic indicator: `fx` is the calling champion's own system (visual spec) or nothing.
+static func root(target: Unit, duration: float, src, fx = null) -> Buff:
 	var b := _cc(target, "root", "Rooted", Buff.CC.ROOT, duration, src)
 	if b != null and b.vfx == null:
-		b.vfx = Vfx.aura(target, color, 0.9, b.duration, 0.08)
+		b.vfx = attach_fx(target, fx)
 	return b
 
 
 static func silence(target: Unit, duration: float, src) -> Buff:
 	var b := _cc(target, "silence", "Silenced", Buff.CC.SILENCE, duration, src)
 	if b != null and b.vfx == null:
-		b.vfx = LolVfx.attach(target, "LOC_Silence", {"loop": true, "center": target.height})
+		b.vfx = attach_fx(target, {"lol": "LOC_Silence", "center": target.height})
 	return b
 
 
@@ -175,23 +263,26 @@ static func ground(target: Unit, duration: float, src) -> Buff:
 	return _cc(target, "grounded", "Grounded", Buff.CC.GROUNDED, duration, src)
 
 
-static func charm(target: Unit, duration: float, src: Unit, slow: float = 0.65) -> Buff:
+## Charm. `fx`: the caller's charm indicator (visual spec), e.g. Ahri_Base_E_buf; there is no generic one.
+static func charm(target: Unit, duration: float, src: Unit, slow: float = 0.65, fx = null) -> Buff:
 	var b := _cc(target, "charm", "Charmed", Buff.CC.CHARM, duration, src)
 	if b != null:
 		b.forced_target = src
 		b.stats = {"ms%": -slow}
 		target.stats.mark_dirty()
 		if b.vfx == null:
-			b.vfx = Vfx.rising(target, Color(1.0, 0.45, 0.75), b.duration, 18, 0.5)
+			b.vfx = attach_fx(target, fx)
 	return b
 
 
-static func fear(target: Unit, duration: float, src: Unit, slow: float = 0.0) -> Buff:
+static func fear(target: Unit, duration: float, src: Unit, slow: float = 0.0, fx = null) -> Buff:
 	var b := _cc(target, "fear", "Feared", Buff.CC.FEAR, duration, src)
 	if b != null:
 		b.forced_target = src
 		if slow > 0.0:
 			b.stats = {"ms%": -slow}
+		if b.vfx == null:
+			b.vfx = attach_fx(target, fx)
 	return b
 
 
@@ -200,16 +291,22 @@ static func taunt(target: Unit, duration: float, src: Unit) -> Buff:
 	if b != null:
 		b.forced_target = src
 		if b.vfx == null:
-			b.vfx = LolVfx.attach(target, "LOC_Taunt", {"loop": true, "center": target.height})
+			b.vfx = attach_fx(target, {"lol": "LOC_Taunt", "center": target.height})
 	return b
 
 
-static func suppress(target: Unit, duration: float, src) -> Buff:
-	return _cc(target, "suppress", "Suppressed", Buff.CC.SUPPRESS, duration, src)
+static func suppress(target: Unit, duration: float, src, fx = null) -> Buff:
+	var b := _cc(target, "suppress", "Suppressed", Buff.CC.SUPPRESS, duration, src)
+	if b != null and b.vfx == null:
+		b.vfx = attach_fx(target, fx)
+	return b
 
 
-static func sleep(target: Unit, duration: float, src) -> Buff:
-	return _cc(target, "sleep", "Asleep", Buff.CC.SLEEP, duration, src)
+static func sleep(target: Unit, duration: float, src, fx = null) -> Buff:
+	var b := _cc(target, "sleep", "Asleep", Buff.CC.SLEEP, duration, src)
+	if b != null and b.vfx == null:
+		b.vfx = attach_fx(target, fx)
+	return b
 
 
 static func knockup(target: Unit, duration: float, src) -> Buff:
@@ -230,7 +327,7 @@ static func slow(target: Unit, amount: float, duration: float, src, decays: bool
 	b.stack_mode = Buff.Stack.REFRESH
 	var got := target.add_buff(b, src)
 	if got != null and got.vfx == null and target.kind == G.Kind.CHAMPION:
-		got.vfx = LolVfx.attach(target, "Global_Slow", {"loop": true})
+		got.vfx = attach_fx(target, "Global_Slow")
 	return got
 
 
@@ -263,12 +360,16 @@ static func haste(target: Unit, amount: float, duration: float, src = null, deca
 	return target.add_buff(b, src if src != null else target)
 
 
-static func shield(src: Unit, target: Unit, amount: float, duration: float, color: Color = Color(0.9, 0.9, 1.0), sid: String = "") -> void:
+## Shield. `fx`: visual spec of the League shield effect (kept while the shield lasts, removed the moment it is broken /
+## expires); a legacy Color or null shows nothing.
+static func shield(src: Unit, target: Unit, amount: float, duration: float, fx = null, sid: String = "") -> Dictionary:
 	if target == null or target.dead:
-		return
+		return {}
 	var s: Dictionary = Combat.shield(src, target, amount, duration, {"id": sid})
-	var bub := Vfx.shield_bubble(target, color, duration, maxf(0.9, target.radius * 1.6))
-	track_shield_fx(target, s, bub)
+	var n := attach_fx(target, fx)
+	if n != null:
+		track_shield_fx(target, s, n)
+	return s
 
 
 ## Remove `fx` as soon as shield `s` is broken / expires / its owner dies (instead of a fixed lifetime).
@@ -308,15 +409,35 @@ static func kill_fx(n, fade: float = 0.1) -> void:
 	n.get_tree().create_timer(fade, false).timeout.connect(n.queue_free)
 
 
+## Stop (or kill) an attached effect after `delay` seconds without capturing the node itself: a lambda that captured
+## an object freed in the meantime logs an error on every call.
+static func stop_later(m, delay: float, n, kill: bool = false, fade: float = 0.15) -> void:
+	if m == null or n == null:
+		return
+	var r := weakref(n)
+	m.after(delay, func():
+		var x = r.get_ref()
+		if x == null:
+			return
+		if kill:
+			K.kill_fx(x, fade)
+		elif x.has_method("stop"):
+			x.stop())
+
+
 ## Buff whose attached vfx is killed (not just stopped) when the buff ends: expiry, removal, cleanse, death.
 class FxBuff extends Buff:
 	var kill_fade := 0.1
+	var extra_fx: Array = []   ## more attached effects that end with the buff
 
 	func on_removed(u) -> void:
 		var n = vfx
 		vfx = null
 		super(u)
 		K.kill_fx(n, kill_fade)
+		for x in extra_fx:
+			K.kill_fx(x, kill_fade)
+		extra_fx.clear()
 
 
 static func grievous(target: Unit, duration: float, src, amount: float = 0.4) -> void:
