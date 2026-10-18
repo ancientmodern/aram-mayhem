@@ -77,9 +77,34 @@ func on_died(_killer) -> void:
 	if is_inhibitor:
 		respawn_at = match_ref.time + Rules.INHIBITOR_RESPAWN
 		match_ref.on_structure_fell(self)
-	if model != null:
-		var tw := create_tween()
-		tw.tween_property(model, "scale", model.scale * Vector3(1.0, 0.25, 1.0), 1.5)
+	var m = match_ref
+	var p := global_position
+	var col := Color(1.0, 0.75, 0.4) if team == G.Team.CHAOS else Color(0.55, 0.8, 1.0)
+	if has_anim("death"):
+		_play_once("death")
+	elif model != null:
+		create_tween().tween_property(model, "scale", model.scale * Vector3(1.0, 0.25, 1.0), 1.5)
+	# explosions: the nexus goes off in a rolling chain
+	var blasts := 1 if is_inhibitor else 6
+	for i in blasts:
+		m.after(i * 0.32, func():
+			var off := Vector3(G.rng.randf_range(-1.5, 1.5), G.rng.randf_range(0.5, 3.0), G.rng.randf_range(-1.5, 1.5)) * (0.4 if is_inhibitor else 1.0)
+			Vfx.burst(m, p + off, col, 2.2 if is_inhibitor else 3.2, {"sparks": 60})
+			Vfx.ring(m, p, col, 4.5 if is_inhibitor else 7.0, 0.6, 0.12, 0.2)
+			if m.camera_rig != null and G.flat_dist(m.camera_rig.focus, p) < 30.0:
+				m.camera_rig.shake(0.35 if is_inhibitor else 0.55))
+
+
+## Play a clip once and hold its last frame (death poses).
+func _play_once(logical: String) -> void:
+	var names: Array = anim_map.get(logical, [])
+	var n: String = names[0] if not names.is_empty() else _raw_clip(logical)
+	if n == "" or anim_player == null or not anim_player.has_animation(n):
+		return
+	anim_player.get_animation(n).loop_mode = Animation.LOOP_NONE
+	anim_player.play(n, 0.1)
+	cur_anim = logical
+	anim_lock = 9999.0
 
 
 func tick_dead(_dt: float) -> void:
@@ -89,5 +114,10 @@ func tick_dead(_dt: float) -> void:
 		hp = stats.max_hp
 		if model != null:
 			model.scale = Vector3.ONE * stats.size * display_scale
-		play_anim("idle", 1.0, 0.0)
+		anim_lock = 0.0
+		if has_anim("respawn_in"):
+			_play_once("respawn_in")
+			anim_lock = 1.5
+		else:
+			play_anim("idle", 1.0, 0.0)
 		G.announce("Inhibitor respawned", "", G.COLOR_ALLY if team == G.player.team else G.COLOR_ENEMY)

@@ -178,6 +178,12 @@ func on_died(_killer) -> void:
 	aggro_line_target = null
 	if match_ref != null:
 		match_ref.on_structure_fell(self)
+	if match_ref != null:
+		var col := Color(1.0, 0.7, 0.4) if team == G.Team.CHAOS else Color(0.55, 0.8, 1.0)
+		Vfx.burst(match_ref, global_position + Vector3(0, 3.0, 0), col, 3.0, {"sparks": 70})
+		Vfx.ring(match_ref, global_position, col, 6.0, 0.7, 0.12, 0.25)
+		if match_ref.camera_rig != null and G.flat_dist(match_ref.camera_rig.focus, global_position) < 30.0:
+			match_ref.camera_rig.shake(0.45)
 	if model != null:
 		var tw := create_tween()
 		tw.tween_property(model, "position:y", -4.0, 2.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
