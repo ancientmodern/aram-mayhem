@@ -28,6 +28,9 @@ func _process(delta: float) -> void:
 		Sfx.ui("victory" if victory else "defeat")
 		Sfx.ui("eog")
 		G.announcer_event.emit("victory" if victory else "defeat", victory)
+		var mus := Sfx.game_music("map12", "mus_map12_victory" if victory else "mus_map12_defeat")
+		if mus != "":
+			Sfx.music(mus, 0.5, [], false)
 	if _phase == 2:
 		_stats_t += delta / maxf(Engine.time_scale, 0.001)
 

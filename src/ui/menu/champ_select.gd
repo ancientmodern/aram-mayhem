@@ -24,7 +24,11 @@ func _ready() -> void:
 	bench.sort()
 	if G.next_match.has("player_summoners"):
 		summoners = G.next_match.player_summoners.duplicate()
-	Sfx.music("music-cs-draft-pick-base-layer-01", 1.5, ["music-cs-draft-pick-intensity-layer-01"])
+	var aram_music := Sfx.game_music("map12", "mus_map12_phase_select")
+	if aram_music != "":
+		Sfx.music(aram_music, 1.5)
+	else:
+		Sfx.music("music-cs-draft-pick-base-layer-01", 1.5, ["music-cs-draft-pick-intensity-layer-01"])
 	Sfx.ui("pick_intro")
 	_on_champ_changed(false)
 
