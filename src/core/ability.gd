@@ -316,9 +316,13 @@ func begin_cast(t: Dictionary) -> void:
 		if not can_move_while_casting:
 			owner.stop_moving()
 	if anim != "":
+		var pa := Prof.t0()
 		owner.play_spell_anim(anim, maxf(anim_lock, cast_time), anim_speed())
+		Prof.add("cast.anim", pa)
 	if cast_time <= 0.0:
+		var pe := Prof.t0()
 		execute(t)
+		Prof.add("cast.exec", pe)
 
 
 func anim_speed() -> float:
