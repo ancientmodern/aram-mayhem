@@ -49,6 +49,12 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	var ppt := Prof.t0()
+	_process_frame(delta)
+	Prof.add("proc.overlay", ppt)
+
+
+func _process_frame(delta: float) -> void:
 	var dt := minf(delta, 0.05)
 	ft.update(dt)
 	var prune := Engine.get_process_frames() % 300 == 0
@@ -63,6 +69,12 @@ func _process(delta: float) -> void:
 
 
 func _draw() -> void:
+	var pt := Prof.t0()
+	_draw_frame()
+	Prof.add("draw.overlay", pt)
+
+
+func _draw_frame() -> void:
 	if match_ref == null or rig == null or G.player == null:
 		return
 	var cam := rig.cam

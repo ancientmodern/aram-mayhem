@@ -84,6 +84,12 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	var ppt := Prof.t0()
+	_process_frame(delta)
+	Prof.add("proc.hud", ppt)
+
+
+func _process_frame(delta: float) -> void:
 	fail_t = maxf(0.0, fail_t - delta)
 	_tip_t -= delta
 	_level_flash = maxf(0.0, _level_flash - delta)
@@ -278,6 +284,12 @@ func _ally_by_uid(uid: int):
 
 # ===================================================================== drawing
 func _draw() -> void:
+	var pt := Prof.t0()
+	_draw_frame()
+	Prof.add("draw.hud", pt)
+
+
+func _draw_frame() -> void:
 	if champ == null:
 		return
 	L.begin(size)
