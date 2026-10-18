@@ -16,6 +16,9 @@ static func deal(source, target, amount: float, type: int, opts: Dictionary = {}
 
 ## Nested damage events (procs triggering procs) are capped so chains can't explode exponentially.
 const MAX_DEPTH := 8
+const HOOK_DEPTH := 3
+const FRAME_BUDGET := 1500
+static var frame_events := 0
 static var depth := 0
 static var _depth_warned := false
 
@@ -27,6 +30,11 @@ static func apply(info: DamageInfo) -> DamageInfo:
 			_depth_warned = true
 			push_warning("Combat: proc chain depth limit hit (%s -> %s, %s)" % [info.source.display_name if info.source != null and is_instance_valid(info.source) else "?", info.target.display_name if info.target != null and is_instance_valid(info.target) else "?", info.tag])
 		return info
+	# procs don't proc: past a shallow chain (or a per-frame budget) damage applies without triggering hooks,
+	# otherwise item/augment procs branch exponentially (millions of events + floating texts)
+	frame_events += 1
+	if depth >= HOOK_DEPTH or frame_events > FRAME_BUDGET:
+		info.no_hooks = true
 	depth += 1
 	var r := _apply(info)
 	depth -= 1
@@ -158,6 +166,7 @@ static func heal(source, target, amount: float, opts: Dictionary = {}) -> float:
 	if target == null or not is_instance_valid(target) or target.dead or amount <= 0.0 or depth >= MAX_DEPTH:
 		return 0.0
 	depth += 1
+	if G.debug_sites: G.crumb("heal -> " + str(target.display_name))
 	var r := _heal(source, target, amount, opts)
 	depth -= 1
 	return r

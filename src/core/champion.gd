@@ -206,7 +206,7 @@ func level_up() -> void:
 	G.level_up.emit(self, level)
 	if controller is BotBrain:
 		auto_level_abilities()
-	if Rules.AUGMENT_LEVELS.has(level) and match_ref != null and match_ref.has_method("offer_augment"):
+	if Rules.AUGMENTS_ENABLED and Rules.AUGMENT_LEVELS.has(level) and match_ref != null and match_ref.has_method("offer_augment"):
 		match_ref.offer_augment(self)
 	if match_ref != null and match_ref.overlay != null:
 		match_ref.overlay.level_up_fx(self)
