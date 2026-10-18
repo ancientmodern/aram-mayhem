@@ -2,8 +2,6 @@ extends ChampionKit
 ## Leona, the Radiant Dawn.
 
 const SUN := Color(1.0, 0.8, 0.3)
-const SUN_HOT := Color(1.0, 0.95, 0.72)
-const DAWN := Color(1.0, 0.55, 0.15)
 const HOLD := {"hold": true}
 
 
@@ -31,6 +29,49 @@ func ai_tuning() -> Dictionary:
 	return {"aggression": 0.8}
 
 
+## Match time of the last Shield of Dawn hit: its basic attack impact is replaced by Leona_Base_Q_tar.
+var q_hit_time := -1.0
+
+
+## League VFX mapping (LolVfx.champ_fx). "" disables a key that the kit spawns itself.
+func vfx_map() -> Dictionary:
+	var q_hit: bool = c != null and c.match_ref != null and c.match_ref.time == q_hit_time
+	return {
+		"BA_tar": "" if q_hit else "Leona_Base_BA_hit",
+		"BA_crit_tar": "" if q_hit else "Leona_Base_BA_hit",
+		"Q_cas": "",
+		"Q_tar": "",
+		"W_cas": "",
+		"W_tar": "Leona_Base_W_tar",
+		"E_cas": "",
+		"E_mis": "Leona_Base_E_mis_weapon",
+		"E_tar": "Leona_Base_E_tar",
+		"R_cas": "Leona_Base_R_cas",
+		"R_tar": "Leona_Base_R_tar",
+	}
+
+
+# ===================================================================== League VFX helpers
+class LFx:
+	static func stop(n) -> void:
+		if n != null and is_instance_valid(n):
+			n.stop()
+
+	## Stop and remove shortly after (effects whose single particles outlive the gameplay state).
+	static func kill(n, fade: float = 0.25) -> void:
+		if n == null or not is_instance_valid(n):
+			return
+		n.stop()
+		if G.match != null:
+			G.match.after(fade, func():
+				if is_instance_valid(n):
+					n.queue_free())
+
+	## Enemy-team (red) variant when `u` is not on the local player's team.
+	static func hostile(u) -> bool:
+		return G.player != null and is_instance_valid(G.player) and u != null and u.team != G.player.team
+
+
 ## Bot AI returns HOLD to deliberately skip a cast ({} would fall back to BotBrain.default_consider).
 class KAbility extends Ability:
 	func try_cast(t: Dictionary) -> bool:
@@ -50,20 +91,6 @@ class LUtil:
 		var m = o.match_ref
 		if m != null and m.camera_rig != null and G.player != null and G.flat_dist(G.player.global_position, pos) < 14.0:
 			m.camera_rig.shake(amount)
-
-	static func sun_burst(m, pos: Vector3, radius: float) -> void:
-		Vfx.burst(m, pos, SUN, radius, {"sparks": 24, "ring": false})
-		var n := VfxNode.new()
-		n.lifetime = 0.6
-		m.add_fx(n, pos)
-		# radiating rays
-		for i in 6:
-			var s := Vfx.sprite(SUN_HOT, 1.0, 2.6, Vfx.spark_texture())
-			s.rotation.z = i * PI / 6.0
-			s.scale = Vector3.ONE * radius * 0.9
-			n.add_child(s)
-		var tw := n.create_tween()
-		tw.tween_property(n, "scale", Vector3.ONE * 1.6, 0.3).set_ease(Tween.EASE_OUT)
 
 	static func immobile(u) -> bool:
 		return (u.cc & Buff.IMMOBILIZE) != 0
@@ -101,25 +128,22 @@ class Sunlight extends Effect:
 			ex.remaining = dur
 			ex.duration = dur
 			ex.leona = owner
+			# restart the League sun tag (its single particle is shorter than a chain of refreshes)
+			if ex.vfx != null and is_instance_valid(ex.vfx):
+				ex.vfx.queue_free()
+			ex.vfx = _mark_fx(target)
 			return
 		var b := SunlightMark.new()
 		b.duration = dur
 		b.remaining = dur
 		b.leona = owner
 		b.icon = icon
-		var n := VfxNode.new()
-		target.add_child(n)
-		n.position = Vector3(0, target.height + 0.35, 0)
-		n.add_child(Vfx.sprite(SUN, 0.75, 2.4))
-		var rays := Vfx.sprite(SUN_HOT, 0.9, 2.2, Vfx.spark_texture())
-		n.add_child(rays)
-		var tw := n.create_tween().set_loops()
-		tw.tween_property(rays, "rotation:z", TAU, 1.6).from(0.0)
-		var ring := Vfx.aura(target, SUN, maxf(0.8, target.radius * 1.3), dur + 0.2, 0.08)
-		ring.reparent(n)
-		ring.position = Vector3(0, -(target.height + 0.27), 0)
-		b.vfx = n
+		b.vfx = _mark_fx(target)
 		target.add_buff(b, owner)
+
+	func _mark_fx(target) -> Node3D:
+		var nm := "Leona_Base_P_tar_buf_champ" if target.kind == G.Kind.CHAMPION else "Leona_Base_P_tar_buf"
+		return LolVfx.attach(target, nm, {"loop": true, "height": target.height * 0.5})
 
 	func on_tick(u, _dt: float) -> void:
 		if u.is_bot and u.ability_points > 0:
@@ -148,9 +172,7 @@ class SunlightMark extends Buff:
 		Combat.deal(leona, owner, dmg, G.DmgType.MAGIC, {"is_proc": true, "tag": "sunlight"})
 		var m = owner.match_ref
 		if m != null:
-			var gp: Vector3 = owner.global_position
-			LUtil.sun_burst(m, gp + Vector3(0, 1.2, 0), 1.0)
-			Vfx.beam(m, gp + Vector3(0, 6.0, 0), gp + Vector3(0, 0.2, 0), SUN, 0.5, 0.25)
+			LolVfx.spawn(m, "Leona_Base_P_tar_hit", owner.global_position + Vector3(0, owner.height * 0.5, 0))
 
 
 # ===================================================================== Q
@@ -176,25 +198,15 @@ class ShieldOfDawn extends KAbility:
 		var o = owner
 		empowered_until = o.match_ref.time + window()
 		_clear_fx()
-		var n := VfxNode.new()
-		n.lifetime = window()
-		o.add_child(n)
-		n.position = Vector3(0, 1.1, 0) + Vector3(0, 0, 0)
-		n.add_child(Vfx.sprite(SUN, 1.2, 1.4))
-		var e := Vfx.emitter(SUN_HOT, 24, 0.5, 0.25, {"local": true, "radius": 0.5, "vmin": 0.2, "vmax": 0.8, "tex": Vfx.spark_texture()})
-		n.add_child(e)
-		n.trails.append(e)
-		n.add_child(Vfx.light(SUN, 1.5, 3.5))
-		fx = n
-		Vfx.rising(o, SUN, 0.3, 18, 0.5)
+		# League: the radiant shield glow for the empowered window
+		fx = LolVfx.attach(o, "Leona_Base_Q_cas", {"loop": true, "height": 1.1, "dir": o.facing})
 		notify_cast(t)
 
 	func is_empowered() -> bool:
 		return owner.match_ref != null and owner.match_ref.time < empowered_until
 
 	func _clear_fx() -> void:
-		if fx != null and is_instance_valid(fx):
-			fx.detach_and_fade()
+		LFx.kill(fx, 0.2)
 		fx = null
 
 	func consume(target) -> void:
@@ -206,8 +218,8 @@ class ShieldOfDawn extends KAbility:
 		LUtil.mark(o, target)
 		var m = o.match_ref
 		var gp: Vector3 = target.global_position
-		LUtil.sun_burst(m, gp + Vector3(0, 1.1, 0), 1.2)
-		Vfx.ring(m, gp, SUN, 1.6, 0.35, 0.12, 0.15)
+		# League Q_tar carries ground sigils: spawn it at the target's feet
+		LolVfx.spawn(m, "Leona_Base_Q_tar", gp, {"dir": G.flat_dir(o.global_position, gp)})
 		LUtil.shake(o, gp, 0.2)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -235,6 +247,8 @@ class QAttackHook extends Effect:
 		hidden = true
 
 	func on_tick(u, _dt: float) -> void:
+		if q.fx != null and not q.is_empowered():
+			q._clear_fx()
 		if u.windup_timer < 0.0:
 			played = false
 			return
@@ -242,6 +256,13 @@ class QAttackHook extends Effect:
 			played = true
 			u.play_anim("spell1", 1.0, 0.05, u.windup_timer + 0.35)
 			u.anim_lock = u.windup_timer + 0.35
+
+	## The empowered hit's generic basic attack impact is replaced by Leona_Base_Q_tar (see vfx_map).
+	func on_pre_damage_dealt(info) -> void:
+		var t = info.target
+		if info.is_attack and q != null and q.is_empowered() and t != null and is_instance_valid(t) \
+				and not (t.kind in [G.Kind.TURRET, G.Kind.INHIBITOR, G.Kind.NEXUS]) and owner.match_ref != null:
+			owner.kit.q_hit_time = owner.match_ref.time
 
 	func on_attack_hit(target, _info) -> void:
 		if q == null or not q.is_empowered() or target == null or not is_instance_valid(target) or target.dead:
@@ -281,26 +302,11 @@ class Eclipse extends KAbility:
 		b.flat = dv("FlatDamageReduction", 8.0)
 		b.cap = dv("FlatDamageReductionMax", 0.5)
 		b.icon = icon
-		# radiant sun disc around Leona
-		var n := VfxNode.new()
-		o.add_child(n)
-		n.position = Vector3(0, 0.08, 0)
-		var ring := Vfx.aura(o, SUN, 1.25, dur, 0.08)
-		ring.reparent(n)
-		var disc := Vfx.sprite(SUN, 1.8, 1.0)
-		disc.position = Vector3(0, 1.2, 0)
-		n.add_child(disc)
-		var e := Vfx.emitter(SUN_HOT, 30, 0.8, 0.22, {"local": true, "radius": 1.0, "dir": Vector3.UP, "spread": 15.0,
-				"vmin": 0.6, "vmax": 1.4, "tex": Vfx.spark_texture()})
-		n.add_child(e)
-		n.trails.append(e)
-		var l := Vfx.light(SUN, 2.0, 5.0)
-		l.position.y = 1.2
-		n.add_child(l)
-		b.vfx = n
+		# League: the eclipse (sun disc, corona, rays) around Leona while the stance lasts
+		b.vfx = LolVfx.attach(o, "Leona_Base_W_buf_1", {"loop": true, "height": 1.1})
 		o.remove_buffs_by_id("leona_w")
 		o.add_buff(b, o)
-		# area preview of the detonation
+		# area preview of the detonation (League has no radius indicator here; kept for readability)
 		var tel := Vfx.aura(o, Color(SUN.r, SUN.g, SUN.b, 0.35), ind_radius * G.U, dur, 0.05)
 		var tmat: ShaderMaterial = (tel.get_child(0) as MeshInstance3D).material_override
 		tmat.set_shader_parameter("thickness", 0.025)
@@ -342,14 +348,14 @@ class Eclipse extends KAbility:
 			hit(u, dmg, G.DmgType.MAGIC, {"is_aoe": true, "tag": "w"})
 			LUtil.mark(o, u)
 		var gp: Vector3 = o.global_position
-		Vfx.burst(m, gp + Vector3(0, 1.0, 0), SUN, 1.3, {"sparks": 40, "ring": false})
-		Vfx.ring(m, gp, SUN_HOT, ind_radius * G.U, 0.45, 0.12, 0.3)
-		Vfx.ring(m, gp, DAWN, ind_radius * G.U * 0.7, 0.35, 0.08, 0.0)
+		# League: solar detonation (the "fail" variant when nobody was hit); W_tar on each target via mapping
+		LolVfx.spawn(m, "Leona_Base_W_cas_fail" if hits.is_empty() else "Leona_Base_W_cas_hit", gp, {"dir": o.facing})
 		LUtil.shake(o, gp, 0.15)
 		if not hits.is_empty():
 			var dur := dv("ArmorMRDuration", 3.0)
-			K.buff(o, "leona_w_keep", dur, resist_stats(), o, {"name": "Eclipse", "icon": icon})
-			Vfx.aura(o, SUN, 1.0, dur, 0.06)
+			var kb := K.buff(o, "leona_w_keep", dur, resist_stats(), o, {"name": "Eclipse", "icon": icon})
+			if kb != null and (kb.vfx == null or not is_instance_valid(kb.vfx)):
+				kb.vfx = LolVfx.attach(o, "Leona_Base_W_buf_2", {"loop": true, "height": 1.1})
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -399,7 +405,6 @@ class ZenithBlade extends KAbility:
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
-		var m = o.match_ref
 		var dir: Vector3 = t.dir
 		var dmg := dv("BaseDamage") + 0.4 * ap()
 		var root := dv("RootDuration", 0.5)
@@ -408,7 +413,6 @@ class ZenithBlade extends KAbility:
 		var on_hit := func(_mm, u):
 			self_ref.hit(u, dmg, G.DmgType.MAGIC, {"tag": "e"})
 			LUtil.mark(o, u)
-			Vfx.hit_spark(m, u.global_position + Vector3(0, 1.0, 0), SUN_HOT, 0.9)
 			if u.kind == G.Kind.CHAMPION:
 				state.last = u
 		var on_end := func(_mm, _pos):
@@ -417,7 +421,7 @@ class ZenithBlade extends KAbility:
 				return
 			self_ref._dash_to(tgt, root)
 		K.line_missile(self, K.cast_pos(o, 1.0), dir, 2000.0, TRAVEL, {
-			"width": 70.0, "pierce": true, "visual": _blade_visual(), "on_hit": on_hit, "on_end": on_end,
+			"width": 70.0, "pierce": true, "lol": "Leona_Base_E_mis_weapon", "on_hit": on_hit, "on_end": on_end,
 		})
 		notify_cast(t)
 
@@ -428,36 +432,15 @@ class ZenithBlade extends KAbility:
 		var spd := maxf(22.0, d / 0.3)
 		var travel := maxf(0.0, d - o.radius - tgt.radius) / spd
 		K.root(tgt, root + travel, o, SUN)
-		Vfx.beam(m, o.global_position + Vector3(0, 1.0, 0), tgt.global_position + Vector3(0, 1.0, 0), SUN, 0.35, travel + 0.15)
 		if (o.cc & (Buff.BLOCK_MOVE | Buff.CC.GROUNDED)) != 0:
 			return
 		var dest: Vector3 = tgt.global_position - G.flat_dir(o.global_position, tgt.global_position) * (o.radius + tgt.radius * 0.8)
-		var trail := Vfx.rising(o, SUN, travel + 0.1, 30, 0.4)
-		trail.position.y = 0.6
+		# League: Zenith dash streak, solar flare on arrival
+		var trail := LolVfx.attach(o, "Leona_Base_E_mis_dash", {"loop": true, "dir": G.flat_dir(o.global_position, dest)})
+		m.after(travel + 0.05, func(): LFx.stop(trail))
 		o.start_dash(dest, {"speed": spd, "anim": "spell3", "on_arrive": func(_u):
-			Vfx.burst(m, o.global_position + Vector3(0, 0.8, 0), SUN, 1.0, {"sparks": 16, "ring": true})})
-
-	func _blade_visual() -> VfxNode:
-		var n := VfxNode.new()
-		var blade := MeshInstance3D.new()
-		var bm := BoxMesh.new()
-		bm.size = Vector3(0.18, 0.08, 1.9)
-		blade.mesh = bm
-		var mat := Vfx.add_material(SUN_HOT, 3.0, false)
-		mat.set_shader_parameter("use_mask", false)
-		blade.material_override = mat
-		blade.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		n.add_child(blade)
-		var glow := Vfx.sprite(SUN, 1.6, 1.8)
-		n.add_child(glow)
-		var e := Vfx.emitter(SUN, 70, 0.4, 0.6, {"vmin": 0.0, "vmax": 0.3, "radius": 0.3})
-		n.add_child(e)
-		n.trails.append(e)
-		var e2 := Vfx.emitter(SUN_HOT, 24, 0.5, 0.25, {"vmin": 0.5, "vmax": 1.5, "tex": Vfx.spark_texture()})
-		n.add_child(e2)
-		n.trails.append(e2)
-		n.add_child(Vfx.light(SUN, 2.0, 4.0))
-		return n
+			LFx.stop(trail)
+			LolVfx.attach(o, "Leona_Base_E_cas_arrive", {"height": 1.0})})
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -519,32 +502,15 @@ class SolarFlare extends KAbility:
 		var cc := dv("CCDuration", 1.75)
 		var slow := dv("SlowPercent", 80.0) / 100.0
 		var self_ref := self
-		# telegraph: outer ring, inner stun ring, a sun gathering high above
-		var outer := Vfx.ground_circle(m, pos, R, SUN, dl + 0.05, 0.12)
-		var omat: ShaderMaterial = outer.get_meta("mat")
-		var tw := outer.create_tween()
-		tw.tween_method(func(v): omat.set_shader_parameter("fill", v), 0.05, 0.4, dl)
-		var inner := Vfx.ground_circle(m, pos, INNER * G.U, SUN_HOT, dl + 0.05, 0.2)
-		inner.get_meta("mat").set_shader_parameter("thickness", 0.12)
-		var sun := VfxNode.new()
-		sun.lifetime = dl + 0.1
-		m.add_fx(sun, pos + Vector3(0, 13.0, 0))
-		var core := Vfx.sprite(SUN_HOT, 1.0, 3.0)
-		sun.add_child(core)
-		var halo := Vfx.sprite(SUN, 3.0, 1.6)
-		sun.add_child(halo)
-		sun.add_child(Vfx.light(SUN, 3.0, 16.0))
-		var stw := sun.create_tween()
-		stw.tween_property(core, "scale", Vector3.ONE * 3.0, dl).set_ease(Tween.EASE_IN)
-		stw.parallel().tween_property(halo, "scale", Vector3.ONE * 6.0, dl).set_ease(Tween.EASE_IN)
-		Vfx.beam(m, pos + Vector3(0, 13.0, 0), pos, SUN, 0.25, dl)
+		# League telegraph: focused sun + outer slow ring / inner stun ring (red for the enemy team)
+		LolVfx.spawn(m, "Leona_Base_R_hit_aoe_red" if LFx.hostile(o) else "Leona_Base_R_hit_aoe_green", pos, {"dir": G.flat_dir(o.global_position, pos), "height": 0.05})
 		m.after(dl, func():
 			if not is_instance_valid(o):
 				return
 			self_ref._strike(pos, R, dmg, cc, slow))
 		notify_cast(t)
 
-	func _strike(pos: Vector3, R: float, dmg: float, cc: float, slow: float) -> void:
+	func _strike(pos: Vector3, _r: float, dmg: float, cc: float, slow: float) -> void:
 		var o = owner
 		var m = o.match_ref
 		for u in K.enemies_circle(self, pos, ind_radius):
@@ -554,20 +520,8 @@ class SolarFlare extends KAbility:
 				K.stun(u, cc, o)
 			else:
 				K.slow(u, slow, cc, o, false, "leona_r_slow")
-		Vfx.beam(m, pos + Vector3(0, 18.0, 0), pos + Vector3(0, 0.1, 0), SUN_HOT, 1.6, 0.4)
-		Vfx.beam(m, pos + Vector3(0, 18.0, 0), pos + Vector3(0, 0.1, 0), SUN, 3.2, 0.3)
-		Vfx.burst(m, pos + Vector3(0, 0.8, 0), SUN, R * 0.45, {"sparks": 60, "ring": false})
-		Vfx.ring(m, pos, SUN_HOT, R * 1.35, 0.6, 0.15, 0.4)
-		Vfx.ring(m, pos, DAWN, R * 0.9, 0.45, 0.1, 0.0)
-		Vfx.ground_circle(m, pos, R, DAWN, 1.6, 0.45)
-		Vfx.ground_circle(m, pos, INNER * G.U, SUN_HOT, 1.2, 0.6)
-		var n := VfxNode.new()
-		n.lifetime = 2.0
-		m.add_fx(n, pos + Vector3(0, 0.2, 0))
-		var e := Vfx.emitter(SUN_HOT, 70, 1.2, 0.3, {"one_shot": true, "explosive": 0.9, "dir": Vector3.UP, "spread": 50.0,
-				"vmin": 3.0, "vmax": 9.0, "damping": 2.0, "gravity": Vector3(0, -5.0, 0), "radius": R * 0.6, "tex": Vfx.spark_texture()})
-		e.emitting = true
-		n.add_child(e)
+		# League: the solar flare impact (R_tar on each target via mapping)
+		LolVfx.spawn(m, "Leona_Base_R_hit_impact", pos, {"dir": G.flat_dir(o.global_position, pos)})
 		LUtil.shake(o, pos, 0.45)
 
 	func ai_consider(ctx) -> Dictionary:

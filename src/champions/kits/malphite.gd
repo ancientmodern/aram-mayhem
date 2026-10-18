@@ -2,10 +2,7 @@ extends ChampionKit
 ## Malphite, Shard of the Monolith.
 
 const AMBER := Color(1.0, 0.62, 0.22)
-const MAGMA := Color(1.0, 0.42, 0.1)
-const DUST := Color(0.78, 0.66, 0.5)
 const STONE := Color(0.52, 0.45, 0.4)
-const GLOW := Color(1.0, 0.82, 0.45)
 
 
 func build_kit() -> void:
@@ -24,6 +21,7 @@ func build_kit() -> void:
 	c.abilities[3].cast_time = 0.0
 	c.add_effect(ThunderclapHook.new(c.abilities[1]))
 	c.add_effect(BotLeveler.new())
+	c.add_effect(SwingTrails.new())
 
 
 
@@ -31,90 +29,62 @@ func ai_tuning() -> Dictionary:
 	return {"aggression": 0.75}
 
 
+## Match time of the last empowered Thunderclap hit: its basic attack impact becomes Malphite_Base_W_tar_1.
+var w_hit_time := -1.0
+
+
+## League VFX mapping (LolVfx.champ_fx). "" disables a key that the kit spawns itself.
+func vfx_map() -> Dictionary:
+	var w_hit: bool = c != null and c.match_ref != null and c.match_ref.time == w_hit_time
+	return {
+		"BA_tar": "Malphite_Base_W_tar_1" if w_hit else "Malphite_Base_BA_tar",
+		"BA_crit_tar": "Malphite_Base_W_tar_1" if w_hit else "Malphite_Base_BA_tar_crit_01",
+		"Q_cas": "",
+		"Q_mis": "Malphite_Base_Q_mis",
+		"Q_tar": "Malphite_Base_Q_tar",
+		"W_cas": "",
+		"W_tar": "Malphite_Base_W_tar_2",
+		"E_cas": "",
+		"E_tar": "Malphite_Base_E_tar_01",
+		"R_cas": "",
+		"R_tar": "",
+	}
+
+
+# ===================================================================== League VFX helpers
+class LFx:
+	static func stop(n) -> void:
+		if n != null and is_instance_valid(n):
+			n.stop()
+
+	## Stop and remove shortly after (effects whose single particles outlive the gameplay state).
+	static func kill(n, fade: float = 0.25) -> void:
+		if n == null or not is_instance_valid(n):
+			return
+		n.stop()
+		if G.match != null:
+			G.match.after(fade, func():
+				if is_instance_valid(n):
+					n.queue_free())
+
+
+## League fist sweep on each basic attack (alternating arms).
+class SwingTrails extends Effect:
+	var n := 0
+
+	func _init() -> void:
+		id = "malph_swing_fx"
+		hidden = true
+
+	func on_attack_launch(_target) -> void:
+		n += 1
+		LolVfx.attach(owner, "Malphite_Base_BA_Sweep_01" if n % 2 == 1 else "Malphite_Base_BA_Sweep_02", {"dir": owner.facing})
+
+
 # ===================================================================== shared visuals
+## Granite chunks for the passive shell (League's shield overlay is a material effect the runtime cannot show).
 class Fx:
-	static var _shaders := {}
 	static var _rock_mat: StandardMaterial3D = null
-
-	const ARC_CODE := """
-shader_type spatial;
-render_mode unshaded, blend_add, depth_draw_never, cull_disabled%DEPTH%;
-uniform vec4 color : source_color = vec4(1.0, 0.6, 0.2, 1.0);
-uniform vec4 edge_color : source_color = vec4(1.0, 0.95, 0.8, 1.0);
-uniform float energy = 2.5;
-uniform float inner = 0.45;
-uniform float head = 0.0;
-uniform float tail = 3.0;
-uniform float fade = 1.0;
-uniform float flat_tail = 0.0;
-void fragment() {
-	vec2 p = UV * 2.0 - 1.0;
-	float r = length(p);
-	float band = smoothstep(inner - 0.04, inner + 0.02, r) * (1.0 - smoothstep(0.95, 1.0, r));
-	float ang = atan(p.y, p.x);
-	float d = mod(head - ang + 12.566370, 6.283185);
-	float g = clamp(1.0 - d / max(tail, 0.001), 0.0, 1.0);
-	g = mix(g * g, step(d, tail) * 0.75, flat_tail);
-	float rim = smoothstep(0.78, 0.96, r);
-	vec3 col = mix(color.rgb, edge_color.rgb, rim * g);
-	float a = band * g * (0.35 + 0.65 * rim) * fade;
-	ALBEDO = col * energy;
-	ALPHA = clamp(a, 0.0, 1.0);
-}
-"""
-
-	const CRACK_CODE := """
-shader_type spatial;
-render_mode unshaded, blend_add, depth_draw_never, cull_disabled, depth_test_disabled;
-uniform vec4 color : source_color = vec4(1.0, 0.5, 0.1, 1.0);
-uniform float energy = 2.2;
-uniform float fade = 1.0;
-uniform float progress = 1.0;
-uniform float seed = 0.0;
-uniform float rays = 9.0;
-float hash(float n) { return fract(sin(n * 12.9898 + seed * 78.233) * 43758.5453); }
-void fragment() {
-	vec2 p = UV * 2.0 - 1.0;
-	float r = length(p);
-	float ang = atan(p.y, p.x) / 6.283185 + 0.5;
-	float cell = floor(ang * rays);
-	float f = fract(ang * rays);
-	float center = 0.5 + (hash(cell) - 0.5) * 0.5 + sin(r * 16.0 + hash(cell + 3.0) * 6.28) * 0.07;
-	float len = 0.55 + 0.45 * hash(cell + 7.0);
-	float w_abs = 0.035 * (1.0 - r / len) + 0.006;
-	float w = w_abs * rays / (6.283185 * max(r, 0.04));
-	float line = 1.0 - smoothstep(w * 0.5, w, abs(f - center));
-	line *= 1.0 - smoothstep(len * progress - 0.08, len * progress, r);
-	float core = (1.0 - smoothstep(0.0, 0.22 * progress, r)) * 0.7;
-	float a = clamp(line + core, 0.0, 1.0) * fade;
-	ALBEDO = color.rgb * energy;
-	ALPHA = a;
-}
-"""
-
-	static func shader(key: String, code: String) -> Shader:
-		if not _shaders.has(key):
-			var s := Shader.new()
-			s.code = code
-			_shaders[key] = s
-		return _shaders[key]
-
-	static func arc_mat(col: Color, edge: Color, inner: float, ground: bool) -> ShaderMaterial:
-		var mat := ShaderMaterial.new()
-		mat.shader = shader("arc_g" if ground else "arc", ARC_CODE.replace("%DEPTH%", ", depth_test_disabled" if ground else ""))
-		mat.set_shader_parameter("color", col)
-		mat.set_shader_parameter("edge_color", edge)
-		mat.set_shader_parameter("inner", inner)
-		return mat
-
-	static func plane(size: float, mat: Material) -> MeshInstance3D:
-		var mi := MeshInstance3D.new()
-		var pm := PlaneMesh.new()
-		pm.size = Vector2(size, size)
-		mi.mesh = pm
-		mi.material_override = mat
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		return mi
 
 	static func rock_material() -> StandardMaterial3D:
 		if _rock_mat == null:
@@ -138,101 +108,6 @@ void fragment() {
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		mi.rotation = Vector3(G.rng.randf() * TAU, G.rng.randf() * TAU, G.rng.randf() * TAU)
 		return mi
-
-	static func wedge(m, pos: Vector3, radius: float, inner: float, col: Color, edge: Color, center_ang: float, width_rad: float, dur: float) -> VfxNode:
-		var n := VfxNode.new()
-		n.lifetime = dur + 0.05
-		m.add_fx(n, pos + Vector3(0, 0.1, 0))
-		var mat := arc_mat(col, edge, inner, true)
-		mat.set_shader_parameter("head", center_ang + width_rad * 0.5)
-		mat.set_shader_parameter("tail", width_rad)
-		mat.set_shader_parameter("flat_tail", 1.0)
-		n.add_child(plane(radius * 2.0, mat))
-		var tw := n.create_tween()
-		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 1.0, 0.0, dur).set_ease(Tween.EASE_IN)
-		return n
-
-	static func cracks(m, pos: Vector3, radius: float, col: Color, dur: float, rays: float = 9.0) -> VfxNode:
-		var n := VfxNode.new()
-		n.lifetime = dur + 0.05
-		m.add_fx(n, pos + Vector3(0, 0.1, 0))
-		var mat := ShaderMaterial.new()
-		mat.shader = shader("crack", CRACK_CODE)
-		mat.set_shader_parameter("color", col)
-		mat.set_shader_parameter("rays", rays)
-		mat.set_shader_parameter("seed", G.rng.randf() * 100.0)
-		mat.set_shader_parameter("progress", 0.0)
-		n.add_child(plane(radius * 2.0, mat))
-		var tw := n.create_tween()
-		tw.tween_method(func(v): mat.set_shader_parameter("progress", v), 0.0, 1.0, 0.14).set_ease(Tween.EASE_OUT)
-		tw.tween_interval(dur * 0.45)
-		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 1.0, 0.0, dur * 0.55 - 0.14)
-		return n
-
-	## Ring of stone spikes erupting from the ground, then sinking back.
-	static func spikes(m, pos: Vector3, radius: float, count: int, height: float, dur: float) -> void:
-		var n := VfxNode.new()
-		n.lifetime = dur + 0.1
-		m.add_fx(n, pos)
-		for i in count:
-			var a := TAU * i / float(count) + G.rng.randf_range(-0.2, 0.2)
-			var r := radius * G.rng.randf_range(0.75, 1.05)
-			var sp := MeshInstance3D.new()
-			var pm := PrismMesh.new()
-			var h := height * G.rng.randf_range(0.6, 1.1)
-			pm.size = Vector3(0.5, h, 0.45)
-			sp.mesh = pm
-			sp.material_override = rock_material()
-			sp.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			var holder := Node3D.new()
-			n.add_child(holder)
-			holder.position = Vector3(cos(a) * r, 0.0, sin(a) * r)
-			holder.rotation = Vector3(sin(a) * 0.45, 0.0, -cos(a) * 0.45)
-			holder.add_child(sp)
-			sp.position.y = -h * 0.5
-			var tw := holder.create_tween()
-			tw.tween_property(sp, "position:y", h * 0.45, 0.1).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
-			tw.tween_interval(dur * 0.5)
-			tw.tween_property(sp, "position:y", -h * 0.6, dur * 0.4).set_ease(Tween.EASE_IN)
-
-	static func debris(m, pos: Vector3, amount: int, speed: float, size: float, life: float = 0.8) -> void:
-		var n := VfxNode.new()
-		n.lifetime = life + 0.1
-		m.add_fx(n, pos)
-		var chunks := []
-		for i in amount:
-			var rk := rock(size * G.rng.randf_range(0.6, 1.3))
-			n.add_child(rk)
-			var dir := Vector3(G.rng.randf_range(-1, 1), G.rng.randf_range(0.6, 1.4), G.rng.randf_range(-1, 1)).normalized()
-			chunks.append([rk, dir * speed * G.rng.randf_range(0.5, 1.0), Vector3(G.rng.randf(), G.rng.randf(), G.rng.randf()) * 8.0])
-		var st := {"t": 0.0}
-		m.add_ticker(life, func(dt):
-			if not is_instance_valid(n):
-				return false
-			st.t += dt
-			for ch in chunks:
-				var rk2: MeshInstance3D = ch[0]
-				ch[1].y -= 16.0 * dt
-				rk2.position += ch[1] * dt
-				if rk2.position.y < 0.0:
-					rk2.position.y = 0.0
-					ch[1] *= 0.4
-				rk2.rotation += ch[2] * dt
-				rk2.scale = Vector3.ONE * clampf(1.4 - st.t / life * 1.4, 0.0, 1.0)
-			return true)
-
-	static func dust(m, pos: Vector3, amount: int, radius: float, life: float = 1.0) -> void:
-		var n := VfxNode.new()
-		n.lifetime = life + 0.2
-		m.add_fx(n, pos + Vector3(0, 0.3, 0))
-		var e := Vfx.emitter(DUST, amount, life, 0.9, {"one_shot": true, "explosive": 0.85, "vmin": radius * 1.2, "vmax": radius * 2.6,
-				"spread": 80.0, "dir": Vector3.UP, "radius": radius * 0.3, "damping": radius * 2.2, "energy": 0.9, "end_scale": 1.6})
-		var pm: ParticleProcessMaterial = e.process_material
-		pm.direction = Vector3(0, 0.35, 0)
-		pm.spread = 180.0
-		pm.flatness = 0.75
-		e.emitting = true
-		n.add_child(e)
 
 
 # ===================================================================== helpers
@@ -307,14 +182,12 @@ class GraniteShield extends Effect:
 		if not on and now() - last_hit >= recharge_time():
 			Combat.shield(u, u, 0.1 * u.stats.max_hp, 1.0e6, {"id": SID})
 			on = true
-			var m = u.match_ref
-			if m != null and u.model != null:
-				Vfx.ring(m, u.global_position, AMBER, 1.8, 0.35, 0.08, 0.15)
-				Vfx.rising(u, GLOW, 0.3, 16, 0.6)
+			if u.match_ref != null and u.model != null:
+				LolVfx.attach(u, "Malphite_Base_P_ShieldRegen")
 		if was_active and not on and u.match_ref != null:
-			# shell shatters
-			Fx.debris(u.match_ref, u.global_position + Vector3(0, 1.2, 0), 7, 4.0, 0.35, 0.7)
-			Vfx.hit_spark(u.match_ref, u.global_position + Vector3(0, 1.3, 0), AMBER, 1.0)
+			# shell shatters (P_shield_break carries a 100 s overlay emitter: cut it after the burst)
+			var brk := LolVfx.attach(u, "Malphite_Base_P_shield_break", {"height": 1.0})
+			u.match_ref.after(1.2, func(): LFx.kill(brk, 0.3))
 		was_active = on
 		_update_shell(u, on)
 
@@ -359,29 +232,11 @@ class SeismicShard extends MAbility:
 		if u == null or not is_instance_valid(u) or u.dead:
 			notify_cast(t)
 			return
-		var m = o.match_ref
 		var self_ref := self
-		var vis := VfxNode.new()
-		var spinner := Node3D.new()
-		vis.add_child(spinner)
-		var rk := Fx.rock(0.55)
-		spinner.add_child(rk)
-		var rk2 := Fx.rock(0.35)
-		rk2.position = Vector3(0.2, 0.15, 0.1)
-		spinner.add_child(rk2)
-		vis.add_child(Vfx.sprite(AMBER, 0.9, 1.4))
-		var trail := Vfx.emitter(DUST, 40, 0.5, 0.4, {"vmin": 0.0, "vmax": 0.5, "radius": 0.2, "energy": 1.2})
-		vis.add_child(trail)
-		vis.trails.append(trail)
-		var embers := Vfx.emitter(AMBER, 20, 0.3, 0.14, {"vmin": 0.3, "vmax": 1.0, "radius": 0.15, "tex": Vfx.spark_texture()})
-		vis.add_child(embers)
-		vis.trails.append(embers)
-		vis.add_child(Vfx.light(AMBER, 1.5, 3.0))
-		var tw := vis.create_tween().set_loops()
-		tw.tween_property(spinner, "rotation", Vector3(TAU, TAU * 0.5, 0), 0.4).from(Vector3.ZERO)
 		var dmg := damage()
+		# League Malphite_Base_Q_mis (furrow + seismic shard) replaces the visual via the Q_mis mapping
 		var mi := K.homing_missile(self, K.cast_pos(o, 1.2), u, 1200.0, func(_mm, tgt):
-			self_ref._land(tgt, dmg), {"visual": vis, "height": 0.6})
+			self_ref._land(tgt, dmg), {"lol": "Malphite_Base_Q_mis", "height": 0.6})
 		mi.on_move = func(mm, _dt):
 			mm.height = 0.45 + absf(sin(mm.traveled * 1.15)) * 1.1
 		notify_cast(t)
@@ -397,17 +252,39 @@ class SeismicShard extends MAbility:
 		K.slow(tgt, pct, dur, o, false, "malph_q_slow")
 		if not o.dead:
 			K.haste(o, pct, dur, o, false, "malph_q_ms")
-			var hv := VfxNode.new()
-			hv.lifetime = dur
-			o.add_child(hv)
-			var e := Vfx.emitter(DUST, 24, 0.6, 0.35, {"vmin": 0.2, "vmax": 0.6, "radius": 0.5, "energy": 1.0})
-			e.position.y = 0.2
-			hv.add_child(e)
-			hv.trails.append(e)
-		var tp: Vector3 = tgt.global_position + Vector3(0, 1.0, 0)
-		Fx.debris(m, tp, 6, 4.5, 0.25, 0.6)
-		Vfx.burst(m, tp, AMBER, 1.0, {"sparks": 18, "ring": false})
-		Vfx.ring(m, tgt.global_position, DUST, 1.4, 0.35, 0.1, 0.1)
+			# League: stolen speed flies back to Malphite, then his speed buff swirl (Q_tar via mapping)
+			_return_shard(tgt.global_position + Vector3(0, tgt.height * 0.5, 0))
+			var sb := LolVfx.attach(o, "Malphite_Base_Q_Speed_Buff", {"loop": true})
+			m.after(dur, func(): LFx.stop(sb))
+
+	## Visual-only Malphite_Base_Q_return_mis flying from the target back to Malphite.
+	func _return_shard(from: Vector3) -> void:
+		var m = owner.match_ref
+		var lv := LolVfx.make("Malphite_Base_Q_return_mis", {"loop": true})
+		if lv == null:
+			return
+		m.fx_root.add_child(lv)
+		lv.global_position = from
+		var o = owner
+		var st := {"t": 0.0}
+		var dur := 0.4
+		m.add_ticker(dur + 0.05, func(dt):
+			if not is_instance_valid(lv):
+				return false
+			st.t += dt
+			var k: float = clampf(st.t / dur, 0.0, 1.0)
+			var to: Vector3 = from
+			if is_instance_valid(o):
+				to = o.global_position + Vector3(0, 1.0, 0)
+			var pos: Vector3 = from.lerp(to, k)
+			var fd := Vector3(pos.x - lv.global_position.x, 0.0, pos.z - lv.global_position.z)
+			lv.global_position = pos
+			if fd.length_squared() > 0.0001:
+				lv.look_at(pos + fd, Vector3.UP)
+			if k >= 1.0:
+				lv.detach_and_fade()
+				return false
+			return true)
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -441,7 +318,8 @@ class SeismicShard extends MAbility:
 class Thunderclap extends MAbility:
 	var empowered := false
 	var window_until := -1.0
-	var fx: VfxNode = null
+	var fx: LolVfx = null
+	var next_hit_fx := false
 
 	func _init() -> void:
 		target_type = Target.NONE
@@ -474,32 +352,26 @@ class Thunderclap extends MAbility:
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
-		var m = o.match_ref
 		empowered = true
 		window_until = now() + dv("ThunderclapBuffDuration", 5.0)
-		if fx != null and is_instance_valid(fx):
-			fx.queue_free()
-		fx = VfxNode.new()
-		fx.lifetime = dv("ThunderclapBuffDuration", 5.0)
-		o.add_child(fx)
-		for side in [-1.0, 1.0]:
-			var fist := Vfx.sprite(AMBER, 0.9, 2.2)
-			fist.position = Vector3(side * 0.9, 1.5, 0.0)
-			fx.add_child(fist)
-			var e := Vfx.emitter(GLOW, 14, 0.4, 0.14, {"vmin": 0.3, "vmax": 0.9, "radius": 0.2, "tex": Vfx.spark_texture()})
-			e.position = fist.position
-			fx.add_child(e)
-		var l := Vfx.light(AMBER, 1.6, 3.0)
-		l.position.y = 1.5
-		fx.add_child(l)
-		Vfx.ring(m, o.global_position, GLOW, 2.0, 0.3, 0.1, 0.1)
-		Vfx.burst(m, o.global_position + Vector3(0, 1.5, 0), GLOW, 0.8, {"sparks": 12, "ring": false, "light": false})
+		# League: burning fists (the "next hit" variant until the empowered attack lands)
+		LFx.kill(fx, 0.1)
+		fx = LolVfx.attach(o, "Malphite_Base_W_buf_hands_NextHit", {"loop": true, "height": 1.5, "dir": o.facing})
+		next_hit_fx = true
 		notify_cast(t)
 
 	func end_fx() -> void:
-		if fx != null and is_instance_valid(fx):
-			fx.detach_and_fade()
+		LFx.kill(fx, 0.3)
 		fx = null
+		next_hit_fx = false
+
+	## Empowered hit consumed: keep the plain burning-fists glow for the rest of the window.
+	func on_empowered_hit() -> void:
+		if not next_hit_fx or not in_window():
+			return
+		LFx.kill(fx, 0.1)
+		fx = LolVfx.attach(owner, "Malphite_Base_W_buf_hands", {"loop": true, "height": 1.5, "dir": owner.facing})
+		next_hit_fx = false
 
 	func on_tick(_dt: float) -> void:
 		if fx != null and not in_window():
@@ -537,6 +409,9 @@ class ThunderclapHook extends Effect:
 		if info.is_attack and w.empowered and info.target != null and info.tag == "":
 			info.flat_bonus += w.bonus_damage()
 			info.tag = "malph_w"
+			# the generic basic attack impact shows Malphite_Base_W_tar_1 for this hit (see vfx_map)
+			if owner.match_ref != null:
+				owner.kit.w_hit_time = owner.match_ref.time
 			w.empowered = false
 
 	func on_attack_hit(target, info) -> void:
@@ -555,19 +430,16 @@ class ThunderclapHook extends Effect:
 		for u in K.enemies_cone(w, origin, dir, len, 70.0):
 			if u == target:
 				continue
+			# splashed units get Malphite_Base_W_tar_2 through the W_tar mapping
 			Combat.deal(o, u, dmg, G.DmgType.PHYSICAL, {"is_aoe": true, "is_proc": true, "tag": "malph_w_splash", "ability": w})
-			Vfx.hit_spark(m, u.global_position + Vector3(0, 1.0, 0), AMBER, 0.5)
-		var ang := atan2(dir.z, dir.x)
-		Fx.wedge(m, origin, len * G.U, 0.15, Color(0.95, 0.55, 0.2), GLOW, ang, deg_to_rad(70.0), 0.35)
-		var tp: Vector3 = target.global_position + Vector3(0, 1.0, 0)
+		# League: cleave shockwave along the cone; the empowered hit adds the Thunderclap crit sweeps
+		LolVfx.spawn(m, "Malphite_Base_W_Cleave_Arc", origin, {"dir": dir, "height": 0.9})
 		if big:
-			Vfx.burst(m, tp, GLOW, 1.4, {"sparks": 26})
-			Vfx.ring(m, target.global_position, Color(1, 0.95, 0.8), 2.2, 0.3, 0.12, 0.0)
-			Fx.debris(m, tp, 5, 4.0, 0.25, 0.55)
+			LolVfx.spawn(m, "Malphite_Base_W_Crit_Sweeps", origin, {"dir": dir, "height": 0.9})
+			LolVfx.spawn(m, "Malphite_Base_W_Cleave", target.global_position + Vector3(0, target.height * 0.5, 0), {"dir": dir})
+			w.on_empowered_hit()
 			if m.camera_rig != null and (o == G.player or target == G.player):
 				m.camera_rig.shake(0.12)
-		else:
-			Vfx.hit_spark(m, tp, AMBER, 0.8)
 
 
 # ===================================================================== E
@@ -599,15 +471,13 @@ class GroundSlam extends MAbility:
 			if not u.dead:
 				var ratio: float = maxf(0.1, float(u.stats.base.get("attack_speed_ratio", 0.625)))
 				var delta: float = u.stats.attack_speed * pct / ratio
-				K.buff(u, "malph_e_as", dur, {"as": -delta}, o, {"name": "Ground Slam", "debuff": true})
-				Vfx.hit_spark(m, u.global_position + Vector3(0, 1.0, 0), AMBER, 0.7)
-		var r := ind_radius * G.U
-		Vfx.ring(m, p, GLOW, r, 0.35, 0.12, 0.2)
-		Vfx.ring(m, p, DUST, r * 1.15, 0.55, 0.08, 0.0)
-		Fx.cracks(m, p, r, MAGMA, 1.0, 10.0)
-		Fx.spikes(m, p, r * 0.8, 10, 1.4, 0.7)
-		Fx.dust(m, p, 40, r * 0.6, 0.9)
-		Vfx.burst(m, p + Vector3(0, 0.4, 0), AMBER, 1.2, {"sparks": 24, "ring": false})
+				var ab := K.buff(u, "malph_e_as", dur, {"as": -delta}, o, {"name": "Ground Slam", "debuff": true})
+				# League: molten hands on the attack-speed-reduced target (E_tar_01 via mapping)
+				if ab != null and (ab.vfx == null or not is_instance_valid(ab.vfx)):
+					ab.vfx = LolVfx.attach(u, "Malphite_Base_E_tar_buf_hands", {"loop": true, "height": u.height * 0.5})
+		# League: the slam (rock crater / pillar) and the ground shockwave
+		LolVfx.spawn(m, "Malphite_Base_E_cas", p, {"dir": o.facing})
+		LolVfx.spawn(m, "Malphite_Base_E_hit_aoe", p, {"dir": o.facing})
 		if m.camera_rig != null and o == G.player:
 			m.camera_rig.shake(0.15)
 		notify_cast(t)
@@ -661,33 +531,12 @@ class UnstoppableForce extends MAbility:
 		o.start_dash(dest, {"speed": speed_u * G.U, "height": 0.7, "on_arrive": func(_u): self_ref._impact()})
 		o.play_anim("spell4", 1.0, 0.03, dur + 0.3)
 		o.anim_lock = dur + 0.3
-		# meteor shell + molten trail
-		var n := VfxNode.new()
-		n.lifetime = dur + 0.05
-		o.add_child(n)
-		n.position.y = 1.2
-		var shell := MeshInstance3D.new()
-		var sm := SphereMesh.new()
-		sm.radius = 1.3
-		sm.height = 2.6
-		shell.mesh = sm
-		var sh_mat := Vfx.add_material(MAGMA, 1.6, false)
-		sh_mat.set_shader_parameter("use_mask", false)
-		shell.material_override = sh_mat
-		n.add_child(shell)
-		n.add_child(Vfx.sprite(AMBER, 3.2, 1.2))
-		var fire := Vfx.emitter(MAGMA, 90, 0.5, 0.7, {"vmin": 0.0, "vmax": 0.8, "radius": 0.8})
-		n.add_child(fire)
-		n.trails.append(fire)
-		var dust := Vfx.emitter(DUST, 60, 0.8, 0.9, {"vmin": 0.2, "vmax": 1.2, "radius": 0.9, "energy": 0.8, "end_scale": 1.5})
-		dust.position.y = -0.9
-		n.add_child(dust)
-		n.trails.append(dust)
-		n.add_child(Vfx.light(MAGMA, 4.0, 6.0))
-		var ang := atan2(dest.z - from.z, dest.x - from.x)
+		# League: take-off dust and the unstoppable meteor trail for the charge
+		var trail := LolVfx.attach(o, "Malphite_Base_R_cas_trail", {"loop": true, "dir": G.flat_dir(from, dest)})
+		m.after(dur, func(): LFx.stop(trail))
+		# landing zone telegraph (League has no ground indicator for this; kept for readability)
 		var tele := Vfx.ground_circle(m, dest, radius_m(), Color(1.0, 0.5, 0.15, 0.8), dur + 0.1, 0.3)
 		tele.get_child(0).material_override.set_shader_parameter("energy", 2.0)
-		Vfx.beam(m, from + Vector3(0, 0.15, 0), dest + Vector3(0, 0.15, 0), Color(1.0, 0.45, 0.12), 0.9, dur + 0.35)
 		notify_cast(t)
 
 	func _impact() -> void:
@@ -700,24 +549,9 @@ class UnstoppableForce extends MAbility:
 			hit(u, dmg, G.DmgType.MAGIC, {"is_aoe": true, "tag": "malph_r"})
 			if not u.dead:
 				K.knockup(u, dv("KnockupDuration", 1.5), o)
-			Vfx.hit_spark(m, u.global_position + Vector3(0, 1.0, 0), GLOW, 1.0)
-		var r := radius_m()
-		Vfx.burst(m, p + Vector3(0, 0.8, 0), MAGMA, 2.6, {"sparks": 70})
-		Vfx.ring(m, p, Color(1.0, 0.95, 0.85), r * 1.25, 0.3, 0.14, 0.25)
-		Vfx.ring(m, p, AMBER, r * 2.0, 0.55, 0.08, 0.0)
-		Vfx.ring(m, p, DUST, r * 2.8, 0.85, 0.05, 0.0)
-		Fx.cracks(m, p, r * 1.8, MAGMA, 1.8, 13.0)
-		Fx.spikes(m, p, r * 1.05, 14, 2.4, 1.1)
-		Fx.spikes(m, p, r * 0.55, 7, 1.6, 0.9)
-		Fx.debris(m, p + Vector3(0, 0.6, 0), 12, 8.0, 0.4, 1.0)
-		Fx.dust(m, p, 70, r, 1.3)
-		var flash := VfxNode.new()
-		flash.lifetime = 0.5
-		m.add_fx(flash, p + Vector3(0, 1.5, 0))
-		var l := Vfx.light(AMBER, 9.0, r * 4.0)
-		flash.add_child(l)
-		var tw := flash.create_tween()
-		tw.tween_property(l, "light_energy", 0.0, 0.45)
+			# League R_tar has a ground-flagged ball: spawn it at the unit's feet
+			LolVfx.spawn(m, "Malphite_Base_R_tar", u.global_position, {"dir": G.flat_dir(p, u.global_position)})
+		LolVfx.spawn(m, "Malphite_Base_R_hit_aoe", p, {"dir": o.facing})
 		if m.camera_rig != null:
 			var involved: bool = o == G.player or hits.has(G.player)
 			m.camera_rig.shake(0.6 if involved else 0.25)

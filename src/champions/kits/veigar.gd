@@ -28,6 +28,11 @@ func ai_tuning() -> Dictionary:
 	return {"aggression": 0.55}
 
 
+## League VFX: W cast flash is W_cas_01; R hits are spawned by the kit (normal vs. max-damage variant).
+func vfx_map() -> Dictionary:
+	return {"W_cas": "Veigar_Base_W_cas_01", "R_tar": ""}
+
+
 ## Bot AI returns HOLD to deliberately skip a cast ({} would fall back to BotBrain.default_consider).
 class KAbility extends Ability:
 	func try_cast(t: Dictionary) -> bool:
@@ -65,42 +70,14 @@ class VUtil:
 				best = maxf(best, b.remaining)
 		return best
 
-	static func dark_orb(size: float) -> VfxNode:
-		var n := VfxNode.new()
-		n.add_child(Vfx.sprite(PINK.lerp(Color.WHITE, 0.4), size * 0.45, 3.2))
-		n.add_child(Vfx.sprite(VIOLET, size * 1.3, 2.2))
-		n.add_child(Vfx.sprite(DARK, size * 2.2, 1.2))
-		var e := Vfx.emitter(VIOLET, 50, 0.45, size * 0.9, {"vmin": 0.0, "vmax": 0.5, "radius": size * 0.25})
-		n.add_child(e)
-		n.trails.append(e)
-		var e2 := Vfx.emitter(STAR, 20, 0.6, size * 0.35, {"vmin": 0.4, "vmax": 1.4, "radius": size * 0.2, "tex": Vfx.spark_texture()})
-		n.add_child(e2)
-		n.trails.append(e2)
-		n.add_child(Vfx.light(VIOLET, 2.0, 4.0))
-		return n
+	## Enemy (red) / allied (green) colored variant, relative to the local player.
+	static func team_variant(o, red: String, green: String) -> String:
+		return red if G.player != null and o.team != G.player.team else green
 
-	static func dark_burst(m, pos: Vector3, radius: float) -> void:
-		Vfx.burst(m, pos, VIOLET, minf(radius, 1.2) * 0.8, {"sparks": 30, "ring": false})
-		var n := VfxNode.new()
-		n.lifetime = 1.3
-		m.add_fx(n, pos)
-		# saturated violet flash (no white core) so the void reads dark and evil
-		var fl := Vfx.sprite(VIOLET, radius * 1.2, 1.8)
-		n.add_child(fl)
-		var fl2 := Vfx.sprite(DARK, radius * 2.0, 1.4)
-		n.add_child(fl2)
-		var tw := n.create_tween()
-		tw.tween_property(fl, "scale", Vector3.ONE * radius * 2.0, 0.25).set_ease(Tween.EASE_OUT)
-		tw.parallel().tween_method(func(v): fl.material_override.set_shader_parameter("energy", v), 1.8, 0.0, 0.35)
-		tw.parallel().tween_method(func(v): fl2.material_override.set_shader_parameter("energy", v), 1.4, 0.0, 0.5)
-		var sw := Vfx.emitter(VIOLET, 40, 0.6, radius * 0.35, {"one_shot": true, "explosive": 1.0, "vmin": radius * 2.0,
-				"vmax": radius * 4.0, "damping": radius * 5.0, "energy": 1.6, "dir": Vector3.UP, "spread": 90.0})
-		sw.emitting = true
-		n.add_child(sw)
-		var e := Vfx.emitter(STAR, 20, 0.8, radius * 0.3, {"one_shot": true, "explosive": 1.0, "vmin": radius * 1.5,
-				"vmax": radius * 3.5, "damping": radius * 3.0, "tex": Vfx.spark_texture(), "gravity": Vector3(0, -2.0, 0)})
-		e.emitting = true
-		n.add_child(e)
+	static func ground_at(m, pos: Vector3) -> Vector3:
+		if m != null and m.nav != null:
+			return Vector3(pos.x, m.nav.height_at(pos) + 0.05, pos.z)
+		return pos
 
 	## Soul wisp flying from a victim into Veigar.
 	static func soul(o, from: Vector3, big: bool) -> void:
@@ -167,7 +144,7 @@ class PhenomenalEvil extends Effect:
 		m.fx_text(o, "+%d AP" % int(round(g)), PINK)
 		if from_pos != Vector3.INF:
 			VUtil.soul(o, from_pos, g >= 3.0)
-		Vfx.rising(o, VIOLET, 0.25, 10 + int(minf(g, 10.0)) * 2, 0.45)
+		LolVfx.attach(o, "Veigar_Base_Q_powerup", {"height": o.height * 0.5})
 		# milestones every 50 stacks
 		if floor(stacks / 50.0) > floor(before / 50.0):
 			Vfx.burst(m, o.global_position + Vector3(0, 1.0, 0), PINK, 1.1, {"sparks": 45})
@@ -257,15 +234,13 @@ class BalefulStrike extends KAbility:
 		var pd: Dictionary = VUtil.evil(o).data if VUtil.evil(o) != null else {}
 		var on_hit := func(_mm, u):
 			var info = self_ref.hit(u, dmg, G.DmgType.MAGIC, {"tag": "q"})
-			Vfx.hit_spark(m, u.global_position + Vector3(0, 1.0, 0), PINK, 0.9)
 			if u.kind == G.Kind.CHAMPION:
 				VUtil.gain(o, float(pd.get("dAbilityStacks", 1.0)), u.global_position)
 			if info != null and info.killed:
 				var large: bool = VUtil.is_large(u)
 				VUtil.gain(o, float(pd.get("dQKillStacksLarge", 3.0)) if large else float(pd.get("dQKillStacks", 1.0)), u.global_position)
-		var vis := VUtil.dark_orb(0.6)
 		K.line_missile(self, K.cast_pos(o, 1.1), t.dir, 2200.0, cast_range, {
-			"width": 70.0, "pierce": false, "max_hits": 2, "visual": vis, "on_hit": on_hit,
+			"width": 70.0, "pierce": false, "max_hits": 2, "lol": "Veigar_Base_Q_mis", "on_hit": on_hit,
 		})
 		notify_cast(t)
 
@@ -337,24 +312,10 @@ class DarkMatter extends KAbility:
 		var rad := ind_radius
 		var r_m := rad * G.U
 		var self_ref := self
-		# telegraph: swirling rune circle on the ground and a dark star falling from the sky
-		var rune := Vfx.ground_circle(m, pos, r_m, VIOLET, delay + 0.1, 0.1)
-		var rmat: ShaderMaterial = rune.get_meta("mat")
-		rmat.set_shader_parameter("segments", 10.0)
-		rmat.set_shader_parameter("rotate_speed", 2.0)
-		rmat.set_shader_parameter("thickness", 0.09)
-		var star := VfxNode.new()
-		star.lifetime = delay + 0.05
-		m.add_fx(star, pos + Vector3(0, 14.0, 0))
-		star.add_child(Vfx.sprite(PINK.lerp(Color.WHITE, 0.2), 0.8, 2.4))
-		star.add_child(Vfx.sprite(VIOLET, 2.0, 1.6))
-		star.add_child(Vfx.sprite(DARK, 3.2, 1.0))
-		var se := Vfx.emitter(VIOLET, 60, 0.4, 0.7, {"vmin": 0.0, "vmax": 0.6, "radius": 0.4})
-		star.add_child(se)
-		star.trails.append(se)
-		var stw := star.create_tween()
-		stw.tween_interval(maxf(0.0, delay - 0.45))
-		stw.tween_property(star, "global_position", pos + Vector3(0, 0.4, 0), 0.45).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+		# League telegraph: team-colored ground warning + the dark matter falling (timed for the 1.2 s delay)
+		var gpos := VUtil.ground_at(m, pos)
+		LolVfx.spawn(m, VUtil.team_variant(o, "Veigar_Base_W_cas_red", "Veigar_Base_W_cas_green"), gpos)
+		var boom := VUtil.team_variant(o, "Veigar_Base_W_aoe_explosionRed", "Veigar_Base_W_aoe_explosion")
 		var dmg := damage()
 		var pd: Dictionary = VUtil.evil(o).data if VUtil.evil(o) != null else {}
 		K.delayed_circle(self, pos, rad, delay, VIOLET, func(units, p):
@@ -362,11 +323,9 @@ class DarkMatter extends KAbility:
 				self_ref.hit(u, dmg, G.DmgType.MAGIC, {"is_aoe": true, "tag": "w"})
 				if u.kind == G.Kind.CHAMPION:
 					VUtil.gain(o, float(pd.get("dAbilityStacks", 1.0)), u.global_position)
-			VUtil.dark_burst(m, p + Vector3(0, 0.5, 0), r_m)
-			Vfx.ring(m, p, PINK, r_m * 1.3, 0.5, 0.14, 0.3)
-			Vfx.ground_circle(m, p, r_m * 0.9, DARK, 0.9, 0.5)
+			LolVfx.spawn(m, boom, gpos)
 			if m.camera_rig != null and G.player != null and G.flat_dist(G.player.global_position, p) < 12.0:
-				m.camera_rig.shake(0.15))
+				m.camera_rig.shake(0.15), false)
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -429,25 +388,20 @@ class EventHorizon extends KAbility:
 		var life := 3.0
 		var stun := dv("StunDuration", 1.5)
 		var self_ref := self
-		# forming telegraph
-		var form := Vfx.ground_circle(m, pos, R, VIOLET, delay + 0.05, 0.03)
-		var fmat: ShaderMaterial = form.get_meta("mat")
-		fmat.set_shader_parameter("segments", 24.0)
-		fmat.set_shader_parameter("rotate_speed", -3.0)
+		# League forming warning (team colored), then the cage itself
+		var gpos := VUtil.ground_at(m, pos)
+		LolVfx.spawn(m, VUtil.team_variant(o, "Veigar_Base_E_Warning_Red", "Veigar_Base_E_Warning_Green"), gpos)
 		var pd: Dictionary = VUtil.evil(o).data if VUtil.evil(o) != null else {}
 		m.after(delay, func():
 			if not is_instance_valid(o):
 				return
-			self_ref._cage_fx(m, pos, R, life)
+			self_ref._cage_fx(m, gpos, life)
 			var state := {}
 			var stunned := {}
 			var first := [true]
 			var trap := func(u):
 				stunned[u] = true
 				K.stun(u, stun, o)
-				var edge: Vector3 = pos + G.flat_dir(pos, u.global_position) * R
-				Vfx.beam(m, edge + Vector3(0, 0.3, 0), u.global_position + Vector3(0, 1.0, 0), PINK, 0.14, 0.3)
-				Vfx.burst(m, u.global_position + Vector3(0, 1.0, 0), VIOLET, 0.9, {"sparks": 16, "ring": false})
 				if u.kind == G.Kind.CHAMPION:
 					VUtil.gain(o, float(pd.get("dAbilityStacks", 1.0)), u.global_position)
 			m.add_ticker(life, func(_dt):
@@ -471,41 +425,15 @@ class EventHorizon extends KAbility:
 				return true))
 		notify_cast(t)
 
-	func _cage_fx(m, pos: Vector3, R: float, life: float) -> void:
-		var edge := Vfx.ground_circle(m, pos, R, VIOLET, life, 0.06)
-		var emat: ShaderMaterial = edge.get_meta("mat")
-		emat.set_shader_parameter("thickness", 0.05)
-		emat.set_shader_parameter("energy", 2.4)
-		var dash := Vfx.ground_circle(m, pos, R * 0.94, PINK, life, 0.0)
-		var dmat: ShaderMaterial = dash.get_meta("mat")
-		dmat.set_shader_parameter("segments", 18.0)
-		dmat.set_shader_parameter("rotate_speed", 1.2)
-		dmat.set_shader_parameter("thickness", 0.03)
-		var n := VfxNode.new()
-		n.lifetime = life
-		m.add_fx(n, pos)
-		# glowing cage bars around the edge
-		var bars := 22
-		for i in bars:
-			var a := TAU * i / bars
-			var s := Vfx.sprite(VIOLET if i % 2 == 0 else PINK, 1.0, 2.2)
-			s.scale = Vector3(0.32, 2.1, 1.0)
-			s.position = Vector3(cos(a) * R, 1.0, sin(a) * R)
-			n.add_child(s)
-		var e := Vfx.emitter(VIOLET, 70, 1.0, 0.22, {"dir": Vector3.UP, "spread": 5.0, "vmin": 1.0, "vmax": 2.2, "tex": Vfx.spark_texture()})
-		var pm: ParticleProcessMaterial = e.process_material
-		pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_RING
-		pm.emission_ring_axis = Vector3.UP
-		pm.emission_ring_radius = R
-		pm.emission_ring_inner_radius = R * 0.97
-		pm.emission_ring_height = 0.1
-		n.add_child(e)
-		n.trails.append(e)
-		var l := Vfx.light(VIOLET, 1.5, R * 2.0)
-		l.position.y = 1.2
-		n.add_child(l)
-		var tw := n.create_tween().set_loops()
-		tw.tween_property(n, "rotation:y", TAU, 6.0).from(0.0)
+	func _cage_fx(m, pos: Vector3, life: float) -> void:
+		var o = owner
+		var cage := LolVfx.spawn(m, VUtil.team_variant(o, "Veigar_Base_E_cage_red", "Veigar_Base_E_cage_green"), pos)
+		var child := LolVfx.spawn(m, VUtil.team_variant(o, "Veigar_Base_E_cage_red_child", "Veigar_Base_E_cage_green_child"), pos)
+		# the League cage lasts ~3 s on its own; make sure it ends with the gameplay cage
+		m.after(life, func():
+			for fx in [cage, child]:
+				if fx != null and is_instance_valid(fx):
+					fx.stop())
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -569,28 +497,20 @@ class PrimordialBurst extends KAbility:
 		var m = o.match_ref
 		var self_ref := self
 		var pd: Dictionary = VUtil.evil(o).data if VUtil.evil(o) != null else {}
-		var vis := VUtil.dark_orb(1.2)
-		var ring_holder := VfxNode.new()
-		vis.add_child(ring_holder)
-		for i in 4:
-			var s := Vfx.sprite(STAR, 0.4, 3.0, Vfx.spark_texture())
-			s.position = Vector3(cos(i * TAU / 4.0), 0, sin(i * TAU / 4.0)) * 0.9
-			ring_holder.add_child(s)
-		var spin := ring_holder.create_tween().set_loops()
-		spin.tween_property(ring_holder, "rotation:y", TAU, 0.5).from(0.0)
-		Vfx.burst(m, K.cast_pos(o, 1.2), VIOLET, 0.9, {"sparks": 18, "ring": false})
+		# League "max" variants when the burst will deal its maximum (execute) damage
+		var max_mult := dv("MaxExecuteMult", 2.0)
+		var mis_name := "Veigar_Base_R_mis_max" if 1.0 + (1.0 - u.hp_ratio()) * 1.5 >= max_mult else "Veigar_Base_R_mis"
 		var on_hit := func(_mm, tgt):
+			var is_max: bool = 1.0 + (1.0 - tgt.hp_ratio()) * 1.5 >= max_mult
+			LolVfx.spawn(m, "Veigar_Base_R_tar_max" if is_max else "Veigar_Base_R_tar", tgt.global_position + Vector3(0, tgt.height * 0.5, 0),
+					{"dir": G.flat_dir(o.global_position, tgt.global_position) if is_instance_valid(o) else Vector3.ZERO})
 			self_ref.hit(tgt, self_ref.damage_vs(tgt), G.DmgType.MAGIC, {"tag": "r"})
 			if tgt.kind == G.Kind.CHAMPION:
 				VUtil.gain(o, float(pd.get("dAbilityStacks", 1.0)), tgt.global_position)
 			var gp: Vector3 = tgt.global_position
-			VUtil.dark_burst(m, gp + Vector3(0, 1.0, 0), 2.2)
-			Vfx.beam(m, gp + Vector3(0, 10.0, 0), gp, PINK, 1.0, 0.3)
-			Vfx.ring(m, gp, VIOLET, 3.2, 0.55, 0.14, 0.3)
-			Vfx.ring(m, gp, STAR, 2.0, 0.4, 0.08, 0.0)
 			if m.camera_rig != null and G.player != null and G.flat_dist(G.player.global_position, gp) < 14.0:
 				m.camera_rig.shake(0.35)
-		K.homing_missile(self, K.cast_pos(o, 1.4), u, 1100.0, on_hit, {"visual": vis})
+		K.homing_missile(self, K.cast_pos(o, 1.4), u, 1100.0, on_hit, {"lol": mis_name})
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:

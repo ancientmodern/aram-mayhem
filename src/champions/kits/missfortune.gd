@@ -1,11 +1,6 @@
 extends ChampionKit
 ## Miss Fortune, the Bounty Hunter.
 
-const RED := Color(1.0, 0.22, 0.3)
-const GOLD := Color(1.0, 0.78, 0.3)
-const PINK := Color(1.0, 0.42, 0.62)
-const HOT := Color(1.0, 0.92, 0.7)
-
 
 func build_kit() -> void:
 	c.attack_missile_speed = 2000.0
@@ -23,11 +18,30 @@ func build_kit() -> void:
 	r.ind_length = r.cast_range
 	c.abilities[3] = r
 	c.add_effect(StrutPassive.new(w))
+	c.add_effect(AttackFx.new())
 	c.add_effect(BotLeveler.new())
 
 
 func ai_tuning() -> Dictionary:
 	return {"aggression": 0.6}
+
+
+## League VFX mapping. An attack on a new target (Love Tap) fires League's passive missile.
+## Q hits, Make It Rain and the Bullet Time muzzle flashes are spawned by the abilities.
+func vfx_map() -> Dictionary:
+	var mis := "MissFortune_Base_BA_mis"
+	var t = c.attack_target
+	var tap = c.passive   # LoveTap (untyped: last_target is not an Effect member)
+	if tap != null and t != null and is_instance_valid(t) and t != tap.last_target and not FX.is_structure(t):
+		mis = "MissFortune_Base_P_Mis"
+	return {
+		"BA_mis": mis, "BA_crit_mis": mis,
+		"BA_tar": "MissFortune_Base_BA_Tar", "BA_crit_tar": "MissFortune_Base_BA_Crit_Tar",
+		"Q_cas": "", "Q_mis": "MissFortune_Base_Q_Mis", "Q_tar": "",
+		"W_cas": "", "W_mis": "", "W_tar": "",
+		"E_cas": "", "E_mis": "", "E_tar": "",
+		"R_cas": "", "R_mis": "MissFortune_Base_R_mis", "R_tar": "MissFortune_Base_R_Tar",
+	}
 
 
 # ===================================================================== shared
@@ -67,53 +81,36 @@ class KitAbility extends Ability:
 
 
 class FX extends RefCounted:
-	static func tracer(color: Color, length: float, thick: float, energy: float = 3.0) -> MeshInstance3D:
-		var mi := MeshInstance3D.new()
-		var bm := BoxMesh.new()
-		bm.size = Vector3(thick, thick, length)
-		mi.mesh = bm
-		var mat := Vfx.add_material(color, energy, false)
-		mat.set_shader_parameter("use_mask", false)
-		mi.material_override = mat
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		return mi
+	static func is_structure(u) -> bool:
+		return u.kind == G.Kind.TURRET or u.kind == G.Kind.INHIBITOR or u.kind == G.Kind.NEXUS
 
-	static func bullet(color: Color, length: float = 0.8, thick: float = 0.08, trail: bool = true) -> VfxNode:
-		var n := VfxNode.new()
-		n.add_child(tracer(HOT, length, thick, 3.5))
-		n.add_child(Vfx.sprite(color, thick * 6.0, 2.0))
-		if trail:
-			var tr := Vfx.emitter(color, 24, 0.18, thick * 3.5, {"vmin": 0.0, "vmax": 0.2, "radius": 0.03})
-			n.add_child(tr)
-			n.trails.append(tr)
-		return n
+	## True when `u` fights against the local player (League's red / enemy-colored variants).
+	static func is_enemy_of_player(u) -> bool:
+		return G.player != null and is_instance_valid(G.player) and G.player.team != u.team
 
-	## Flat circular emission area (instead of a sphere).
-	static func disc(e: GPUParticles3D, radius: float) -> void:
-		var pm: ParticleProcessMaterial = e.process_material
-		pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_RING
-		pm.emission_ring_axis = Vector3.UP
-		pm.emission_ring_radius = radius
-		pm.emission_ring_inner_radius = 0.0
-		pm.emission_ring_height = 0.05
+	## Body-height point of a unit (where League hit effects play).
+	static func body(u) -> Vector3:
+		return u.global_position + Vector3(0, (u.height if u.kind == G.Kind.CHAMPION else 1.6) * 0.5, 0)
 
-	## Lipstick-pink heart pop for Love Tap.
-	static func heart(m, pos: Vector3) -> void:
-		var n := VfxNode.new()
-		n.lifetime = 0.6
-		m.add_fx(n, pos)
-		var l := Vfx.sprite(PINK, 0.45, 2.6)
-		l.position = Vector3(-0.13, 0.08, 0)
-		var r := Vfx.sprite(PINK, 0.45, 2.6)
-		r.position = Vector3(0.13, 0.08, 0)
-		var b := Vfx.sprite(PINK, 0.38, 2.6)
-		b.position = Vector3(0, -0.12, 0)
-		for s in [l, r, b]:
-			n.add_child(s)
-		var tw := n.create_tween()
-		tw.tween_property(n, "position:y", pos.y + 0.8, 0.6)
-		tw.parallel().tween_property(n, "scale", Vector3.ONE * 1.6, 0.6)
-		Vfx.hit_spark(m, pos, PINK, 0.8)
+
+## League double-pistol muzzle flashes: right gun (BA_cas) and left gun (BA_cas_left) alternate.
+class AttackFx extends Effect:
+	var _left := false
+
+	func _init() -> void:
+		id = "mf_attack_fx"
+		hidden = true
+
+	func on_attack_launch(target) -> void:
+		var o = owner
+		var dir: Vector3 = o.facing
+		if target != null and is_instance_valid(target):
+			dir = G.flat_dir(o.global_position, target.global_position)
+		var side := Vector3(-dir.z, 0, dir.x)
+		var fx := LolVfx.attach(o, "MissFortune_Base_BA_cas_left" if _left else "MissFortune_Base_BA_cas", {"dir": dir, "height": o.height * 0.55})
+		if fx != null:
+			fx.position += dir * o.radius + side * (-0.3 if _left else 0.3)
+		_left = not _left
 
 
 # ===================================================================== passive
@@ -152,7 +149,7 @@ class LoveTap extends Effect:
 		last_target = u
 		if u.kind == G.Kind.TURRET or u.kind == G.Kind.INHIBITOR or u.kind == G.Kind.NEXUS:
 			return 0.0
-		FX.heart(owner.match_ref, u.global_position + Vector3(0, u.height * 0.75 if u.kind == G.Kind.CHAMPION else 1.2, 0))
+		LolVfx.spawn(owner.match_ref, "MissFortune_Base_P_Tar", FX.body(u), {"dir": G.flat_dir(owner.global_position, u.global_position)})
 		if u.kind == G.Kind.CHAMPION:
 			var w = owner.abilities[1]
 			if w != null and w.level > 0:
@@ -196,8 +193,8 @@ class DoubleUp extends KitAbility:
 		var from: Vector3 = K.cast_pos(o, 1.2)
 		var dir := G.flat_dir(o.global_position, u.global_position)
 		var self_ref := self
-		Vfx.hit_spark(m, from, GOLD, 0.8)
-		K.homing_missile(self, from, u, 1400.0, func(_mi, tu): self_ref._first_hit(tu, dir), {"visual": FX.bullet(GOLD, 0.9, 0.1), "height": 1.2})
+		LolVfx.spawn(m, "MissFortune_Base_Q_Cas", from, {"dir": dir})
+		K.homing_missile(self, from, u, 1400.0, func(_mi, tu): self_ref._first_hit(tu, dir), {"lol": "MissFortune_Base_Q_Mis", "height": 1.2})
 		notify_cast(t)
 
 	func _apply(u: Unit, amount: float, crit: bool, tag: String) -> DamageInfo:
@@ -219,32 +216,33 @@ class DoubleUp extends KitAbility:
 		var pos: Vector3 = u.global_position
 		var info := _apply(u, damage(), false, "q")
 		var killed: bool = info != null and info.killed
-		Vfx.burst(m, pos + Vector3(0, 1.0, 0), GOLD, 0.7, {"sparks": 16, "ring": false, "light": false})
+		if is_instance_valid(u):
+			LolVfx.spawn(m, "MissFortune_Base_Q_Tar", FX.body(u), {"dir": dir})
+			if killed:
+				LolVfx.spawn(m, "MissFortune_Base_Q_Tar_killed", FX.body(u), {"dir": dir})
 		var nxt := bounce_target(u, pos, dir)
 		var self_ref := self
 		if nxt == null:
-			# dud ricochet
-			var mi := K.line_missile(self, pos + Vector3(0, 1.2, 0), dir, 400.0, 176.0, {"width": 10.0, "visual": FX.bullet(GOLD, 0.5, 0.06, false)})
+			# dud ricochet: League dud bullet, dust puff where it drops
+			var mi := K.line_missile(self, pos + Vector3(0, 1.2, 0), dir, 400.0, 176.0, {"width": 10.0, "lol": "MissFortune_Base_Q_Mis_Dud",
+				"on_end": func(_mi, ep): LolVfx.spawn(m, "MissFortune_Base_Q_Mis_Dud_Dust", ground(ep), {"dir": dir, "height": 0.1})})
 			mi.collides = false
 			return
 		var crit: bool = killed or G.rng.randf() < o.stats.crit_chance
-		var col := RED if crit else GOLD
-		Vfx.hit_spark(m, pos + Vector3(0, 1.2, 0), col, 0.9)
 		K.homing_missile(self, pos + Vector3(0, 1.2, 0), nxt, 1400.0, func(_mi, tu): self_ref._second_hit(tu, crit),
-			{"visual": FX.bullet(col, 1.1 if crit else 0.9, 0.12 if crit else 0.1), "height": 1.2})
+			{"lol": "MissFortune_Base_Q_Mis", "height": 1.2})
 
 	func _second_hit(tu: Unit, crit: bool) -> void:
 		if not is_instance_valid(owner) or not is_instance_valid(tu):
 			return
 		var m = owner.match_ref
 		var dmg: float = damage() * (crit_mult() if crit else 1.0)
+		var p2: Vector3 = FX.body(tu)
+		var d2 := G.flat_dir(owner.global_position, tu.global_position)
 		_apply(tu, dmg, crit, "q2")
-		var p2: Vector3 = tu.global_position + Vector3(0, 1.0, 0)
+		LolVfx.spawn(m, "MissFortune_Base_Q_second_tar", p2, {"dir": d2})
 		if crit:
-			Vfx.burst(m, p2, RED, 1.3, {"sparks": 34})
-			Vfx.hit_spark(m, p2, HOT, 1.4)
-		else:
-			Vfx.burst(m, p2, GOLD, 0.8, {"sparks": 16, "ring": false, "light": false})
+			LolVfx.spawn(m, "MissFortune_Base_Q_second_02_tar", p2, {"dir": d2})
 
 	## Unit behind `first` (relative to the shot direction): champions in a narrow cone first,
 	## then anything in the narrow cone, then champions / anything in a wide cone.
@@ -338,18 +336,9 @@ class Strut extends KitAbility:
 		var o = owner
 		var dur := dv("ActiveDuration", 4.0)
 		var b: Buff = K.buff(o, "mf_w_active", dur, {"as": dv("ActiveAS", 0.4)}, o, {"name": "Strut", "icon": icon})
-		if b != null:
-			var n := VfxNode.new()
-			n.lifetime = dur
-			o.add_child(n)
-			var e := Vfx.emitter(GOLD, 40, 0.5, 0.22, {"vmin": 0.3, "vmax": 1.0, "dir": Vector3.UP, "spread": 30.0, "radius": 0.5, "tex": Vfx.spark_texture()})
-			e.position.y = 0.9
-			n.add_child(e)
-			n.trails.append(e)
-			b.vfx = n
-		Vfx.aura(o, RED, 1.1, dur, 0.06)
-		Vfx.ring(o.match_ref, o.global_position, GOLD, 1.8, 0.35, 0.12, 0.1)
-		Vfx.rising(o, PINK, 0.5, 24, 0.5)
+		# League attack-speed buff aura (hearts / flares) for the active's duration
+		if b != null and (b.vfx == null or not is_instance_valid(b.vfx)):
+			b.vfx = LolVfx.attach(o, "MissFortune_Base_W_buf", {"loop": true, "height": 1.0})
 		o.stats.mark_dirty()
 		notify_cast(t)
 
@@ -374,8 +363,32 @@ class StrutPassive extends Effect:
 		id = "mf_strut"
 		hidden = true
 
-	func on_tick(_u, dt: float) -> void:
+	var _tier := 0             ## 0 none, 1 base Strut speed, 2 full Strut speed
+	var _fx: LolVfx = null
+
+	func on_tick(u, dt: float) -> void:
 		w.since_hit += dt
+		# League Strut visuals: P_Buff while the base speed is up, W_Max (+ W_MaxStart) at full speed
+		var ms: float = w.passive_ms()
+		var tier := 0
+		if ms > 0.0 and not u.dead:
+			tier = 2 if ms >= w.dv("PassiveMaxMS", 60.0) - 0.01 else 1
+		if tier != _tier:
+			_set_tier(u, tier)
+
+	func on_death(_killer) -> void:
+		_set_tier(owner, 0)
+
+	func _set_tier(u, tier: int) -> void:
+		_tier = tier
+		if _fx != null and is_instance_valid(_fx):
+			_fx.stop()
+		_fx = null
+		if tier == 1:
+			_fx = LolVfx.attach(u, "MissFortune_Base_P_Buff", {"loop": true, "dir": u.facing})
+		elif tier == 2:
+			_fx = LolVfx.attach(u, "MissFortune_Base_W_Max", {"loop": true, "dir": u.facing})
+			LolVfx.attach(u, "MissFortune_Base_W_MaxStart", {"height": 0.2})
 
 	func on_damage_taken(info) -> void:
 		var s = info.source
@@ -426,38 +439,57 @@ class MakeItRain extends KitAbility:
 				for u in m.enemies_in_radius(o.team, pos, r_m):
 					self_ref.hit(u, per_tick, G.DmgType.MAGIC, {"tag": "e", "is_aoe": true, "is_dot": true})
 					K.slow(u, slow, interval + 0.1, o, false, "mf_e_slow")
-					if G.rng.randf() < 0.5:
-						Vfx.hit_spark(m, u.global_position + Vector3(G.rng.randf_range(-0.3, 0.3), 1.0, G.rng.randf_range(-0.3, 0.3)), GOLD, 0.4)
+					if G.rng.randf() < 0.5 and is_instance_valid(u):
+						LolVfx.spawn(m, "MissFortune_Base_E_Unit_Tar", FX.body(u) + Vector3(G.rng.randf_range(-0.3, 0.3), 0, G.rng.randf_range(-0.3, 0.3)))
 			return true)
 		notify_cast(t)
 
 	func _visual(m, pos: Vector3, r_m: float, delay: float, dur: float) -> void:
 		var life := delay + dur
-		var zone := Vfx.ground_circle(m, pos, r_m, Color(1.0, 0.35, 0.3, 0.8), life, 0.12)
-		var mat: ShaderMaterial = zone.get_meta("mat")
-		var tw := zone.create_tween()
-		tw.tween_method(func(v): mat.set_shader_parameter("fill", v), 0.02, 0.2, delay)
-		var n := VfxNode.new()
-		n.lifetime = life
-		m.add_fx(n, pos)
-		var rain := Vfx.emitter(HOT, 140, 0.32, 0.16, {"dir": Vector3.DOWN, "spread": 4.0, "vmin": 20.0, "vmax": 24.0, "radius": r_m * 0.85, "tex": Vfx.spark_texture(), "energy": 2.0})
-		rain.position.y = 7.0
-		FX.disc(rain, r_m * 0.9)
-		n.add_child(rain)
-		n.trails.append(rain)
-		var splash := Vfx.emitter(GOLD, 90, 0.25, 0.22, {"dir": Vector3.UP, "spread": 70.0, "vmin": 1.0, "vmax": 3.0, "radius": r_m * 0.85, "tex": Vfx.spark_texture()})
-		splash.position.y = 0.1
-		FX.disc(splash, r_m * 0.9)
-		n.add_child(splash)
-		n.trails.append(splash)
-		var dust := Vfx.emitter(RED, 30, 0.6, 0.6, {"dir": Vector3.UP, "spread": 30.0, "vmin": 0.2, "vmax": 0.6, "radius": r_m * 0.8, "energy": 1.0})
-		FX.disc(dust, r_m * 0.85)
-		n.add_child(dust)
-		n.trails.append(dust)
-		var l := Vfx.light(GOLD, 2.0, r_m * 2.5)
-		l.position.y = 2.0
-		n.add_child(l)
-		Vfx.ring(m, pos, GOLD, r_m, 0.35, 0.1, 0.05)
+		# League zone: team-colored ring decal (the slow-zone telegraph) + shockwave ring / dome
+		var zone := LolVfx.spawn(m, "MissFortune_Base_E_Unit_Tar_red" if FX.is_enemy_of_player(owner) else "MissFortune_Base_E_Unit_Tar_green", pos, {"loop": true, "height": 0.05})
+		if zone != null:
+			var wz := weakref(zone)
+			m.after(life, func():
+				var z = wz.get_ref()
+				if z != null:
+					z.stop())
+		# League bullet rain: falling E_Bullet_Child rounds + E_Hit_Dirt impacts (their 0.45s delay matches the fall)
+		var st := {"t": 0.0, "acc": 0.0}
+		var rate := 12.0
+		m.add_ticker(life, func(dt: float) -> bool:
+			st.t += dt
+			if st.t < delay * 0.5:
+				return true
+			st.acc += dt * rate
+			while st.acc >= 1.0:
+				st.acc -= 1.0
+				var a := G.rng.randf() * TAU
+				var rr := sqrt(G.rng.randf()) * r_m * 0.9
+				var p := ground(pos + Vector3(cos(a) * rr, 0, sin(a) * rr))
+				_rain_bullet(m, p)
+			return true)
+
+	## One falling round: League's child bullet carried down onto `p`, dirt impact on landing.
+	func _rain_bullet(m, p: Vector3) -> void:
+		var fall := 0.45
+		var carrier := Node3D.new()
+		m.fx_root.add_child(carrier)
+		carrier.global_position = p + Vector3(0, 6.0, 0)
+		var fx := LolVfx.attach(carrier, "MissFortune_Base_E_Bullet_Child", {"loop": true})
+		var dirt := LolVfx.spawn(m, "MissFortune_Base_E_Hit_Dirt", p, {"height": 0.05})
+		if dirt != null:
+			var wd := weakref(dirt)   # cut the long League tail (dur 12.5s) once the impact has played
+			m.after(1.6, func():
+				var d = wd.get_ref()
+				if d != null:
+					d.stop())
+		var tw := carrier.create_tween()
+		tw.tween_property(carrier, "global_position", p + Vector3(0, 0.3, 0), fall).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+		tw.tween_callback(func():
+			if is_instance_valid(fx):
+				fx.detach_and_fade()
+			carrier.queue_free())
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -492,7 +524,7 @@ class MakeItRain extends KitAbility:
 # ===================================================================== R
 class BulletTime extends KitAbility:
 	const ANGLE := 40.0
-	var _cone: Node3D = null
+	var _cone: LolVfx = null
 
 	func _init() -> void:
 		target_type = Target.DIRECTION
@@ -520,20 +552,13 @@ class BulletTime extends KitAbility:
 		o.play_anim("spell4", 1.0, 0.1)
 		o.anim_lock = dur
 		_cone = _cone_visual(m, o.global_position, dir, dur)
-		Vfx.ring(m, o.global_position, RED, 2.0, 0.4, 0.12, 0.1)
+		LolVfx.spawn(m, "MissFortune_Base_R_cas_smoke", o.global_position + Vector3(0, 1.15, 0) + dir * 0.7, {"dir": dir})
 		notify_cast(t)
 
-	func _cone_visual(m, pos: Vector3, dir: Vector3, dur: float) -> Node3D:
-		var len := cast_range * G.U
-		var n := VfxNode.new()
-		n.lifetime = dur + 0.1
-		m.add_fx(n, pos)
-		var mi := Vfx.indicator_mesh(2, Color(1.0, 0.25, 0.3, 0.32))
-		mi.material_override.set_shader_parameter("cone_half", deg_to_rad(ANGLE * 0.5))
-		n.add_child(mi)
-		mi.global_position = Vector3(pos.x, pos.y + 0.1, pos.z) + dir * len * 0.5
-		mi.global_basis = Basis(Vector3.UP, atan2(dir.x, dir.z)).scaled(Vector3(len * 2.0, 1, len))
-		return n
+	## League cone decal (enemy-colored variant when Miss Fortune is hostile to the local player); stopped in channel_end.
+	func _cone_visual(m, pos: Vector3, dir: Vector3, _dur: float) -> LolVfx:
+		var nm := "MissFortune_Base_R_Indicator_Enemy" if FX.is_enemy_of_player(owner) else "MissFortune_Base_R_Indicator"
+		return LolVfx.spawn(m, nm, pos, {"dir": dir, "loop": true, "height": 0.05})
 
 	func channel_tick(dt: float, ch: Dictionary) -> void:
 		var o = owner
@@ -564,20 +589,20 @@ class BulletTime extends KitAbility:
 			var delay := G.flat_dist(origin, u.global_position) / 20.0
 			m.after(delay, func():
 				if is_instance_valid(u) and not u.dead and is_instance_valid(o):
-					self_ref.hit(u, dmg, G.DmgType.PHYSICAL, {"tag": "r", "is_aoe": true, "is_crit": crit})
-					Vfx.hit_spark(m, u.global_position + Vector3(G.rng.randf_range(-0.3, 0.3), 1.0 + G.rng.randf_range(-0.3, 0.3), 0), RED if crit else GOLD, 0.7 if crit else 0.5))
+					self_ref.hit(u, dmg, G.DmgType.PHYSICAL, {"tag": "r", "is_aoe": true, "is_crit": crit}))
 		# visuals: alternate guns, a fan of tracer rounds
 		var side := Vector3(-dir.z, 0, dir.x)
 		var gun := side * (0.35 if ch.n % 2 == 0 else -0.35)
 		var muzzle: Vector3 = origin + Vector3(0, 1.15, 0) + dir * 0.7 + gun
-		Vfx.hit_spark(m, muzzle, HOT, 0.9)
+		LolVfx.spawn(m, "MissFortune_Base_R_MuzzleFlash_Cas", muzzle, {"dir": dir})
 		var half := deg_to_rad(ANGLE * 0.5)
 		var count := 6
 		for j in count:
 			var a := lerpf(-half, half, (float(j) + G.rng.randf()) / float(count))
 			var bd := dir.rotated(Vector3.UP, a)
+			# League bullet wave: a third of the rounds use the full tracer (trail / glow), the rest the light round
 			var mi := K.line_missile(self, muzzle, bd, 2000.0 + G.rng.randf_range(-150.0, 150.0), len_u, {
-				"width": 10.0, "visual": FX.bullet(RED if crit else GOLD, 0.9, 0.09, j % 2 == 0), "height": 1.15})
+				"width": 10.0, "lol": "MissFortune_Base_R_mis_child_01" if j % 3 == 0 else "MissFortune_Base_R_mis", "height": 1.15})
 			mi.collides = false
 		if m.camera_rig != null and o == G.player:
 			m.camera_rig.shake(0.06)
@@ -587,7 +612,7 @@ class BulletTime extends KitAbility:
 		o.channel_disarm = false
 		o.anim_lock = 0.0
 		if _cone != null and is_instance_valid(_cone):
-			_cone.queue_free()
+			_cone.stop()
 		_cone = null
 
 	## Enemy champions inside the cone toward `dir`.

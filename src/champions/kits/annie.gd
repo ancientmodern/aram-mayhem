@@ -28,6 +28,11 @@ func ai_tuning() -> Dictionary:
 	return {"aggression": 0.6}
 
 
+## League VFX: Q/W/R visuals are spawned by the kit at the right place and moment.
+func vfx_map() -> Dictionary:
+	return {"Q_tar": "", "W_cas": "", "W_tar": "Annie_Base_W_Hit", "R_cas": ""}
+
+
 ## Bot AI returns HOLD to deliberately skip a cast ({} would fall back to BotBrain.default_consider).
 class KAbility extends Ability:
 	func try_cast(t: Dictionary) -> bool:
@@ -92,93 +97,20 @@ class AnnieUtil:
 		if m != null and m.camera_rig != null and G.player != null and G.flat_dist(G.player.global_position, o.global_position) < 14.0:
 			m.camera_rig.shake(amount)
 
-	static func fireball(size: float, empowered: bool) -> VfxNode:
-		var n := VfxNode.new()
-		n.add_child(Vfx.sprite(FIRE_HOT.lerp(Color.WHITE, 0.45), size * 0.6, 3.2))
-		n.add_child(Vfx.sprite(FIRE, size * 1.6, 2.0))
-		var e := Vfx.emitter(FIRE, 70, 0.45, size * 1.1, {"vmin": 0.1, "vmax": 0.7, "radius": size * 0.3, "gravity": Vector3(0, 2.0, 0)})
-		n.add_child(e)
-		n.trails.append(e)
-		var e2 := Vfx.emitter(EMBER, 26, 0.6, size * 0.35, {"vmin": 0.6, "vmax": 1.8, "radius": size * 0.2,
-				"tex": Vfx.spark_texture(), "gravity": Vector3(0, -2.5, 0)})
-		n.add_child(e2)
-		n.trails.append(e2)
-		if empowered:
-			var w := Vfx.emitter(STUN_WHITE, 40, 0.35, size * 0.6, {"vmin": 0.0, "vmax": 0.4, "radius": size * 0.35})
-			n.add_child(w)
-			n.trails.append(w)
-			n.add_child(Vfx.sprite(STUN_WHITE, size * 2.2, 1.0))
-		n.add_child(Vfx.light(FIRE, 2.5, 5.0))
-		return n
+	static func ground_at(m, pos: Vector3) -> Vector3:
+		if m != null and m.nav != null:
+			return Vector3(pos.x, m.nav.height_at(pos) + 0.05, pos.z)
+		return pos
 
-	static func fire_burst(m, pos: Vector3, radius: float, empowered: bool) -> void:
-		Vfx.burst(m, pos, FIRE, radius * 0.7, {"sparks": 26, "ring": false})
-		var n := VfxNode.new()
-		n.lifetime = 1.4
-		m.add_fx(n, pos)
-		var e := Vfx.emitter(FIRE, 30, 0.7, radius * 0.7, {"one_shot": true, "explosive": 0.9, "dir": Vector3.UP, "spread": 70.0, "energy": 1.5,
-				"vmin": 1.0, "vmax": 3.5, "damping": 2.0, "gravity": Vector3(0, 2.5, 0), "radius": radius * 0.3})
-		e.emitting = true
-		n.add_child(e)
+	## Disintegrate impact: League flash on the target, plus the ground shockwave when it stuns.
+	static func q_impact(o, tgt, empowered: bool) -> void:
+		if tgt == null or not is_instance_valid(tgt) or tgt.match_ref == null:
+			return
+		var m = tgt.match_ref
+		var d: Vector3 = G.flat_dir(o.global_position, tgt.global_position) if is_instance_valid(o) else Vector3.ZERO
+		LolVfx.spawn(m, "Annie_Base_Q_tar_02", tgt.global_position + Vector3(0, tgt.height * 0.5, 0), {"dir": d})
 		if empowered:
-			Vfx.ring(m, pos - Vector3(0, 0.95, 0), STUN_WHITE, radius * 1.4, 0.4, 0.12, 0.1)
-
-	## Flamethrower cone.
-	static func fire_cone(m, origin: Vector3, dir: Vector3, length: float, angle: float, empowered: bool) -> void:
-		var n := VfxNode.new()
-		n.lifetime = 1.6
-		m.add_fx(n, origin + Vector3(0, 0.8, 0) + dir * 0.6)
-		var spread := angle * 0.5
-		var e := Vfx.emitter(FIRE, 110, 0.6, 1.1, {"one_shot": true, "explosive": 0.85, "dir": dir, "spread": spread, "energy": 1.3,
-				"vmin": length * 1.2, "vmax": length * 2.1, "damping": length * 1.8, "radius": 0.25, "gravity": Vector3(0, 2.2, 0)})
-		e.emitting = true
-		n.add_child(e)
-		var e2 := Vfx.emitter(FIRE_HOT, 60, 0.42, 0.8, {"one_shot": true, "explosive": 0.9, "dir": dir, "spread": spread * 0.7,
-				"vmin": length * 1.6, "vmax": length * 2.5, "damping": length * 2.8, "radius": 0.15, "energy": 1.6})
-		e2.emitting = true
-		n.add_child(e2)
-		var e3 := Vfx.emitter(EMBER, 40, 0.9, 0.22, {"one_shot": true, "explosive": 0.8, "dir": dir, "spread": spread,
-				"vmin": length * 1.0, "vmax": length * 1.8, "damping": length * 1.2, "tex": Vfx.spark_texture(), "gravity": Vector3(0, -3.0, 0)})
-		e3.emitting = true
-		n.add_child(e3)
-		if empowered:
-			var e4 := Vfx.emitter(STUN_WHITE, 40, 0.45, 0.6, {"one_shot": true, "explosive": 0.9, "dir": dir, "spread": spread * 0.8,
-					"vmin": length * 1.5, "vmax": length * 2.3, "damping": length * 2.5, "radius": 0.15, "energy": 1.4})
-			e4.emitting = true
-			n.add_child(e4)
-		var flash := Vfx.sprite(FIRE_HOT, 1.1, 2.0)
-		n.add_child(flash)
-		var tw := n.create_tween()
-		tw.tween_property(flash, "scale", Vector3.ONE * 1.9, 0.18)
-		tw.parallel().tween_method(func(v): flash.material_override.set_shader_parameter("energy", v), 2.0, 0.0, 0.3)
-		var l := Vfx.light(FIRE, 3.0, length * 1.2)
-		l.position = dir * length * 0.4
-		n.add_child(l)
-		var tw2 := n.create_tween()
-		tw2.tween_property(l, "light_energy", 0.0, 0.6)
-		# scorched ground along the cone
-		for i in 3:
-			var k := 0.35 + i * 0.25
-			Vfx.ground_circle(m, origin + dir * length * k, 0.5 + k * 1.3, EMBER, 0.7 + i * 0.1, 0.35)
-
-	static func tibbers_impact(m, pos: Vector3, radius: float, empowered: bool) -> void:
-		Vfx.beam(m, pos + Vector3(0, 14.0, 0), pos + Vector3(0, 0.2, 0), FIRE, 1.1, 0.3)
-		Vfx.burst(m, pos + Vector3(0, 0.6, 0), FIRE, radius * 0.55, {"sparks": 50, "ring": false})
-		Vfx.ring(m, pos, FIRE_HOT, radius * 1.35, 0.6, 0.16, 0.35)
-		Vfx.ground_circle(m, pos, radius, EMBER, 1.4, 0.55)
-		var n := VfxNode.new()
-		n.lifetime = 2.0
-		m.add_fx(n, pos + Vector3(0, 0.3, 0))
-		var e := Vfx.emitter(FIRE, 80, 0.9, 1.2, {"one_shot": true, "explosive": 0.9, "dir": Vector3.UP, "spread": 40.0, "energy": 1.4,
-				"vmin": 4.0, "vmax": 9.0, "damping": 4.0, "gravity": Vector3(0, -3.0, 0), "radius": radius * 0.5})
-		e.emitting = true
-		n.add_child(e)
-		var e2 := Vfx.emitter(EMBER, 60, 1.4, 0.3, {"one_shot": true, "explosive": 0.9, "dir": Vector3.UP, "spread": 70.0,
-				"vmin": 3.0, "vmax": 8.0, "damping": 1.5, "gravity": Vector3(0, -6.0, 0), "radius": radius * 0.4, "tex": Vfx.spark_texture()})
-		e2.emitting = true
-		n.add_child(e2)
-		if empowered:
-			Vfx.ring(m, pos, STUN_WHITE, radius * 1.1, 0.45, 0.1, 0.2)
+			LolVfx.spawn(m, "Annie_Base_Q_tar", ground_at(m, tgt.global_position), {"dir": d})
 
 
 # ===================================================================== passive
@@ -245,24 +177,12 @@ class Pyromania extends Effect:
 	func on_respawn() -> void:
 		stacks = 4
 
-	func _show_ready(pop: bool) -> void:
+	func _show_ready(_pop: bool) -> void:
 		_hide_ready()
 		var o = owner
-		ready_fx = Vfx.aura(o, STUN_WHITE, 0.95, 1.0e6, 0.07)
-		var n := VfxNode.new()
-		o.add_child(n)
-		n.position = Vector3(0, 0.3, 0)
-		var e := Vfx.emitter(FIRE_HOT, 22, 0.9, 0.2, {"local": true, "radius": 0.55, "dir": Vector3.UP, "spread": 12.0,
-				"vmin": 0.7, "vmax": 1.6, "tex": Vfx.spark_texture()})
-		n.add_child(e)
-		n.trails.append(e)
-		var e2 := Vfx.emitter(STUN_WHITE, 10, 0.7, 0.28, {"local": true, "radius": 0.4, "dir": Vector3.UP, "spread": 10.0, "energy": 1.3,
-				"vmin": 0.6, "vmax": 1.2})
-		n.add_child(e2)
-		n.trails.append(e2)
-		ready_fx2 = n
-		if pop and o.match_ref != null:
-			Vfx.burst(o.match_ref, o.global_position + Vector3(0, 1.0, 0), FIRE_HOT, 0.9, {"sparks": 20})
+		ready_fx = LolVfx.attach(o, "Annie_Base_StunReady", {"loop": true, "height": 0.05})
+		if ready_fx == null:
+			ready_fx = Vfx.aura(o, STUN_WHITE, 0.95, 1.0e6, 0.07)
 
 	func _hide_ready() -> void:
 		for fx in [ready_fx, ready_fx2]:
@@ -299,12 +219,12 @@ class Disintegrate extends KAbility:
 			var info = self_ref.hit(tgt, dmg, G.DmgType.MAGIC, {"tag": "q"})
 			if stun > 0.0:
 				K.stun(tgt, stun, o)
-			AnnieUtil.fire_burst(m, tgt.global_position + Vector3(0, 1.0, 0), 1.6 if stun > 0.0 else 1.0, stun > 0.0)
+			AnnieUtil.q_impact(o, tgt, stun > 0.0)
 			if info != null and info.killed and is_instance_valid(o) and not o.dead:
 				o.mana = minf(o.stats.max_mana, o.mana + paid)
 				self_ref.cd = maxf(0.0, self_ref.cd - self_ref.cd_total * 0.5)
 				Vfx.rising(o, Color(0.5, 0.7, 1.0), 0.35, 14, 0.4)
-		K.homing_missile(self, K.cast_pos(o, 1.2), u, 1400.0, on_hit, {"visual": AnnieUtil.fireball(0.6 if stun <= 0.0 else 0.8, stun > 0.0)})
+		K.homing_missile(self, K.cast_pos(o, 1.2), u, 1400.0, on_hit, {"lol": "Annie_Base_Q_mis"})
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -386,8 +306,7 @@ class Incinerate extends KAbility:
 		var dir: Vector3 = t.dir
 		var origin: Vector3 = o.global_position
 		var dmg := damage()
-		var length := cast_range * G.U
-		AnnieUtil.fire_cone(m, origin, dir, length, ANGLE, stun > 0.0)
+		LolVfx.spawn(m, "Annie_Base_W_cas_Right", AnnieUtil.ground_at(m, origin), {"dir": dir})
 		var self_ref := self
 		for u in K.enemies_cone(self, origin, dir, cast_range + 40.0, ANGLE):
 			var delay := G.flat_dist(origin, u.global_position) / 28.0
@@ -397,8 +316,7 @@ class Incinerate extends KAbility:
 					return
 				self_ref.hit(tgt, dmg, G.DmgType.MAGIC, {"is_aoe": true, "tag": "w"})
 				if stun > 0.0:
-					K.stun(tgt, stun, o)
-				Vfx.hit_spark(m, tgt.global_position + Vector3(0, 1.0, 0), FIRE, 0.8))
+					K.stun(tgt, stun, o))
 		AnnieUtil.shake(o, 0.08)
 		notify_cast(t)
 
@@ -490,15 +408,14 @@ class MoltenShield extends KAbility:
 		if u == null or not is_instance_valid(u) or u.dead:
 			u = owner
 		apply_to(u)
-		if u != owner:
-			Vfx.beam(owner.match_ref, K.cast_pos(owner, 1.1), u.global_position + Vector3(0, 1.0, 0), FIRE, 0.18, 0.25)
 		notify_cast(t)
 
 	func apply_to(u) -> void:
 		var o = owner
 		var dur := dv("ShieldDuration", 3.0)
 		u.remove_buffs_by_id("annie_e")
-		K.shield(o, u, dv("ShieldAmount") + 0.4 * ap(), dur, FIRE, "annie_e")
+		# same as K.shield, without the generic bubble (League's E_buf draws the shield)
+		Combat.shield(o, u, dv("ShieldAmount") + 0.4 * ap(), dur, {"id": "annie_e"})
 		var b := MoltenShieldBuff.new()
 		b.duration = dur
 		b.remaining = dur
@@ -507,20 +424,10 @@ class MoltenShield extends KAbility:
 		b.reflect = dv("DamageReflection") + 0.4 * ap()
 		b.stats = {"dmg_reduction": dv("DamageReduction") / 100.0}
 		b.icon = icon
-		var r: float = maxf(0.9, u.radius * 1.5)
-		var fx := VfxNode.new()
-		u.add_child(fx)
-		fx.position.y = 0.1
-		var ring := Vfx.aura(u, FIRE, r, dur, 0.08)
-		ring.reparent(fx)
-		var e := Vfx.emitter(FIRE, 36, 0.7, 0.45, {"local": true, "radius": r * 0.8, "dir": Vector3.UP, "spread": 15.0, "vmin": 0.8, "vmax": 2.0})
-		fx.add_child(e)
-		var spin := fx.create_tween().set_loops()
-		spin.tween_property(fx, "rotation:y", TAU, 1.0).from(0.0)
-		b.vfx = fx
+		# the League buff origin sits ~0.5 m above the ground (its ground parts are offset downward)
+		b.vfx = LolVfx.attach(u, "Annie_Base_E_Tibbers_buf" if u is Tibbers else "Annie_Base_E_buf", {"height": 0.5})
 		u.add_buff(b, o)
 		K.haste(u, dv("MovementSpeed", 0.2), dv("MovementSpeedDuration", 1.5), o, true, "annie_e_ms")
-		Vfx.burst(o.match_ref, u.global_position + Vector3(0, 1.0, 0), FIRE_HOT, 0.8, {"sparks": 16, "ring": false})
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -583,11 +490,8 @@ class MoltenShieldBuff extends Buff:
 			return
 		used = true
 		var dealer = annie if annie != null and is_instance_valid(annie) else owner
+		# League E_tar plays on the attacker through the generic spell-hit hook
 		Combat.deal(dealer, src, reflect, G.DmgType.MAGIC, {"is_spell": true, "is_reflect": true, "ability": ab, "tag": "annie_e"})
-		var m = owner.match_ref
-		if m != null and is_instance_valid(src):
-			Vfx.beam(m, owner.global_position + Vector3(0, 1.0, 0), src.global_position + Vector3(0, 1.0, 0), FIRE, 0.22, 0.2)
-			Vfx.hit_spark(m, src.global_position + Vector3(0, 1.0, 0), FIRE_HOT, 0.9)
 
 
 # ===================================================================== R
@@ -656,7 +560,7 @@ class SummonTibbers extends KAbility:
 		var m = o.match_ref
 		var stun := AnnieUtil.consume_stun(o)
 		var dmg := dv("InitialDamage") + 0.75 * ap()
-		AnnieUtil.tibbers_impact(m, pos, ind_radius * G.U, stun > 0.0)
+		LolVfx.spawn(m, "Annie_Base_R_cas", AnnieUtil.ground_at(m, pos), {"dir": G.flat_dir(o.global_position, pos)})
 		for u in K.enemies_circle(self, pos, ind_radius):
 			hit(u, dmg, G.DmgType.MAGIC, {"is_aoe": true, "tag": "r"})
 			if stun > 0.0:
@@ -701,9 +605,13 @@ class SummonTibbers extends KAbility:
 		b.as_bonus = 2.75
 		b.ms_bonus = dv("MovespeedBurst", 1.0)
 		b.decay_rate = absf(dv("TibbersAttackSpeedDecay", -0.1))
-		b.vfx = Vfx.rising(tb, EMBER if avenger else FIRE_HOT, dur * 0.8, 40 if avenger else 26, 0.9)
+		# League frenzy: speed streaks / scorched ground + burning fists
+		var fx := Node3D.new()
+		tb.add_child(fx)
+		LolVfx.attach(fx, "Annie_Base_R_Tibbers_Frenzy_buf_01", {"loop": true, "height": 0.4})
+		LolVfx.attach(fx, "Annie_Base_TibbersFrenzyBuff", {"loop": true, "height": tb.height * 0.45})
+		b.vfx = fx
 		tb.add_buff(b, owner)
-		Vfx.burst(owner.match_ref, tb.global_position + Vector3(0, 1.6, 0), EMBER if avenger else FIRE, 1.4, {"sparks": 24, "ring": true})
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner

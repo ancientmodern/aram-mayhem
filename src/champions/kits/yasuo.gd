@@ -2,9 +2,6 @@ extends ChampionKit
 ## Yasuo, the Unforgiven.
 
 const WIND := Color(0.5, 0.82, 1.0)
-const WIND_W := Color(0.82, 0.94, 1.0)
-const DEEP := Color(0.25, 0.45, 1.0)
-const STEEL := Color(0.92, 0.96, 1.0)
 const EQ_RADIUS := 220.0      ## units
 
 
@@ -29,6 +26,7 @@ func build_kit() -> void:
 	c.abilities[3].cast_time = 0.0
 	c.add_effect(RPenHook.new(c.abilities[3]))
 	c.add_effect(BotLeveler.new())
+	c.add_effect(YasuoFx.new())
 
 
 
@@ -40,182 +38,39 @@ func anim_overrides() -> Dictionary:
 	return {"run_fast": ["run_fast"]}
 
 
-# ===================================================================== shared visuals
-class Fx:
-	static var _shaders := {}
+# ===================================================================== League VFX
+## League particle systems (data/vfx/yasuo.json). Basic attacks and every ability moment use these.
+func vfx_map() -> Dictionary:
+	var q = c.abilities[0]
+	var q_cas := ""
+	if q != null and not q.is_q3():
+		# Steel Tempest stab (the second stab has the extra swirl); spawned at cast start (its emitters are delayed to the thrust)
+		q_cas = "Yasuo_Base_Q_windstrike_02" if q.alt else "Yasuo_Base_Q_WindStrike"
+	return {
+		"BA_tar": "", "BA_crit_tar": "",          # YasuoFx: swing trail + matching impact
+		"Q_cas": q_cas, "Q_mis": "Yasuo_Base_Q_wind_mis", "Q_tar": "",   # hits spawned per Q variant in the kit
+		"W_cas": "", "W_tar": "",
+		"E_cas": "", "E_tar": "Yasuo_Base_E_dash_hit",
+		"R_cas": "", "R_tar": "",
+	}
 
-	const ARC_CODE := """
-shader_type spatial;
-render_mode unshaded, blend_add, depth_draw_never, cull_disabled%DEPTH%;
-uniform vec4 color : source_color = vec4(0.5, 0.8, 1.0, 1.0);
-uniform vec4 edge_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
-uniform float energy = 2.5;
-uniform float inner = 0.45;
-uniform float head = 0.0;
-uniform float tail = 3.0;
-uniform float fade = 1.0;
-uniform float flat_tail = 0.0;
-void fragment() {
-	vec2 p = UV * 2.0 - 1.0;
-	float r = length(p);
-	float band = smoothstep(inner - 0.04, inner + 0.02, r) * (1.0 - smoothstep(0.95, 1.0, r));
-	float ang = atan(p.y, p.x);
-	float d = mod(head - ang + 12.566370, 6.283185);
-	float g = clamp(1.0 - d / max(tail, 0.001), 0.0, 1.0);
-	g = mix(g * g, step(d, tail) * 0.75, flat_tail);
-	float rim = smoothstep(0.78, 0.96, r);
-	vec3 col = mix(color.rgb, edge_color.rgb, rim * g);
-	float a = band * g * (0.35 + 0.65 * rim) * fade;
-	ALBEDO = col * energy;
-	ALPHA = clamp(a, 0.0, 1.0);
-}
-"""
 
-	## Spiralling wind bands on a cylinder / cone (tornado, whirl columns).
-	const SWIRL_CODE := """
-shader_type spatial;
-render_mode unshaded, blend_add, depth_draw_never, cull_disabled;
-uniform vec4 color : source_color = vec4(0.6, 0.85, 1.0, 1.0);
-uniform float energy = 2.0;
-uniform float fade = 1.0;
-uniform float speed = 2.5;
-uniform float twist = 2.0;
-uniform float bands = 3.0;
-void fragment() {
-	float s = sin((UV.x * bands + UV.y * twist - TIME * speed) * 6.283185);
-	float b = smoothstep(0.35, 1.0, s);
-	float s2 = sin((UV.x * (bands * 2.0 + 1.0) - UV.y * twist * 1.5 - TIME * speed * 1.7) * 6.283185);
-	b += smoothstep(0.6, 1.0, s2) * 0.5;
-	float vert = smoothstep(0.0, 0.18, UV.y) * smoothstep(1.0, 0.75, UV.y);
-	float ndv = abs(dot(NORMAL, VIEW));
-	float rim = pow(1.0 - ndv, 1.2);
-	float a = (b * 0.75 + rim * 0.35) * vert * fade;
-	ALBEDO = mix(color.rgb, vec3(1.0), b * 0.35) * energy;
-	ALPHA = clamp(a * color.a, 0.0, 1.0);
-}
-"""
+## Basic attack visuals: one of League's four swing trails and the matching impact (crit variant on crits).
+class YasuoFx extends Effect:
+	func _init() -> void:
+		id = "yasuo_lol_fx"
+		hidden = true
 
-	## Vertical sheet of flowing wind (Wind Wall).
-	const WALL_CODE := """
-shader_type spatial;
-render_mode unshaded, blend_add, depth_draw_never, cull_disabled;
-uniform vec4 color : source_color = vec4(0.6, 0.85, 1.0, 1.0);
-uniform float energy = 2.0;
-uniform float fade = 1.0;
-void fragment() {
-	vec2 uv = UV;
-	float side = smoothstep(0.0, 0.14, uv.x) * smoothstep(1.0, 0.86, uv.x);
-	float h = 1.0 - uv.y;
-	float vert = smoothstep(0.0, 0.06, h) * (1.0 - smoothstep(0.55, 1.0, h));
-	float s1 = 0.5 + 0.5 * sin((uv.x * 3.0 - TIME * 1.6) * 6.283185 + sin(h * 7.0 + TIME * 2.2) * 1.4);
-	float s2 = 0.5 + 0.5 * sin((uv.x * 7.0 + TIME * 2.4) * 6.283185 + h * 5.0);
-	float s3 = 0.5 + 0.5 * sin((h * 10.0 - uv.x * 2.0 + TIME * 3.0) * 6.283185);
-	float base = smoothstep(0.25, 0.0, h) * 0.6;
-	float a = side * vert * (0.14 + 0.5 * pow(s1, 3.0) + 0.3 * pow(s2, 5.0) + 0.12 * s3) + side * base;
-	ALBEDO = mix(color.rgb, vec3(1.0), pow(s1, 6.0) * 0.6) * energy;
-	ALPHA = clamp(a * fade, 0.0, 1.0);
-}
-"""
-
-	static func shader(key: String, code: String) -> Shader:
-		if not _shaders.has(key):
-			var s := Shader.new()
-			s.code = code
-			_shaders[key] = s
-		return _shaders[key]
-
-	static func arc_mat(col: Color, edge: Color, inner: float, ground: bool) -> ShaderMaterial:
-		var mat := ShaderMaterial.new()
-		mat.shader = shader("arc_g" if ground else "arc", ARC_CODE.replace("%DEPTH%", ", depth_test_disabled" if ground else ""))
-		mat.set_shader_parameter("color", col)
-		mat.set_shader_parameter("edge_color", edge)
-		mat.set_shader_parameter("inner", inner)
-		return mat
-
-	static func swirl_mat(col: Color, energy: float, speed: float, twist: float, bands: float) -> ShaderMaterial:
-		var mat := ShaderMaterial.new()
-		mat.shader = shader("swirl", SWIRL_CODE)
-		mat.set_shader_parameter("color", col)
-		mat.set_shader_parameter("energy", energy)
-		mat.set_shader_parameter("speed", speed)
-		mat.set_shader_parameter("twist", twist)
-		mat.set_shader_parameter("bands", bands)
-		return mat
-
-	static func plane(size: float, mat: Material) -> MeshInstance3D:
-		var mi := MeshInstance3D.new()
-		var pm := PlaneMesh.new()
-		pm.size = Vector2(size, size)
-		mi.mesh = pm
-		mi.material_override = mat
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		return mi
-
-	static func cone(top: float, bottom: float, height: float, mat: Material) -> MeshInstance3D:
-		var mi := MeshInstance3D.new()
-		var cm := CylinderMesh.new()
-		cm.top_radius = top
-		cm.bottom_radius = bottom
-		cm.height = height
-		cm.radial_segments = 24
-		cm.rings = 4
-		cm.cap_top = false
-		cm.cap_bottom = false
-		mi.mesh = cm
-		mi.material_override = mat
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		return mi
-
-	static func sweep(m, pos: Vector3, radius: float, inner: float, col: Color, edge: Color, start_ang: float, turns: float, dur: float, height: float = 0.9, ground: bool = false) -> VfxNode:
-		var n := VfxNode.new()
-		n.lifetime = dur + 0.4
-		m.add_fx(n, pos + Vector3(0, height, 0))
-		var mat := arc_mat(col, edge, inner, ground)
-		mat.set_shader_parameter("head", start_ang)
-		mat.set_shader_parameter("tail", 0.4)
-		n.add_child(plane(radius * 2.0, mat))
-		var tw := n.create_tween()
-		tw.tween_method(func(v): mat.set_shader_parameter("head", v), start_ang, start_ang + TAU * turns, dur).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
-		tw.parallel().tween_method(func(v): mat.set_shader_parameter("tail", v), 0.4, minf(4.5, TAU * absf(turns) + 0.2), dur)
-		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 1.0, 0.0, 0.3)
-		return n
-
-	## Thin glowing slash line that flashes and thins out.
-	static func slash(m, a: Vector3, b: Vector3, col: Color, width: float, dur: float) -> void:
-		Vfx.beam(m, a, b, col, width, dur)
-
-	## Whirlwind column rising from the ground.
-	static func whirl(m, pos: Vector3, radius: float, height: float, col: Color, dur: float) -> VfxNode:
-		var n := VfxNode.new()
-		n.lifetime = dur + 0.1
-		m.add_fx(n, pos)
-		var mat := swirl_mat(col, 2.2, 3.5, 2.5, 3.0)
-		var c1 := cone(radius, radius * 0.45, height, mat)
-		c1.position.y = height * 0.5
-		n.add_child(c1)
-		var mat2 := swirl_mat(WIND_W, 1.6, -4.5, -1.5, 2.0)
-		var c2 := cone(radius * 0.7, radius * 0.3, height * 0.85, mat2)
-		c2.position.y = height * 0.45
-		n.add_child(c2)
-		n.scale = Vector3(1, 0.2, 1)
-		var tw := n.create_tween()
-		tw.tween_property(n, "scale", Vector3.ONE, dur * 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
-		tw.tween_interval(dur * 0.35)
-		tw.tween_method(func(v):
-			mat.set_shader_parameter("fade", v)
-			mat2.set_shader_parameter("fade", v), 1.0, 0.0, dur * 0.35)
-		var spin := n.create_tween().set_loops()
-		spin.tween_property(n, "rotation:y", TAU, 0.5).from(0.0)
-		return n
-
-	static func gust(m, pos: Vector3, col: Color, amount: int, speed: float, size: float, life: float = 0.5) -> void:
-		var n := VfxNode.new()
-		n.lifetime = life + 0.2
-		m.add_fx(n, pos)
-		var e := Vfx.emitter(col, amount, life, size, {"one_shot": true, "explosive": 0.9, "vmin": speed * 0.4, "vmax": speed,
-				"spread": 180.0, "radius": 0.2, "damping": speed * 1.5})
-		e.emitting = true
-		n.add_child(e)
+	func on_attack_hit(t, info) -> void:
+		var o = owner
+		if t == null or not is_instance_valid(t) or o == null:
+			return
+		var i := G.rng.randi_range(1, 4)
+		var dir := G.flat_dir(o.global_position, t.global_position)
+		LolVfx.attach(o, "Yasuo_base_BA_trail_%d" % i, {"dir": dir, "height": 1.0})
+		var crit: bool = info != null and info.is_crit
+		var nm := ("Yasuo_Base_BA_Crit_hit_%02d" if crit else "Yasuo_base_BA_hit_tar_%02d") % i
+		LolVfx.spawn(o.match_ref, nm, t.global_position + Vector3(0, t.height * 0.5, 0), {"dir": dir})
 
 
 # ===================================================================== helpers
@@ -245,6 +100,11 @@ class YAbility extends Ability:
 	static func airborne(u) -> bool:
 		return u != null and is_instance_valid(u) and not u.dead and (u.cc & Buff.CC.AIRBORNE) != 0
 
+	## League impact effect centred on a unit, facing away from `from`.
+	static func hit_fx(m, u, fx_name: String, from: Vector3) -> void:
+		if u != null and is_instance_valid(u):
+			LolVfx.spawn(m, fx_name, u.global_position + Vector3(0, u.height * 0.5, 0), {"dir": G.flat_dir(from, u.global_position)})
+
 
 ## Last Breath's suspension: holds the victim at the apex of its knock-up, then lets it fall.
 class SuspendBuff extends Buff:
@@ -262,8 +122,8 @@ class SuspendBuff extends Buff:
 class WayOfTheWanderer extends Effect:
 	var dvals := {}
 	var last_pos := Vector3.INF
-	var flow_fx: VfxNode = null
-	var flow_emit: GPUParticles3D = null
+	var flow_fx: LolVfx = null
+	var was_full := false
 
 	func _init() -> void:
 		id = "yasuo_passive"
@@ -292,16 +152,15 @@ class WayOfTheWanderer extends Effect:
 		last_pos = p
 		_update_flow_fx(u)
 
+	## League wind (passive_activate) when the Flow bar fills; stopped when Flow is spent.
 	func _update_flow_fx(u) -> void:
-		if flow_fx == null or not is_instance_valid(flow_fx):
-			flow_fx = VfxNode.new()
-			u.add_child(flow_fx)
-			flow_fx.position.y = 0.25
-			flow_emit = Vfx.emitter(WIND_W, 18, 0.7, 0.2, {"vmin": 0.6, "vmax": 1.4, "radius": 0.5, "dir": Vector3.UP, "spread": 60.0, "local": true})
-			flow_fx.add_child(flow_emit)
-		var want: bool = full() and not u.dead
-		if flow_emit.emitting != want:
-			flow_emit.emitting = want
+		var now_full: bool = full() and not u.dead
+		if now_full and not was_full:
+			flow_fx = LolVfx.attach(u, "Yasuo_Base_passive_activate", {"height": 1.0})
+		elif not now_full and was_full and flow_fx != null and is_instance_valid(flow_fx):
+			flow_fx.stop()
+			flow_fx = null
+		was_full = now_full
 
 	func on_respawn() -> void:
 		last_pos = Vector3.INF
@@ -318,8 +177,8 @@ class WayOfTheWanderer extends Effect:
 		if info.final + info.absorbed <= 0.0:
 			return
 		o.mana = 0.0
-		K.shield(o, o, shield_value(), 1.0, WIND_W)
-		Fx.gust(o.match_ref, o.global_position + Vector3(0, 1.0, 0), WIND_W, 24, 4.0, 0.3)
+		Combat.shield(o, o, shield_value(), 1.0, {"id": ""})
+		LolVfx.attach(o, "Yasuo_Base_Passive_Burst", {"height": 1.0})
 
 	## Intent: crit chance doubled, crit damage reduced, overflow crit -> AD.
 	func get_stat_mods() -> Dictionary:
@@ -345,7 +204,7 @@ class SteelTempest extends YAbility:
 	var stack_until := -1.0
 	var eq_pending := false
 	var alt := false
-	var ready_fx: VfxNode = null
+	var ready_fx: LolVfx = null
 
 	func _init() -> void:
 		target_type = Target.DIRECTION
@@ -365,19 +224,9 @@ class SteelTempest extends YAbility:
 		var o = owner
 		if is_q3():
 			if ready_fx == null or not is_instance_valid(ready_fx):
-				ready_fx = VfxNode.new()
-				o.add_child(ready_fx)
-				var mat := Fx.swirl_mat(Color(0.55, 0.85, 1.0, 0.55), 1.3, 3.0, 1.5, 2.0)
-				var col := Fx.cone(0.95, 0.75, 2.1, mat)
-				col.position.y = 1.05
-				ready_fx.add_child(col)
-				var e := Vfx.emitter(WIND_W, 22, 0.6, 0.18, {"vmin": 0.5, "vmax": 1.5, "radius": 0.7, "dir": Vector3.UP, "spread": 30.0, "local": true})
-				e.position.y = 0.4
-				ready_fx.add_child(e)
-				var spin := ready_fx.create_tween().set_loops()
-				spin.tween_property(ready_fx, "rotation:y", TAU, 0.8).from(0.0)
+				ready_fx = LolVfx.attach(o, "Yasuo_Base_Q_wind_ready_buff", {"loop": true, "height": 0.3})
 		elif ready_fx != null and is_instance_valid(ready_fx):
-			ready_fx.detach_and_fade()
+			ready_fx.stop()
 			ready_fx = null
 
 	func add_stack() -> void:
@@ -433,6 +282,7 @@ class SteelTempest extends YAbility:
 		eq_pending = true
 		o.play_anim("spell1_dash", 1.0, 0.03, 0.5)
 		o.anim_lock = 0.5
+		LolVfx.attach(o, "Yasuo_Base_EQ_SwordGlow", {"dir": o.facing, "height": 1.0})
 
 	## Steel Tempest cast during Sweeping Blade: a circular slash at the end of the dash.
 	func do_eq() -> void:
@@ -452,17 +302,13 @@ class SteelTempest extends YAbility:
 				K.knockup(u, dv("KnockUpDurationTOOLTIPONLY", 1.0), o)
 			if u.kind == G.Kind.CHAMPION:
 				champs += 1
-			Vfx.hit_spark(m, u.global_position + Vector3(0, 1.0, 0), WIND_W, 0.7)
+			hit_fx(m, u, "Yasuo_Base_Q_wind_hit_tar" if q3 else "Yasuo_Base_Q_hit_tar", p)
 		if q3:
 			set_stacks(0)
 		elif not hits.is_empty():
 			add_stack()
-		var start := atan2(o.facing.z, o.facing.x)
-		Fx.sweep(m, p, EQ_RADIUS * G.U + 0.3, 0.45, WIND, STEEL, start, 1.0, 0.18, 0.9)
-		Vfx.ring(m, p, WIND_W, EQ_RADIUS * G.U + 0.4, 0.3, 0.08, 0.1)
+		LolVfx.spawn(m, "Yasuo_Base_EQ3_cas" if q3 else "Yasuo_Base_EQ_cas", p, {"dir": o.facing})
 		if q3:
-			Fx.whirl(m, p, 2.4, 3.6, WIND, 0.7)
-			Vfx.ring(m, p, DEEP, 3.0, 0.45, 0.1, 0.15)
 			if m.camera_rig != null and o == G.player:
 				m.camera_rig.shake(0.15)
 		notify_cast({"pos": p, "dir": o.facing, "unit": null})
@@ -489,20 +335,10 @@ class SteelTempest extends YAbility:
 		var hits := K.enemies_line(self, a, b, dv("StabWidth", 80.0) * 1.25)
 		for u in hits:
 			hit(u, dc[0], G.DmgType.PHYSICAL, {"tag": "yasuo_q", "is_crit": dc[1]})
-			Vfx.hit_spark(m, u.global_position + Vector3(0, 1.0, 0), STEEL if not dc[1] else Color(1.0, 0.85, 0.4), 0.8 if dc[1] else 0.55)
+			hit_fx(m, u, "Yasuo_Base_Q_hit_tar", p)
 		if not hits.is_empty():
 			add_stack()
-		var h := Vector3(0, 1.1, 0)
-		Fx.slash(m, a + h, b + h, WIND, 0.32, 0.16)
-		Fx.slash(m, a + h, b + h, Color(1, 1, 1), 0.1, 0.12)
-		var tip := VfxNode.new()
-		tip.lifetime = 0.25
-		m.add_fx(tip, b + h)
-		var s := Vfx.sprite(WIND_W, 1.0, 3.0, Vfx.spark_texture())
-		tip.add_child(s)
-		var tw := tip.create_tween()
-		tw.tween_property(s, "scale", Vector3.ONE * 0.1, 0.2)
-		Fx.gust(m, b + h, WIND, 10, 2.5, 0.18, 0.35)
+		# the stab itself is Yasuo_Base_Q_WindStrike / _windstrike_02, spawned at cast start (vfx_map "Q_cas")
 
 	func _tornado(dir: Vector3) -> void:
 		var o = owner
@@ -510,33 +346,13 @@ class SteelTempest extends YAbility:
 		set_stacks(0)
 		var dc := q_damage()
 		var self_ref := self
-		var vis := VfxNode.new()
-		var spin := Node3D.new()
-		vis.add_child(spin)
-		var mat := Fx.swirl_mat(WIND, 2.3, 3.2, 2.2, 3.0)
-		var funnel := Fx.cone(1.15, 0.35, 2.8, mat)
-		funnel.position.y = 1.4
-		spin.add_child(funnel)
-		var mat2 := Fx.swirl_mat(WIND_W, 1.8, -4.0, -1.4, 2.0)
-		var core := Fx.cone(0.7, 0.2, 2.4, mat2)
-		core.position.y = 1.2
-		spin.add_child(core)
-		var dust := Vfx.emitter(WIND, 50, 0.5, 0.35, {"vmin": 0.3, "vmax": 1.2, "radius": 0.6, "dir": Vector3.UP, "spread": 60.0})
-		dust.position.y = 0.3
-		vis.add_child(dust)
-		vis.trails.append(dust)
-		var l := Vfx.light(WIND, 2.5, 6.0)
-		l.position.y = 1.4
-		vis.add_child(l)
-		var tw := vis.create_tween().set_loops()
-		tw.tween_property(spin, "rotation:y", TAU, 0.35).from(0.0)
 		var champs := {"n": 0}
 		K.line_missile(self, o.global_position + dir * 0.4, dir, 1200.0, dv("TornadoRange", 1100.0), {
-			"width": 90.0, "pierce": true, "height": 0.0, "visual": vis,
+			"width": 90.0, "pierce": true, "height": 0.0, "lol": "Yasuo_Base_Q_wind_mis",
 			"on_hit": func(_m, u):
 				self_ref.hit(u, dc[0], G.DmgType.PHYSICAL, {"tag": "yasuo_q", "is_crit": dc[1]})
 				K.knockup(u, self_ref.dv("KnockUpDurationTOOLTIPONLY", 1.0), o)
-				Vfx.burst(m, u.global_position + Vector3(0, 1.0, 0), WIND_W, 0.9, {"sparks": 16, "ring": false, "light": false})
+				YAbility.hit_fx(m, u, "Yasuo_Base_Q_wind_hit_tar", u.global_position - dir)
 				if u.kind == G.Kind.CHAMPION:
 					champs.n += 1
 					if champs.n == 1:
@@ -613,42 +429,12 @@ class WindWall extends YAbility:
 		var d1 := 4.0
 		var c0: Vector3 = origin + dir * d0
 		var bl: Dictionary = m.add_blocker(o.team, c0 - perp * width * 0.5, c0 + perp * width * 0.5, life)
-		# visual: three gently curved panels of flowing wind
-		var n := VfxNode.new()
-		n.lifetime = life + 0.1
-		m.add_fx(n, c0)
-		n.basis = Basis(perp, Vector3.UP, -dir)
-		var mat := ShaderMaterial.new()
-		mat.shader = Fx.shader("wall", Fx.WALL_CODE)
-		mat.set_shader_parameter("color", WIND)
-		mat.set_shader_parameter("energy", 2.0)
-		mat.set_shader_parameter("fade", 0.0)
-		var seg := width / 3.0
-		for i in 3:
-			var q := MeshInstance3D.new()
-			var qm := QuadMesh.new()
-			qm.size = Vector2(seg + 0.15, 2.9)
-			q.mesh = qm
-			q.material_override = mat
-			q.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			var side := float(i - 1)
-			q.position = Vector3(side * seg, 1.45, absf(side) * seg * 0.22)
-			q.rotation.y = -side * deg_to_rad(24.0)
-			n.add_child(q)
-		var e := Vfx.emitter(WIND_W, 60, 0.9, 0.22, {"vmin": 1.5, "vmax": 3.0, "dir": Vector3(1, 0.15, 0), "spread": 15.0, "local": true})
-		var pm: ParticleProcessMaterial = e.process_material
-		pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
-		pm.emission_box_extents = Vector3(width * 0.5, 1.2, 0.15)
-		e.position.y = 1.3
-		n.add_child(e)
-		var glow := Vfx.light(WIND, 2.0, width)
-		glow.position.y = 1.2
-		n.add_child(glow)
-		var tw := n.create_tween()
-		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 0.0, 1.0, 0.15)
-		tw.tween_interval(maxf(0.0, life - 0.55))
-		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 1.0, 0.0, 0.4)
-		Fx.gust(m, c0 + Vector3(0, 1.0, 0), WIND_W, 30, 5.0, 0.3)
+		# League wall (rank variant 1..5 = wider wall), kept emitting for the wall's life, carried along with the blocker
+		var n := LolVfx.spawn(m, "Yasuo_Base_W_windwall%d" % clampi(level, 1, 5), c0, {"dir": dir, "loop": true})
+		if n != null:
+			m.after(maxf(0.1, life - 0.7), func():
+				if is_instance_valid(n):
+					n.stop())
 		# drift forward quickly, then hold
 		var st := {"t": 0.0}
 		m.add_ticker(life, func(dt):
@@ -753,33 +539,23 @@ class SweepingBlade extends YAbility:
 		var u = t.unit
 		if u == null or not is_instance_valid(u) or u.dead:
 			return
-		var m = o.match_ref
 		var p: Vector3 = o.global_position
 		var dest := endpoint(u)
 		var speed_u: float = dv("BaseDashSpeed", 750.0) + 0.6 * o.stats.move_speed
 		var dur: float = cast_range / speed_u
-		hit(u, damage(), G.DmgType.MAGIC, {"tag": "yasuo_e"})
-		Vfx.hit_spark(m, u.global_position + Vector3(0, 1.0, 0), WIND_W, 0.8)
+		hit(u, damage(), G.DmgType.MAGIC, {"tag": "yasuo_e"})   # impact: vfx_map "E_tar" (Yasuo_Base_E_dash_hit)
 		stacks = mini(int(dv("MaxStacks", 4.0)), stacks + 1)
 		stack_until = now() + dv("StackDuration", 5.0)
 		marked[u] = now() + dv("PerTargetCooldown", 10.0)
+		# per-target cooldown ring (League shows it to Yasuo only): timer1..5 = 10..6 s
+		if o == G.player:
+			LolVfx.attach(u, "Yasuo_base_E_timer%d" % clampi(int(round(11.0 - dv("PerTargetCooldown", 10.0))), 1, 5), {"height": 0.1})
 		dashing = true
 		var self_ref := self
 		o.start_dash(dest, {"speed": speed_u * G.U, "on_arrive": func(_x): self_ref._arrive()})
 		o.play_anim("spell3", 1.0, 0.03, dur + 0.1)
 		o.anim_lock = dur + 0.05
-		var trail := VfxNode.new()
-		trail.lifetime = dur + 0.05
-		o.add_child(trail)
-		trail.position.y = 1.0
-		var e := Vfx.emitter(WIND, 50, 0.35, 0.35, {"vmin": 0.0, "vmax": 0.5, "radius": 0.35})
-		trail.add_child(e)
-		trail.trails.append(e)
-		var e2 := Vfx.emitter(WIND_W, 30, 0.25, 0.15, {"vmin": 0.5, "vmax": 1.5, "radius": 0.5, "tex": Vfx.spark_texture()})
-		trail.add_child(e2)
-		trail.trails.append(e2)
-		var h := Vector3(0, 1.0, 0)
-		Fx.slash(m, p + h, dest + h, Color(0.6, 0.85, 1.0, 0.5), 0.18, dur + 0.1)
+		LolVfx.attach(o, "Yasuo_Base_E_Dash", {"dir": G.flat_dir(p, dest)})
 		notify_cast(t)
 
 	func _arrive() -> void:
@@ -918,38 +694,35 @@ class LastBreath extends YAbility:
 		o.start_dash(dest, {"duration": 0.75, "height": 1.7})
 		o.play_anim("spell4", 1.0, 0.03, 0.95)
 		o.anim_lock = 0.95
-		# teleport streak + pressure dome
-		var h := Vector3(0, 1.2, 0)
-		Vfx.beam(m, from + h, dest + h, WIND, 0.4, 0.25)
-		Fx.gust(m, from + h, WIND_W, 24, 4.0, 0.3)
-		Vfx.ring(m, center, DEEP, dv("RRadius", 400.0) * G.U, 0.5, 0.06, 0.25)
-		var dome := Vfx.ground_circle(m, center, dv("RRadius", 400.0) * G.U, Color(0.3, 0.55, 1.0, 0.6), hold + 0.1, 0.22)
-		dome.get_child(0).material_override.set_shader_parameter("rotate_speed", 3.0)
-		dome.get_child(0).material_override.set_shader_parameter("segments", 12.0)
+		# League: vanish smoke, target markers + flash, slash trails on Yasuo, impacts, the slam on landing
+		var rdir := G.flat_dir(from, center)
+		LolVfx.spawn(m, "Yasuo_Base_R_dash", from, {"dir": rdir})
+		LolVfx.attach(o, "Yasuo_base_R_slash_cas", {"dir": rdir, "height": 1.0})
+		var markers := []
 		for e in targets:
-			Fx.whirl(m, e.global_position, 1.2, 4.0, WIND, hold)
+			YAbility.hit_fx(m, e, "Yasuo_Base_R_cas_marker_01", dest)
+			markers.append(LolVfx.attach(e, "Yasuo_Base_R_tar_marker_02", {"dir": rdir, "height": 1.0}))
+		m.after(hold, func():
+			for mk in markers:
+				if mk != null and is_instance_valid(mk):
+					mk.stop())
 		# a flurry of slashes, then the finishing blow
 		var self_ref := self
 		var dmg := damage()
-		for i in 7:
-			m.after(0.06 + i * 0.06, func():
+		for i in 3:
+			m.after(0.1 + i * 0.13, func():
 				for e in targets:
 					if is_instance_valid(e) and not e.dead:
-						var cp: Vector3 = e.global_position + Vector3(0, 2.1, 0)
-						var a := G.rng.randf() * TAU
-						var off := Vector3(cos(a), G.rng.randf_range(-0.6, 0.6), sin(a)) * 1.6
-						Fx.slash(m, cp - off, cp + off, WIND_W if i % 2 == 0 else WIND, 0.12, 0.12))
+						YAbility.hit_fx(m, e, "Yasuo_Base_R_tar_imp_01", dest))
 		m.after(0.52, func():
 			for e in targets:
 				if is_instance_valid(e) and not e.dead:
 					self_ref.hit(e, dmg, G.DmgType.PHYSICAL, {"tag": "yasuo_r"})
-					var ep: Vector3 = e.global_position + Vector3(0, 2.0, 0)
-					Vfx.burst(m, ep, WIND_W, 1.6, {"sparks": 30})
-					Fx.slash(m, ep + Vector3(-1.8, 1.0, 0), ep + Vector3(1.8, -1.0, 0), Color(1, 1, 1), 0.22, 0.25)
-					Fx.slash(m, ep + Vector3(-1.8, -1.0, 0), ep + Vector3(1.8, 1.0, 0), WIND, 0.22, 0.25)
-			Vfx.ring(m, center, WIND_W, 4.5, 0.4, 0.08, 0.0)
+					YAbility.hit_fx(m, e, "Yasuo_Base_R_impact_tar", dest)
 			if m.camera_rig != null:
 				m.camera_rig.shake(0.4 if (o == G.player or targets.has(G.player)) else 0.12))
+		m.after(0.75, func():
+			LolVfx.spawn(m, "Yasuo_Base_R_land_tar", center, {"dir": rdir}))
 		notify_cast(t)
 
 	func _suspend(e, hold: float) -> void:

@@ -4,11 +4,13 @@ extends ChampionKit
 const BLUE := Color(0.35, 0.62, 1.0)      ## Hymn of Valor
 const GREEN := Color(0.4, 1.0, 0.55)      ## Aria of Perseverance
 const VIOLET := Color(0.85, 0.45, 1.0)    ## Song of Celerity
-const GOLD := Color(1.0, 0.86, 0.45)      ## Crescendo
-const TEAL := Color(0.45, 0.95, 0.95)
 const SONG_COLORS := [BLUE, GREEN, VIOLET]
 const BASE_ATTACK_COLOR := Color(0.55, 0.78, 1.0)
 const HOLD := {"hold": true}
+## League Power Chord systems per active song (Hymn / Aria / Celerity)
+const CHORD_MIS := ["Sona_Base_Q_PowerChord_Mis", "Sona_Base_W_Powerchord_Mis", "Sona_Base_E_Powerchord_Mis"]
+const CHORD_TAR := ["Sona_Base_Q_PowerChord_Tar", "Sona_Base_W_Powerchord_Tar", "Sona_Base_E_Powerchord_Tar"]
+const CHORD_READY := ["Sona_Base_Q_PCReady_CoreRings", "Sona_Base_W_PCReady_CoreRings", "Sona_Base_E_PCReady_CoreRings"]
 
 
 func build_kit() -> void:
@@ -38,6 +40,24 @@ func ai_tuning() -> Dictionary:
 	return {"aggression": 0.5}
 
 
+## League particle systems (data/vfx/sona.json). Automatic hooks cover BA_Mis / BA_Tar, Q_Mis / Q_Tar,
+## R_Cas / R_Missile / R_Tar; the auras, buffs, heals and Power Chord are spawned by the kit.
+func vfx_map() -> Dictionary:
+	var mis := "Sona_Base_BA_Mis"
+	var crit_mis := "Sona_Base_CritAttack_Cas"
+	var pc = c.passive
+	if pc != null and pc.get("ready"):
+		mis = CHORD_MIS[clampi(int(pc.song), 0, 2)]
+		crit_mis = mis
+	return {
+		"BA_mis": mis, "BA_crit_mis": crit_mis, "BA_tar": "Sona_Base_BA_Tar", "BA_crit_tar": "Sona_Base_BA_Tar",
+		"Q_cas": "", "Q_mis": "Sona_Base_Q_Mis", "Q_tar": "Sona_Base_Q_Tar",
+		"W_cas": "", "W_mis": "", "W_tar": "",
+		"E_cas": "", "E_tar": "",
+		"R_cas": "Sona_Base_R_Cas", "R_mis": "Sona_Base_R_Missile", "R_tar": "Sona_Base_R_Tar",
+	}
+
+
 ## Bot AI returns HOLD to deliberately skip a cast ({} would fall back to BotBrain.default_consider).
 class KAbility extends Ability:
 	func try_cast(t: Dictionary) -> bool:
@@ -59,8 +79,17 @@ class SonaUtil:
 		if p != null:
 			p.add_accel(n)
 
-	## Start a Melody: a brief aura ring around Sona; allied champions touching it get `on_touch(ally)` once.
-	static func melody(ab: Ability, color: Color, on_touch: Callable) -> void:
+	## League effect attached to a unit's centre (League attaches these to the body bone).
+	static func fx_on(u, fx_name: String, opts: Dictionary = {}) -> LolVfx:
+		if u == null or not is_instance_valid(u):
+			return null
+		var o2 := {"height": u.height * 0.5}
+		o2.merge(opts, true)
+		return LolVfx.attach(u, fx_name, o2)
+
+	## Start a Melody: League's song aura around Sona ("<key>_Zone"); allied champions touching it get
+	## `on_touch(ally)` once and the song's touch flash ("<key>_Tar_Buf").
+	static func melody(ab: Ability, key: String, on_touch: Callable) -> void:
 		var o = ab.owner
 		var m = o.match_ref
 		var r: float = ab.dv("AuraRange", 400.0) * G.U
@@ -69,22 +98,13 @@ class SonaUtil:
 		o.set_meta("sona_melody", token)
 		var old = o.get_meta("sona_melody_fx") if o.has_meta("sona_melody_fx") else null
 		if old != null and is_instance_valid(old):
-			old.detach_and_fade()
-		var fx := Vfx.aura(o, color, r, dur, 0.07)
-		var mat: ShaderMaterial = (fx.get_child(0) as MeshInstance3D).material_override
-		mat.set_shader_parameter("thickness", 0.05)
-		mat.set_shader_parameter("fill", 0.08)
-		mat.set_shader_parameter("segments", 14.0)
-		mat.set_shader_parameter("rotate_speed", 0.8)
-		var tw := fx.create_tween()
-		tw.tween_interval(maxf(0.0, dur - 0.4))
-		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 1.0, 0.0, 0.4)
-		var notes := Vfx.emitter(color, 18, 1.0, 0.3, {"local": true, "radius": r * 0.85, "dir": Vector3.UP, "spread": 8.0,
-				"vmin": 0.6, "vmax": 1.3, "tex": Vfx.spark_texture()})
-		fx.add_child(notes)
-		fx.trails.append(notes)
-		o.set_meta("sona_melody_fx", fx)
-		Vfx.ring(m, o.global_position, color, r, 0.45, 0.06, 0.12)
+			old.stop()
+		var zone := LolVfx.attach(o, "Sona_Base_%s_Zone%s" % [key, "_Self" if o == G.player else ""], {"loop": true, "dir": o.facing})
+		o.set_meta("sona_melody_fx", zone)
+		if zone != null:
+			m.after(dur, func():
+				if is_instance_valid(zone):
+					zone.stop())
 		var touched := {}
 		m.add_ticker(dur, func(_dt):
 			if not is_instance_valid(o) or o.dead or int(o.get_meta("sona_melody", 0)) != token:
@@ -95,33 +115,25 @@ class SonaUtil:
 				touched[a] = true
 				on_touch.call(a)
 				if a != o:
-					Vfx.beam(m, o.global_position + Vector3(0, 1.3, 0), a.global_position + Vector3(0, 1.1, 0), color, 0.1, 0.22)
-				note_pop(m, a, color)
+					fx_on(a, "Sona_Base_%s_Tar_Buf" % key)
 			return true)
 
-	static func note_pop(m, u, color: Color) -> void:
-		var n := VfxNode.new()
-		n.lifetime = 1.0
-		u.add_child(n)
-		n.position = Vector3(0, u.height * 0.9, 0)
-		var s := Vfx.sprite(color, 0.55, 3.0, Vfx.spark_texture())
-		n.add_child(s)
-		var tw := n.create_tween()
-		tw.tween_property(n, "position:y", u.height * 0.9 + 0.9, 0.8).set_ease(Tween.EASE_OUT)
-		tw.parallel().tween_method(func(v): s.material_override.set_shader_parameter("energy", v), 3.0, 0.0, 0.8)
-		Vfx.ring(m, u.global_position, color, 1.0, 0.35, 0.12, 0.15)
-
-	static func bolt(color: Color, size: float) -> VfxNode:
-		var n := VfxNode.new()
-		n.add_child(Vfx.sprite(color.lerp(Color.WHITE, 0.55), size * 0.5, 3.2, Vfx.spark_texture()))
-		n.add_child(Vfx.sprite(color, size * 1.4, 1.8))
-		var e := Vfx.emitter(color, 40, 0.4, size * 0.7, {"vmin": 0.0, "vmax": 0.4, "radius": size * 0.25})
-		n.add_child(e)
-		n.trails.append(e)
-		var e2 := Vfx.emitter(color.lerp(Color.WHITE, 0.3), 16, 0.6, size * 0.3, {"vmin": 0.3, "vmax": 1.0, "tex": Vfx.spark_texture()})
-		n.add_child(e2)
-		n.trails.append(e2)
-		return n
+	## Fly a League missile system from `from` to unit `u` (visual only), then call `on_arrive`.
+	static func fly(m, fx_name: String, from: Vector3, u, time: float, on_arrive: Callable = Callable()) -> void:
+		if u == null or not is_instance_valid(u):
+			return
+		var to: Vector3 = u.global_position + Vector3(0, u.height * 0.5, 0)
+		var fx := LolVfx.spawn(m, fx_name, from, {"dir": G.flat_dir(from, to), "loop": true})
+		if fx == null:
+			if on_arrive.is_valid():
+				on_arrive.call()
+			return
+		var tw := fx.create_tween()
+		tw.tween_property(fx, "global_position", to, time)
+		tw.tween_callback(func():
+			fx.stop()
+			if on_arrive.is_valid():
+				on_arrive.call())
 
 	static func est(o, target, dmg: float) -> float:
 		var mr: float = target.stats.mr
@@ -163,8 +175,12 @@ class PowerChord extends Effect:
 			var r = owner.abilities[3]
 			if r != null:
 				r.reduce_cooldown(float(data.get("AccelerandoUltCDR", 1.5)) * g)
+			SonaUtil.fx_on(owner, "Sona_Base_P_Accelerando_Tar")
 		else:
 			accel = minf(cap, accel + g)
+			SonaUtil.fx_on(owner, "Sona_Base_P_Accelerando_Tar")
+			if accel >= cap:
+				SonaUtil.fx_on(owner, "Sona_Base_P_Accelerando_Completed")
 		refresh_stats()
 
 	func chord_damage() -> float:
@@ -207,8 +223,6 @@ class PowerChord extends Effect:
 		count = 0
 		_hide_ready()
 		var o = owner
-		var m = o.match_ref
-		var col: Color = SONG_COLORS[song]
 		var dmg := staccato_damage() if song == 0 else chord_damage()
 		Combat.deal(o, target, dmg, G.DmgType.MAGIC, {"is_proc": true, "is_spell": true, "tag": "power_chord"})
 		match song:
@@ -218,31 +232,19 @@ class PowerChord extends Effect:
 						{"name": "Diminuendo", "debuff": true})
 			2:
 				K.slow(target, 0.5 + 0.0004 * o.stats.ap, o.abilities[2].dv("TempoDuration", 2.0), o, false, "sona_tempo")
-		var p: Vector3 = target.global_position
-		Vfx.burst(m, p + Vector3(0, 1.0, 0), col, 1.1, {"sparks": 24, "ring": false})
-		Vfx.ring(m, p, col, 1.8, 0.4, 0.1, 0.15)
-		Vfx.ring(m, p, GOLD, 1.1, 0.3, 0.08, 0.0)
-		SonaUtil.note_pop(m, target, col)
+		SonaUtil.fx_on(target, CHORD_TAR[clampi(song, 0, 2)])
 
 	func _show_ready() -> void:
 		_hide_ready()
 		var o = owner
 		var col: Color = SONG_COLORS[song]
 		o.attack_color = col.lerp(Color.WHITE, 0.25)
-		var n := VfxNode.new()
-		o.add_child(n)
-		n.position = Vector3(0, 0.08, 0)
-		var ring := Vfx.aura(o, col, 1.0, 1.0e6, 0.08)
-		ring.reparent(n)
-		var e := Vfx.emitter(col, 16, 0.8, 0.22, {"local": true, "radius": 0.6, "dir": Vector3.UP, "spread": 10.0, "vmin": 0.8,
-				"vmax": 1.6, "tex": Vfx.spark_texture()})
-		n.add_child(e)
-		n.trails.append(e)
-		ready_fx = n
+		# League "Power Chord ready" rings of the active song (the next attack uses the song's chord missile, see vfx_map)
+		ready_fx = LolVfx.attach(o, CHORD_READY[clampi(song, 0, 2)], {"loop": true, "dir": o.facing})
 
 	func _hide_ready() -> void:
 		if ready_fx != null and is_instance_valid(ready_fx):
-			ready_fx.detach_and_fade()
+			ready_fx.stop()
 		ready_fx = null
 		if owner != null:
 			owner.attack_color = BASE_ATTACK_COLOR
@@ -279,32 +281,29 @@ class HymnOfValor extends KAbility:
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
-		var m = o.match_ref
 		var dmg := damage()
 		var self_ref := self
 		var targets := pick_targets()
 		for i in targets.size():
 			var tgt: Unit = targets[i]
 			var from: Vector3 = o.global_position + Vector3(0, 1.4, 0) + o.facing.rotated(Vector3.UP, 0.7 if i == 0 else -0.7) * 0.6
+			# bolt: vfx_map "Q_mis" (Sona_Base_Q_Mis); impact: "Q_tar" (Sona_Base_Q_Tar)
 			K.homing_missile(self, from, tgt, 1300.0, func(_mm, u):
 				self_ref.hit(u, dmg, G.DmgType.MAGIC, {"tag": "q"})
 				if u.kind == G.Kind.CHAMPION:
-					SonaUtil.add_accel(o, 1.0)
-				Vfx.hit_spark(m, u.global_position + Vector3(0, 1.1, 0), BLUE, 0.9)
-				Vfx.ring(m, u.global_position, BLUE, 0.9, 0.3, 0.12, 0.1),
-				{"visual": SonaUtil.bolt(BLUE, 0.55)})
-		Vfx.burst(m, o.global_position + Vector3(0, 1.3, 0), BLUE, 0.7, {"sparks": 14, "ring": false})
+					SonaUtil.add_accel(o, 1.0),
+				{"lol": "Sona_Base_Q_Mis"})
 		var on_hit_dmg := dv("BaseOnHitDamage") + dv("OnHitRatio", 0.1) * ap()
 		var dur := dv("OnHitDuration", 5.0)
 		var q_icon := icon
-		SonaUtil.melody(self, BLUE, func(a):
+		SonaUtil.melody(self, "Q", func(a):
 			a.remove_buffs_by_id("sona_q_onhit")
 			var b := HymnBuff.new()
 			b.duration = dur
 			b.remaining = dur
 			b.dmg = on_hit_dmg
 			b.icon = q_icon
-			b.vfx = Vfx.aura(a, BLUE, maxf(0.8, a.radius * 1.4), dur, 0.1)
+			b.vfx = SonaUtil.fx_on(a, "Sona_Base_Q_Buff", {"loop": true})
 			a.add_buff(b, o))
 		notify_cast(t)
 
@@ -338,7 +337,8 @@ class HymnBuff extends Buff:
 		removed = true
 		Combat.deal(owner, target, dmg, G.DmgType.MAGIC, {"is_proc": true, "tag": "sona_q"})
 		if owner.match_ref != null:
-			Vfx.hit_spark(owner.match_ref, target.global_position + Vector3(0, 1.1, 0), BLUE, 0.8)
+			LolVfx.spawn(owner.match_ref, "Sona_Base_Q_Target_Hit", target.global_position + Vector3(0, target.height * 0.5, 0),
+					{"dir": G.flat_dir(owner.global_position, target.global_position)})
 
 
 # ===================================================================== W
@@ -374,20 +374,25 @@ class AriaOfPerseverance extends KAbility:
 		var m = o.match_ref
 		var heal := heal_amount()
 		Combat.heal(o, o, heal)
-		Vfx.rising(o, GREEN, 0.5, 24, 0.5)
+		SonaUtil.fx_on(o, "Sona_Base_W_tar")
 		var a := best_ally()
 		if a != null:
 			var injured: bool = a.hp < a.stats.max_hp - 1.0
 			Combat.heal(o, a, heal)
 			if injured:
 				SonaUtil.add_accel(o, 1.0)
-			Vfx.beam(m, o.global_position + Vector3(0, 1.3, 0), a.global_position + Vector3(0, 1.1, 0), GREEN, 0.16, 0.3)
-			Vfx.rising(a, GREEN, 0.5, 24, 0.5)
+			# League heal note flying to the ally (visual only, the heal is instant)
+			SonaUtil.fly(m, "Sona_Base_W_Mis", o.global_position + Vector3(0, 1.3, 0), a, 0.25, func(): SonaUtil.fx_on(a, "Sona_Base_W_tar"))
 		var shield := dv("BaseShield") + dv("ShieldRatio", 0.25) * ap()
 		var sdur := dv("ShieldDuration", 1.5)
 		var bp := dv("AccelerandoShieldBreakpoint", 25.0)
-		SonaUtil.melody(self, GREEN, func(u):
-			K.shield(o, u, shield, sdur, GREEN, "sona_w")
+		SonaUtil.melody(self, "W", func(u):
+			Combat.shield(o, u, shield, sdur, {"id": "sona_w"})
+			var sfx := SonaUtil.fx_on(u, "Sona_Base_W_Shield", {"loop": true})
+			if sfx != null:
+				m.after(sdur, func():
+					if is_instance_valid(sfx):
+						sfx.stop())
 			if u != o:
 				u.remove_buffs_by_id("sona_w_watch")
 				var wb := AriaWatch.new()
@@ -463,26 +468,15 @@ class SongOfCelerity extends KAbility:
 		b.remaining = b.duration
 		b.stats = {"ms%": dv("SelfBaseMovementSpeed", 0.2) + 0.0002 * ap()}
 		b.icon = icon
-		var fx := VfxNode.new()
-		o.add_child(fx)
-		fx.position.y = 0.15
-		var e := Vfx.emitter(VIOLET, 30, 0.6, 0.35, {"radius": 0.4, "dir": Vector3.UP, "spread": 25.0, "vmin": 0.2, "vmax": 0.8})
-		fx.add_child(e)
-		fx.trails.append(e)
-		var e2 := Vfx.emitter(VIOLET.lerp(Color.WHITE, 0.3), 10, 0.9, 0.22, {"radius": 0.5, "dir": Vector3.UP, "spread": 10.0,
-				"vmin": 0.6, "vmax": 1.2, "tex": Vfx.spark_texture()})
-		fx.add_child(e2)
-		fx.trails.append(e2)
-		b.vfx = fx
 		o.remove_buffs_by_id("sona_e_self")
+		b.vfx = SonaUtil.fx_on(o, "Sona_Base_E_Buff", {"loop": true, "dir": o.facing})
 		o.add_buff(b, o)
 		var ms := dv("AllyBaseMovementSpeed", 0.1) + 0.0002 * ap()
 		var mdur := dv("AllyMovementSpeedDuration", 3.0)
-		SonaUtil.melody(self, VIOLET, func(u):
+		SonaUtil.melody(self, "E", func(u):
 			if u == o:
 				return
-			K.haste(u, ms, mdur, o, false, "sona_e_ally")
-			Vfx.rising(u, VIOLET, mdur * 0.6, 16, 0.4))
+			K.haste(u, ms, mdur, o, false, "sona_e_ally"))
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -549,74 +543,23 @@ class Crescendo extends KAbility:
 		var dmg := damage()
 		var stun := dv("StunDuration", 1.5)
 		var self_ref := self
-		Vfx.burst(m, o.global_position + Vector3(0, 1.2, 0), GOLD, 1.4, {"sparks": 30})
-		Vfx.ring(m, o.global_position, TEAL, 2.4, 0.5, 0.08, 0.1)
+		# cast: vfx_map "R_cas" (Sona_Base_R_Cas); impact: "R_tar" (Sona_Base_R_Tar)
 		var on_hit := func(_mm, u):
 			self_ref.hit(u, dmg, G.DmgType.MAGIC, {"is_aoe": true, "tag": "r"})
-			K.stun(u, stun, o)
-			Vfx.burst(m, u.global_position + Vector3(0, 1.1, 0), GOLD, 1.0, {"sparks": 18, "ring": false})
-			SonaUtil.note_pop(m, u, TEAL)
+			var sb := K.stun(u, stun, o)
+			# League Crescendo stun visual replaces the generic stun stars
+			if sb != null:
+				if sb.vfx != null and is_instance_valid(sb.vfx):
+					sb.vfx.queue_free()
+				sb.vfx = SonaUtil.fx_on(u, "Sona_Base_R_buf", {"loop": true})
 		var mi := K.line_missile(self, o.global_position + Vector3(0, 0.0, 0) + dir * 0.4, dir, 2400.0, TRAVEL, {
-			"width": half_width(), "pierce": true, "visual": _wave_visual(), "height": 1.0, "on_hit": on_hit,
+			"width": half_width(), "pierce": true, "lol": "Sona_Base_R_Missile", "height": 1.0, "on_hit": on_hit,
 		})
 		mi.blockable = true
 		var gp: Vector3 = o.global_position
 		if m.camera_rig != null and G.player != null and G.flat_dist(G.player.global_position, gp) < 14.0:
 			m.camera_rig.shake(0.2)
 		notify_cast(t)
-
-	func _wave_visual() -> VfxNode:
-		var n := VfxNode.new()
-		var hw := half_width() * G.U
-		# three bright arcs bulging forward (local -Z is the travel direction)
-		for i in 3:
-			var arc := MeshInstance3D.new()
-			arc.mesh = _arc_mesh(hw * (1.25 + i * 0.22), 0.12 + 0.03 * i, 100.0)
-			var mat := Vfx.add_material(GOLD if i == 0 else TEAL, 2.6 - i * 0.5, false)
-			mat.set_shader_parameter("use_mask", false)
-			arc.material_override = mat
-			arc.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			arc.position = Vector3(0, -0.4 + i * 0.35, hw * 1.0 + i * 0.35)
-			n.add_child(arc)
-		for k in 7:
-			var x := lerpf(-hw, hw, k / 6.0)
-			var s := Vfx.sprite(TEAL if k % 2 == 0 else GOLD, 0.7, 2.2, Vfx.spark_texture())
-			s.position = Vector3(x, 0.1, -absf(x) * -0.25)
-			n.add_child(s)
-		var e := Vfx.emitter(TEAL, 90, 0.5, 0.35, {"vmin": 0.0, "vmax": 0.6, "tex": Vfx.spark_texture(), "energy": 1.8})
-		var pm: ParticleProcessMaterial = e.process_material
-		pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
-		pm.emission_box_extents = Vector3(hw, 0.4, 0.2)
-		n.add_child(e)
-		n.trails.append(e)
-		var e2 := Vfx.emitter(GOLD, 50, 0.7, 0.6, {"vmin": 0.0, "vmax": 0.3, "energy": 1.3})
-		var pm2: ParticleProcessMaterial = e2.process_material
-		pm2.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
-		pm2.emission_box_extents = Vector3(hw * 0.9, 0.3, 0.1)
-		n.add_child(e2)
-		n.trails.append(e2)
-		n.add_child(Vfx.light(GOLD, 3.0, 6.0))
-		return n
-
-	## Flat arc strip (XZ plane) centred on +Z, spanning +-span/2 degrees around -Z.
-	func _arc_mesh(radius: float, thickness: float, span_deg: float) -> ArrayMesh:
-		var st := SurfaceTool.new()
-		st.begin(Mesh.PRIMITIVE_TRIANGLES)
-		var segs := 16
-		var half := deg_to_rad(span_deg * 0.5)
-		for i in segs:
-			var a0 := lerpf(-half, half, float(i) / segs)
-			var a1 := lerpf(-half, half, float(i + 1) / segs)
-			var d0 := Vector3(sin(a0), 0, -cos(a0))
-			var d1 := Vector3(sin(a1), 0, -cos(a1))
-			var i0 := d0 * (radius - thickness)
-			var o0 := d0 * (radius + thickness)
-			var i1 := d1 * (radius - thickness)
-			var o1 := d1 * (radius + thickness)
-			for v in [i0, o0, o1, i0, o1, i1]:
-				st.set_normal(Vector3.UP)
-				st.add_vertex(v)
-		return st.commit()
 
 	## Champions hit by a cast toward `aim` (predicted positions).
 	func count_line(ctx, aim: Vector3) -> int:

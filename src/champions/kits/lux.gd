@@ -32,6 +32,11 @@ func ai_tuning() -> Dictionary:
 	return {"aggression": 0.45}
 
 
+## League VFX: the Q prison is attached by the kit (it lasts the root), E hits use E_tar_hit.
+func vfx_map() -> Dictionary:
+	return {"Q_tar": "", "E_tar": "Lux_Base_E_tar_hit", "BA_crit_tar": "Lux_Base_BA_tar_crit"}
+
+
 # ===================================================================== shared
 ## Workaround: the core only levels bot abilities at spawn; spend new points as bots level up.
 class BotLeveler extends Effect:
@@ -66,22 +71,27 @@ class KitAbility extends Ability:
 		return o.match_ref.champions.filter(func(e): return e.team != o.team and not e.dead and e.is_targetable_by(o.team))
 
 
-class FX extends RefCounted:
-	static func solid(mesh: Mesh, color: Color, energy: float = 2.0) -> MeshInstance3D:
-		var mi := MeshInstance3D.new()
-		mi.mesh = mesh
-		var mat := Vfx.add_material(color, energy, false)
-		mat.set_shader_parameter("use_mask", false)
-		mi.material_override = mat
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		return mi
+class LuxFx extends RefCounted:
+	static func at_unit(u, name: String, src = null) -> LolVfx:
+		if u == null or not is_instance_valid(u) or u.match_ref == null:
+			return null
+		var d := Vector3.ZERO
+		if src != null and is_instance_valid(src):
+			d = G.flat_dir(src.global_position, u.global_position)
+		return LolVfx.spawn(u.match_ref, name, u.global_position + Vector3(0, u.height * 0.5, 0), {"dir": d})
 
-	static func torus(color: Color, r: float, thick: float, energy: float = 2.0) -> MeshInstance3D:
-		var tm := TorusMesh.new()
-		tm.inner_radius = r - thick
-		tm.outer_radius = r
-		tm.rings = 24
-		return solid(tm, color, energy)
+	## Missile visual made of a League system plus its child system.
+	static func pair(main: String, child: String) -> LolVfx:
+		var v := LolVfx.make(main, {"loop": true})
+		if v != null:
+			var ch := LolVfx.make(child, {"loop": true})
+			if ch != null:
+				v.add_child(ch)
+		return v
+
+	## Enemy (red) / allied (green) colored variant, relative to the local player.
+	static func team_variant(o, red: String, green: String) -> String:
+		return red if G.player != null and o.team != G.player.team else green
 
 
 # ===================================================================== passive
@@ -104,19 +114,17 @@ class Illumination extends Effect:
 		var b = u.find_buff("lux_illum", owner)
 		if b != null:
 			b.remaining = dur
+			_mark_fx(u, b)
 			return
 		var nb: Buff = K.buff(u, "lux_illum", dur, {}, owner, {"name": "Illumination", "debuff": true})
 		if nb != null:
-			var n := VfxNode.new()
-			n.lifetime = dur + 0.1
-			u.add_child(n)
-			n.position.y = (u.height if u.kind == G.Kind.CHAMPION else 1.6) * 0.55
-			n.add_child(Vfx.sprite(LIGHT, 0.7, 1.4))
-			var ring := FX.torus(LIGHT, 0.55, 0.05, 2.2)
-			n.add_child(ring)
-			var tw := n.create_tween().set_loops()
-			tw.tween_property(n, "rotation:y", TAU, 1.5).from(0.0)
-			nb.vfx = n
+			_mark_fx(u, nb)
+
+	## League Illumination debuff (restarted when the mark is refreshed; freed with the buff).
+	func _mark_fx(u, b) -> void:
+		if b.vfx != null and is_instance_valid(b.vfx):
+			b.vfx.queue_free()
+		b.vfx = LolVfx.attach(u, "Lux_Base_P_debuff", {"height": (u.height if u.kind == G.Kind.CHAMPION else 1.6) * 0.55})
 
 	## Consume the mark on `u` for bonus magic damage. Returns true if one was consumed.
 	func detonate(u) -> bool:
@@ -127,9 +135,7 @@ class Illumination extends Effect:
 			return false
 		u.remove_buff(b)
 		Combat.deal(owner, u, damage(), G.DmgType.MAGIC, {"is_proc": true, "tag": "lux_passive"})
-		var p: Vector3 = u.global_position + Vector3(0, 1.0, 0)
-		Vfx.burst(owner.match_ref, p, LIGHT, 0.8, {"sparks": 18, "ring": false})
-		Vfx.hit_spark(owner.match_ref, p, PRISM, 0.8)
+		LuxFx.at_unit(u, "Lux_Base_P_tar", owner)
 		return true
 
 	func on_attack_hit(target, _info) -> void:
@@ -149,30 +155,13 @@ class LightBinding extends KitAbility:
 	func damage() -> float:
 		return dv("BaseDamage") + dv("APRatio", 0.75) * ap()
 
-	static func orb_visual() -> VfxNode:
-		var n := VfxNode.new()
-		n.add_child(Vfx.sprite(WHITE, 0.45, 3.5))
-		n.add_child(Vfx.sprite(LIGHT, 1.1, 1.6))
-		var r1 := FX.torus(SKY, 0.4, 0.04, 2.5)
-		n.add_child(r1)
-		var r2 := FX.torus(LIGHT, 0.32, 0.04, 2.5)
-		r2.rotation.x = PI * 0.5
-		n.add_child(r2)
-		var tw := n.create_tween().set_loops()
-		tw.tween_property(n, "rotation:z", TAU, 0.6).from(0.0)
-		var tr := Vfx.emitter(LIGHT, 50, 0.4, 0.35, {"vmin": 0.0, "vmax": 0.4, "radius": 0.1})
-		n.add_child(tr)
-		n.trails.append(tr)
-		n.add_child(Vfx.light(LIGHT, 1.8, 4.0))
-		return n
-
 	func execute(t: Dictionary) -> void:
 		var o = owner
 		var dmg := damage()
 		var root_t := dv("RootDuration", 2.0)
 		var self_ref := self
 		K.line_missile(self, K.cast_pos(o, 1.2), t.dir, 1200.0, 1240.0, {
-			"width": 70.0, "max_hits": 2, "visual": orb_visual(), "height": 1.2,
+			"width": 70.0, "max_hits": 2, "lol": "Lux_Base_Q_mis", "height": 1.2,
 			"on_hit": func(_mi, u): self_ref._bind(u, dmg, root_t),
 		})
 		notify_cast(t)
@@ -184,29 +173,14 @@ class LightBinding extends KitAbility:
 		var p = illum()
 		hit(u, dmg, G.DmgType.MAGIC, {"tag": "q"})
 		var b := K.root(u, root_t, o, LIGHT)
-		if b != null:
-			var n := VfxNode.new()
-			n.lifetime = b.duration
-			u.add_child(n)
-			for i in 3:
-				var ring := FX.torus(LIGHT if i != 1 else SKY, 0.7 - i * 0.08, 0.05, 2.4)
-				ring.position.y = 0.3 + i * 0.6
-				n.add_child(ring)
-			var col := FX.solid(_pillar(), Color(LIGHT.r, LIGHT.g, LIGHT.b, 0.35), 0.8)
-			col.position.y = 1.0
-			n.add_child(col)
-			var tw := n.create_tween().set_loops()
-			tw.tween_property(n, "rotation:y", TAU, 1.0).from(0.0)
+		# League light prison on the target (replaces the generic root ring; freed with the root)
+		var fx := LolVfx.attach(u, "Lux_Base_Q_tar", {"height": 0.05, "dir": G.flat_dir(o.global_position, u.global_position)})
+		if b != null and fx != null:
+			if b.vfx != null and is_instance_valid(b.vfx):
+				b.vfx.queue_free()
+			b.vfx = fx
 		if p != null:
 			p.mark(u)
-		Vfx.burst(o.match_ref, u.global_position + Vector3(0, 1.0, 0), LIGHT, 1.0, {"sparks": 24, "ring": false})
-
-	static func _pillar() -> Mesh:
-		var cm := CylinderMesh.new()
-		cm.top_radius = 0.55
-		cm.bottom_radius = 0.6
-		cm.height = 2.0
-		return cm
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -257,33 +231,24 @@ class PrismaticBarrier extends KitAbility:
 	func shield_amount() -> float:
 		return dv("BaseShieldAmount") + dv("APRatio", 0.4) * ap()
 
-	static func wand_visual() -> VfxNode:
-		var n := VfxNode.new()
-		n.add_child(Vfx.sprite(WHITE, 0.4, 3.5))
-		n.add_child(Vfx.sprite(PRISM, 1.0, 1.8))
-		var tr := Vfx.emitter(PRISM, 40, 0.45, 0.4, {"vmin": 0.0, "vmax": 0.4, "radius": 0.15})
-		n.add_child(tr)
-		n.trails.append(tr)
-		var tr2 := Vfx.emitter(SKY, 24, 0.4, 0.3, {"vmin": 0.0, "vmax": 0.6, "radius": 0.2})
-		n.add_child(tr2)
-		n.trails.append(tr2)
-		var ring := FX.torus(LIGHT, 0.35, 0.04, 2.5)
-		n.add_child(ring)
-		var tw := ring.create_tween().set_loops()
-		tw.tween_property(ring, "rotation:x", TAU, 0.4).from(0.0)
-		return n
-
 	func _shield(u) -> void:
 		if u == null or not is_instance_valid(u) or u.dead or u.kind != G.Kind.CHAMPION:
 			return
-		K.shield(owner, u, shield_amount(), dv("ShieldDuration", 2.5), PRISM)
+		# same as K.shield without the generic bubble: League's W_tar_shield draws it
+		var dur := dv("ShieldDuration", 2.5)
+		Combat.shield(owner, u, shield_amount(), dur, {"id": ""})
+		var fx := LolVfx.attach(u, "Lux_Base_W_tar_shield", {"height": u.height * 0.5})
+		if fx != null and u.match_ref != null:
+			u.match_ref.after(dur, func():
+				if is_instance_valid(fx):
+					fx.stop())
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
 		var self_ref := self
 		_shield(o)
 		var mi := K.line_missile(self, K.cast_pos(o, 1.2), t.dir, 2200.0, cast_range, {
-			"width": 110.0, "pierce": true, "visual": wand_visual(), "height": 1.2,
+			"width": 110.0, "pierce": true, "visual": LuxFx.pair("Lux_Base_W_mis", "Lux_Base_W_mis_child"), "keep_visual": true, "height": 1.2,
 			"on_hit": func(_m, u): self_ref._shield(u),
 			"on_end": func(_m, pos): self_ref._return(pos),
 		})
@@ -311,7 +276,8 @@ class PrismaticBarrier extends KitAbility:
 		mi.pierce = true
 		mi.width = 110.0 * G.U
 		mi.height = 1.2
-		mi.visual = wand_visual()
+		mi.visual = LuxFx.pair("Lux_Base_W_mis_return", "Lux_Base_W_mis_return_child")
+		mi.custom["keep_visual"] = true
 		_allies_only(mi)
 		var self_ref := self
 		mi.on_hit = func(_m, u): self_ref._shield(u)
@@ -384,14 +350,8 @@ class LucentSingularity extends KitAbility:
 		zone = {"pos": pos, "landed": false, "node": null, "detonate_on_land": false}
 		var st := zone
 		recast_window = fly + dv("SlowZoneDuration", 5.0)
-		var vis := VfxNode.new()
-		vis.add_child(Vfx.sprite(WHITE, 0.6, 3.5))
-		vis.add_child(Vfx.sprite(LIGHT, 1.4, 1.8))
-		var tr := Vfx.emitter(LIGHT, 40, 0.4, 0.4, {"vmin": 0.0, "vmax": 0.4, "radius": 0.1})
-		vis.add_child(tr)
-		vis.trails.append(tr)
 		var self_ref := self
-		K.arc_missile(self, from, pos, fly, func(_mi, _p): self_ref._land(st), {"visual": vis, "arc": 1.2})
+		K.arc_missile(self, from, pos, fly, func(_mi, _p): self_ref._land(st), {"lol": "Lux_Base_E_mis", "arc": 1.2})
 		notify_cast(t)
 
 	func _land(st: Dictionary) -> void:
@@ -402,32 +362,9 @@ class LucentSingularity extends KitAbility:
 		var pos: Vector3 = st.pos
 		var r_m := ind_radius * G.U
 		st.landed = true
-		var n := VfxNode.new()
-		n.lifetime = dv("SlowZoneDuration", 5.0) + 0.2
-		m.add_fx(n, pos)
-		var orb := Vfx.sprite(WHITE, 0.6, 3.0)
-		orb.position.y = 0.9
-		n.add_child(orb)
-		var halo := Vfx.sprite(LIGHT, 1.6, 1.4)
-		halo.position.y = 0.9
-		n.add_child(halo)
-		var ring := FX.torus(SKY, 0.5, 0.04, 2.0)
-		ring.position.y = 0.9
-		n.add_child(ring)
-		var motes := Vfx.emitter(LIGHT, 40, 1.0, 0.2, {"vmin": 0.2, "vmax": 0.8, "dir": Vector3.UP, "spread": 20.0, "radius": r_m * 0.8, "tex": Vfx.spark_texture()})
-		n.add_child(motes)
-		n.trails.append(motes)
-		var l := Vfx.light(LIGHT, 2.0, r_m * 2.5)
-		l.position.y = 1.0
-		n.add_child(l)
-		var tw := n.create_tween().set_loops()
-		tw.tween_property(orb, "position:y", 1.2, 0.5)
-		tw.tween_property(orb, "position:y", 0.9, 0.5)
-		var tw2 := ring.create_tween().set_loops()
-		tw2.tween_property(ring, "rotation:x", TAU, 1.2).from(0.0)
-		var g := Vfx.ground_circle(m, pos, r_m, Color(LIGHT.r, LIGHT.g, LIGHT.b, 0.8), n.lifetime, 0.2)
-		n.set_meta("ground", g)
-		st.node = n
+		# League singularity zone (team colored, includes its radius ring)
+		st.node = LolVfx.spawn(m, LuxFx.team_variant(o, "Lux_Base_E_tar_aoe_red", "Lux_Base_E_tar_aoe_green"), pos + Vector3(0, 0.05, 0),
+				{"dir": G.flat_dir(o.global_position, pos)})
 		var slow := dv("SlowPercent", 25.0) / 100.0
 		m.add_ticker(dv("SlowZoneDuration", 5.0) + 0.1, func(_dt: float) -> bool:
 			if not is_same(st, zone) or not is_instance_valid(o):
@@ -459,10 +396,7 @@ class LucentSingularity extends KitAbility:
 		var r_m := ind_radius * G.U
 		var n = st.node
 		if n != null and is_instance_valid(n):
-			var g = n.get_meta("ground", null)
-			if g != null and is_instance_valid(g):
-				g.queue_free()
-			n.detach_and_fade()
+			n.queue_free()   # the nova replaces the zone at once (its particles would linger for seconds)
 		var p = illum()
 		var dmg := damage()
 		var slow := dv("SlowPercent", 25.0) / 100.0
@@ -471,9 +405,7 @@ class LucentSingularity extends KitAbility:
 			K.slow(u, slow, dv("SlowLingerDuration", 1.0), o, false, "lux_e_slow")
 			if p != null:
 				p.mark(u)
-		Vfx.burst(m, pos + Vector3(0, 0.8, 0), LIGHT, r_m * 0.9, {"sparks": 40})
-		Vfx.burst(m, pos + Vector3(0, 1.0, 0), PRISM, r_m * 0.4, {"sparks": 12, "ring": false, "light": false})
-		Vfx.ring(m, pos, WHITE, r_m, 0.4, 0.15, 0.3)
+		LolVfx.spawn(m, "Lux_Base_E_tar_nova", pos + Vector3(0, 1.0, 0), {"dir": G.flat_dir(o.global_position, pos)})
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -519,6 +451,8 @@ class LucentSingularity extends KitAbility:
 
 # ===================================================================== R
 class FinalSpark extends KitAbility:
+	var _beam_fx: LolVfx = null
+
 	func _init() -> void:
 		target_type = Target.DIRECTION
 		indicator = Ind.LINE
@@ -535,25 +469,17 @@ class FinalSpark extends KitAbility:
 		var o = owner
 		var m = o.match_ref
 		var dir: Vector3 = t.get("dir", o.facing)
-		# charge-up at the wand
-		var n := VfxNode.new()
-		n.lifetime = cast_time + 0.05
-		o.add_child(n)
-		n.position = Vector3(0, 1.3, 0) + dir * 0.8
-		var core := Vfx.sprite(WHITE, 0.2, 3.5)
-		n.add_child(core)
-		var halo := Vfx.sprite(PRISM, 0.5, 1.6)
-		n.add_child(halo)
-		var inward := Vfx.emitter(LIGHT, 50, 0.4, 0.2, {"vmin": -3.5, "vmax": -2.0, "radius": 1.4, "local": true, "tex": Vfx.spark_texture()})
-		n.add_child(inward)
-		n.add_child(Vfx.light(LIGHT, 2.0, 5.0))
-		var tw := n.create_tween()
-		tw.tween_property(core, "scale", Vector3.ONE * 1.0, cast_time)
-		tw.parallel().tween_property(halo, "scale", Vector3.ONE * 2.0, cast_time)
-		# telegraph along the beam path
-		var from: Vector3 = o.global_position + Vector3(0, 0.15, 0)
-		var to: Vector3 = from + dir * cast_range * G.U
-		Vfx.beam(m, from, to, Color(LIGHT.r, LIGHT.g, LIGHT.b, 0.5), 0.12, cast_time)
+		# League Final Spark: R_cas (wand charge) comes from the generic cast hook; the beam system holds
+		# the charge / warning lines (t=0) and the beam itself (delayed by 1 s = the cast time).
+		# Its origin is at Lux's wand height (its ground parts are offset by -1.6 m).
+		_beam_fx = LolVfx.spawn(m, "Lux_Base_R_mis_beam", o.global_position, {"dir": dir, "height": 1.6, "length": cast_range * G.U})
+
+	## Drop the League beam if the cast gets interrupted before it fires.
+	func on_tick(_dt: float) -> void:
+		if _beam_fx != null and (not is_instance_valid(_beam_fx) or owner.casting.get("ability") != self):
+			if is_instance_valid(_beam_fx):
+				_beam_fx.queue_free()
+			_beam_fx = null
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
@@ -561,6 +487,7 @@ class FinalSpark extends KitAbility:
 		var dir: Vector3 = t.dir
 		var from: Vector3 = o.global_position + Vector3(0, 1.1, 0) + dir * 0.6
 		var to: Vector3 = from + dir * cast_range * G.U
+		_beam_fx = null   # fired: the League beam plays out on its own
 		var dmg := damage()
 		var p = illum()
 		var killed_champ := []
@@ -572,28 +499,8 @@ class FinalSpark extends KitAbility:
 				killed_champ.append(u)
 			if p != null and not u.dead:
 				p.mark(u)
-			Vfx.burst(m, u.global_position + Vector3(0, 1.0, 0), LIGHT, 1.0, {"sparks": 16, "ring": false, "light": false})
 		if not killed_champ.is_empty():
 			cd = maxf(0.0, cd - cd_total * dv("ResetPercent", 0.3))
-		# the beam: prismatic outer glow, golden body, white-hot core
-		Vfx.beam(m, from, to, PRISM, 3.4, 0.55)
-		Vfx.beam(m, from, to, LIGHT, 2.2, 0.6)
-		Vfx.beam(m, from, to, WHITE, 0.9, 0.7)
-		var len := from.distance_to(to)
-		var steps := 6
-		for i in steps:
-			var pt: Vector3 = from.lerp(to, (float(i) + 0.5) / float(steps))
-			var l := VfxNode.new()
-			l.lifetime = 0.6
-			m.add_fx(l, pt)
-			var lt := Vfx.light(LIGHT, 4.0, 6.0)
-			l.add_child(lt)
-			var tw := l.create_tween()
-			tw.tween_property(lt, "light_energy", 0.0, 0.6)
-			var sp := Vfx.emitter(LIGHT, 30, 0.5, 0.25, {"one_shot": true, "explosive": 0.8, "vmin": 2.0, "vmax": 5.0, "radius": len / float(steps) * 0.4, "tex": Vfx.spark_texture()})
-			sp.emitting = true
-			l.add_child(sp)
-		Vfx.burst(m, from, WHITE, 1.4, {"sparks": 30, "ring": false})
 		if m.camera_rig != null:
 			var near_player: bool = G.player != null and NavGrid._dist_to_segment(G.player.global_position, from, to) < 12.0
 			m.camera_rig.shake(0.4 if o == G.player or near_player else 0.1)

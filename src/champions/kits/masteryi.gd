@@ -1,11 +1,7 @@
 extends ChampionKit
 ## Master Yi, the Wuju Bladesman.
 
-const GOLD := Color(1.0, 0.82, 0.3)
 const WUJU := Color(0.5, 1.0, 0.3)
-const JADE := Color(0.35, 1.0, 0.6)
-const VIOLET := Color(0.72, 0.42, 1.0)
-const BLADE := Color(0.85, 1.0, 0.6)
 
 
 func build_kit() -> void:
@@ -27,6 +23,7 @@ func build_kit() -> void:
 	c.add_effect(MeditateGuard.new(c.abilities[1]))
 	c.add_effect(HighlanderPassive.new(c.abilities[3]))
 	c.add_effect(BotLeveler.new())
+	c.add_effect(YiFx.new())
 
 
 
@@ -34,114 +31,44 @@ func ai_tuning() -> Dictionary:
 	return {"aggression": 0.8}
 
 
-# ===================================================================== shared visuals
-class Fx:
-	static var _shaders := {}
+# ===================================================================== League VFX
+## League particle systems (data/vfx/masteryi.json). Casts of W/R use the automatic "<K>_cas" hook.
+func vfx_map() -> Dictionary:
+	return {
+		"BA_tar": "", "BA_crit_tar": "",            # YiFx: swing trail + matching impact
+		"Q_cas": "", "Q_mis": "", "Q_tar": "MasterYi_Base_Q_Tar",   # Q_Cas / Q_Mis / Q_End spawned by Alpha Strike
+		"W_cas": "MasterYi_Base_W_Cas", "W_tar": "",
+		"E_cas": "", "E_tar": "",
+		"R_cas": "MasterYi_Base_R_Cas", "R_tar": "",
+	}
 
-	const ARC_CODE := """
-shader_type spatial;
-render_mode unshaded, blend_add, depth_draw_never, cull_disabled%DEPTH%;
-uniform vec4 color : source_color = vec4(0.5, 1.0, 0.3, 1.0);
-uniform vec4 edge_color : source_color = vec4(1.0, 1.0, 0.8, 1.0);
-uniform float energy = 2.5;
-uniform float inner = 0.45;
-uniform float head = 0.0;
-uniform float tail = 3.0;
-uniform float fade = 1.0;
-uniform float flat_tail = 0.0;
-void fragment() {
-	vec2 p = UV * 2.0 - 1.0;
-	float r = length(p);
-	float band = smoothstep(inner - 0.04, inner + 0.02, r) * (1.0 - smoothstep(0.95, 1.0, r));
-	float ang = atan(p.y, p.x);
-	float d = mod(head - ang + 12.566370, 6.283185);
-	float g = clamp(1.0 - d / max(tail, 0.001), 0.0, 1.0);
-	g = mix(g * g, step(d, tail) * 0.75, flat_tail);
-	float rim = smoothstep(0.78, 0.96, r);
-	vec3 col = mix(color.rgb, edge_color.rgb, rim * g);
-	float a = band * g * (0.35 + 0.65 * rim) * fade;
-	ALBEDO = col * energy;
-	ALPHA = clamp(a, 0.0, 1.0);
-}
-"""
 
-	## Ground mandala: concentric dashed rings and petals that slowly rotate (Meditate).
-	const MANDALA_CODE := """
-shader_type spatial;
-render_mode unshaded, blend_add, depth_draw_never, cull_disabled, depth_test_disabled;
-uniform vec4 color : source_color = vec4(1.0, 0.82, 0.3, 1.0);
-uniform float energy = 1.8;
-uniform float fade = 1.0;
-void fragment() {
-	vec2 p = UV * 2.0 - 1.0;
-	float r = length(p);
-	float ang = atan(p.y, p.x);
-	float ring1 = 1.0 - smoothstep(0.0, 0.025, abs(r - 0.92));
-	float ring2 = (1.0 - smoothstep(0.0, 0.018, abs(r - 0.62))) * step(0.3, fract((ang + TIME * 0.6) / 6.283185 * 16.0));
-	float petals = abs(sin(ang * 4.0 - TIME * 0.4)) ;
-	float petal = (1.0 - smoothstep(0.0, 0.03, abs(r - (0.3 + 0.28 * petals)))) * step(r, 0.62);
-	float glow = (1.0 - smoothstep(0.0, 0.95, r)) * 0.18;
-	float a = clamp(ring1 + ring2 * 0.8 + petal * 0.7 + glow, 0.0, 1.0) * fade * (1.0 - smoothstep(0.95, 1.0, r));
-	ALBEDO = color.rgb * energy;
-	ALPHA = a;
-}
-"""
+## Basic attack visuals: League's alternating swing trails (Wuju variants while Wuju Style is up) and impacts.
+class YiFx extends Effect:
+	var alt := false
 
-	static func shader(key: String, code: String) -> Shader:
-		if not _shaders.has(key):
-			var s := Shader.new()
-			s.code = code
-			_shaders[key] = s
-		return _shaders[key]
+	func _init() -> void:
+		id = "yi_lol_fx"
+		hidden = true
 
-	static func arc_mat(col: Color, edge: Color, inner: float, ground: bool) -> ShaderMaterial:
-		var mat := ShaderMaterial.new()
-		mat.shader = shader("arc_g" if ground else "arc", ARC_CODE.replace("%DEPTH%", ", depth_test_disabled" if ground else ""))
-		mat.set_shader_parameter("color", col)
-		mat.set_shader_parameter("edge_color", edge)
-		mat.set_shader_parameter("inner", inner)
-		return mat
-
-	static func plane(size: float, mat: Material) -> MeshInstance3D:
-		var mi := MeshInstance3D.new()
-		var pm := PlaneMesh.new()
-		pm.size = Vector2(size, size)
-		mi.mesh = pm
-		mi.material_override = mat
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		return mi
-
-	## Crossed blade cuts on a target ("X" slash).
-	static func cross(m, pos: Vector3, col: Color, size: float, dur: float) -> void:
-		var a := G.rng.randf() * PI
-		for i in 2:
-			var ang := a + i * PI * 0.5 + G.rng.randf_range(-0.2, 0.2)
-			var off := Vector3(cos(ang), 0.35 * (1 if i == 0 else -1), sin(ang)) * size
-			Vfx.beam(m, pos - off, pos + off, col, 0.14, dur)
-
-	static func afterimage(m, pos: Vector3, col: Color, dur: float) -> void:
-		var n := VfxNode.new()
-		n.lifetime = dur + 0.1
-		m.add_fx(n, pos + Vector3(0, 1.1, 0))
-		var s := Vfx.sprite(col, 2.2, 1.6)
-		s.scale = Vector3(1.1, 2.4, 1.1)
-		n.add_child(s)
-		var tw := n.create_tween()
-		tw.tween_property(s, "scale", Vector3(0.2, 3.0, 0.2), dur).set_ease(Tween.EASE_IN)
-
-	static func sweep(m, pos: Vector3, radius: float, inner: float, col: Color, edge: Color, start_ang: float, turns: float, dur: float, height: float = 0.9, ground: bool = false) -> VfxNode:
-		var n := VfxNode.new()
-		n.lifetime = dur + 0.4
-		m.add_fx(n, pos + Vector3(0, height, 0))
-		var mat := arc_mat(col, edge, inner, ground)
-		mat.set_shader_parameter("head", start_ang)
-		mat.set_shader_parameter("tail", 0.4)
-		n.add_child(plane(radius * 2.0, mat))
-		var tw := n.create_tween()
-		tw.tween_method(func(v): mat.set_shader_parameter("head", v), start_ang, start_ang + TAU * turns, dur).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
-		tw.parallel().tween_method(func(v): mat.set_shader_parameter("tail", v), 0.4, minf(4.5, TAU * absf(turns) + 0.2), dur)
-		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 1.0, 0.0, 0.3)
-		return n
+	func on_attack_hit(t, info) -> void:
+		var o = owner
+		if t == null or not is_instance_valid(t) or (info != null and info.cancelled):
+			return
+		if o.passive != null and o.passive.get("striking"):
+			return    # Double Strike's extra hit has its own trail (DoubleStrike._second)
+		var wuju: bool = o.has_buff("yi_wuju")
+		var crit: bool = info != null and info.is_crit
+		var dir := G.flat_dir(o.global_position, t.global_position)
+		var trail := ""
+		if crit:
+			trail = "MasterYi_Base_Crit_Wuju_Trail" if wuju else "MasterYi_Base_Crit_Trail"
+		else:
+			alt = not alt
+			trail = "MasterYi_Base_BA%d%s_Trail" % [1 if alt else 2, "_Wuju" if wuju else ""]
+		LolVfx.attach(o, trail, {"dir": dir})
+		var nm := "MasterYi_Base_Crit_tar" if crit else "MasterYi_Base_BA_Tar_%02d" % (1 if alt else 2)
+		LolVfx.spawn(o.match_ref, nm, t.global_position + Vector3(0, t.height * 0.5, 0), {"dir": dir})
 
 
 # ===================================================================== helpers
@@ -222,12 +149,13 @@ class DoubleStrike extends Effect:
 			return
 		striking = true
 		var crit: bool = G.rng.randf() < o.stats.crit_chance
+		var dir := G.flat_dir(o.global_position, target.global_position)
+		var tp: Vector3 = target.global_position + Vector3(0, target.height * 0.5, 0)
 		o.attack_hit(target, crit, 0.5)
 		striking = false
-		var m = o.match_ref
-		var tp: Vector3 = target.global_position + Vector3(0, 1.1, 0)
-		Fx.cross(m, tp, BLADE, 1.0, 0.16)
-		Vfx.hit_spark(m, tp, GOLD, 0.8)
+		var wuju: bool = o.has_buff("yi_wuju")
+		LolVfx.attach(o, "MasterYi_Base_P_%sTrail_%d" % ["Wuju_" if wuju else "", G.rng.randi_range(1, 2)], {"dir": dir})
+		LolVfx.spawn(o.match_ref, "MasterYi_Base_P_tar", tp, {"dir": dir})
 		o.play_anim("crit", 1.6, 0.03)
 		o.anim_lock = 0.3
 
@@ -273,8 +201,7 @@ class AlphaStrike extends YiAbility:
 		var total := strikes * interval + 0.08
 		start_channel(total, {})
 		o.channel_disarm = true
-		Fx.afterimage(m, o.global_position, BLADE, 0.3)
-		Vfx.burst(m, o.global_position + Vector3(0, 1.0, 0), WUJU, 0.9, {"ring": false, "sparks": 18, "light": false})
+		LolVfx.spawn(m, "MasterYi_Base_Q_Cas", o.global_position + Vector3(0, 1.0, 0), {"dir": G.flat_dir(o.global_position, u.global_position)})
 		var st := {"last": null, "pos": o.global_position, "hit": {}}
 		var self_ref := self
 		for i in strikes:
@@ -330,12 +257,18 @@ class AlphaStrike extends YiAbility:
 		o.face_toward(tp, 100.0)
 		st.pos = land
 		st.last = tgt
-		var h := Vector3(0, 1.1, 0)
-		Vfx.beam(m, from + h, land + h, Color(0.7, 1.0, 0.4), 0.22, 0.22)
-		Vfx.beam(m, from + h, land + h, GOLD, 0.07, 0.18)
-		Fx.cross(m, tp + h, BLADE, 1.2, 0.2)
-		Fx.afterimage(m, land, WUJU, 0.22)
-		Vfx.hit_spark(m, tp + h, GOLD, 0.9)
+		_streak(m, from, land)   # impact on the target: vfx_map "Q_tar" (MasterYi_Base_Q_Tar)
+
+	## League's Alpha Strike missile (Yi's speed shadow) flown from one strike position to the next.
+	func _streak(m, from: Vector3, to: Vector3) -> void:
+		if G.flat_dist(from, to) < 0.05:
+			return
+		var fx := LolVfx.spawn(m, "MasterYi_Base_Q_Mis", from, {"dir": G.flat_dir(from, to), "loop": true})
+		if fx == null:
+			return
+		var tw := fx.create_tween()
+		tw.tween_property(fx, "global_position", to, 0.1)
+		tw.tween_callback(fx.stop)
 
 	func _finish(primary, st: Dictionary) -> void:
 		var o = owner
@@ -360,8 +293,7 @@ class AlphaStrike extends YiAbility:
 		o.reset_attack()
 		if o.is_bot and tgt != null and is_instance_valid(tgt) and not tgt.dead and tgt.kind == G.Kind.CHAMPION:
 			o.issue_attack(tgt)
-		Vfx.burst(m, o.global_position + Vector3(0, 1.0, 0), WUJU, 1.1, {"sparks": 22})
-		Fx.sweep(m, o.global_position, 1.6, 0.5, WUJU, Color(1, 1, 0.8), atan2(o.facing.z, o.facing.x), 0.9, 0.16, 1.0)
+		LolVfx.spawn(m, "MasterYi_Base_Q_End", o.global_position + Vector3(0, 1.0, 0), {"dir": o.facing})
 
 	func channel_end(_ch: Dictionary, _interrupted: bool) -> void:
 		owner.channel_disarm = false
@@ -419,7 +351,7 @@ class Meditate extends YiAbility:
 	var channeling := false
 	var dr_until := -1.0
 	var extra_until := -1.0
-	var fx: VfxNode = null
+	var fx: LolVfx = null
 
 	func _init() -> void:
 		target_type = Target.NONE
@@ -437,7 +369,6 @@ class Meditate extends YiAbility:
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
-		var m = o.match_ref
 		var dur := dv("HealDuration", 4.0)
 		channeling = true
 		extra_until = now() + dv("InitialExtraDRDuration", 0.5)
@@ -448,35 +379,10 @@ class Meditate extends YiAbility:
 		o.anim_lock = 0.7
 		start_channel(dur, {"acc": 0.0, "elapsed": 0.0})
 		o.channel_disarm = true
-		fx = VfxNode.new()
-		fx.lifetime = dur + 0.2
-		o.add_child(fx)
-		var mat := ShaderMaterial.new()
-		mat.shader = Fx.shader("mandala", Fx.MANDALA_CODE)
-		mat.set_shader_parameter("color", GOLD)
-		var mandala := Fx.plane(3.4, mat)
-		mandala.position.y = 0.1
-		fx.add_child(mandala)
-		var dome := MeshInstance3D.new()
-		var sm := SphereMesh.new()
-		sm.radius = 1.25
-		sm.height = 2.5
-		dome.mesh = sm
-		var dm := Vfx.add_material(Color(1.0, 0.85, 0.4, 0.45), 1.0, false)
-		dm.set_shader_parameter("use_mask", false)
-		dome.material_override = dm
-		dome.position.y = 1.0
-		dome.scale = Vector3(1.0, 0.9, 1.0)
-		fx.add_child(dome)
-		var e := Vfx.emitter(GOLD, 30, 1.2, 0.2, {"vmin": 0.4, "vmax": 1.0, "dir": Vector3.UP, "spread": 10.0, "radius": 0.9, "local": true})
-		fx.add_child(e)
-		var l := Vfx.light(GOLD, 1.8, 4.0)
-		l.position.y = 1.4
-		fx.add_child(l)
-		var tw := fx.create_tween().set_loops()
-		tw.tween_property(dome, "scale", Vector3(1.06, 0.95, 1.06), 0.6).set_trans(Tween.TRANS_SINE)
-		tw.tween_property(dome, "scale", Vector3(1.0, 0.9, 1.0), 0.6).set_trans(Tween.TRANS_SINE)
-		Vfx.ring(m, o.global_position, GOLD, 2.2, 0.4, 0.08, 0.1)
+		# League meditate aura for the channel (W_Cas burst comes from the automatic cast hook)
+		if fx != null and is_instance_valid(fx):
+			fx.stop()
+		fx = LolVfx.attach(o, "MasterYi_Base_W_Buf", {"loop": true, "dir": o.facing})
 		notify_cast(t)
 
 	func channel_tick(dt: float, ch: Dictionary) -> void:
@@ -505,7 +411,7 @@ class Meditate extends YiAbility:
 		o.anim_lock = 0.0
 		dr_until = minf(dr_until, now() + dv("DRLinger", 0.5))
 		if fx != null and is_instance_valid(fx):
-			fx.detach_and_fade()
+			fx.stop()
 		fx = null
 
 	func current_dr(src) -> float:
@@ -543,10 +449,18 @@ class MeditateGuard extends Effect:
 		id = "yi_w_dr"
 		hidden = true
 
+	var fx_t := -10.0
+
 	func on_pre_damage_taken(info) -> void:
 		var dr: float = w.current_dr(info.source)
 		if dr > 0.0:
 			info.mult *= 1.0 - dr
+			# League "damage absorbed while meditating" flash, rate limited
+			var o = owner
+			var tnow: float = o.match_ref.time if o.match_ref != null else 0.0
+			if w.channeling and tnow - fx_t > 0.4:
+				fx_t = tnow
+				LolVfx.spawn(o.match_ref, "MasterYi_Base_W_Dmg", o.global_position + Vector3(0, 1.0, 0), {})
 
 
 # ===================================================================== E
@@ -570,26 +484,11 @@ class WujuStyle extends YiAbility:
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
-		var m = o.match_ref
 		var dur := dv("Duration", 5.0)
 		var b := K.buff(o, "yi_wuju", dur, {}, o, {"name": "Wuju Style", "icon": icon})
+		# League Wuju blade glow for the buff (stopped by the buff on expiry)
 		if b != null and (b.vfx == null or not is_instance_valid(b.vfx)):
-			var n := VfxNode.new()
-			o.add_child(n)
-			b.vfx = n
-			var e := Vfx.emitter(WUJU, 30, 0.7, 0.2, {"vmin": 0.6, "vmax": 1.6, "dir": Vector3.UP, "spread": 25.0, "radius": 0.55, "local": false})
-			e.position.y = 0.5
-			n.add_child(e)
-			var glow := Vfx.sprite(WUJU, 1.8, 0.8)
-			glow.position.y = 1.2
-			n.add_child(glow)
-			var l := Vfx.light(WUJU, 1.5, 3.5)
-			l.position.y = 1.3
-			n.add_child(l)
-			var ring := Vfx.aura(o, WUJU, 1.0, dur, 0.06)
-			ring.reparent(n)
-		Vfx.burst(m, o.global_position + Vector3(0, 1.2, 0), WUJU, 1.0, {"sparks": 20, "ring": false})
-		Fx.sweep(m, o.global_position, 1.5, 0.55, WUJU, Color(1, 1, 0.8), atan2(o.facing.z, o.facing.x), 1.0, 0.25, 1.2)
+			b.vfx = LolVfx.attach(o, "MasterYi_Base_E_buff", {"loop": true, "dir": o.facing, "height": 1.0})
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -619,7 +518,6 @@ class WujuHook extends Effect:
 		if target == null or not is_instance_valid(target) or target.dead:
 			return
 		Combat.deal(owner, target, e_ab.on_hit_damage(), G.DmgType.TRUE, {"is_proc": true, "tag": "yi_wuju", "ability": e_ab})
-		Vfx.hit_spark(owner.match_ref, target.global_position + Vector3(0, 1.1, 0), WUJU, 0.7)
 
 
 # ===================================================================== R
@@ -639,7 +537,6 @@ class Highlander extends YiAbility:
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
-		var m = o.match_ref
 		var dur := dv("RDuration", 7.0)
 		for b0 in o.buffs.duplicate():
 			if b0.slow_amount > 0.0:
@@ -647,21 +544,9 @@ class Highlander extends YiAbility:
 		var b := K.buff(o, "yi_highlander", dur, {"as": dv("RASBonus") / 100.0, "ms%": dv("RMSBonus") / 100.0, "slow_resist": 1.0}, o,
 				{"name": "Highlander", "icon": icon})
 		if b != null and (b.vfx == null or not is_instance_valid(b.vfx)):
-			var n := VfxNode.new()
-			o.add_child(n)
-			b.vfx = n
-			var trail := Vfx.emitter(VIOLET, 50, 0.45, 0.4, {"vmin": 0.0, "vmax": 0.3, "radius": 0.45})
-			trail.position.y = 1.0
-			n.add_child(trail)
-			var sparks := Vfx.emitter(GOLD, 24, 0.5, 0.16, {"vmin": 1.0, "vmax": 2.2, "dir": Vector3.UP, "spread": 35.0, "radius": 0.5, "tex": Vfx.spark_texture()})
-			sparks.position.y = 0.6
-			n.add_child(sparks)
-			var glow := Vfx.sprite(VIOLET, 2.4, 0.9)
-			glow.position.y = 1.2
-			n.add_child(glow)
-			var l := Vfx.light(VIOLET, 2.2, 4.0)
-			l.position.y = 1.4
-			n.add_child(l)
+			# League Highlander aura by rank (stopped by the buff on expiry); R_Cas comes from the cast hook
+			var buf_fx: String = ["MasterYi_Base_R_Buf", "MasterYi_Base_R_Buf_Lvl2", "MasterYi_Base_R_Buf_Lvl3"][clampi(level, 1, 3) - 1]
+			b.vfx = LolVfx.attach(o, buf_fx, {"loop": true, "dir": o.facing})
 			var clip: String = o._raw_clip("run_haste")
 			if clip != "":
 				saved_run = o.anim_map.get("run", []).duplicate()
@@ -669,9 +554,6 @@ class Highlander extends YiAbility:
 				o.cur_anim = ""
 			var self_ref := self
 			b.on_expire = func(_bb): self_ref._restore_run()
-		Vfx.burst(m, o.global_position + Vector3(0, 1.2, 0), VIOLET, 1.6, {"sparks": 34})
-		Vfx.ring(m, o.global_position, GOLD, 3.0, 0.45, 0.08, 0.1)
-		Vfx.rising(o, GOLD, 0.5, 30, 0.5)
 		notify_cast(t)
 
 	func _restore_run() -> void:
@@ -716,5 +598,4 @@ class HighlanderPassive extends Effect:
 		if b != null:
 			b.remaining += r.dv("RKillAssistExtension", 7.0)
 			b.duration = maxf(b.duration, b.remaining)
-		Vfx.rising(o, GOLD, 0.4, 24, 0.5)
-		Vfx.ring(o.match_ref, o.global_position, VIOLET, 2.0, 0.35, 0.08, 0.0)
+		LolVfx.attach(o, "MasterYi_Base_R_OnBuffKill", {"dir": o.facing})

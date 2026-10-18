@@ -4,8 +4,8 @@ extends ChampionKit
 const PINK := Color(1.0, 0.35, 0.8)
 const CYAN := Color(0.3, 0.85, 1.0)
 const ORANGE := Color(1.0, 0.5, 0.15)
-const FIRE := Color(1.0, 0.35, 0.1)
-const ZAP := Color(0.45, 0.9, 1.0)
+
+var _hook = null   ## SwitcherooHook (weapon state for the League VFX mapping)
 
 
 func build_kit() -> void:
@@ -26,12 +26,30 @@ func build_kit() -> void:
 	r.cast_range = 25000.0
 	r.ind_length = 2500.0
 	c.abilities[3] = r
-	c.add_effect(SwitcherooHook.new(q))
+	_hook = SwitcherooHook.new(q)
+	c.add_effect(_hook)
 	c.add_effect(BotLeveler.new())
 
 
 func ai_tuning() -> Dictionary:
 	return {"aggression": 0.55}
+
+
+## League VFX: basic attacks follow the active weapon (read while the attack missile spawns / lands).
+## Cast flashes, chompers and the Super Mega Death Rocket explosion are spawned by the abilities.
+func vfx_map() -> Dictionary:
+	var rocket_shot: bool = _hook != null and _hook._pending == 2
+	var rocket_hit: bool = _hook != null and _hook._rocket_hit
+	var mis := "Jinx_Base_Q_Rocket_mis" if rocket_shot else "Jinx_Base_Q_Minigun_Mis"
+	var tar := "Jinx_Base_Q_Rocket_Tar_Unit" if rocket_hit else "Jinx_Base_Q_Minigun_Tar"
+	return {
+		"BA_mis": mis, "BA_crit_mis": "Jinx_Base_Q_Rocket_Crit_Mis" if rocket_shot else mis,
+		"BA_tar": tar, "BA_crit_tar": tar,
+		"Q_cas": "", "Q_mis": "", "Q_tar": "",
+		"W_cas": "", "W_mis": "Jinx_Base_W_Mis", "W_tar": "Jinx_Base_W_Tar",
+		"E_cas": "", "E_mis": "Jinx_Base_E_Mis", "E_tar": "",
+		"R_cas": "", "R_mis": "Jinx_Base_R_Mis", "R_tar": "",
+	}
 
 
 # ===================================================================== shared
@@ -74,17 +92,6 @@ class KitAbility extends Ability:
 
 
 class FX extends RefCounted:
-	static func tracer(color: Color, length: float, thick: float, energy: float = 3.0) -> MeshInstance3D:
-		var mi := MeshInstance3D.new()
-		var bm := BoxMesh.new()
-		bm.size = Vector3(thick, thick, length)
-		mi.mesh = bm
-		var mat := Vfx.add_material(color, energy, false)
-		mat.set_shader_parameter("use_mask", false)
-		mi.material_override = mat
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		return mi
-
 	static func solid(mesh: Mesh, color: Color, energy: float = 2.0) -> MeshInstance3D:
 		var mi := MeshInstance3D.new()
 		mi.mesh = mesh
@@ -94,16 +101,20 @@ class FX extends RefCounted:
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		return mi
 
-	## Jagged electric arc between two points.
-	static func lightning(m, a: Vector3, b: Vector3, color: Color, width: float, duration: float, segs: int = 8, jitter: float = 0.35) -> void:
-		var pts: Array = [a]
-		var side := (b - a).cross(Vector3.UP).normalized()
-		for i in range(1, segs):
-			var k := float(i) / float(segs)
-			pts.append(a.lerp(b, k) + side * G.rng.randf_range(-jitter, jitter) + Vector3(0, G.rng.randf_range(-jitter, jitter) * 0.6, 0))
-		pts.append(b)
-		for i in range(pts.size() - 1):
-			Vfx.beam(m, pts[i], pts[i + 1], color, width, duration)
+	## True when `u` fights against the local player (League's red / enemy-colored variants).
+	static func is_enemy_of_player(u) -> bool:
+		return G.player != null and is_instance_valid(G.player) and G.player.team != u.team
+
+	## League flash attached at the weapon (League effects are bone-relative; we use a hand height + forward offset).
+	static func hand_fx(u: Unit, name: String, dir: Vector3, h: float = 1.1, fwd: float = 0.6) -> LolVfx:
+		var d := Vector3(dir.x, 0.0, dir.z)
+		if d.length_squared() < 0.001:
+			d = u.facing
+		d = d.normalized()
+		var fx := LolVfx.attach(u, name, {"dir": d, "height": h})
+		if fx != null:
+			fx.position += d * fwd
+		return fx
 
 
 # ===================================================================== passive
@@ -152,7 +163,11 @@ class GetExcited extends Effect:
 
 	func excite(champ: bool) -> void:
 		var o = owner
-		K.haste(o, ms_buff, duration, o, true, "jinx_excited_ms")
+		var hb: Buff = K.haste(o, ms_buff, duration, o, true, "jinx_excited_ms")
+		# League: speed lines while excited (stopped with the haste buff) + a burst on trigger
+		if hb != null and (hb.vfx == null or not is_instance_valid(hb.vfx)):
+			hb.vfx = LolVfx.attach(o, "Jinx_Base_Passive_Buff", {"loop": true, "dir": o.facing})
+		LolVfx.attach(o, "Jinx_Base_Passive_Buff_OnKill", {"height": 1.0})
 		var b: Buff = o.find_buff("jinx_excited_as")
 		if b == null:
 			K.buff(o, "jinx_excited_as", duration, {}, o, {"name": "Get Excited!", "icon": icon,
@@ -164,10 +179,6 @@ class GetExcited extends Effect:
 			b.duration = duration
 		o.stats.mark_dirty()
 		var m = o.match_ref
-		Vfx.rising(o, PINK, 1.2, 50, 0.5)
-		Vfx.rising(o, CYAN, 0.8, 30, 0.7)
-		Vfx.aura(o, PINK, 1.3, duration * 0.5, 0.08)
-		Vfx.burst(m, o.global_position + Vector3(0, 1.0, 0), PINK, 0.6, {"sparks": 30, "ring": false, "light": false})
 		m.fx_text(o, "Get Excited!", PINK)
 		var q = o.abilities[0]
 		if q != null:
@@ -214,10 +225,7 @@ class Switcheroo extends KitAbility:
 		_last_toggle = o.match_ref.time if o.match_ref != null else 0.0
 		o.stats.mark_dirty()
 		refresh_anims()
-		if o.match_ref != null:
-			var col := ORANGE if r else CYAN
-			Vfx.ring(o.match_ref, o.global_position, col, 1.6, 0.35, 0.12, 0.1)
-			Vfx.hit_spark(o.match_ref, K.cast_pos(o, 1.2), col, 0.9)
+		# no League swap effect (the weapon change is animation-only); the next shot shows the new weapon's VFX
 
 	func _clips(names: Array) -> Array:
 		var out := []
@@ -266,34 +274,6 @@ class Switcheroo extends KitAbility:
 			b.remaining = b.duration
 		o.stats.mark_dirty()
 
-	static func bullet_visual() -> VfxNode:
-		var n := VfxNode.new()
-		n.add_child(FX.tracer(CYAN.lerp(Color.WHITE, 0.3), 0.55, 0.06, 3.5))
-		n.add_child(Vfx.sprite(PINK, 0.32, 1.8))
-		return n
-
-	static func rocket_visual() -> VfxNode:
-		var n := VfxNode.new()
-		var cm := CapsuleMesh.new()
-		cm.radius = 0.1
-		cm.height = 0.6
-		var body := FX.solid(cm, Color(1.0, 0.45, 0.6), 2.2)
-		body.rotation.x = PI * 0.5
-		n.add_child(body)
-		var nose := Vfx.sprite(Color(1.0, 0.85, 0.6), 0.35, 3.0)
-		nose.position.z = -0.25
-		n.add_child(nose)
-		var flame := Vfx.emitter(ORANGE, 40, 0.25, 0.35, {"vmin": 0.0, "vmax": 0.4, "radius": 0.06})
-		flame.position.z = 0.3
-		n.add_child(flame)
-		n.trails.append(flame)
-		var smoke := Vfx.emitter(Color(0.45, 0.4, 0.5), 30, 0.6, 0.45, {"vmin": 0.1, "vmax": 0.5, "radius": 0.1, "energy": 0.8, "end_scale": 1.6})
-		smoke.position.z = 0.35
-		n.add_child(smoke)
-		n.trails.append(smoke)
-		n.add_child(Vfx.light(ORANGE, 1.5, 3.0))
-		return n
-
 	func rocket_splash(target: Unit, info) -> void:
 		var o = owner
 		var m = o.match_ref
@@ -302,12 +282,15 @@ class Switcheroo extends KitAbility:
 		var dmg: float = o.stats.ad * dv("RocketTAD", 1.1)
 		if info != null and info.is_crit:
 			dmg *= o.stats.crit_damage
+		var dir := G.flat_dir(o.global_position, pos)
 		for u in m.enemies_in_radius(o.team, pos, r_units * G.U):
 			if u == target:
 				continue
 			Combat.deal(o, u, dmg, G.DmgType.PHYSICAL, {"is_aoe": true, "tag": "jinx_rocket_splash"})
-		Vfx.burst(m, pos + Vector3(0, 0.9, 0), ORANGE, 1.0, {"sparks": 16, "ring": false})
-		Vfx.ring(m, pos, FIRE, r_units * G.U, 0.35, 0.15, 0.2)
+			if is_instance_valid(u):
+				LolVfx.spawn(m, "Jinx_Base_Q_Rocket_Tar_Unit", u.global_position + Vector3(0, u.height * 0.5, 0), {"dir": dir})
+		# League rocket explosion (blast + splash dome) at the target's feet
+		LolVfx.spawn(m, "Jinx_Base_Q_Rocket_tar", ground(pos), {"dir": dir, "height": 0.1})
 
 	# --------------------------------------------------------------- AI
 	func ai_consider(ctx) -> Dictionary:
@@ -400,26 +383,30 @@ class SwitcherooHook extends Effect:
 		_as_pen = -q.dv("RocketASPDPenalty", 0.1) * maxf(raw, 0.0)
 		return {"range": q.bonus_range(), "as": _as_pen}
 
-	func on_attack_launch(_target) -> void:
-		if q.level <= 0:
-			return
+	func on_attack_launch(target) -> void:
 		var m = owner.match_ref
 		if m == null:
 			return
-		if not _listening:
-			_listening = true
-			m.missiles_root.child_entered_tree.connect(_on_missile)
-		if q.rockets:
-			if owner.mana >= q.rocket_mana:
-				owner.mana -= q.rocket_mana
-				_pending = 2
+		if q.level > 0:
+			if not _listening:
+				_listening = true
+				m.missiles_root.child_entered_tree.connect(_on_missile)
+			if q.rockets:
+				if owner.mana >= q.rocket_mana:
+					owner.mana -= q.rocket_mana
+					_pending = 2
+				else:
+					_pending = 1
+					q.set_form(false)
+					q.add_rev()
 			else:
 				_pending = 1
-				q.set_form(false)
 				q.add_rev()
-		else:
-			_pending = 1
-			q.add_rev()
+		# League muzzle flash of the active weapon (the missile visual itself comes from the kit's vfx_map)
+		var dir: Vector3 = owner.facing
+		if target != null and is_instance_valid(target):
+			dir = G.flat_dir(owner.global_position, target.global_position)
+		FX.hand_fx(owner, "Jinx_Base_Q_Rocket_Cas" if _pending == 2 else "Jinx_Base_Q_Minigun_Cas_Medium", dir, owner.height * 0.55, owner.radius)
 
 	func _on_missile(node) -> void:
 		if _pending == 0 or not (node is Missile):
@@ -429,10 +416,6 @@ class SwitcherooHook extends Effect:
 			return
 		var rocket := _pending == 2
 		_pending = 0
-		var old = mi.visual
-		mi.visual = q.rocket_visual() if rocket else q.bullet_visual()
-		if old != null and is_instance_valid(old) and old.get_parent() == null:
-			old.free()
 		if rocket:
 			var orig: Callable = mi.on_hit
 			var self_ref := self
@@ -470,31 +453,14 @@ class Zap extends KitAbility:
 		cast_time = windup()
 		anim_lock = cast_time + 0.15
 		super(t)
-		_charge_fx(t)
-
-	func _charge_fx(t: Dictionary) -> void:
-		var o = owner
-		var dir: Vector3 = t.get("dir", o.facing)
-		var n := VfxNode.new()
-		n.lifetime = cast_time + 0.05
-		o.add_child(n)
-		n.position = Vector3(0, 1.25, 0) + dir * 0.8
-		var core := Vfx.sprite(ZAP.lerp(Color.WHITE, 0.4), 0.2, 3.0)
-		n.add_child(core)
-		var halo := Vfx.sprite(ZAP, 0.4, 1.6)
-		n.add_child(halo)
-		var sparks := Vfx.emitter(ZAP, 30, 0.2, 0.18, {"vmin": 1.5, "vmax": 3.0, "radius": 0.15, "local": true, "tex": Vfx.spark_texture()})
-		n.add_child(sparks)
-		var tw := n.create_tween()
-		tw.tween_property(core, "scale", Vector3.ONE * 0.7, cast_time)
-		tw.parallel().tween_property(halo, "scale", Vector3.ONE * 1.4, cast_time)
+		# League Zapper charge flash at the gun (replaces the procedural charge orb)
+		FX.hand_fx(owner, "Jinx_Base_W_Cas", t.get("dir", owner.facing), 1.25, 0.8)
 
 	func damage() -> float:
 		return dv("Damage") + dv("ADRatio", 1.4) * ad()
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
-		var m = o.match_ref
 		var from: Vector3 = K.cast_pos(o, 1.25)
 		var dir: Vector3 = t.dir
 		var dmg := damage()
@@ -502,25 +468,14 @@ class Zap extends KitAbility:
 		var slow_t := dv("SlowDuration", 2.0)
 		var range_u := cast_range
 		var self_ref := self
-		var vis := VfxNode.new()
-		vis.add_child(FX.tracer(ZAP.lerp(Color.WHITE, 0.5), 1.6, 0.14, 4.0))
-		vis.add_child(Vfx.sprite(ZAP, 0.9, 2.2))
-		vis.add_child(Vfx.light(ZAP, 2.0, 4.0))
-		var tr := Vfx.emitter(ZAP, 60, 0.3, 0.3, {"vmin": 0.5, "vmax": 2.0, "radius": 0.1, "tex": Vfx.spark_texture()})
-		vis.add_child(tr)
-		vis.trails.append(tr)
-		Vfx.burst(m, from, ZAP, 0.5, {"sparks": 12, "ring": false})
+		# League visuals: W_Mis (missile), W_Tar (auto, on damage), W_Slow (on the slowed unit while slowed)
 		K.line_missile(self, from, dir, 3300.0, range_u, {
-			"width": 60.0, "visual": vis,
+			"width": 60.0, "lol": "Jinx_Base_W_Mis",
 			"on_hit": func(_mi, u):
 				self_ref.hit(u, dmg, G.DmgType.PHYSICAL, {"tag": "w"})
-				K.slow(u, slow, slow_t, o, false, "jinx_w_slow")
-				var hp: Vector3 = u.global_position + Vector3(0, 1.0, 0)
-				Vfx.burst(m, hp, ZAP, 0.9, {"sparks": 24, "ring": false})
-				Vfx.rising(u, ZAP, slow_t * 0.5, 16, 0.4)
-				FX.lightning(m, from, hp, ZAP, 0.12, 0.22, 10, 0.3),
-			"on_end": func(_mi, pos):
-				FX.lightning(m, from, pos, ZAP.lerp(Color.WHITE, 0.3), 0.07, 0.15, 10, 0.25),
+				var sb: Buff = K.slow(u, slow, slow_t, o, false, "jinx_w_slow")
+				if sb != null and (sb.vfx == null or not is_instance_valid(sb.vfx)):
+					sb.vfx = LolVfx.attach(u, "Jinx_Base_W_Slow", {"loop": true}),
 		})
 		notify_cast(t)
 
@@ -594,10 +549,7 @@ class FlameChompers extends KitAbility:
 			if m.nav != null and not m.nav.is_walkable(p):
 				p = m.nav.nearest_walkable(p)
 			var fly := clampf(G.flat_dist(o.global_position, p) / 14.5, 0.2, 0.8)
-			var vis := VfxNode.new()
-			vis.add_child(FX.solid(_body_mesh(), Color(0.85, 0.25, 0.55), 1.4))
-			vis.add_child(Vfx.sprite(PINK, 0.5, 1.5))
-			K.arc_missile(self, o.global_position + Vector3(0, 1.3, 0), p, fly, func(_mi, _pos): self_ref._place(p, cast_hits), {"visual": vis, "arc": 2.2})
+			K.arc_missile(self, o.global_position + Vector3(0, 1.3, 0), p, fly, func(_mi, _pos): self_ref._place(p, cast_hits), {"lol": "Jinx_Base_E_Mis", "arc": 2.2})
 		notify_cast(t)
 
 	static func _body_mesh() -> Mesh:
@@ -606,6 +558,8 @@ class FlameChompers extends KitAbility:
 		sm.height = 0.36
 		return sm
 
+	## Chomper body: League's chomper is an animated mesh (not supported by LolVfx), so the small
+	## procedural body stays; the trigger ring / set / explosion effects are League's.
 	func _chomper_visual(m, pos: Vector3, life: float) -> VfxNode:
 		var n := VfxNode.new()
 		n.lifetime = life
@@ -628,11 +582,15 @@ class FlameChompers extends KitAbility:
 			var eye := Vfx.sprite(Color(1.0, 0.9, 0.2), 0.14, 3.0)
 			eye.position = Vector3(sx * 0.1, 0.38, 0.0)
 			n.add_child(eye)
-		var glow := Vfx.sprite(PINK, 0.9, 1.0)
-		glow.position.y = 0.25
-		n.add_child(glow)
-		var ring := Vfx.ground_circle(m, pos, TRIGGER_R * G.U + 0.25, Color(1.0, 0.3, 0.4, 0.8), life, 0.08)
+		# League trigger-area ring, team colored (red = hostile to the local player)
+		var ring := LolVfx.spawn(m, "Jinx_Base_E_Mine_Ready_Red" if FX.is_enemy_of_player(owner) else "Jinx_Base_E_Mine_Ready_Green", pos, {"loop": true, "height": 0.05})
 		n.set_meta("ring", ring)
+		if ring != null:
+			var wr := weakref(ring)   # the ring may already have faded out (exploded chomper)
+			m.after(life, func():
+				var r = wr.get_ref()
+				if r != null:
+					r.stop())
 		var tw := n.create_tween().set_loops()
 		tw.tween_property(body, "scale", Vector3(1.1, 0.8, 1.1), 0.18)
 		tw.tween_property(body, "scale", Vector3.ONE, 0.18)
@@ -647,8 +605,8 @@ class FlameChompers extends KitAbility:
 		var arm := dv("GrenadeArmTime", 0.5)
 		var dur := dv("GrenadeDuration", 5.0)
 		var node := _chomper_visual(m, pos, arm + dur)
-		Vfx.hit_spark(m, pos + Vector3(0, 0.3, 0), PINK, 0.6)
-		var st := {"age": 0.0}
+		LolVfx.spawn(m, "Jinx_Base_E_Mine_Set", pos, {"height": 0.1})
+		var st := {"age": 0.0, "armed": false}
 		var self_ref := self
 		m.add_ticker(arm + dur, func(dt: float) -> bool:
 			st.age += dt
@@ -656,6 +614,9 @@ class FlameChompers extends KitAbility:
 				return false
 			if st.age < arm:
 				return true
+			if not st.armed:
+				st.armed = true
+				LolVfx.spawn(m, "Jinx_Base_E_Mine_Ready", pos, {"height": 0.3})
 			var caught: Array = m.enemies_in_radius(o.team, pos, TRIGGER_R * G.U, true)
 			if caught.is_empty():
 				return true
@@ -668,12 +629,16 @@ class FlameChompers extends KitAbility:
 		if is_instance_valid(node):
 			var ring = node.get_meta("ring", null)
 			if ring != null and is_instance_valid(ring):
-				ring.queue_free()
+				ring.stop()
 			node.detach_and_fade()
 		var root_t := dv("RootDuration", 1.5)
 		for u in m.enemies_in_radius(o.team, pos, (TRIGGER_R + 40.0) * G.U, true):
-			K.root(u, root_t, o, ORANGE)
-			_jaws(u, root_t)
+			var rb: Buff = K.root(u, root_t, o, ORANGE)
+			# League chomper bite on the rooted champion instead of the generic root aura
+			if rb != null and not (rb.vfx is LolVfx):
+				if rb.vfx != null and is_instance_valid(rb.vfx):
+					rb.vfx.queue_free()
+				rb.vfx = LolVfx.attach(u, "Jinx_Base_E_Mine_Debuff", {"loop": true})
 		# chompers of the same throw don't stack their damage on one enemy
 		var dmg := damage()
 		for u in m.enemies_in_radius(o.team, pos, BLAST_R * G.U):
@@ -681,33 +646,9 @@ class FlameChompers extends KitAbility:
 				continue
 			cast_hits[u] = true
 			hit(u, dmg, G.DmgType.MAGIC, {"is_aoe": true, "tag": "e"})
-		Vfx.burst(m, pos + Vector3(0, 0.5, 0), FIRE, 1.6, {"sparks": 40})
-		Vfx.burst(m, pos + Vector3(0, 0.8, 0), PINK, 0.8, {"sparks": 14, "ring": false, "light": false})
-		var fire := VfxNode.new()
-		fire.lifetime = 1.4
-		m.add_fx(fire, pos)
-		var fl := Vfx.emitter(FIRE, 50, 0.6, 0.5, {"vmin": 1.0, "vmax": 2.5, "dir": Vector3.UP, "spread": 25.0, "radius": 0.6})
-		fire.add_child(fl)
-		fire.trails.append(fl)
+		LolVfx.spawn(m, "Jinx_Base_E_Mine_Explosion", pos, {"height": 0.05})
 		if m.camera_rig != null and (o == G.player):
 			m.camera_rig.shake(0.15)
-
-	## Chomper "bite" around a rooted champion.
-	func _jaws(u: Unit, dur: float) -> void:
-		var n := VfxNode.new()
-		n.lifetime = dur
-		u.add_child(n)
-		n.position.y = 0.15
-		var tm := TorusMesh.new()
-		tm.inner_radius = 0.55
-		tm.outer_radius = 0.7
-		var j := FX.solid(tm, Color(1.0, 0.45, 0.2), 1.6)
-		j.scale = Vector3(1, 0.4, 1)
-		n.add_child(j)
-		var fl := Vfx.emitter(FIRE, 24, 0.5, 0.3, {"vmin": 0.6, "vmax": 1.6, "dir": Vector3.UP, "spread": 20.0, "radius": 0.5, "local": true})
-		n.add_child(fl)
-		var tw := n.create_tween()
-		tw.tween_property(j, "scale", Vector3(0.75, 0.4, 0.75), 0.12)
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -776,53 +717,22 @@ class DeathRocket extends KitAbility:
 		var from: Vector3 = K.cast_pos(o, 1.3)
 		var dir: Vector3 = t.dir
 		var self_ref := self
-		Vfx.burst(m, from, ORANGE, 1.2, {"sparks": 30, "ring": false})
-		Vfx.ring(m, o.global_position, PINK, 2.5, 0.4, 0.1, 0.1)
+		# League: launch flash at the launcher, rocket (R_Mis) + exhaust / trails (R_Rocket_Child, R_Booster) following it
+		LolVfx.spawn(m, "Jinx_Base_R_Cas", from, {"dir": dir})
 		var mi := K.line_missile(self, from, dir, V0 * 100.0, 25000.0, {
-			"width": 140.0, "minions": false, "visual": _rocket_visual(), "height": 1.3,
+			"width": 140.0, "minions": false, "lol": "Jinx_Base_R_Mis", "height": 1.3,
 			"accel": ACCEL * 100.0, "max_speed": VMAX * 100.0,
 			"on_hit": func(mm, u): self_ref._explode(u.global_position, u, mm.age),
 		})
 		mi.lifetime = 12.0
 		mi.blockable = true
+		for nm in ["Jinx_Base_R_Rocket_Child", "Jinx_Base_R_Booster"]:
+			var fx := LolVfx.spawn(m, nm, from, {"dir": dir, "loop": true})
+			if fx != null:
+				fx.follow = mi   # follows the rocket, fades out when the missile is gone
 		if m.camera_rig != null and o == G.player:
 			m.camera_rig.shake(0.2)
 		notify_cast(t)
-
-	func _rocket_visual() -> VfxNode:
-		var n := VfxNode.new()
-		var cm := CapsuleMesh.new()
-		cm.radius = 0.26
-		cm.height = 1.7
-		var body := FX.solid(cm, Color(1.0, 0.3, 0.55), 2.0)
-		body.rotation.x = PI * 0.5
-		n.add_child(body)
-		var stripe := TorusMesh.new()
-		stripe.inner_radius = 0.24
-		stripe.outer_radius = 0.32
-		var band := FX.solid(stripe, CYAN, 2.5)
-		band.rotation.x = PI * 0.5
-		band.position.z = 0.3
-		n.add_child(band)
-		var nose := Vfx.sprite(Color(1.0, 0.9, 0.7), 0.7, 3.0)
-		nose.position.z = -0.8
-		n.add_child(nose)
-		var halo := Vfx.sprite(PINK, 2.0, 1.2)
-		n.add_child(halo)
-		var flame := Vfx.emitter(ORANGE, 80, 0.35, 0.8, {"vmin": 0.2, "vmax": 1.0, "radius": 0.15})
-		flame.position.z = 0.95
-		n.add_child(flame)
-		n.trails.append(flame)
-		var smoke := Vfx.emitter(Color(0.5, 0.45, 0.55), 60, 1.2, 1.1, {"vmin": 0.2, "vmax": 0.8, "radius": 0.25, "energy": 0.7, "end_scale": 2.0})
-		smoke.position.z = 1.1
-		n.add_child(smoke)
-		n.trails.append(smoke)
-		var sparks := Vfx.emitter(CYAN, 30, 0.4, 0.2, {"vmin": 1.0, "vmax": 3.0, "radius": 0.2, "tex": Vfx.spark_texture()})
-		sparks.position.z = 0.9
-		n.add_child(sparks)
-		n.trails.append(sparks)
-		n.add_child(Vfx.light(ORANGE, 3.0, 7.0))
-		return n
 
 	func _explode(pos: Vector3, primary: Unit, age: float) -> void:
 		var o = owner
@@ -837,16 +747,7 @@ class DeathRocket extends KitAbility:
 				continue
 			hit(u, damage_vs(u, age) * aoe_mult, G.DmgType.PHYSICAL, {"tag": "r", "is_aoe": true})
 		var gp := ground(pos)
-		Vfx.burst(m, gp + Vector3(0, 1.0, 0), ORANGE, 3.2, {"sparks": 70})
-		Vfx.burst(m, gp + Vector3(0, 1.5, 0), PINK, 1.8, {"sparks": 30, "ring": false})
-		Vfx.ring(m, gp, FIRE, dv("AoERadius", 400.0) * G.U, 0.6, 0.18, 0.25)
-		Vfx.ring(m, gp, CYAN, dv("AoERadius", 400.0) * G.U * 0.6, 0.45, 0.1, 0.1)
-		var smoke := VfxNode.new()
-		smoke.lifetime = 2.0
-		m.add_fx(smoke, gp)
-		var e := Vfx.emitter(Color(0.45, 0.4, 0.45), 60, 1.6, 1.6, {"one_shot": true, "explosive": 0.9, "vmin": 1.0, "vmax": 3.0, "radius": 1.0, "energy": 0.6, "end_scale": 2.2, "dir": Vector3.UP, "spread": 70.0})
-		e.emitting = true
-		smoke.add_child(e)
+		LolVfx.spawn(m, "Jinx_Base_R_Tar", gp, {"dir": G.flat_dir(o.global_position, gp), "height": 0.05})
 		if m.camera_rig != null:
 			var near_player: bool = G.player != null and G.flat_dist(G.player.global_position, gp) < 14.0
 			m.camera_rig.shake(0.5 if near_player or o == G.player else 0.1)

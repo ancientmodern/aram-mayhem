@@ -18,6 +18,21 @@ func build_kit() -> void:
 	c.abilities[3] = init_ability(SpiritRush.new(), "R")
 
 
+## League VFX: Q hits are spawned by the kit (outbound Q_tar vs. return Q_tar_02).
+func vfx_map() -> Dictionary:
+	return {"Q_tar": ""}
+
+
+class AhriFx:
+	static func on_unit(u, name: String, src = null) -> void:
+		if u == null or not is_instance_valid(u) or u.match_ref == null:
+			return
+		var d := Vector3.ZERO
+		if src != null and is_instance_valid(src):
+			d = G.flat_dir(src.global_position, u.global_position)
+		LolVfx.spawn(u.match_ref, name, u.global_position + Vector3(0, u.height * 0.5, 0), {"dir": d})
+
+
 # ===================================================================== passive
 class EssenceTheft extends Effect:
 	var stacks := 0
@@ -37,14 +52,14 @@ class EssenceTheft extends Effect:
 				stacks = 0
 				var heal: float = lerpf(35.0, 95.0, (owner.level - 1) / 17.0) + 0.2 * owner.stats.ap
 				Combat.heal(owner, owner, heal)
-				Vfx.rising(owner, Color(0.5, 0.8, 1.0), 0.6, 30)
+				LolVfx.attach(owner, "Ahri_Base_P_Heal_minion")
 
 	func on_takedown(victim) -> void:
 		if victim.kind != G.Kind.CHAMPION:
 			return
 		var heal: float = lerpf(75.0, 165.0, (owner.level - 1) / 17.0) + 0.3 * owner.stats.ap
 		Combat.heal(owner, owner, heal)
-		Vfx.rising(owner, Color(1.0, 0.55, 0.85), 0.8, 40)
+		LolVfx.attach(owner, "Ahri_Base_P_Heal_champion")
 		var r: Ability = owner.abilities[3]
 		if r != null and r.recast_window > 0.0:
 			r.recast_window += 10.0
@@ -70,10 +85,11 @@ class OrbOfDeception extends Ability:
 		var dmg := damage()
 		var out_hits := {}
 		var self_ref := self
+		LolVfx.spawn(o.match_ref, "Ahri_Base_Q_Orb_Cast", from, {"dir": dir})
 		var mi := K.line_missile(self, from, dir, 2500.0, 970.0, {
-			"width": 100.0, "pierce": true, "color": Color(0.55, 0.75, 1.0), "size": 0.75, "light": true,
+			"width": 100.0, "pierce": true, "lol": "Ahri_Base_Q_mis",
 			"accel": -3200.0, "max_speed": 2500.0,
-			"on_hit": func(_m, u): self_ref.hit(u, dmg, G.DmgType.MAGIC, {"tag": "q"}); Vfx.hit_spark(o.match_ref, u.global_position + Vector3(0, 1, 0), COL),
+			"on_hit": func(_m, u): self_ref.hit(u, dmg, G.DmgType.MAGIC, {"tag": "q"}); AhriFx.on_unit(u, "Ahri_Base_Q_tar", o),
 		})
 		mi.min_speed = 400.0 * G.U
 		mi.on_end = func(_m, pos): _return_orb(pos, dmg)
@@ -93,14 +109,16 @@ class OrbOfDeception extends Ability:
 		mi.pierce = true
 		mi.width = 100.0 * G.U
 		mi.height = 1.1
-		mi.visual = Vfx.orb(Color(0.7, 0.85, 1.0), 0.75, true)
+		var lv := LolVfx.make("Ahri_Base_Q_mis_02", {"loop": true})
+		mi.visual = lv if lv != null else Vfx.orb(Color(0.7, 0.85, 1.0), 0.75, true)
+		mi.custom["keep_visual"] = true
 		var self_ref := self
 		mi.on_hit = func(_m, u):
 			if u == o:
 				mi.finish(o.global_position)
 				return
 			self_ref.hit(u, dmg, G.DmgType.TRUE, {"tag": "q"})
-			Vfx.hit_spark(o.match_ref, u.global_position + Vector3(0, 1, 0), Color(1, 1, 1))
+			AhriFx.on_unit(u, "Ahri_Base_Q_tar_02", o)
 		mi.on_move = func(m2, _dt):
 			if G.flat_dist(m2.global_position, o.global_position) < 0.6:
 				m2.finish(o.global_position)
@@ -140,7 +158,9 @@ class FoxFire extends Ability:
 		holder.position.y = 1.0
 		var flames := []
 		for i in 3:
-			var f := Vfx.orb(Color(0.45, 0.6, 1.0), 0.42, false, true)
+			var f: Node3D = LolVfx.make("Ahri_Base_W_mis", {"loop": true})
+			if f == null:
+				f = Vfx.orb(Color(0.45, 0.6, 1.0), 0.42, false, true)
 			holder.add_child(f)
 			flames.append(f)
 		var spin := holder.create_tween().set_loops()
@@ -167,9 +187,8 @@ class FoxFire extends Ability:
 				var d := dmg * (1.0 if n == 0 else self_ref.dv("RepeatDamageMod", 0.4))
 				if u.kind == G.Kind.MINION and u.hp_ratio() < 0.2:
 					d *= 2.0
-				self_ref.hit(u, d, G.DmgType.MAGIC, {"tag": "w"})
-				Vfx.hit_spark(m, u.global_position + Vector3(0, 1, 0), Color(0.5, 0.65, 1.0)),
-				{"color": Color(0.45, 0.6, 1.0), "size": 0.42})
+				self_ref.hit(u, d, G.DmgType.MAGIC, {"tag": "w"}),
+				{"lol": "Ahri_Base_W_mis_02"})
 		# fire all three after the initial delay if targets exist, otherwise keep checking
 		for i in 3:
 			var delay := dv("InitialDelay", 0.25) + i * 0.12
@@ -217,18 +236,16 @@ class Charm extends Ability:
 		var dmg := dv("BaseDamage") + dv("APRatio", 0.85) * ap()
 		var dur := dv("CharmDuration", 1.2)
 		var self_ref := self
-		var heart := VfxNode.new()
-		heart.add_child(Vfx.sprite(Color(1.0, 0.4, 0.75), 0.9, 2.5))
-		heart.add_child(Vfx.sprite(Color(1.0, 0.75, 0.9), 0.4, 3.0))
-		var e := Vfx.emitter(Color(1.0, 0.45, 0.8), 40, 0.4, 0.35, {"vmin": 0.0, "vmax": 0.4})
-		heart.add_child(e)
-		heart.trails.append(e)
 		K.line_missile(self, K.cast_pos(o, 1.1), t.dir, 1550.0, 975.0, {
-			"width": 120.0, "visual": heart,
+			"width": 120.0, "lol": "Ahri_Base_E_mis",
 			"on_hit": func(_m, u):
 				self_ref.hit(u, dmg, G.DmgType.MAGIC, {"tag": "e"})
-				K.charm(u, dur, o, 0.65)
-				Vfx.burst(o.match_ref, u.global_position + Vector3(0, 1.0, 0), COL_PINK, 1.0, {"ring": false, "sparks": 20}),
+				var b: Buff = K.charm(u, dur, o, 0.65)
+				# League charm hearts replace the generic charm particles
+				if b != null and LolVfx.has("Ahri_Base_E_buf"):
+					if b.vfx != null and is_instance_valid(b.vfx):
+						b.vfx.queue_free()
+					b.vfx = LolVfx.attach(u, "Ahri_Base_E_buf", {"loop": true, "height": u.height * 0.85}),
 		})
 		notify_cast(t)
 
@@ -243,6 +260,8 @@ class Charm extends Ability:
 class SpiritRush extends Ability:
 	var casts_left := 0
 	var dash_lock := 0.0
+	var _ind_fx: LolVfx = null
+	var _ind_shown := 0
 
 	func _init() -> void:
 		target_type = Target.POINT
@@ -263,6 +282,19 @@ class SpiritRush extends Ability:
 
 	func on_tick(dt: float) -> void:
 		dash_lock = maxf(0.0, dash_lock - dt)
+		_sync_indicator()
+
+	## League recast charges on the ground under Ahri while Spirit Rush can be recast.
+	func _sync_indicator() -> void:
+		var want := clampi(casts_left, 0, 3) if recast_window > 0.0 and not owner.dead else 0
+		if want == _ind_shown and (want == 0 or is_instance_valid(_ind_fx)):
+			return
+		if _ind_fx != null and is_instance_valid(_ind_fx):
+			_ind_fx.stop()
+		_ind_fx = null
+		_ind_shown = want
+		if want > 0:
+			_ind_fx = LolVfx.attach(owner, "Ahri_Base_R_Indicator_%d" % want, {"loop": true, "height": 0.05})
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
@@ -273,8 +305,11 @@ class SpiritRush extends Ability:
 		dash_lock = dv("RDashCooldown", 1.0)
 		var dest: Vector3 = o.global_position + G.flat_dir(o.global_position, t.pos) * minf(G.flat_dist(o.global_position, t.pos), dv("RDashDistance", 500.0) * G.U)
 		var self_ref := self
-		var trail := Vfx.rising(o, Color(0.6, 0.7, 1.0), 0.35, 30, 0.4)
-		o.start_dash(dest, {"speed": 15.0, "on_arrive": func(_u): self_ref._bolts()})
+		var trail := LolVfx.attach(o, "Ahri_Base_R_mis", {"dir": G.flat_dir(o.global_position, dest)})
+		o.start_dash(dest, {"speed": 15.0, "on_arrive": func(_u):
+			if trail != null and is_instance_valid(trail):
+				trail.stop()
+			self_ref._bolts()})
 		if casts_left <= 0:
 			recast_window = 0.0
 			start_cooldown()
@@ -297,9 +332,8 @@ class SpiritRush extends Ability:
 		for i in mini(3, cands.size()):
 			var tgt: Unit = cands[i]
 			K.homing_missile(self, o.global_position + Vector3(0, 1.2, 0), tgt, 1400.0, func(_mm, u):
-				self_ref.hit(u, dmg, G.DmgType.MAGIC, {"tag": "r"})
-				Vfx.hit_spark(m, u.global_position + Vector3(0, 1, 0), Color(0.7, 0.75, 1.0), 0.8),
-				{"color": Color(0.65, 0.7, 1.0), "size": 0.45})
+				self_ref.hit(u, dmg, G.DmgType.MAGIC, {"tag": "r"}),
+				{"lol": "Ahri_Base_R_mis_02"})
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner

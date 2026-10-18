@@ -2,9 +2,6 @@ extends ChampionKit
 ## Darius, the Hand of Noxus.
 
 const RED := Color(1.0, 0.12, 0.06)
-const BLOOD := Color(0.75, 0.02, 0.04)
-const EMBER := Color(1.0, 0.42, 0.14)
-const STEEL := Color(0.9, 0.88, 0.95)
 const Q_INNER := 205.0     ## handle radius (units)
 const Q_OUTER := 425.0     ## blade radius (units)
 const Q_WINDUP := 0.75
@@ -35,6 +32,45 @@ func build_kit() -> void:
 
 func ai_tuning() -> Dictionary:
 	return {"aggression": 0.8}
+
+
+## Match time of the last empowered W hit: its basic attack impact becomes darius_Base_W_tar.
+var w_hit_time := -1.0
+
+
+## League VFX mapping (LolVfx.champ_fx). "" disables a key that the kit spawns itself.
+func vfx_map() -> Dictionary:
+	var w_hit: bool = c != null and c.match_ref != null and c.match_ref.time == w_hit_time
+	var ba := "Darius_Base_BA" if c == null or c.attack_count % 2 == 1 else "Darius_Base_BA2"
+	return {
+		"BA_tar": "darius_Base_W_tar" if w_hit else ba,
+		"BA_crit_tar": "darius_Base_W_tar" if w_hit else "Darius_Base_BA_Crit",
+		"Q_cas": "",
+		"Q_tar": "",
+		"W_cas": "",
+		"W_tar": "",
+		"E_cas": "darius_Base_E_weapon_trigger",
+		"E_tar": "",
+		"R_cas": "darius_Base_R_cast_axe",
+		"R_tar": "",
+	}
+
+
+# ===================================================================== League VFX helpers
+class LFx:
+	static func stop(n) -> void:
+		if n != null and is_instance_valid(n):
+			n.stop()
+
+	## Stop and remove shortly after (effects whose single particles outlive the gameplay state).
+	static func kill(n, fade: float = 0.25) -> void:
+		if n == null or not is_instance_valid(n):
+			return
+		n.stop()
+		if G.match != null:
+			G.match.after(fade, func():
+				if is_instance_valid(n):
+					n.queue_free())
 
 
 # ===================================================================== shared visuals
@@ -68,35 +104,6 @@ void fragment() {
 }
 """
 
-	const CRACK_CODE := """
-shader_type spatial;
-render_mode unshaded, blend_add, depth_draw_never, cull_disabled, depth_test_disabled;
-uniform vec4 color : source_color = vec4(1.0, 0.2, 0.05, 1.0);
-uniform float energy = 2.2;
-uniform float fade = 1.0;
-uniform float progress = 1.0;
-uniform float seed = 0.0;
-uniform float rays = 9.0;
-float hash(float n) { return fract(sin(n * 12.9898 + seed * 78.233) * 43758.5453); }
-void fragment() {
-	vec2 p = UV * 2.0 - 1.0;
-	float r = length(p);
-	float ang = atan(p.y, p.x) / 6.283185 + 0.5;
-	float cell = floor(ang * rays);
-	float f = fract(ang * rays);
-	float center = 0.5 + (hash(cell) - 0.5) * 0.5 + sin(r * 16.0 + hash(cell + 3.0) * 6.28) * 0.07;
-	float len = 0.55 + 0.45 * hash(cell + 7.0);
-	float w_abs = 0.035 * (1.0 - r / len) + 0.006;
-	float w = w_abs * rays / (6.283185 * max(r, 0.04));
-	float line = 1.0 - smoothstep(w * 0.5, w, abs(f - center));
-	line *= 1.0 - smoothstep(len * progress - 0.08, len * progress, r);
-	float core = (1.0 - smoothstep(0.0, 0.22 * progress, r)) * 0.7;
-	float a = clamp(line + core, 0.0, 1.0) * fade;
-	ALBEDO = color.rgb * energy;
-	ALPHA = a;
-}
-"""
-
 	static func shader(key: String, code: String) -> Shader:
 		if not _shaders.has(key):
 			var s := Shader.new()
@@ -120,102 +127,6 @@ void fragment() {
 		mi.material_override = mat
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		return mi
-
-	static func quad(w: float, h: float, mat: Material) -> MeshInstance3D:
-		var mi := MeshInstance3D.new()
-		var qm := QuadMesh.new()
-		qm.size = Vector2(w, h)
-		mi.mesh = qm
-		mi.material_override = mat
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		return mi
-
-	static func box(size: Vector3, col: Color, energy: float) -> MeshInstance3D:
-		var mi := MeshInstance3D.new()
-		var bm := BoxMesh.new()
-		bm.size = size
-		mi.mesh = bm
-		var mat := Vfx.add_material(col, energy, false)
-		mat.set_shader_parameter("use_mask", false)
-		mi.material_override = mat
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		return mi
-
-	## Spinning annulus trail (axe sweep) that turns `turns` times over `dur`.
-	static func sweep(m, pos: Vector3, radius: float, inner: float, col: Color, edge: Color, start_ang: float, turns: float, dur: float, height: float = 0.9, ground: bool = false) -> VfxNode:
-		var n := VfxNode.new()
-		n.lifetime = dur + 0.4
-		m.add_fx(n, pos + Vector3(0, height, 0))
-		var mat := arc_mat(col, edge, inner, ground)
-		mat.set_shader_parameter("head", start_ang)
-		mat.set_shader_parameter("tail", 0.4)
-		n.add_child(plane(radius * 2.0, mat))
-		var tw := n.create_tween()
-		tw.tween_method(func(v): mat.set_shader_parameter("head", v), start_ang, start_ang + TAU * turns, dur).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
-		tw.parallel().tween_method(func(v): mat.set_shader_parameter("tail", v), 0.4, minf(4.5, TAU * absf(turns) + 0.2), dur)
-		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 1.0, 0.0, 0.32)
-		return n
-
-	## Static wedge / annulus flash on the ground.
-	static func wedge(m, pos: Vector3, radius: float, inner: float, col: Color, edge: Color, center_ang: float, width_rad: float, dur: float) -> VfxNode:
-		var n := VfxNode.new()
-		n.lifetime = dur + 0.05
-		m.add_fx(n, pos + Vector3(0, 0.1, 0))
-		var mat := arc_mat(col, edge, inner, true)
-		mat.set_shader_parameter("head", center_ang + width_rad * 0.5)
-		mat.set_shader_parameter("tail", width_rad)
-		mat.set_shader_parameter("flat_tail", 1.0)
-		n.add_child(plane(radius * 2.0, mat))
-		var tw := n.create_tween()
-		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 1.0, 0.0, dur).set_ease(Tween.EASE_IN)
-		return n
-
-	## Radial ground cracks.
-	static func cracks(m, pos: Vector3, radius: float, col: Color, dur: float, rays: float = 9.0) -> VfxNode:
-		var n := VfxNode.new()
-		n.lifetime = dur + 0.05
-		m.add_fx(n, pos + Vector3(0, 0.1, 0))
-		var mat := ShaderMaterial.new()
-		mat.shader = shader("crack", CRACK_CODE)
-		mat.set_shader_parameter("color", col)
-		mat.set_shader_parameter("rays", rays)
-		mat.set_shader_parameter("seed", G.rng.randf() * 100.0)
-		mat.set_shader_parameter("progress", 0.0)
-		n.add_child(plane(radius * 2.0, mat))
-		var tw := n.create_tween()
-		tw.tween_method(func(v): mat.set_shader_parameter("progress", v), 0.0, 1.0, 0.14).set_ease(Tween.EASE_OUT)
-		tw.tween_interval(dur * 0.45)
-		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 1.0, 0.0, dur * 0.55 - 0.14)
-		return n
-
-	## One-shot spray of particles (blood, embers, debris).
-	static func spray(m, pos: Vector3, col: Color, amount: int, speed: float, size: float, gravity: float = -9.0, life: float = 0.6, dir: Vector3 = Vector3.UP, spread: float = 70.0) -> void:
-		var n := VfxNode.new()
-		n.lifetime = life + 0.2
-		m.add_fx(n, pos)
-		var e := Vfx.emitter(col, amount, life, size, {"one_shot": true, "explosive": 0.95, "vmin": speed * 0.4, "vmax": speed,
-				"gravity": Vector3(0, gravity, 0), "dir": dir, "spread": spread, "radius": 0.15, "damping": 1.0})
-		e.emitting = true
-		n.add_child(e)
-
-	## Glowing orb that flies from a point to a unit (e.g. blood drained back to Darius).
-	static func fly_to(m, from: Vector3, to_unit, col: Color, dur: float, size: float = 0.35) -> void:
-		var orb := Vfx.orb(col, size, false, true)
-		orb.lifetime = dur + 0.1
-		m.add_fx(orb, from)
-		var st := {"t": 0.0}
-		m.add_ticker(dur + 0.05, func(dt):
-			if not is_instance_valid(orb):
-				return false
-			st.t += dt
-			var k: float = clampf(st.t / dur, 0.0, 1.0)
-			var target: Vector3 = from
-			if is_instance_valid(to_unit):
-				target = to_unit.global_position + Vector3(0, 1.1, 0)
-			var p: Vector3 = from.lerp(target, k * k)
-			p.y += sin(k * PI) * 1.2
-			orb.global_position = p
-			return k < 1.0)
 
 
 # ===================================================================== helpers
@@ -326,21 +237,13 @@ class Hemorrhage extends Effect:
 		if not fresh or mb == null:
 			return
 		var m = owner.match_ref
-		var n := VfxNode.new()
-		owner.add_child(n)
-		mb.vfx = n
-		var e := Vfx.emitter(RED, 40, 0.8, 0.3, {"vmin": 0.6, "vmax": 1.8, "dir": Vector3.UP, "spread": 25.0, "radius": 0.55, "local": false})
-		e.position.y = 0.6
-		n.add_child(e)
-		var glow := Vfx.sprite(RED, 2.6, 0.9)
-		glow.position.y = 1.2
-		n.add_child(glow)
-		var l := Vfx.light(RED, 2.5, 4.0)
-		l.position.y = 1.6
-		n.add_child(l)
-		Vfx.aura(owner, RED, 1.3, val("BleedDuration", 5.0), 0.08)
-		Vfx.burst(m, owner.global_position + Vector3(0, 1.2, 0), RED, 1.6, {"sparks": 36})
-		Fx.cracks(m, owner.global_position, 2.4, RED, 0.9, 7.0)
+		# League: enrage nova, then the Noxian Might aura and glowing axe for the buff's duration
+		LolVfx.spawn(m, "Darius_Base_P_nova", owner.global_position, {"dir": owner.facing})
+		var aura := LolVfx.attach(owner, "Darius_Base_P_enraged", {"loop": true, "height": 1.0})
+		var axe := LolVfx.attach(owner, "Darius_Base_P_axe_tip", {"loop": true, "height": 1.4})
+		mb.on_expire = func(_b):
+			LFx.stop(aura)
+			LFx.stop(axe)
 		if m.camera_rig != null and owner == G.player:
 			m.camera_rig.shake(0.2)
 
@@ -352,7 +255,7 @@ class Hemorrhage extends Effect:
 
 class HemoBuff extends Buff:
 	var passive = null
-	var pips: Array = []
+	var shown := 0
 
 	func on_interval_tick(unit) -> void:
 		var src = source
@@ -361,40 +264,28 @@ class HemoBuff extends Buff:
 		var dmg: float = passive.per_stack_damage() * stacks / 4.0
 		Combat.deal(src, unit, dmg, G.DmgType.PHYSICAL, {"is_dot": true, "is_proc": true, "tag": "bleed"})
 		if unit.match_ref != null and not unit.dead:
-			Fx.spray(unit.match_ref, unit.global_position + Vector3(0, 1.0, 0), BLOOD, 6 + stacks * 2, 2.5, 0.16, -9.0, 0.5, Vector3.UP, 60.0)
+			LolVfx.spawn(unit.match_ref, "BloodSlash", unit.global_position + Vector3(0, unit.height * 0.5, 0))
 
-	## Five orbiting blood-blades around the target, one lit per stack.
+	## League bleed counter (1-5 blood drops) over the target; minions use the smaller variant.
 	func update_fx() -> void:
 		var u = owner
 		if u == null or not is_instance_valid(u):
 			return
-		if vfx == null or not is_instance_valid(vfx):
-			var n := VfxNode.new()
-			u.add_child(n)
-			n.position.y = 1.05
-			vfx = n
-			pips.clear()
-			for i in max_stacks:
-				var s := Vfx.sprite(RED, 0.32, 2.2, Vfx.spark_texture())
-				var a := TAU * i / float(max_stacks)
-				s.position = Vector3(cos(a), 0.0, sin(a)) * maxf(0.75, u.radius * 1.15)
-				n.add_child(s)
-				pips.append(s)
-			var drip := Vfx.emitter(BLOOD, 10, 0.7, 0.13, {"vmin": 0.0, "vmax": 0.3, "gravity": Vector3(0, -7, 0), "radius": 0.35})
-			n.add_child(drip)
-			var spin := n.create_tween().set_loops()
-			spin.tween_property(n, "rotation:y", TAU, 2.4).from(0.0)
-		var full := stacks >= max_stacks
-		for i in pips.size():
-			var s: MeshInstance3D = pips[i]
-			s.visible = i < stacks
-			s.scale = Vector3.ONE * (0.46 if full else 0.32)
-			s.material_override.set_shader_parameter("energy", 3.2 if full else 2.0)
+		var n: int = clampi(stacks, 1, 5)
+		if n == shown and vfx != null and is_instance_valid(vfx):
+			return
+		if vfx != null and is_instance_valid(vfx):
+			vfx.queue_free()
+		shown = n
+		var nm := "darius_Base_hemo_counter_0%d%s" % [n, "" if u.kind == G.Kind.CHAMPION else "Minion"]
+		vfx = LolVfx.attach(u, nm, {"loop": true, "height": u.height + 0.45})
 
 
 # ===================================================================== Q
 class Decimate extends DAbility:
 	var tele: VfxNode = null
+	var windup_fx: LolVfx = null
+	var ring_fx: LolVfx = null
 
 	func _init() -> void:
 		target_type = Target.NONE
@@ -420,7 +311,11 @@ class Decimate extends DAbility:
 		o.anim_lock = Q_WINDUP + 0.05
 		start_channel(Q_WINDUP, {})
 		o.channel_disarm = true
-		# telegraph: the blade ring fills while Darius hefts his axe
+		# League telegraph: Q_Ring_Windup lasts exactly the wind-up; Q_Ring (built-in 0.75 s delay) is the swing.
+		var p: Vector3 = o.global_position
+		windup_fx = LolVfx.spawn(m, "Darius_Base_Q_Ring_Windup", p, {"dir": o.facing, "height": 0.08})
+		ring_fx = LolVfx.spawn(m, "Darius_Base_Q_Ring", p, {"dir": o.facing, "height": 0.1})
+		# readability backup: faint fill of the blade annulus (League's windup ring is very subtle on this map)
 		tele = VfxNode.new()
 		tele.lifetime = Q_WINDUP + 0.1
 		o.add_child(tele)
@@ -428,18 +323,10 @@ class Decimate extends DAbility:
 		var mat := Fx.arc_mat(Color(0.8, 0.05, 0.03, 0.6), RED, Q_INNER / Q_OUTER, true)
 		mat.set_shader_parameter("tail", TAU + 0.1)
 		mat.set_shader_parameter("flat_tail", 1.0)
-		mat.set_shader_parameter("energy", 1.2)
+		mat.set_shader_parameter("energy", 0.7)
 		tele.add_child(Fx.plane(Q_OUTER * G.U * 2.0, mat))
 		var tw := tele.create_tween()
-		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 0.15, 0.55, Q_WINDUP)
-		var axe_glow := Vfx.sprite(RED, 1.4, 2.0)
-		axe_glow.position.y = 2.6
-		tele.add_child(axe_glow)
-		var tw2 := tele.create_tween()
-		tw2.tween_property(axe_glow, "scale", Vector3.ONE * 0.4, Q_WINDUP).from(Vector3.ONE * 1.4)
-		var embers := Vfx.emitter(EMBER, 24, 0.6, 0.16, {"vmin": 0.8, "vmax": 2.0, "dir": Vector3.UP, "spread": 20.0, "radius": 0.6, "local": true})
-		embers.position.y = 1.0
-		tele.add_child(embers)
+		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 0.1, 0.4, Q_WINDUP)
 		notify_cast(t)
 
 	func channel_end(_ch: Dictionary, interrupted: bool) -> void:
@@ -449,8 +336,15 @@ class Decimate extends DAbility:
 			tele.detach_and_fade()
 		tele = null
 		if interrupted or o.dead:
+			# cancel the pending swing ring (its emitters only start after the 0.75 s delay)
+			LFx.kill(windup_fx, 0.05)
+			LFx.kill(ring_fx, 0.05)
+			windup_fx = null
+			ring_fx = null
 			o.anim_lock = 0.0
 			return
+		windup_fx = null
+		ring_fx = null
 		_swing()
 
 	func _swing() -> void:
@@ -473,38 +367,15 @@ class Decimate extends DAbility:
 					hemo.apply(u, 1)
 				if u.kind == G.Kind.CHAMPION:
 					champs += 1
-					Fx.fly_to(m, tp, o, Color(1.0, 0.15, 0.1), 0.45, 0.42)
-				Fx.spray(m, tp, BLOOD, 18, 5.0, 0.2, -10.0, 0.55, G.flat_dir(p, u.global_position) + Vector3(0, 0.6, 0), 35.0)
-				Vfx.hit_spark(m, tp, RED, 0.9)
+				LolVfx.spawn(m, "darius_Base_Q_tar", tp, {"dir": G.flat_dir(p, u.global_position)})
 			else:
 				hit(u, handle, G.DmgType.PHYSICAL, {"is_aoe": true, "tag": "q_handle"})
-				Vfx.hit_spark(m, tp, STEEL, 0.5)
+				LolVfx.spawn(m, "darius_Base_Q_tar_inner", tp, {"dir": G.flat_dir(p, u.global_position)})
 		if champs > 0:
 			var pct := minf(dv("MissingHealPercent", 51.0), dv("MissingHealthHeal", 17.0) * champs) / 100.0
 			Combat.heal(o, o, (o.stats.max_hp - o.hp) * pct)
-			m.after(0.45, func():
-				if is_instance_valid(o) and not o.dead:
-					Vfx.rising(o, Color(1.0, 0.25, 0.2), 0.4, 26, 0.5))
-		# the swing: crimson blade trail sweeping a full circle, dark handle flash inside
-		var start := atan2(o.facing.z, o.facing.x)
-		Fx.sweep(m, p, Q_OUTER * G.U, Q_INNER / Q_OUTER, RED, Color(1.0, 0.8, 0.7), start, 1.08, 0.24, 0.95)
-		Fx.sweep(m, p, Q_OUTER * G.U * 1.02, 0.86, Color(1.0, 0.3, 0.15), Color(1, 1, 1), start - 0.4, 1.08, 0.26, 0.15, true)
-		var inner_flash := Fx.wedge(m, p, Q_INNER * G.U, 0.0, Color(0.5, 0.05, 0.05), Color(0.6, 0.1, 0.1), 0.0, TAU + 0.1, 0.3)
-		inner_flash.position.y += 0.02
-		Vfx.ring(m, p, RED, Q_OUTER * G.U * 1.05, 0.35, 0.06, 0.0)
-		var sp := VfxNode.new()
-		sp.lifetime = 0.9
-		m.add_fx(sp, p + Vector3(0, 0.9, 0))
-		var e := Vfx.emitter(RED, 60, 0.5, 0.2, {"one_shot": true, "explosive": 0.9, "vmin": 2.0, "vmax": 5.0, "gravity": Vector3(0, -8, 0),
-				"spread": 90.0, "dir": Vector3.UP, "tex": Vfx.spark_texture(), "damping": 2.0})
-		var pm: ParticleProcessMaterial = e.process_material
-		pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_RING
-		pm.emission_ring_axis = Vector3.UP
-		pm.emission_ring_radius = Q_OUTER * G.U * 0.92
-		pm.emission_ring_inner_radius = Q_OUTER * G.U * 0.75
-		pm.emission_ring_height = 0.1
-		e.emitting = true
-		sp.add_child(e)
+			LolVfx.attach(o, "Darius_Base_Q_Heal")
+		# the swing itself is Darius_Base_Q_Ring, spawned at wind-up start with its built-in delay
 		if m.camera_rig != null and o == G.player:
 			m.camera_rig.shake(0.12)
 
@@ -540,7 +411,7 @@ class CripplingStrike extends DAbility:
 	var empowered_until := -1.0
 	var saved_attack: Array = []
 	var saved_crit: Array = []
-	var fx: VfxNode = null
+	var fx: LolVfx = null
 
 	func _init() -> void:
 		target_type = Target.NONE
@@ -564,20 +435,9 @@ class CripplingStrike extends DAbility:
 				o.anim_map["attack"] = [clip]
 				o.anim_map["crit"] = [clip]
 		empowered_until = now() + 4.0
-		if fx != null and is_instance_valid(fx):
-			fx.queue_free()
-		fx = VfxNode.new()
-		fx.lifetime = 4.0
-		o.add_child(fx)
-		fx.position.y = 1.4
-		var core := Vfx.sprite(RED, 1.1, 1.6)
-		fx.add_child(core)
-		var e := Vfx.emitter(EMBER, 26, 0.45, 0.18, {"vmin": 0.3, "vmax": 1.2, "radius": 0.5, "dir": Vector3.UP, "spread": 50.0})
-		fx.add_child(e)
-		var tw := fx.create_tween().set_loops()
-		tw.tween_property(core, "scale", Vector3.ONE * 1.5, 0.25)
-		tw.tween_property(core, "scale", Vector3.ONE * 1.0, 0.25)
-		Vfx.rising(o, RED, 0.25, 16, 0.5)
+		# League: charged axe glow until the empowered attack lands or the window ends
+		LFx.kill(fx, 0.1)
+		fx = LolVfx.attach(o, "darius_Base_W_weapon_01", {"loop": true, "height": 1.4, "dir": o.facing})
 		notify_cast(t)
 
 	func is_empowered() -> bool:
@@ -591,8 +451,8 @@ class CripplingStrike extends DAbility:
 			o.anim_map["crit"] = saved_crit if not saved_crit.is_empty() else saved_attack
 			saved_attack = []
 			saved_crit = []
-		if fx != null and is_instance_valid(fx):
-			fx.detach_and_fade()
+		# W_weapon_01 has a 10000 s emitter: remove it explicitly
+		LFx.kill(fx, 0.3)
 		fx = null
 
 	func on_tick(_dt: float) -> void:
@@ -635,24 +495,21 @@ class WAttackHook extends Effect:
 		if info.is_attack and info.target != null and w.is_empowered() and info.tag != "darius_w":
 			info.amount = owner.stats.ad * w.dv("ADRatio", 1.4) * (owner.stats.crit_damage if info.is_crit else 1.0)
 			info.tag = "darius_w"
+			# the generic basic attack impact shows darius_Base_W_tar for this hit (see vfx_map)
+			if owner.match_ref != null:
+				owner.kit.w_hit_time = owner.match_ref.time
 
 	func on_attack_hit(target, info) -> void:
 		if info == null or info.tag != "darius_w":
 			return
 		var o = owner
-		var m = o.match_ref
 		w.consume()
 		if is_instance_valid(target) and not target.dead:
 			K.slow(target, w.dv("SlowPercent", 90.0) / 100.0, w.dv("SlowDuration", 1.0), o, false, "darius_w_slow")
-		var tp: Vector3 = target.global_position + Vector3(0, 1.0, 0)
-		Vfx.burst(m, tp, RED, 1.1, {"sparks": 26, "ring": false})
-		Fx.spray(m, tp, BLOOD, 20, 4.5, 0.2, -10.0, 0.55, G.flat_dir(o.global_position, target.global_position) + Vector3(0, 0.5, 0), 40.0)
-		Fx.cracks(m, target.global_position, 1.4, RED, 0.6, 6.0)
 		if info.killed:
 			if o.stats.uses_mana:
 				o.mana = minf(o.stats.max_mana, o.mana + w.cost())
 			w.reduce_cooldown_pct(w.dv("PercentCDRefund", 50.0) / 100.0)
-			Vfx.rising(o, Color(0.5, 0.6, 1.0), 0.3, 14, 0.4)
 
 
 # ===================================================================== E
@@ -672,28 +529,21 @@ class Apprehend extends DAbility:
 		var dir: Vector3 = t.dir
 		var length := cast_range
 		var hits := K.enemies_cone(self, origin, dir, length, ind_angle)
-		var ang := atan2(dir.z, dir.x)
-		Fx.wedge(m, origin, length * G.U, 0.12, Color(0.85, 0.08, 0.05), Color(1.0, 0.5, 0.3), ang, deg_to_rad(ind_angle), 0.4)
-		# axe sweep along the cone edge, pulling inward
-		Fx.sweep(m, origin, length * G.U, 0.8, RED, Color(1, 0.85, 0.8), ang - deg_to_rad(ind_angle) * 0.5, deg_to_rad(ind_angle) / TAU, 0.22, 1.0)
+		# League: axe-grab impact on each target and a drag trail while it is pulled (E_weapon_trigger via E_cas)
 		for u in hits:
 			var up: Vector3 = u.global_position
 			var dist := G.flat_dist(origin, up)
 			var keep: float = o.radius + u.radius + 0.25
-			Vfx.beam(m, origin + Vector3(0, 1.1, 0), up + Vector3(0, 1.0, 0), Color(0.9, 0.12, 0.08), 0.16, 0.28)
+			var to_me := G.flat_dir(up, origin)
+			LolVfx.spawn(m, "Darius_Base_E_Axegrab_Collision", up + Vector3(0, u.height * 0.5, 0), {"dir": to_me})
+			LolVfx.spawn(m, "darius_Base_E_tar", up, {"dir": to_me})
 			if u.has_cc_immunity():
 				continue
 			if dist > keep:
 				u.pull_to(origin + G.flat_dir(origin, up) * keep, 0.28, o)
+				var trail := LolVfx.attach(u, "darius_Base_E_tar_unit_trail", {"loop": true, "height": u.height * 0.5, "dir": to_me})
+				m.after(0.28, func(): LFx.stop(trail))
 			K.slow(u, dv("SlowPercent", 40.0) / 100.0, dv("SlowDuration", 1.0) + 0.28, o, false, "darius_e_slow")
-			var hook := VfxNode.new()
-			hook.lifetime = 0.45
-			hook.follow = u
-			hook.follow_offset = Vector3(0, 1.1, 0)
-			m.add_fx(hook, up + Vector3(0, 1.1, 0))
-			hook.add_child(Vfx.sprite(RED, 1.0, 2.6, Vfx.spark_texture()))
-			hook.add_child(Vfx.sprite(EMBER, 0.6, 2.0))
-			Vfx.hit_spark(m, up + Vector3(0, 1.0, 0), RED, 0.8)
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -766,11 +616,15 @@ class NoxianGuillotine extends DAbility:
 		var base := dv("RBaseDamage") + 0.75 * bonus_ad()
 		return base * (1.0 + minf(5.0, float(st)) * dv("RDamagePercentPerHemoStack", 0.2))
 
+	var ready_fx: LolVfx = null
+
 	func on_tick(_dt: float) -> void:
 		if free_until > 0.0 and now() >= free_until:
 			free_until = -1.0
 			cd = maxf(0.0, saved_cd - dv("RRecastDuration", 20.0))
 			cd_total = maxf(cd, 0.01)
+			LFx.stop(ready_fx)
+			ready_fx = null
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
@@ -778,6 +632,8 @@ class NoxianGuillotine extends DAbility:
 		if u == null or not is_instance_valid(u) or u.dead:
 			return
 		free_until = -1.0
+		LFx.stop(ready_fx)
+		ready_fx = null
 		var m = o.match_ref
 		var self_ref := self
 		var from: Vector3 = o.global_position
@@ -792,51 +648,10 @@ class NoxianGuillotine extends DAbility:
 					unit.dash.to = u.global_position - G.flat_dir(from, u.global_position) * off
 					unit.face_toward(u.global_position, 100.0),
 			"on_arrive": func(_unit): self_ref._impact(u)})
-		# leap trail
-		var trail := VfxNode.new()
-		trail.lifetime = leap + 0.05
-		o.add_child(trail)
-		trail.position.y = 1.2
-		var te := Vfx.emitter(RED, 60, 0.4, 0.4, {"vmin": 0.0, "vmax": 0.4, "radius": 0.4})
-		trail.add_child(te)
-		trail.trails.append(te)
-		trail.add_child(Vfx.sprite(RED, 1.8, 1.2))
-		_guillotine(u, leap)
+		# League: blazing axe trail during the leap (R cast flash via R_cas)
+		var trail := LolVfx.attach(o, "Darius_Base_P_axe_tip", {"loop": true, "height": 1.6})
+		m.after(leap, func(): LFx.stop(trail))
 		notify_cast(t)
-
-	## A spectral axe descends over the victim, synced with the dunk.
-	func _guillotine(u, leap: float) -> void:
-		var m = owner.match_ref
-		var n := VfxNode.new()
-		n.lifetime = leap + 0.15
-		n.follow = u
-		n.follow_offset = Vector3(0, 6.0, 0)
-		m.add_fx(n, u.global_position + Vector3(0, 6.0, 0))
-		# grip at the node origin, axe head 3 m up the haft; it chops clockwise down onto the target
-		n.follow_offset = Vector3(0, 3.1, 0)
-		var axe := Node3D.new()
-		n.add_child(axe)
-		var haft := Fx.box(Vector3(0.16, 3.3, 0.16), Color(0.9, 0.15, 0.1), 2.2)
-		haft.position.y = 1.65
-		axe.add_child(haft)
-		var bmat := Fx.arc_mat(Color(1.0, 0.1, 0.05), Color(1.0, 0.85, 0.7), 0.45, false)
-		bmat.set_shader_parameter("head", deg_to_rad(75.0))
-		bmat.set_shader_parameter("tail", deg_to_rad(150.0))
-		bmat.set_shader_parameter("flat_tail", 1.0)
-		bmat.set_shader_parameter("energy", 3.0)
-		var blade := Fx.plane(2.6, bmat)
-		blade.rotation.x = PI * 0.5
-		blade.position = Vector3(-0.55, 2.9, 0.0)
-		axe.add_child(blade)
-		var l := Vfx.light(RED, 4.0, 6.0)
-		l.position.y = 2.8
-		axe.add_child(l)
-		axe.rotation.z = 0.5
-		var tw := n.create_tween()
-		tw.tween_property(axe, "rotation:z", -PI, leap).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
-		# ground mark under the victim
-		var mark := Fx.wedge(m, u.global_position, 1.6, 0.0, Color(0.7, 0.04, 0.04), RED, 0.0, TAU + 0.1, leap + 0.1)
-		mark.follow = u
 
 	func _impact(u) -> void:
 		var o = owner
@@ -844,24 +659,25 @@ class NoxianGuillotine extends DAbility:
 		var p: Vector3 = o.global_position
 		var tp: Vector3 = p
 		var info: DamageInfo = null
+		var mid := 1.0
 		if u != null and is_instance_valid(u) and not u.dead:
 			tp = u.global_position
+			mid = u.height * 0.5
 			info = hit(u, damage_vs(u), G.DmgType.TRUE, {"tag": "r"})
 			if info != null and not info.killed and not info.cancelled:
 				o.passive.apply(u, 1)
 		var big: bool = o == G.player or (u != null and is_instance_valid(u) and u == G.player)
-		Vfx.burst(m, tp + Vector3(0, 0.8, 0), RED, 2.6, {"sparks": 60})
-		Fx.cracks(m, tp, 3.6, RED, 1.4, 11.0)
-		Fx.spray(m, tp + Vector3(0, 1.0, 0), BLOOD, 50, 7.0, 0.26, -12.0, 0.8, Vector3.UP, 85.0)
-		Vfx.ring(m, tp, RED, 4.2, 0.5, 0.08, 0.12)
-		Vfx.ring(m, tp, EMBER, 2.6, 0.35, 0.12, 0.0)
-		Vfx.beam(m, tp + Vector3(0, 6.0, 0), tp, Color(1.0, 0.2, 0.1), 0.6, 0.3)
+		var dir: Vector3 = G.flat_dir(p, tp) if G.flat_dist(p, tp) > 0.05 else o.facing
+		LolVfx.spawn(m, "darius_Base_R_tar", tp + Vector3(0, mid, 0), {"dir": dir})
+		LolVfx.spawn(m, "darius_Base_R_tar_02", tp + Vector3(0, mid, 0), {"dir": dir})
+		LolVfx.spawn(m, "darius_Base_R_tar_04", tp + Vector3(0, mid, 0), {"dir": dir})
+		LolVfx.spawn(m, "darius_Base_R_tar_03", tp, {"dir": dir})
 		if m.camera_rig != null:
 			m.camera_rig.shake(0.5 if big else 0.18)
 		if info != null and info.killed:
 			_on_execute_kill(tp)
 
-	func _on_execute_kill(tp: Vector3) -> void:
+	func _on_execute_kill(_tp: Vector3) -> void:
 		var o = owner
 		var m = o.match_ref
 		o.passive.trigger_might()
@@ -871,9 +687,11 @@ class NoxianGuillotine extends DAbility:
 			saved_cd = cd
 			cd = 0.0
 			free_until = now() + dv("RRecastDuration", 20.0)
-		var sig := Vfx.ring(m, tp, RED, 5.5, 0.8, 0.05, 0.0)
-		sig.get_child(0).material_override.set_shader_parameter("segments", 10.0)
-		Vfx.rising(o, RED, 0.6, 40, 0.6)
+		# League: ult refresh flash, and the "R ready" glow while the free recast window lasts
+		LolVfx.attach(o, "darius_Base_r_refresh_01")
+		if free_until > 0.0:
+			LFx.stop(ready_fx)
+			ready_fx = LolVfx.attach(o, "Darius_Base_R_Ready", {"loop": true, "height": o.height + 0.3})
 		m.fx_text(o, "Guillotine reset!", RED)
 
 	func ai_consider(ctx) -> Dictionary:
