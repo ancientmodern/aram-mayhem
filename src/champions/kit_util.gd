@@ -30,8 +30,23 @@ static func line_missile(ab: Ability, from: Vector3, dir: Vector3, speed: float,
 	if vis == null:
 		vis = Vfx.orb(opts.get("color", Color(0.6, 0.8, 1.0)), opts.get("size", 0.45), opts.get("light", false))
 	mi.visual = vis
+	_lol_visual(mi, opts)
 	o.match_ref.add_missile(mi, from)
 	return mi
+
+
+## opts "lol": League VFX system name for this missile's visual; "keep_visual": keep the kit visual as is.
+static func _lol_visual(mi: Missile, opts: Dictionary) -> void:
+	if opts.get("keep_visual", false):
+		mi.custom["keep_visual"] = true
+	var nm: String = opts.get("lol", "")
+	if nm != "":
+		var lv := LolVfx.make(nm, {"loop": true})
+		if lv != null:
+			if mi.visual != null and is_instance_valid(mi.visual) and mi.visual.get_parent() == null:
+				mi.visual.queue_free()
+			mi.visual = lv
+			mi.custom["keep_visual"] = true
 
 
 ## Homing missile to a unit (cannot miss). on_hit(missile, unit).
@@ -48,6 +63,7 @@ static func homing_missile(ab: Ability, from: Vector3, target: Unit, speed: floa
 	if vis == null:
 		vis = Vfx.orb(opts.get("color", Color(0.6, 0.8, 1.0)), opts.get("size", 0.35), opts.get("light", false))
 	mi.visual = vis
+	_lol_visual(mi, opts)
 	o.match_ref.add_missile(mi, from)
 	return mi
 
@@ -64,6 +80,7 @@ static func arc_missile(ab: Ability, from: Vector3, to: Vector3, flight_time: fl
 	if vis == null:
 		vis = Vfx.orb(opts.get("color", Color(1.0, 0.6, 0.2)), opts.get("size", 0.5), opts.get("light", true))
 	mi.visual = vis
+	_lol_visual(mi, opts)
 	o.match_ref.add_missile(mi, from)
 	return mi
 
