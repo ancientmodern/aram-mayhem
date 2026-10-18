@@ -118,6 +118,18 @@ func ui(name: String, volume_db: float = 0.0) -> void:
 	play(stream("res://assets/audio/ui/%s.ogg" % file), volume_db - 4.0, 1.0, "UI")
 
 
+## Any UI sound file by path (res://...ogg/.wav), rate-limited per path. Lets each UI area ship its own
+## League sounds (assets/audio/ui/<area>/...) without editing UI_SOUNDS.
+func ui_file(path: String, volume_db: float = 0.0, min_gap_ms: int = 45) -> void:
+	var now := Time.get_ticks_msec()
+	if now - int(_last_play.get(path, -1000)) < min_gap_ms:
+		return
+	_last_play[path] = now
+	var s := stream(path)
+	if s != null:
+		play(s, volume_db - 4.0, 1.0, "UI")
+
+
 ## Champion voice / stinger from the client (choose_vo, stinger, ban_vo).
 func champ(alias: String, kind: String, volume_db: float = 0.0) -> void:
 	play(stream("res://assets/champions/%s/audio/%s.ogg" % [alias.to_lower(), kind]), volume_db, 1.0, "UI")
