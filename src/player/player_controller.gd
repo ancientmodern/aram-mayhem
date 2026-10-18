@@ -29,6 +29,10 @@ var _outline_ally: ShaderMaterial
 var _cursor_state := ""
 var _cursors := {}
 var _show_range_key := false        ## League: hold C to show the attack range
+# [world-ui] cursor position tracked from mouse events (window-stretch already undone by the viewport), so
+# hover/aim follow injected events in off-screen QA windows too; falls back to the OS cursor until one arrives
+var _mouse_pos := Vector2.ZERO
+var _mouse_from_events := false
 
 
 func _ready() -> void:
@@ -54,7 +58,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if champ == null or rig == null:
 		return
-	var mp := get_viewport().get_mouse_position()
+	var mp := _mouse_pos if _mouse_from_events else get_viewport().get_mouse_position()
 	mouse_ground = rig.screen_to_ground(mp, match_ref.nav)
 	hovered = pick_unit(mp)
 	_update_hover_glow()
@@ -188,6 +192,12 @@ static func _set_glow_rec(n: Node, c: Color) -> void:
 		(n as GeometryInstance3D).set_instance_shader_parameter("glow", c)
 	for ch in n.get_children():
 		_set_glow_rec(ch, c)
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouse:
+		_mouse_pos = (event as InputEventMouse).position
+		_mouse_from_events = true
 
 
 func _unhandled_input(event: InputEvent) -> void:

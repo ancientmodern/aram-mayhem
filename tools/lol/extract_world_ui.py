@@ -32,11 +32,16 @@ FIELDS = """name color position mTextureName mTextureUV mTextureSourceResolution
 TextureData mFontDescription mTypeName Priority Decay DecayDelay IsAnimated MinXVelocity MaxXVelocity MinYVelocity
 MaxYVelocity StartOffsetX StartOffsetY ContinualForceX ContinualForceY ShrinkTime ShrinkScale Scale AlternateRightLeft
 FollowSource DisableVerticalReverse Icons mDisplaySize mOffset mColor mAlignment CombinableNumberFormat MaxInstances
-OutlineColor ShadowColor FontSize OutlineSize TypeData mHotspot CursorData mData""".split()
+OutlineColor ShadowColor FontSize OutlineSize TypeData mHotspot CursorData mData colorblindColor colorblindOutlineColor
+HangTime RandomStartOffsetMinX RandomStartOffsetMaxX RandomStartOffsetMinY RandomStartOffsetMaxY IgnoreQueue
+DisableHorizontalReverse mTunables mMaxFloatingTextItems mAnimatedTextQueueDelay mComparisonByLevel
+mMinionComparisonMultiplier""".split()
 N = {fnv1a(f): f for f in FIELDS}
 N[fnv1a("UiElementRect")] = "UiElementRect"
 SIZE = "23a0d95c"         # UiElementRect size (unnamed hash)
-GRAD = "f0ec2f06"         # font description: secondary (gradient bottom) colour
+# NOTE: there is no fill gradient in League's floating-text fonts. f0ec2f06 / 8be090f2 are colorblindColor /
+# colorblindOutlineColor (CommunityDragon hashes.binfields.txt); they replace color/outline in colourblind mode.
+# FloatText fonts carry no shadowColor, so the engine default (opaque black) is used with shadowDepthX/Y.
 SHADOW_X, SHADOW_Y = "18a801ba", "19a8034d"
 
 
@@ -102,7 +107,8 @@ def font_desc(link):
     ty = fonts.get(str(f.get("TypeData", ""))[5:], {})
     files = [x.get("8764b624") for x in ty.get("8c9d92f4", []) if "1a9f4554" not in x]
     return {"font": files[0].split("/")[-1] if files else None, "color": bgra(f.get("color")),
-            "color2": bgra(f.get(GRAD)), "outline": bgra(f.get("OutlineColor")), "shadow": bgra(f.get("8be090f2")),
+            "colorblind": bgra(f.get("colorblindColor")), "outline": bgra(f.get("OutlineColor")),
+            "colorblind_outline": bgra(f.get("colorblindOutlineColor")), "shadow": bgra(f.get("ShadowColor")),
             "size": sz.get("FontSize"), "outline_size": sz.get("OutlineSize"),
             "shadow_offset": [sz.get(SHADOW_X, 0), sz.get(SHADOW_Y, 0)]}
 
@@ -116,7 +122,9 @@ for v in ft.values():
         continue
     t = {k: v[k] for k in ("Priority", "Decay", "DecayDelay", "MinXVelocity", "MaxXVelocity", "MinYVelocity", "MaxYVelocity",
                            "StartOffsetX", "StartOffsetY", "ContinualForceX", "ContinualForceY", "ShrinkTime", "ShrinkScale",
-                           "Scale", "AlternateRightLeft", "FollowSource", "MaxInstances") if k in v}
+                           "Scale", "AlternateRightLeft", "FollowSource", "MaxInstances", "HangTime", "RandomStartOffsetMinX",
+                           "RandomStartOffsetMaxX", "RandomStartOffsetMinY", "RandomStartOffsetMaxY", "IgnoreQueue",
+                           "DisableHorizontalReverse") if k in v}
     t.update(fd)
     if v.get("Icons"):
         ic = v["Icons"][0]
@@ -128,6 +136,9 @@ for nm in ("HealthBarTitle", "HealthBarSelfTitle", "HealthBarLevel", "HealthBarS
     for k, f in fonts.items():
         if f.get("name") == nm:
             types[nm] = font_desc("link:" + k)
+for v in ft.values():
+    if isinstance(v.get("mTunables"), dict):   # FloatingTextGlobalConfig: item cap, queue delay, size comparison
+        types["_tunables"] = {k: x for k, x in v["mTunables"].items() if not k.startswith("__")}
 json.dump(types, open(os.path.join(OUT, "floating_text.json"), "w"), indent=1, sort_keys=True)
 print("floating text types", len(types))
 for key, name in (("8ed7f356e9ba1237", "ft_crit_physical.png"), ("6f67e151f193d7cb", "ft_crit_magic.png"),
