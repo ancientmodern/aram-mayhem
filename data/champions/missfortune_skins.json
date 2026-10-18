@@ -1,0 +1,242 @@
+[
+ {
+  "id": 21000,
+  "num": 0,
+  "name": "Miss Fortune",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21001,
+  "num": 1,
+  "name": "Cowgirl Miss Fortune",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21002,
+  "num": 2,
+  "name": "Waterloo Miss Fortune",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21003,
+  "num": 3,
+  "name": "Secret Agent Miss Fortune",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21004,
+  "num": 4,
+  "name": "Candy Cane Miss Fortune",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21005,
+  "num": 5,
+  "name": "Road Warrior Miss Fortune",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21006,
+  "num": 6,
+  "name": "Crime City Miss Fortune",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21007,
+  "num": 7,
+  "name": "Arcade Miss Fortune",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21008,
+  "num": 8,
+  "name": "Captain Fortune",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21009,
+  "num": 9,
+  "name": "Pool Party Miss Fortune",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21015,
+  "num": 15,
+  "name": "Star Guardian Miss Fortune",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21016,
+  "num": 16,
+  "name": "Gun Goddess Miss Fortune",
+  "rarity": "kUltimate",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21017,
+  "num": 17,
+  "name": "Pajama Guardian Miss Fortune",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21018,
+  "num": 18,
+  "name": "Bewitching Miss Fortune",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21020,
+  "num": 20,
+  "name": "Prestige Bewitching Miss Fortune",
+  "rarity": "kMythic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21021,
+  "num": 21,
+  "name": "Ruined Miss Fortune",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21031,
+  "num": 31,
+  "name": "Battle Bunny Miss Fortune",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21032,
+  "num": 32,
+  "name": "Admiral Battle Bunny Miss Fortune",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21033,
+  "num": 33,
+  "name": "Prestige Bewitching Miss Fortune (2022)",
+  "rarity": "kMythic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21040,
+  "num": 40,
+  "name": "Broken Covenant Miss Fortune",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21041,
+  "num": 41,
+  "name": "Prestige Broken Covenant Miss Fortune",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21050,
+  "num": 50,
+  "name": "Porcelain Miss Fortune",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21060,
+  "num": 60,
+  "name": "Battle Queen Miss Fortune",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 21069,
+  "num": 69,
+  "name": "MVP T1 Miss Fortune",
+  "rarity": "kMythic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ }
+]
