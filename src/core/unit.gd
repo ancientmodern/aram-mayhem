@@ -106,11 +106,15 @@ func setup_stats(data: Dictionary) -> void:
 
 func recompute_stats() -> void:
 	var old_max := stats.max_hp
+	var old_max_mana := stats.max_mana
 	stats.level = level
 	stats.slow = _strongest_slow()
 	stats.recompute(effects)
 	if old_max > 0.0 and stats.max_hp > old_max and not dead:
 		hp += stats.max_hp - old_max
+	# League: gaining max mana (items, levels) grants the same amount of current mana
+	if old_max_mana > 0.0 and stats.max_mana > old_max_mana:
+		mana += stats.max_mana - old_max_mana
 	hp = minf(hp, stats.max_hp)
 	mana = minf(mana, stats.max_mana)
 	var s := stats.size * display_scale
