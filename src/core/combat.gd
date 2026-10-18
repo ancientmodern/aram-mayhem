@@ -28,11 +28,6 @@ static func apply(info: DamageInfo) -> DamageInfo:
 	if source != null and not is_instance_valid(source):
 		source = null
 		info.source = null
-	# ability damage that can crit (augments flip can_crit on)
-	if info.can_crit and not info.is_crit and source != null and not info.is_attack:
-		if G.rng.randf() < source.stats.crit_chance:
-			info.is_crit = true
-			info.amount *= source.stats.crit_damage
 	if not info.no_hooks:
 		if source != null:
 			for e in source.effects:
@@ -41,6 +36,12 @@ static func apply(info: DamageInfo) -> DamageInfo:
 			e.on_pre_damage_taken(info)
 	if info.cancelled:
 		return info
+	# ability / item damage that can crit (augments flip can_crit on): 145% + bonus crit damage
+	if info.can_crit and not info.is_crit and source != null and not info.is_attack:
+		if G.rng.randf() < source.stats.crit_chance:
+			info.is_crit = true
+			var cm: float = info.crit_mult if info.crit_mult > 0.0 else 1.45 + (source.stats.crit_damage - Rules.CRIT_DAMAGE)
+			info.amount *= cm
 	var raw := (info.amount + info.flat_bonus) * info.mult
 	if source != null:
 		raw *= 1.0 + source.stats.dmg_amp

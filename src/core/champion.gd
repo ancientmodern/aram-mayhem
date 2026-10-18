@@ -33,6 +33,7 @@ var skin := 0
 var is_player := false
 var augment_offers: Array = []      ## queued offers: each is Array of augment ids
 var augments_pending := 0
+var augment_round := 0
 var rerolls := 0
 var resource_name := "Mana"
 var level_order := "QWEQQRQWQWRWWEEREE"  ## bot skill order (index = level-1)
@@ -224,7 +225,7 @@ func max_rank_for(slot: int) -> int:
 
 func can_level_ability(slot: int) -> bool:
 	var a: Ability = abilities[slot]
-	if a == null or ability_points <= 0:
+	if a == null or ability_points <= 0 or a.sealed:
 		return false
 	return a.level < a.max_level and a.level < max_rank_for(slot)
 

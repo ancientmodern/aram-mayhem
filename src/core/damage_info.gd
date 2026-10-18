@@ -19,6 +19,8 @@ var is_pet := false
 var is_reflect := false
 var is_true_execute := false
 var can_crit := false      ## ability damage that may crit (Jeweled Gauntlet etc.)
+var crit_mult := 0.0       ## crit multiplier for can_crit (0 = 145% + bonus crit damage)
+var on_hit_mult := 1.0     ## effectiveness when on-hit effects are re-applied
 var no_vamp := false
 var no_hooks := false      ## skip on-damage hooks (prevents infinite proc loops)
 var ability = null         ## Ability that caused it, if any

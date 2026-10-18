@@ -198,9 +198,9 @@ func add_buff(b: Buff, src = null) -> Buff:
 	_update_cc()
 	if b.cc != 0:
 		_on_cc_received(b)
-		if b.source != null and is_instance_valid(b.source) and b.source != self:
-			for e in b.source.effects:
-				e.on_cc_applied(self, b)
+	if (b.cc != 0 or b.slow_amount > 0.0) and b.source != null and is_instance_valid(b.source) and b.source != self:
+		for e in b.source.effects:
+			e.on_cc_applied(self, b)
 	return b
 
 
@@ -629,6 +629,21 @@ func on_attack_landed(_t: Unit, _info: DamageInfo) -> void:
 	pass
 
 
+## Re-apply on-hit effects (Ethereal Weapon, Typhoon, Double Tap...). `except` is skipped.
+func trigger_on_hit(t: Unit, info: DamageInfo, mult: float = 1.0, except = null) -> void:
+	if t == null or not is_instance_valid(t) or t.dead:
+		return
+	var prev := 1.0
+	if info != null:
+		prev = info.on_hit_mult
+		info.on_hit_mult = mult
+	for e in effects.duplicate():
+		if e != except:
+			e.on_attack_hit(t, info)
+	if info != null:
+		info.on_hit_mult = prev
+
+
 # ===================================================================== casting
 func _update_cast(dt: float) -> void:
 	if not casting.is_empty():
@@ -838,6 +853,8 @@ func set_ground_pos(p: Vector3) -> void:
 		y = match_ref.nav.height_at(p)
 	ground_y = y
 	global_position = Vector3(p.x, y, p.z)
+	if match_ref != null and match_ref.nav != null:
+		in_brush = match_ref.nav.brush_id(p)
 
 
 func face_toward(p: Vector3, dt: float) -> void:
