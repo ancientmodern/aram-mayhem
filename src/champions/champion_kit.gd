@@ -71,6 +71,9 @@ func init_ability(a: Ability, key: String, script_name: String = "") -> Ability:
 		var an := str(_first_s(sd.mAnimationName)).to_lower()
 		if an.begins_with("spell"):
 			a.anim = an.substr(0, 6)
+	a.tooltip_raw = sd.get("tooltip", "")
+	if sd.has("missileSpeed"):
+		a.set_meta("missile_speed", _first(sd.missileSpeed) * G.U)
 	var cd := ChampionDB.client_data(c.alias)
 	for s in cd.get("spells", []):
 		if str(s.get("spellKey", "")).to_upper() == key:
