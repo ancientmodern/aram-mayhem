@@ -38,6 +38,8 @@ var augment_levels := [1, 7, 11, 15]
 var vision_timer := 0.0
 var events: Array = []          ## kill feed entries
 var game_speed := 1.0
+var tickers: Array = []         ## [{fn: Callable(dt) -> bool, until: float}] per-frame callbacks
+var blockers: Array = []        ## projectile walls [{team, a: Vector3, b: Vector3, until: float}]
 
 
 func _ready() -> void:
@@ -72,6 +74,16 @@ func _process(delta: float) -> void:
 		if is_instance_valid(mi) and mi.alive:
 			mi.tick(dt, self)
 	missiles = missiles.filter(func(x): return is_instance_valid(x) and x.alive)
+	if not tickers.is_empty():
+		var keep := []
+		for tk in tickers:
+			if time <= tk.until and tk.fn.is_valid():
+				var r = tk.fn.call(dt)
+				if r != false:
+					keep.append(tk)
+		tickers = keep
+	if not blockers.is_empty():
+		blockers = blockers.filter(func(b): return time <= b.until)
 	if spawner != null:
 		spawner.tick(dt)
 	for r in relics:
@@ -84,6 +96,27 @@ func _process(delta: float) -> void:
 
 func after(seconds: float, fn: Callable) -> void:
 	_timers.append([time + seconds, fn])
+
+
+## Call fn(dt) every frame for `duration` seconds (return false from fn to stop early).
+func add_ticker(duration: float, fn: Callable) -> void:
+	tickers.append({"fn": fn, "until": time + duration})
+
+
+## Add a wall that destroys enemy projectiles crossing segment a-b (e.g. Wind Wall).
+func add_blocker(team: int, a: Vector3, b: Vector3, duration: float) -> Dictionary:
+	var bl := {"team": team, "a": a, "b": b, "until": time + duration}
+	blockers.append(bl)
+	return bl
+
+
+func projectile_blocked(team: int, p0: Vector3, p1: Vector3) -> bool:
+	for b in blockers:
+		if b.team == team:
+			continue
+		if Geometry2D.segment_intersects_segment(Vector2(p0.x, p0.z), Vector2(p1.x, p1.z), Vector2(b.a.x, b.a.z), Vector2(b.b.x, b.b.z)) != null:
+			return true
+	return false
 
 
 func _run_timers() -> void:
