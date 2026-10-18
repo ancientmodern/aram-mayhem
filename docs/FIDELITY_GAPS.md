@@ -26,12 +26,15 @@ Owner tags: [motion] [vfx] [world-ui] [hud] [env] [kits-a] [kits-b]
   Compare with screenshots.
 
 ## VFX
-- [vfx] Missing child particle systems, animated-mesh emitters, bone attachment (needs socket API) and
-  distortion/refraction.
-- [vfx] Palettes, fresnel/reflection, falloff textures, emission rate curves, linger, timeBeforeFirstEmission and
-  isSingleParticle semantics need auditing against the bins.
-- [vfx] Missile visuals: heights, trail ribbons, orientation, impact effects at the hit bone.
-- [vfx] Overall intensity, size and timing need calibration against reference footage of each spell.
+- [vfx] Done: probability tables (inverse-CDF), emitter-time birth curves, isSingleParticle = burst of `rate`,
+  legacy emit offsets/rotation angles, radial sphere/cylinder velocity, orbital velocity, fields, uv rotation /
+  clamp / uvMode 2, rate curves, particleLinger + linger colour, child systems, attached-mesh shells, distortion,
+  fresnel/falloff, mesh vertex colours, depth bias, rays, planar projections, missile frame (+Y = flight),
+  League missile heights + hit bones, sockets for casts/CC, trails tiled by distance. Central updater + load-time
+  prebuild (spawn ~0.1-0.3 ms).
+- [vfx] Open: palettes (paletteDefinition), per-particle birth UV offset, isLocalOrientation, VfxShapeSphere/Box
+  flag semantics beyond "radial", troybin conversion is approximate (Flash/Barrier/LevelUp), Map12 snow texture is
+  near-black (stays disabled), size/brightness calibration only spot-checked (Ezreal W ring, Lux Q rings).
 
 ## World UI & feedback
 - [world-ui] Health bars are flat rects. League's have textured frames, 100-HP tick marks, a level box, shield
