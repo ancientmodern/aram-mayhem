@@ -148,6 +148,17 @@ static func build_environment(parent: Node3D) -> void:
 	env.adjustment_enabled = true
 	env.adjustment_contrast = 1.0
 	env.adjustment_saturation = 1.0
+	# League colour pipeline: shaders write gamma colour so effects blend in gamma space like League, the
+	# compositor effect decodes after the transparent pass (src/render/gamma_decode_effect.gd). --linear = old path
+	var gamma := not OS.get_cmdline_user_args().has("--linear")
+	RenderingServer.global_shader_parameter_set("gamma_out", 1.0 if gamma else 0.0)
+	if gamma:
+		var comp := Compositor.new()
+		comp.compositor_effects = [GammaDecodeEffect.new()]
+		we.compositor = comp
+		# colour properties are decoded to linear by the renderer; pre-encode so the buffer holds gamma values
+		env.background_color = env.background_color.linear_to_srgb()
+		env.fog_light_color = env.fog_light_color.linear_to_srgb()
 	we.environment = env
 	parent.add_child(we)
 	var sun := DirectionalLight3D.new()

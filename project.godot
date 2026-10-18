@@ -66,3 +66,10 @@ lights_and_shadows/directional_shadow/size=8192
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3
 environment/defaults/default_clear_color=Color(0.05, 0.06, 0.09, 1)
 textures/vram_compression/import_etc2_astc=false
+
+[shader_globals]
+
+gamma_out={
+"type": "float",
+"value": 0.0
+}

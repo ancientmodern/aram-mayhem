@@ -4,6 +4,7 @@ shader_type spatial;
 // clip space along the projected normal so the line is a constant `width_px` on screen at any zoom, and is
 // pushed slightly away from the camera so only the silhouette survives the depth test (no interior lines).
 render_mode unshaded, cull_front, depth_draw_never, blend_mix, fog_disabled, shadows_disabled;
+#include "res://src/render/gamma.gdshaderinc"
 
 uniform vec4 outline_color : source_color = vec4(1.0, 0.2, 0.15, 1.0);
 uniform float width_px = 2.5;
@@ -24,6 +25,6 @@ void vertex() {
 }
 
 void fragment() {
-	ALBEDO = outline_color.rgb;
+	ALBEDO = to_out(outline_color.rgb);
 	ALPHA = outline_color.a;
 }
