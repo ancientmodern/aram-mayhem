@@ -380,6 +380,7 @@ func tick(dt: float) -> void:
 	if dead:
 		tick_dead(dt)
 		return
+	var pt := Prof.t0()
 	_tick_buffs(dt)
 	recompute_stats()
 	_regen(dt)
@@ -387,18 +388,27 @@ func tick(dt: float) -> void:
 	for e in effects.duplicate():
 		if not (e is Buff):
 			e.on_tick(self, dt)
+	Prof.add("u.stats", pt)
 	if dead:
 		return
 	G.ctx = "think"
+	pt = Prof.t0()
 	think(dt)
+	Prof.add("u.think", pt)
 	G.ctx = "cast"
+	pt = Prof.t0()
 	_update_cast(dt)
 	G.ctx = "attack"
 	_update_attack(dt)
+	Prof.add("u.cast_atk", pt)
 	G.ctx = "move"
+	pt = Prof.t0()
 	_update_movement(dt)
+	Prof.add("u.move", pt)
 	G.ctx = "visual"
+	pt = Prof.t0()
 	_update_visual(dt)
+	Prof.add("u.visual", pt)
 	var gp := global_position
 	if _prev_pos != Vector3.INF and dt > 0.0:
 		velocity = velocity.lerp(Vector3(gp.x - _prev_pos.x, 0.0, gp.z - _prev_pos.z) / dt, 0.5)
