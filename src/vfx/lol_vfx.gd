@@ -76,14 +76,83 @@ static func load_set(file: String) -> void:
 		return
 	var d = JSON.parse_string(FileAccess.get_file_as_string(path))
 	if d is Dictionary:
+		# Loading only registers the systems and starts reading their textures on background threads; the
+		# per-system build (materials, curve textures, meshes) runs a few ms per frame from the hub once the
+		# match is running, or immediately when a system is first spawned. This keeps the loading screen
+		# short (the full synchronous build took 5-20 s) without bringing back first-cast stalls.
 		var t0 := Time.get_ticks_usec()
+		var n := 0
+		# champion sets are built first (casts start early); map / structure / moment sets queue behind them
+		var champ_set := not (file in ["shared", "hexgate", "moments", "map12", "items", "summoners"])
+		var queue: Array = []
 		for k in d:
 			if k == "_spells":
 				_spells[file.to_lower()] = d[k]
 			else:
 				_db[k] = d[k]
-				_prebuild(d[k])
-		print("LolVfx: %s prebuilt %d systems in %.0f ms" % [file, d.size(), (Time.get_ticks_usec() - t0) / 1000.0])
+				n += _request_textures(d[k])
+				queue.append(k)
+		if champ_set:
+			_pending = queue + _pending
+		else:
+			_pending.append_array(queue)
+		_ensure_hub()
+		print("LolVfx: %s registered %d systems, %d textures loading in background (%.0f ms)" % [file, d.size(), n,
+				(Time.get_ticks_usec() - t0) / 1000.0])
+
+
+## Start background loads for every texture a system uses; returns how many were requested.
+static func _request_textures(sd) -> int:
+	if not (sd is Dictionary):
+		return 0
+	var n := 0
+	for e in sd.get("emitters", []):
+		var paths := [e.get("tex"), e.get("tex2"), e.get("ero_tex"), e.get("falloff"), e.get("ctex")]
+		var dist = e.get("distort")
+		if dist is Dictionary:
+			paths.append(dist.get("normal"))
+		var pal = e.get("palette")
+		if pal is Dictionary:
+			paths.append(pal.get("tex"))
+		for pth in paths:
+			if pth is String and pth != "" and not _texc.has(pth) and not _tex_req.has(pth) and ResourceLoader.exists(pth):
+				if ResourceLoader.load_threaded_request(pth, "", true) == OK:
+					_tex_req[pth] = true
+					n += 1
+	return n
+
+
+## True when none of the system's textures is still loading in the background.
+static func _textures_ready(sd: Dictionary) -> bool:
+	for e in sd.get("emitters", []):
+		for pth in [e.get("tex"), e.get("tex2"), e.get("ero_tex")]:
+			if pth is String and _tex_req.has(pth) and ResourceLoader.load_threaded_get_status(pth) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+				return false
+	return true
+
+
+## Build a system now if the background builder hasn't reached it yet (first spawn).
+static func _ensure_built(sd) -> void:
+	if sd is Dictionary and not sd.get("_built", false):
+		sd["_built"] = true
+		_prebuild(sd)
+
+
+## Background builder: called every frame by the hub with a small time budget.
+static func _pump(budget_us: int) -> void:
+	if _pending.is_empty():
+		return
+	var t0 := Time.get_ticks_usec()
+	while not _pending.is_empty() and Time.get_ticks_usec() - t0 < budget_us:
+		var k: String = _pending[0]
+		var sd = _db.get(k)
+		if sd is Dictionary and not sd.get("_built", false):
+			if not _textures_ready(sd):
+				return   # textures still streaming in; try again next frame
+			_ensure_built(sd)
+		_pending.pop_front()
+		if _pending.is_empty():
+			print("LolVfx: background build finished at %.1f s after launch" % (Time.get_ticks_msec() / 1000.0))
 
 
 ## Build everything a system needs (materials, process materials + curve textures, meshes, template nodes,
@@ -138,12 +207,15 @@ static func clear_cache() -> void:
 	_slots.clear()
 	_texc.clear()
 	_warm.clear()
+	_pending.clear()
+	_tex_req.clear()
 
 
 ## Unparented instance (e.g. a missile visual); emitters are built when it enters the tree.
 static func make(name: String, opts: Dictionary = {}) -> LolVfx:
 	if not _db.has(name):
 		return null
+	_ensure_built(_db[name])
 	var n := LolVfx.new()
 	n.def = _db[name]
 	n.name = name
@@ -404,9 +476,14 @@ static func attack_missile_meta(src, crit: bool) -> Dictionary:
 ## others sleep until their next timer or free time. Looping world effects (map ambient, structures) far from
 ## the camera stop emitting and hide until the camera comes back.
 static var _hub: Node = null
+static var _hub_try_frame := -10
 static var _now := 0.0
 static var _live: Array = []
 static var _cull_t := 0.0
+static var _load_us := {}         ## load-time cost breakdown (diagnostics)
+static var _pending: Array = []     ## system names registered but not built yet (background builder queue)
+static var _tex_req := {}           ## texture path -> true while a background load is outstanding
+const PUMP_BUDGET_US := 2500        ## per-frame time budget for the background builder
 static var _warm: Array = []        ## materials to draw once (pipeline compile) before their first real use
 const CULL_DIST := 32.0             ## m from the camera's ground focus
 
@@ -419,6 +496,9 @@ class Hub extends Node:
 		var t0 := Prof.t0()
 		LolVfx._hub_tick(dt)
 		Prof.add("vfx.update", t0)
+		t0 = Prof.t0()
+		LolVfx._pump(LolVfx.PUMP_BUDGET_US)
+		Prof.add("vfx.pump", t0)
 		if not LolVfx._warm.is_empty() or not _warm_nodes.is_empty():
 			_warmup()
 
@@ -464,14 +544,20 @@ class Hub extends Node:
 
 
 static func _ensure_hub() -> void:
-	if _hub != null and is_instance_valid(_hub):
-		return
 	var tree := Engine.get_main_loop() as SceneTree
 	if tree == null:
+		return
+	if _hub != null and is_instance_valid(_hub):
+		# a deferred add can fail while the root is busy setting up children (e.g. during match setup):
+		# retry until the hub is really in the tree, or no effect would ever update or free
+		if _hub.get_parent() == null and Engine.get_process_frames() > _hub_try_frame + 1:
+			_hub_try_frame = Engine.get_process_frames()
+			tree.root.add_child.call_deferred(_hub)
 		return
 	_hub = Hub.new()
 	_hub.name = "LolVfxHub"
 	_hub.process_mode = Node.PROCESS_MODE_ALWAYS
+	_hub_try_frame = Engine.get_process_frames()
 	tree.root.add_child.call_deferred(_hub)
 
 
@@ -1242,8 +1328,18 @@ static func _tex(path) -> Texture2D:
 		return null
 	if _texc.has(path):
 		return _texc[path]
-	var t: Texture2D = Assets.tex(path) if ResourceLoader.exists(path) else null
+	var t0 := Time.get_ticks_usec()
+	var t: Texture2D = null
+	if _tex_req.has(path):
+		_tex_req.erase(path)
+		var r = ResourceLoader.load_threaded_get(path)   # waits only if this one is still loading
+		t = r if r is Texture2D else null
+		if t != null:
+			Assets._tex_cache[path] = t
+	else:
+		t = Assets.tex(path) if ResourceLoader.exists(path) else null
 	_texc[path] = t
+	_load_us["tex"] = _load_us.get("tex", 0) + Time.get_ticks_usec() - t0
 	return t
 
 
@@ -1280,6 +1376,7 @@ static func _mesh_for(e: Dictionary) -> Mesh:
 	var key := "m|%d|%s" % [o, e.get("mesh", "")]
 	if _meshes.has(key):
 		return _meshes[key]
+	var t0 := Time.get_ticks_usec()
 	var mesh: Mesh
 	if o == 3:
 		mesh = _vmesh(String(e.mesh))
@@ -1295,6 +1392,7 @@ static func _mesh_for(e: Dictionary) -> Mesh:
 			q.center_offset = Vector3(0, 0.5, 0)   # rays start at the particle and extend along its axis
 		mesh = q
 	_meshes[key] = mesh
+	_load_us["mesh"] = _load_us.get("mesh", 0) + Time.get_ticks_usec() - t0
 	return mesh
 
 
