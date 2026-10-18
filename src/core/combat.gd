@@ -14,7 +14,26 @@ static func deal(source, target, amount: float, type: int, opts: Dictionary = {}
 	return apply(info)
 
 
+## Nested damage events (procs triggering procs) are capped so chains can't explode exponentially.
+const MAX_DEPTH := 8
+static var depth := 0
+static var _depth_warned := false
+
+
 static func apply(info: DamageInfo) -> DamageInfo:
+	if depth >= MAX_DEPTH:
+		info.cancelled = true
+		if not _depth_warned:
+			_depth_warned = true
+			push_warning("Combat: proc chain depth limit hit (%s -> %s, %s)" % [info.source.display_name if info.source != null and is_instance_valid(info.source) else "?", info.target.display_name if info.target != null and is_instance_valid(info.target) else "?", info.tag])
+		return info
+	depth += 1
+	var r := _apply(info)
+	depth -= 1
+	return r
+
+
+static func _apply(info: DamageInfo) -> DamageInfo:
 	var target = info.target
 	var source = info.source
 	if G.debug_sites:
@@ -33,10 +52,10 @@ static func apply(info: DamageInfo) -> DamageInfo:
 		info.source = null
 	if not info.no_hooks:
 		if source != null:
-			for e in source.effects:
+			for e in source.effects.duplicate():
 				if G.debug_sites: G.crumb("pre_dealt " + str(e.id))
 				e.on_pre_damage_dealt(info)
-		for e in target.effects:
+		for e in target.effects.duplicate():
 			if G.debug_sites: G.crumb("pre_taken " + str(e.id))
 			e.on_pre_damage_taken(info)
 	if info.cancelled:
@@ -71,6 +90,8 @@ static func apply(info: DamageInfo) -> DamageInfo:
 	info.absorbed = post - remaining
 	info.final = remaining
 	target.hp -= remaining
+	if info.ability != null and not info.is_attack and source != null and is_instance_valid(source) and source.match_ref != null and source.match_ref.audio != null:
+		source.match_ref.audio.spell_hit(source, info.ability, target)
 	target.on_damaged(info)
 	if source != null:
 		target.record_damage(source, post)
@@ -92,15 +113,15 @@ static func apply(info: DamageInfo) -> DamageInfo:
 		target.match_ref.fx_damage(info)
 	if not info.no_hooks:
 		if source != null:
-			for e in source.effects:
+			for e in source.effects.duplicate():
 				if G.debug_sites: G.crumb("dealt " + str(e.id))
 				e.on_damage_dealt(info)
-		for e in target.effects:
+		for e in target.effects.duplicate():
 			if G.debug_sites: G.crumb("taken " + str(e.id))
 			e.on_damage_taken(info)
 	if target.hp <= 0.0 and not target.dead:
 		var saved := false
-		for e in target.effects:
+		for e in target.effects.duplicate():
 			if e.prevent_death(info):
 				saved = true
 				break
@@ -132,15 +153,22 @@ static func resist_multiplier(resist: float, source, physical: bool) -> float:
 
 ## Heal target. Applies heal power of the source and grievous wounds on the target.
 static func heal(source, target, amount: float, opts: Dictionary = {}) -> float:
-	if target == null or not is_instance_valid(target) or target.dead or amount <= 0.0:
+	if target == null or not is_instance_valid(target) or target.dead or amount <= 0.0 or depth >= MAX_DEPTH:
 		return 0.0
+	depth += 1
+	var r := _heal(source, target, amount, opts)
+	depth -= 1
+	return r
+
+
+static func _heal(source, target, amount: float, opts: Dictionary) -> float:
 	var amt := amount
 	var is_vamp: bool = opts.get("is_vamp", false)
 	if source != null and is_instance_valid(source) and not is_vamp:
 		amt *= 1.0 + source.stats.heal_power
-		for e in source.effects:
+		for e in source.effects.duplicate():
 			amt = e.modify_heal_shield_dealt(amt, target, false)
-	for e in target.effects:
+	for e in target.effects.duplicate():
 		amt = e.modify_heal_received(amt, source)
 	amt *= 1.0 - target.grievous_wounds()
 	var before: float = target.hp
@@ -151,7 +179,7 @@ static func heal(source, target, amount: float, opts: Dictionary = {}) -> float:
 		if source != null and is_instance_valid(source):
 			source.healing_done_total += healed
 			if not is_vamp:
-				for e in source.effects:
+				for e in source.effects.duplicate():
 					e.on_heal_dealt(target, healed)
 		if opts.get("show", true) and target.match_ref != null and healed >= 5.0:
 			target.match_ref.fx_heal(target, healed)
@@ -159,17 +187,24 @@ static func heal(source, target, amount: float, opts: Dictionary = {}) -> float:
 
 
 static func shield(source, target, amount: float, duration: float, opts: Dictionary = {}) -> Dictionary:
-	if target == null or not is_instance_valid(target) or target.dead or amount <= 0.0:
+	if target == null or not is_instance_valid(target) or target.dead or amount <= 0.0 or depth >= MAX_DEPTH:
 		return {}
+	depth += 1
+	var r := _shield(source, target, amount, duration, opts)
+	depth -= 1
+	return r
+
+
+static func _shield(source, target, amount: float, duration: float, opts: Dictionary) -> Dictionary:
 	var amt := amount
 	if source != null and is_instance_valid(source):
 		amt *= 1.0 + source.stats.heal_power
-		for e in source.effects:
+		for e in source.effects.duplicate():
 			amt = e.modify_heal_shield_dealt(amt, target, true)
 	var s: Dictionary = target.add_shield(amt, duration, source, opts.get("type", -1), opts.get("decay", false), opts.get("id", ""))
 	if source != null and is_instance_valid(source):
-		for e in source.effects:
+		for e in source.effects.duplicate():
 			e.on_shield_dealt(target, amt)
-	for e in target.effects:
+	for e in target.effects.duplicate():
 		e.on_shield_received(amt)
 	return s

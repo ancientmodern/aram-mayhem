@@ -141,7 +141,7 @@ func remove_effect(e: Effect) -> void:
 
 
 func find_effect(eid: String) -> Effect:
-	for e in effects:
+	for e in effects.duplicate():
 		if e.id == eid:
 			return e
 	return null
@@ -199,7 +199,7 @@ func add_buff(b: Buff, src = null) -> Buff:
 	if b.cc != 0:
 		_on_cc_received(b)
 	if (b.cc != 0 or b.slow_amount > 0.0) and b.source != null and is_instance_valid(b.source) and b.source != self:
-		for e in b.source.effects:
+		for e in b.source.effects.duplicate():
 			e.on_cc_applied(self, b)
 	return b
 
@@ -383,7 +383,7 @@ func tick(dt: float) -> void:
 	recompute_stats()
 	_regen(dt)
 	_tick_shields(dt)
-	for e in effects:
+	for e in effects.duplicate():
 		if not (e is Buff):
 			e.on_tick(self, dt)
 	if dead:
@@ -416,7 +416,7 @@ func _tick_buffs(dt: float) -> void:
 	if buffs.is_empty():
 		return
 	var expired := []
-	for b in buffs:
+	for b in buffs.duplicate():
 		if not b.tick(self, dt):
 			expired.append(b)
 	for b in expired:
@@ -604,13 +604,15 @@ func _start_attack(t: Unit) -> void:
 	_pending_crit = G.rng.randf() < stats.crit_chance
 	attack_count += 1
 	play_attack_anim(_pending_crit, period)
+	if match_ref != null and match_ref.audio != null:
+		match_ref.audio.attack_start(self, _pending_crit)
 
 
 func _launch_attack(t: Unit) -> void:
 	windup_timer = -1.0
 	_windup_target = null
 	var crit := _pending_crit
-	for e in effects:
+	for e in effects.duplicate():
 		e.on_attack_launch(t)
 	if attack_missile_speed > 0.0 and match_ref != null:
 		match_ref.spawn_attack_missile(self, t, crit)
@@ -626,7 +628,9 @@ func attack_hit(t: Unit, crit: bool, mult: float = 1.0) -> DamageInfo:
 	if crit:
 		dmg *= stats.crit_damage
 	var info := Combat.deal(self, t, dmg, G.DmgType.PHYSICAL, {"is_attack": true, "is_crit": crit})
-	for e in effects:
+	if match_ref != null and match_ref.audio != null:
+		match_ref.audio.attack_hit(self, t, crit)
+	for e in effects.duplicate():
 		e.on_attack_hit(t, info)
 	on_attack_landed(t, info)
 	return info
@@ -803,7 +807,7 @@ func start_dash(to: Vector3, opts: Dictionary = {}) -> void:
 	if opts.has("anim"):
 		play_anim(opts.anim, 1.0, 0.05, duration)
 	if not opts.get("forced", false):
-		for e in effects:
+		for e in effects.duplicate():
 			e.on_dash(from, dest)
 
 

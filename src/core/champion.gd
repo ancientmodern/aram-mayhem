@@ -177,6 +177,8 @@ func respawn() -> void:
 	for e in effects.duplicate():
 		e.on_respawn()
 	recompute_stats()
+	if match_ref != null and match_ref.audio != null:
+		match_ref.audio.on_respawn(self)
 	hp = stats.max_hp
 	mana = stats.max_mana
 
@@ -310,7 +312,7 @@ func add_augment(a: Effect) -> void:
 ## Multiplier for permanent stacks gained from abilities (Stackosaurus Rex etc.).
 func permanent_stack_mult() -> float:
 	var k := 1.0
-	for e in effects:
+	for e in effects.duplicate():
 		if e.has_method("permanent_stack_mult"):
 			k *= e.permanent_stack_mult()
 	return k

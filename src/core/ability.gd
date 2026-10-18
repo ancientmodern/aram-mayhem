@@ -184,7 +184,7 @@ func start_cooldown(override: float = -1.0) -> void:
 		c = base * 100.0 / (100.0 + owner.stats.summoner_haste)
 	else:
 		c = owner.stats.cooldown(base, is_ult, not is_ult)
-	for e in owner.effects:
+	for e in owner.effects.duplicate():
 		c = e.modify_cooldown(self, c)
 	cd = c
 	cd_total = c
@@ -306,6 +306,8 @@ func begin_cast(t: Dictionary) -> void:
 		elif auto_cooldown():
 			start_cooldown()
 	cast_count += 1
+	if owner.match_ref != null and owner.match_ref.audio != null:
+		owner.match_ref.audio.spell_cast(owner, self)
 	if face_target and t.has("pos"):
 		owner.face_toward(t.pos, 100.0)
 	if cast_time > 0.0:

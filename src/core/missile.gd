@@ -100,6 +100,12 @@ func tick(dt: float, m) -> void:
 	if age > lifetime:
 		finish(global_position)
 		return
+	# the owner was freed (dead minion / expired summon): callbacks would capture null
+	if source != null and not is_instance_valid(source):
+		on_hit = Callable()
+		on_end = Callable()
+		finish(global_position)
+		return
 	speed = clampf(speed + accel * dt, min_speed, max_speed)
 	var prev := global_position
 	if not prev.is_finite() or not is_finite(speed) or (mode == Mode.ARC and not target_pos.is_finite()):
