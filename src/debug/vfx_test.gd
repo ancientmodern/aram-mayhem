@@ -13,6 +13,8 @@ func _ready() -> void:
 			names = a.substr(10).split(",")
 		elif a.begins_with("--vfxdir="):
 			shot_dir = "user://" + a.substr(9)
+		elif a.begins_with("--rotorder="):
+			LolVfx.ROT_ORDER = int(a.substr(11))
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(shot_dir))
 	_run()
 
@@ -55,7 +57,7 @@ func _run() -> void:
 			continue
 		var pos: Vector3 = spot + Vector3(2.5 + (i % 4) * 3.2 - 4.0, 0.9, -2.0 + (i / 4) * 3.5)
 		pos.y = m.nav.height_at(pos) + 0.9
-		if n.contains("_mis"):
+		if n.to_lower().contains("_mis"):
 			# moving carrier so trails show
 			var carrier := Node3D.new()
 			m.fx_root.add_child(carrier)
