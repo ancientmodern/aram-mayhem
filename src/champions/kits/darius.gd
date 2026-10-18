@@ -178,11 +178,11 @@ class Hemorrhage extends Effect:
 		var lv: float = owner.level
 		return lerpf(13.0, 30.0, (lv - 1.0) / 17.0) + 0.3 * owner.stats.bonus_ad
 
+	## League DariusHemoMarker "NoxianMightBonusAD" (CommunityDragon darius.bin.json): 30 at level 1, +5 per level,
+	## +10 per level from 11, +25 per level from 14 -> 30/35/.../75 (L10), 85, 95, 105, 130, 155, 180, 205, 230.
 	func might_ad() -> float:
 		var lv: int = owner.level
-		if lv < 10:
-			return 30.0
-		return 30.0 + (lv - 9) * 200.0 / 9.0
+		return K.level_breakpoints(lv, 30.0, 5.0, [[11, 10.0], [14, 25.0]])
 
 	func in_might() -> bool:
 		return owner.has_buff("darius_might")
@@ -362,8 +362,9 @@ class Decimate extends DAbility:
 			var d := G.flat_dist(p, u.global_position)
 			var tp: Vector3 = u.global_position + Vector3(0, 1.0, 0)
 			if d > Q_INNER * G.U:
-				var dmg := blade * (0.9 if u.kind == G.Kind.MINION else 1.0)
-				var info := hit(u, dmg, G.DmgType.PHYSICAL, {"is_aoe": true, "tag": "q_blade"})
+				# full blade damage to minions too: League has no minion modifier on Decimate (wiki Decimate /
+				# patch history; DariusCleave data has only BaseDamage/TotalADRatio/InnerCircleDamagePercent)
+				var info := hit(u, blade, G.DmgType.PHYSICAL, {"is_aoe": true, "tag": "q_blade"})
 				if not info.killed:
 					hemo.apply(u, 1)
 				if u.kind == G.Kind.CHAMPION:

@@ -24,6 +24,8 @@ func build_kit() -> void:
 	var r = init_ability(FinalSpark.new(), "R")
 	r.cast_range = 3340.0
 	r.ind_length = 3340.0
+	# ARAM (CommunityDragon lux.bin.json LuxR cooldown override ARAM; wiki ARAM page): 80 / 70 / 60 s
+	K.aram_cooldowns(r, [80.0, 80.0, 70.0, 60.0, 60.0, 60.0, 60.0], true)
 	c.abilities[3] = r
 	c.add_effect(BotLeveler.new())
 
@@ -491,11 +493,22 @@ class FinalSpark extends KitAbility:
 	func damage() -> float:
 		return dv("Damage") + 1.2 * ap()
 
+	## League (wiki Final Spark notes): starting the cast refreshes Illumination marks with less than 1 s left
+	## to 1.25 s on enemies within 5000 units, so the 1 s charge-up can still detonate them. The beam then
+	## consumes each mark (bonus damage) and applies a fresh one.
+	func _extend_marks() -> void:
+		var o = owner
+		for u in o.match_ref.enemies_in_radius(o.team, o.global_position, 5000.0 * G.U, false):
+			var b = u.find_buff("lux_illum", o)
+			if b != null and b.remaining < 1.0:
+				b.remaining = 1.25
+
 	func begin_cast(t: Dictionary) -> void:
 		super(t)
 		var o = owner
 		var m = o.match_ref
 		var dir: Vector3 = t.get("dir", o.facing)
+		_extend_marks()
 		# League Final Spark: R_cas (wand charge) comes from the generic cast hook; the beam system holds
 		# the charge / warning lines (t=0) and the beam itself (delayed by 1 s = the cast time).
 		# Its origin is at Lux's wand height (its ground parts are offset by -1.6 m).

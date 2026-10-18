@@ -197,7 +197,11 @@ class QAttackHook extends Effect:
 
 	func on_pre_damage_dealt(info) -> void:
 		if info.is_attack and q.is_empowered() and info.target != null:
-			info.amount = q.dv("BaseDamage") + q.dv("tADRatio", 1.5) * owner.stats.ad
+			# BaseDamage + 150% AD total (the attack's own 100% AD included). League: the empowered attack can
+			# crit but the bonus part can't (wiki Decisive Strike notes), so only the 100% AD part is multiplied.
+			var bonus: float = q.dv("BaseDamage") + (q.dv("tADRatio", 1.5) - 1.0) * owner.stats.ad
+			var base_part: float = owner.stats.ad * (owner.stats.crit_damage if info.is_crit else 1.0)
+			info.amount = bonus + base_part
 			info.tag = "garen_q"
 			q.consume(info.target)
 
@@ -247,11 +251,19 @@ class CourageResists extends Effect:
 	func get_stat_mods() -> Dictionary:
 		return {"armor": stacks, "mr": stacks}
 
+	## League: every kill (champion, minion, monster, pet) is one stack (BuffCounterPerKill 1) worth
+	## ResistGainOnKill (0.2) armor+MR, capped at ResistMax 30. ARAM (wiki ARAM page, Courage): 0.4 per kill,
+	## max reached at 75 kills. Needs W ranked, like every basic-ability passive.
+	const ARAM_RESIST_PER_KILL := 0.4
+
 	func on_kill(_v) -> void:
+		if _v == null or not is_instance_valid(_v) or not (_v.kind == G.Kind.CHAMPION or _v.kind == G.Kind.MINION or _v.kind == G.Kind.SUMMON):
+			return
 		var w = owner.abilities[1]
-		if w != null and w.level > 0:
-			stacks = minf(30.0, stacks + 0.2 if _v.kind == G.Kind.MINION else stacks + 1.0)
-			refresh_stats()
+		if w == null or w.level <= 0:
+			return
+		stacks = minf(30.0, stacks + ARAM_RESIST_PER_KILL)
+		refresh_stats()
 
 
 # ===================================================================== E
@@ -322,14 +334,17 @@ class Judgment extends Ability:
 				nearest = u
 		_mark_nearest(nearest)
 		var base := dv("BaseDamagePerTick") + dv("ADRatioPerTick", 0.4) * ad()
-		base *= 1.0 + o.stats.crit_chance * dv("CritMod", 0.3)
+		# League (V26.01+, calc "1 + CritMod*(critDamage - 1)"): each spin can critically strike for 130%
+		# (+9% with Infinity Edge). One roll per spin since every spin's damage lands simultaneously.
+		# No minion reduction: "25% reduced damage to minions" was removed in V5.16 (wiki Garen history).
+		var crit: bool = G.rng.randf() < o.stats.crit_chance
+		if crit:
+			base *= 1.0 + dv("CritMod", 0.3) * (o.stats.crit_damage - 1.0)
 		for u in targets:
 			var dmg := base
 			if u == nearest:
 				dmg *= 1.0 + dv("NearestEnemyBonus", 0.25)
-			if u.kind == G.Kind.MINION:
-				dmg *= 0.75
-			hit(u, dmg, G.DmgType.PHYSICAL, {"is_aoe": true, "tag": "e"})
+			hit(u, dmg, G.DmgType.PHYSICAL, {"is_aoe": true, "tag": "e", "is_crit": crit})
 			if u.kind == G.Kind.CHAMPION:
 				var n: int = hits_on.get(u, 0) + 1
 				hits_on[u] = n

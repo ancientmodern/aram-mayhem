@@ -484,7 +484,9 @@ class ZenithBlade extends KAbility:
 
 # ===================================================================== R
 class SolarFlare extends KAbility:
-	const INNER := 150.0
+	## League (wiki Solar Flare): hitbox 325 outer / 175 epicenter; the cast indicator draws 300 / 120 (castRadius
+	## 120, castRadiusSecondary 300 in the data) but "the actual hitbox radii are larger than those values".
+	const INNER := 175.0
 
 	func _init() -> void:
 		target_type = Target.POINT

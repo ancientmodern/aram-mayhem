@@ -571,11 +571,15 @@ class SummonTibbers extends KAbility:
 		AnnieUtil.shake(o, 0.4)
 		var lvl: int = o.level
 		var s = Tibbers.new()
-		var res := 30.0 + 3.5 * (lvl - 1)
+		# League AnnieR calcs (CommunityDragon annie.bin.json): TibbersTotalHP = breakpoints(1150; +50/lvl from 7,
+		# +250/lvl from 11, +300/lvl from 16) * TibbersModeSpecificHPMod + 50% AP -> 1150 (L6) .. 3500 (L18);
+		# TibbersTotalResists = 30, +5/lvl from 7 -> 90 (L18). Attack range 150 (wiki Summon: Tibbers).
+		var res := K.level_breakpoints(lvl, 30.0, 0.0, [[7, 5.0]])
+		var hp := K.level_breakpoints(lvl, 1150.0, 0.0, [[7, 50.0], [11, 250.0], [16, 300.0]])
 		s.setup(o, "Tibbers", {
-			"hp": (1150.0 + 115.0 * (lvl - 1)) * dv("TibbersModeSpecificHPMod", 1.0) + 0.5 * ap(),
+			"hp": hp * dv("TibbersModeSpecificHPMod", 1.0) + 0.5 * ap(),
 			"ad": dv("TibbersAttackDamage") + dv("TibbersAttackAPRatio", 0.1) * ap(),
-			"armor": res, "mr": res, "as": 0.625, "range": 175.0, "ms": 350.0 + dv("TibbersBonusMS"),
+			"armor": res, "mr": res, "as": 0.625, "range": 150.0, "ms": 350.0 + dv("TibbersBonusMS"),
 			"radius": 0.9, "height": 3.2, "model": "AnnieTibbers", "lifetime": dv("TibbersLifetime", 45.0), "scale": 1.15,
 		})
 		s.annie = o
@@ -793,18 +797,26 @@ class Tibbers extends Summon:
 			return
 		super.think(dt)
 
+	## League (wiki Summon: Tibbers): the flame aura burns enemies within 350 units every 0.25 s for a quarter of
+	## AuraDamage (+4% AP) per second.
+	const AURA_RADIUS := 350.0
+	const AURA_TICK := 0.25
+	var burn_n := 0
+
 	func _burn(dt: float) -> void:
 		burn_acc += dt
-		if burn_acc < 0.5:
+		if burn_acc < AURA_TICK:
 			return
-		burn_acc -= 0.5
+		burn_acc -= AURA_TICK
+		burn_n += 1
 		if r_ab == null or annie == null or not is_instance_valid(annie):
 			return
 		var dps: float = r_ab.dv("AuraDamage") + 0.04 * annie.stats.ap
-		for u in match_ref.enemies_in_radius(team, global_position, 3.0):
-			Combat.deal(annie, u, dps * 0.5, G.DmgType.MAGIC, {"is_spell": true, "is_aoe": true, "is_dot": true,
+		var sparks: bool = burn_n % 2 == 0   # embers at 2 Hz is plenty
+		for u in match_ref.enemies_in_radius(team, global_position, AURA_RADIUS * G.U):
+			Combat.deal(annie, u, dps * AURA_TICK, G.DmgType.MAGIC, {"is_spell": true, "is_aoe": true, "is_dot": true,
 					"ability": r_ab, "tag": "tibbers_aura"})
-			if u.kind == G.Kind.CHAMPION:
+			if sparks and u.kind == G.Kind.CHAMPION:
 				Vfx.hit_spark(match_ref, u.global_position + Vector3(0, 0.9, 0), EMBER, 0.45)
 
 	func _fade_fx() -> void:

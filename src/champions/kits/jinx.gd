@@ -525,17 +525,62 @@ class Zap extends KitAbility:
 
 
 # ===================================================================== E
+## League (wiki Flame Chompers!): three chompers centred on the target point in a row perpendicular to the throw,
+## collision (trigger) radius 115, explosion radius 225, land after 0.4 s, arm 0.5 s, last 5 s. The row spans
+## the spell's castRadius (315) on each side: outer chompers sit 315 - 115 = 200 units from the centre.
+## The targeter is that row of three circles (custom: the core indicator set has no multi-circle shape).
 class FlameChompers extends KitAbility:
-	const TRIGGER_R := 100.0
-	const BLAST_R := 250.0
+	const TRIGGER_R := 115.0
+	const BLAST_R := 225.0
+	const SPACING := 200.0
+	const LAND_TIME := 0.4
+	var _ind: Node3D = null
 
 	func _init() -> void:
 		target_type = Target.POINT
-		indicator = Ind.CIRCLE
-		ind_radius = 250.0
+		indicator = Ind.NONE     # drawn by _update_indicator (range ring still comes from the controller)
+		ind_radius = TRIGGER_R
 		cast_time = 0.25
 		anim = "spell3"
 		anim_lock = 0.45
+
+	## Chomper positions for a throw at `center` (row perpendicular to the cast direction).
+	func layout(center: Vector3) -> Array:
+		var fwd := G.flat_dir(owner.global_position, center)
+		if fwd.length_squared() < 0.01:
+			fwd = owner.facing
+		var side := Vector3(-fwd.z, 0, fwd.x)
+		return [center - side * SPACING * G.U, center, center + side * SPACING * G.U]
+
+	func on_tick(_dt: float) -> void:
+		_update_indicator()
+
+	## Local player aiming E: three League "aoe" circles at the chomper spots (no allocation per frame).
+	func _update_indicator() -> void:
+		var o = owner
+		var pc = o.controller if o == G.player else null
+		var show: bool = pc != null and is_instance_valid(pc) and pc is PlayerController and pc.aiming == slot and not o.dead
+		if not show:
+			if _ind != null and is_instance_valid(_ind):
+				_ind.visible = false
+			return
+		var m = o.match_ref
+		if _ind == null or not is_instance_valid(_ind):
+			_ind = Node3D.new()
+			_ind.name = "JinxEIndicator"
+			m.add_child(_ind)
+			for i in 3:
+				var mi := Vfx.indicator_mesh(0, Color(1, 1, 1, 0.95))
+				mi.scale = Vector3(TRIGGER_R * 2.0 * G.U, 1, TRIGGER_R * 2.0 * G.U)
+				_ind.add_child(mi)
+		_ind.visible = true
+		var col := Color(1, 1, 1, 0.95) if is_ready() and can_afford() else Color(0.5, 0.5, 0.55, 0.55)
+		var spots := layout(make_target(pc.mouse_ground, null).pos)
+		for i in 3:
+			var mi: MeshInstance3D = _ind.get_child(i)
+			var p: Vector3 = spots[i]
+			mi.global_position = Vector3(p.x, (m.nav.height_at(p) if m.nav != null else p.y) + 0.12, p.z)
+			mi.material_override.set_shader_parameter("color", col)
 
 	func damage() -> float:
 		return dv("Damage") + 1.0 * ap()
@@ -544,18 +589,13 @@ class FlameChompers extends KitAbility:
 		var o = owner
 		var m = o.match_ref
 		var center: Vector3 = t.pos
-		var fwd := G.flat_dir(o.global_position, center)
-		if fwd.length_squared() < 0.01:
-			fwd = o.facing
-		var side := Vector3(-fwd.z, 0, fwd.x)
 		var self_ref := self
 		var cast_hits := {}
-		for i in 3:
-			var p: Vector3 = center + side * (float(i) - 1.0) * 1.5
+		for spot in layout(center):
+			var p: Vector3 = spot
 			if m.nav != null and not m.nav.is_walkable(p):
 				p = m.nav.nearest_walkable(p)
-			var fly := clampf(G.flat_dist(o.global_position, p) / 14.5, 0.2, 0.8)
-			K.arc_missile(self, o.global_position + Vector3(0, 1.3, 0), p, fly, func(_mi, _pos): self_ref._place(p, cast_hits), {"lol": "Jinx_Base_E_Mis", "arc": 2.2})
+			K.arc_missile(self, o.global_position + Vector3(0, 1.3, 0), p, LAND_TIME, func(_mi, _pos): self_ref._place(p, cast_hits), {"lol": "Jinx_Base_E_Mis", "arc": 2.2})
 		notify_cast(t)
 
 	static func _body_mesh() -> Mesh:
@@ -612,7 +652,7 @@ class FlameChompers extends KitAbility:
 		var dur := dv("GrenadeDuration", 5.0)
 		var node := _chomper_visual(m, pos, arm + dur)
 		LolVfx.spawn(m, "Jinx_Base_E_Mine_Set", pos, {"height": 0.1})
-		var st := {"age": 0.0, "armed": false}
+		var st := {"age": 0.0, "armed": false, "acc": 0.0}
 		var self_ref := self
 		m.add_ticker(arm + dur, func(dt: float) -> bool:
 			st.age += dt
@@ -623,6 +663,11 @@ class FlameChompers extends KitAbility:
 			if not st.armed:
 				st.armed = true
 				LolVfx.spawn(m, "Jinx_Base_E_Mine_Ready", pos, {"height": 0.3})
+			# trigger check at League's server tick (30 Hz) instead of every rendered frame
+			st.acc += dt
+			if st.acc < 1.0 / 30.0:
+				return true
+			st.acc = 0.0
 			var caught: Array = m.enemies_in_radius(o.team, pos, TRIGGER_R * G.U, true)
 			if caught.is_empty():
 				return true

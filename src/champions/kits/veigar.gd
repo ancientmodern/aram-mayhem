@@ -13,12 +13,17 @@ func build_kit() -> void:
 	c.attack_color = Color(0.65, 0.42, 1.0)
 	c.role = "mage"
 	c.level_order = "QWEQQRQWQWRWWEEREE"
-	var pd: Dictionary = spell(str(c.data.get("passive", "VeigarPassive"))).get("data_values", {})
+	var pd: Dictionary = spell(str(c.data.get("passive", "VeigarPassive"))).get("data_values", {}).duplicate()
+	# ARAM (CommunityDragon veigar.bin.json VeigarPassive DataValuesModeOverride.ARAM; wiki ARAM page):
+	# 3 Phenomenal Evil stacks per champion takedown instead of 5.
+	pd["dTakedownStacks"] = 3.0
 	c.passive = PhenomenalEvil.new(pd)
 	c.add_effect(c.passive)
 	c.abilities[0] = init_ability(BalefulStrike.new(), "Q")
 	c.abilities[1] = init_ability(DarkMatter.new(), "W")
 	c.abilities[2] = init_ability(EventHorizon.new(), "E")
+	# ARAM Event Horizon cooldown (VeigarEventHorizon cooldown override ARAM; wiki ARAM page): 23 / 21.5 / 20 / 18.5 / 17
+	K.aram_cooldowns(c.abilities[2], [23.0, 23.0, 21.5, 20.0, 18.5, 17.0, 17.0])
 	c.abilities[3] = init_ability(PrimordialBurst.new(), "R")
 	c.abilities[2].cast_time = 0.25
 	c.abilities[3].cast_time = 0.25

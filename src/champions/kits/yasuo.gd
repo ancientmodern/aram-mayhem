@@ -20,6 +20,8 @@ func build_kit() -> void:
 	c.add_effect(p)
 	c.abilities[0] = init_ability(SteelTempest.new(), "Q")
 	c.abilities[1] = init_ability(WindWall.new(), "W")
+	# ARAM Wind Wall cooldown (CommunityDragon yasuo.bin.json YasuoW cooldown override ARAM; wiki ARAM page)
+	K.aram_cooldowns(c.abilities[1], [27.0, 27.0, 25.0, 23.0, 21.0, 19.0, 19.0])
 	c.abilities[2] = init_ability(SweepingBlade.new(), "E")
 	c.abilities[3] = init_ability(LastBreath.new(), "R")
 	c.abilities[3].anim = ""

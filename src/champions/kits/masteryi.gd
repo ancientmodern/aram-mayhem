@@ -307,21 +307,43 @@ class AlphaStrike extends YiAbility:
 		else:
 			o.teleport(st.start)
 			tgt = st.last
-		# marks detonate: all strike damage (and Wuju Style's on-hit at 75%) lands now
+		# marks detonate: all strike damage lands now, each applying on-hit effects (items, Wuju Style) at
+		# BaseOnHitMultiplier (75%) for the primary mark on a target and 75% x 25% = 18.75% for the lesser marks
+		# (wiki Alpha Strike). It grants no Double Strike stack / Q cooldown refund (passive excluded).
 		var e_ab = o.abilities[2]
 		var wuju: bool = e_ab != null and e_ab.is_active()
+		var base_mult := dv("BaseOnHitMultiplier", 0.75)
 		for mk in st.marks:
 			var u = mk[0]
 			if not is_instance_valid(u) or u.dead:
 				continue
-			hit(u, mk[1], G.DmgType.PHYSICAL, {"tag": "yi_q", "is_crit": mk[2]})
-			if wuju and mk[3] and is_instance_valid(u) and not u.dead:
-				hit(u, e_ab.on_hit_damage() * dv("BaseOnHitMultiplier", 0.75), G.DmgType.TRUE, {"tag": "yi_wuju"})
+			var info: DamageInfo = hit(u, mk[1], G.DmgType.PHYSICAL, {"tag": "yi_q", "is_crit": mk[2]})
+			if info == null or info.cancelled or not is_instance_valid(u) or u.dead:
+				continue
+			var mult: float = base_mult * (1.0 if mk[3] else dv("SubsequentHitMultiplier", 0.25))
+			_apply_on_hit(u, info, mult)
+			if wuju and is_instance_valid(u) and not u.dead:
+				hit(u, e_ab.on_hit_damage() * mult, G.DmgType.TRUE, {"tag": "yi_wuju", "is_proc": true})
 		st.marks.clear()
 		o.reset_attack()
 		if o.is_bot and tgt != null and is_instance_valid(tgt) and not tgt.dead and tgt.kind == G.Kind.CHAMPION:
 			o.issue_attack(tgt)
 		LolVfx.spawn(m, "MasterYi_Base_Q_End", o.global_position + Vector3(0, 1.0, 0), {"dir": o.facing})
+
+	## Unit.trigger_on_hit with several exclusions: item / augment on-hit hooks see `info.on_hit_mult` = mult
+	## (they scale or skip themselves); Double Strike, Wuju (applied above with the same multiplier) and the
+	## basic attack trail visuals are skipped.
+	func _apply_on_hit(u, info: DamageInfo, mult: float) -> void:
+		var o = owner
+		var prev: float = info.on_hit_mult
+		info.on_hit_mult = mult
+		for e in o.effects.duplicate():
+			if e == o.passive or e.id == "yi_wuju_hook" or e.id == "yi_lol_fx":
+				continue
+			if not is_instance_valid(u) or u.dead:
+				break
+			e.on_attack_hit(u, info)
+		info.on_hit_mult = prev
 
 	func channel_end(_ch: Dictionary, _interrupted: bool) -> void:
 		owner.channel_disarm = false

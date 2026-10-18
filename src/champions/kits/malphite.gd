@@ -322,9 +322,13 @@ class SeismicShard extends MAbility:
 
 
 # ===================================================================== W
+## League (wiki Thunderclap): the next basic attack within 6 s is empowered (+50 range, bonus damage, cone);
+## basic attacks for the next 5 s (ThunderclapBuffDuration) after that hit also trigger the cone.
 class Thunderclap extends MAbility:
+	const EMPOWER_WINDOW := 6.0
 	var empowered := false
-	var window_until := -1.0
+	var empowered_until := -1.0
+	var window_until := -1.0     ## aftershock (cone) window, starts when the empowered attack lands
 	var fx: LolVfx = null
 	var next_hit_fx := false
 
@@ -357,10 +361,20 @@ class Thunderclap extends MAbility:
 	func in_window() -> bool:
 		return now() < window_until
 
+	func is_empowered() -> bool:
+		return empowered and now() < empowered_until
+
+	## The empowered attack landed: open the aftershock window.
+	func consume_empower() -> void:
+		empowered = false
+		window_until = now() + dv("ThunderclapBuffDuration", 5.0)
+		owner.stats.mark_dirty()
+
 	func execute(t: Dictionary) -> void:
 		var o = owner
 		empowered = true
-		window_until = now() + dv("ThunderclapBuffDuration", 5.0)
+		empowered_until = now() + EMPOWER_WINDOW
+		window_until = -1.0
 		o.stats.mark_dirty()
 		# League: burning fists (the "next hit" variant until the empowered attack lands)
 		LFx.kill(fx, 0.1)
@@ -384,15 +398,16 @@ class Thunderclap extends MAbility:
 	func on_tick(_dt: float) -> void:
 		if owner.dead and (empowered or window_until > now()):
 			window_until = -1.0
-		if (fx != null or empowered) and not in_window():
+			empowered_until = -1.0
+		if empowered and not is_empowered():
+			empowered = false
+			owner.stats.mark_dirty()
+		if fx != null and not empowered and not in_window():
 			end_fx()
-			if empowered:
-				empowered = false
-				owner.stats.mark_dirty()
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
-		if in_window():
+		if is_empowered() or in_window():
 			return skip()
 		var f = ctx.focus
 		if ctx.mode == "fight" and f != null and is_instance_valid(f) and o.in_attack_range(f, 0.4):
@@ -419,19 +434,18 @@ class ThunderclapHook extends Effect:
 		if pct > 0.0:
 			d["armor%"] = pct
 		# League: the empowered Thunderclap attack has +50 range
-		if w.empowered and w.in_window():
+		if w.is_empowered():
 			d["range"] = 50.0
 		return d
 
 	func on_pre_damage_dealt(info) -> void:
-		if info.is_attack and w.empowered and info.target != null and info.tag == "":
+		if info.is_attack and w.is_empowered() and info.target != null and info.tag == "":
 			info.flat_bonus += w.bonus_damage()
 			info.tag = "malph_w"
 			# the generic basic attack impact shows Malphite_Base_W_tar_1 for this hit (see vfx_map)
 			if owner.match_ref != null:
 				owner.kit.w_hit_time = owner.match_ref.time
-			w.empowered = false
-			owner.stats.mark_dirty()
+			w.consume_empower()
 
 	func on_attack_hit(target, info) -> void:
 		if info == null or target == null or not is_instance_valid(target):

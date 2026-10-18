@@ -18,7 +18,11 @@ func build_kit() -> void:
 	c.attack_color = BASE_ATTACK_COLOR
 	c.role = "support"
 	c.level_order = "QWEQQRQWQWRWWEEREE"
-	var pd: Dictionary = spell(str(c.data.get("passive", "SonaPassive"))).get("data_values", {})
+	var pd: Dictionary = spell(str(c.data.get("passive", "SonaPassive"))).get("data_values", {}).duplicate()
+	# ARAM (CommunityDragon sona.bin.json SonaPassive DataValuesModeOverride.ARAM; wiki ARAM page): Accelerando
+	# caps at 30 basic ability haste (60 stacks x 0.5) and each stack past the cap refunds 1 s of Crescendo.
+	pd["AccelerandoCap"] = 30.0
+	pd["AccelerandoUltCDR"] = 1.0
 	c.passive = PowerChord.new(pd)
 	c.add_effect(c.passive)
 	c.abilities[0] = init_ability(HymnOfValor.new(), "Q")
@@ -30,8 +34,12 @@ func build_kit() -> void:
 	c.abilities[1].anim = "spell2"
 	c.abilities[2].anim = "spell3"
 	c.abilities[3].anim = "spell4"
-	# SonaW has no cooldown in the extracted data (live: 10s)
-	c.abilities[1].cooldowns = [10.0]
+	# ARAM song cooldowns (sona.bin.json cooldown overrides ARAM; wiki ARAM page): Hymn of Valor 10 s,
+	# Aria of Perseverance 13 s (SonaW has no cooldown in the extracted SR data).
+	K.aram_cooldowns(c.abilities[0], [10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0])
+	K.aram_cooldowns(c.abilities[1], [13.0, 13.0, 13.0, 13.0, 13.0, 13.0, 13.0])
+	# ARAM Aria values (SonaW DataValuesModeOverride.ARAM): shield 65-105 base, heal ratio 20% AP.
+	K.aram_data(c.abilities[1], {"BaseShield": [55.0, 65.0, 75.0, 85.0, 95.0, 105.0, 115.0], "HealRatio": 0.2})
 	c.abilities[2].cast_range = 400.0
 	c.abilities[3].cast_time = 0.25
 
@@ -183,13 +191,14 @@ class PowerChord extends Effect:
 				SonaUtil.fx_on(owner, "Sona_Base_P_Accelerando_Completed")
 		refresh_stats()
 
+	## League SonaPassive "PowerChordDamage" (CommunityDragon sona.bin.json): 20, +10 per level, +15 per level
+	## from 9 -> 20 .. 240 (+20% AP).
 	func chord_damage() -> float:
-		var lvl: float = owner.level
-		return lerpf(20.0, 270.0, (lvl - 1.0) / 17.0) + 0.2 * owner.stats.ap   # League: 20 - 270 (+20% AP)
+		return K.level_breakpoints(owner.level, 20.0, 10.0, [[9, 15.0]]) + 0.2 * owner.stats.ap
 
+	## League SonaQ "TotalStaccatoDamage": 30, +15 per level, +22.5 per level from 9 -> 30 .. 360 (+30% AP).
 	func staccato_damage() -> float:
-		var lvl: float = owner.level
-		return lerpf(30.0, 405.0, (lvl - 1.0) / 17.0) + 0.3 * owner.stats.ap   # League: 30 - 405 (+30% AP)
+		return K.level_breakpoints(owner.level, 30.0, 15.0, [[9, 22.5]]) + 0.3 * owner.stats.ap
 
 	func on_tick(u, _dt: float) -> void:
 		if u.is_bot and u.ability_points > 0:
