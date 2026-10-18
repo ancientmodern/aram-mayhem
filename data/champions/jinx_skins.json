@@ -1,0 +1,162 @@
+[
+ {
+  "id": 222000,
+  "num": 0,
+  "name": "Jinx",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222001,
+  "num": 1,
+  "name": "Crime City Jinx",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222002,
+  "num": 2,
+  "name": "Firecracker Jinx",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222003,
+  "num": 3,
+  "name": "Zombie Slayer Jinx",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222004,
+  "num": 4,
+  "name": "Star Guardian Jinx",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222012,
+  "num": 12,
+  "name": "Ambitious Elf Jinx",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222013,
+  "num": 13,
+  "name": "Odyssey Jinx",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222020,
+  "num": 20,
+  "name": "PROJECT: Jinx",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222029,
+  "num": 29,
+  "name": "Heartseeker Jinx",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222037,
+  "num": 37,
+  "name": "Arcane Enemy Jinx",
+  "rarity": "kRare",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222038,
+  "num": 38,
+  "name": "Battle Cat Jinx",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222040,
+  "num": 40,
+  "name": "Prestige Battle Cat Jinx",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222051,
+  "num": 51,
+  "name": "Cafe Cuties Jinx",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222060,
+  "num": 60,
+  "name": "Arcane Fractured Jinx",
+  "rarity": "kExalted",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222062,
+  "num": 62,
+  "name": "T1 Jinx",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 222065,
+  "num": 65,
+  "name": "Ocean Song Jinx",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ }
+]

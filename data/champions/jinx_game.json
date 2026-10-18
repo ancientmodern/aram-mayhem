@@ -1,0 +1,504 @@
+{
+ "alias": "Jinx",
+ "name": "Jinx",
+ "stats": {
+  "base_hp": 630.0,
+  "hp_per_level": 105.0,
+  "base_hp_regen": 0.75,
+  "hp_regen_per_level": 0.1,
+  "base_ad": 59.0,
+  "ad_per_level": 3.25,
+  "base_armor": 26.0,
+  "armor_per_level": 4.2,
+  "base_mr": 33.0,
+  "mr_per_level": 1.1,
+  "base_ms": 325.0,
+  "attack_range": 525.0,
+  "attack_speed": 0.625,
+  "attack_speed_ratio": 0.625,
+  "attack_speed_per_level": 1.0,
+  "resource_type": 0,
+  "mana_base": 260.0,
+  "mana_per_level": 50.0,
+  "mana_regen": 1.34,
+  "mana_regen_per_level": 0.2,
+  "critDamageMultiplier": 2.0,
+  "acquisitionRange": 550.0,
+  "selectionHeight": 155.0,
+  "selectionRadius": 120.0,
+  "pathfindingCollisionRadius": 35.0,
+  "attack_cast_offset": 0.0,
+  "attack_total_time": 1.600000023841858,
+  "attack_cast_time": 0.2833299934864044
+ },
+ "spell_slots": {
+  "Q": "JinxQ",
+  "W": "JinxW",
+  "E": "JinxE",
+  "R": "JinxR"
+ },
+ "passive": "JinxPassiveMarker",
+ "passive_name": null,
+ "passive_desc": null,
+ "spells": {
+  "JinxWMissile": {
+   "script": "JinxWMissile",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 1500.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 3300.0,
+   "mLineWidth": 60.0,
+   "mCastTime": 0.6000000238418579,
+   "mAnimationName": "Spell2",
+   "mAlternateName": "EzrealMysticShotMissile"
+  },
+  "JinxW": {
+   "script": "JinxW",
+   "data_values": {
+    "JinxLowEndWCastTime": 0.4,
+    "JinxWASpeedCastTimeScalarPerHundrethSecond": 0.08,
+    "Damage": [
+     -40.0,
+     10.0,
+     60.0,
+     110.0,
+     160.0,
+     210.0,
+     260.0
+    ],
+    "SlowPercent": [
+     30.0,
+     40.0,
+     50.0,
+     60.0,
+     70.0,
+     80.0,
+     90.0
+    ],
+    "SlowDuration": 2.0,
+    "ADRatio": 1.4
+   },
+   "calcs": {
+    "#1ddee768": "Damage + ADRatio*AD"
+   },
+   "cooldownTime": [
+    9.0,
+    8.0,
+    7.0,
+    6.0,
+    5.0,
+    4.0,
+    3.0
+   ],
+   "mana": [
+    40.0,
+    45.0,
+    50.0,
+    55.0,
+    60.0,
+    65.0
+   ],
+   "castRange": 10000.0,
+   "castRangeDisplayOverride": 1450.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mLineWidth": 60.0,
+   "mCastTime": 0.25,
+   "mAnimationName": "",
+   "name": "Zap!",
+   "tooltip": "Jinx fires a shock blast that deals <physicalDamage>@TotalDamage@ physical damage</physicalDamage> to the first enemy hit, <status>Slows</status> them by @SlowPercent@%, and reveals them for @SlowDuration@ seconds.",
+   "summary": "Jinx uses Zapper, her shock pistol, to fire a blast that deals damage to the first enemy hit, slowing and revealing it."
+  },
+  "JinxEHit": {
+   "script": "JinxEHit",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 1200.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1100.0,
+   "mLineWidth": 120.0,
+   "mAnimationName": "Spell3",
+   "mAlternateName": "JinxE"
+  },
+  "JinxEMine": {
+   "script": "JinxEMine",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 800.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1450.0,
+   "mAnimationName": "Spell2"
+  },
+  "JinxEFireBurn": {
+   "script": "JinxEFireBurn",
+   "data_values": {}
+  },
+  "JinxEMineSnare": {
+   "script": "JinxEMineSnare",
+   "data_values": {}
+  },
+  "JinxE": {
+   "script": "JinxE",
+   "data_values": {
+    "Damage": [
+     40.0,
+     90.0,
+     140.0,
+     190.0,
+     240.0,
+     290.0,
+     340.0
+    ],
+    "RootDuration": 1.5,
+    "GrenadeDuration": 5.0,
+    "GrenadeArmTime": 0.5
+   },
+   "calcs": {
+    "#1ddee768": "Damage + 1*AP"
+   },
+   "cooldownTime": [
+    27.5,
+    24.0,
+    20.5,
+    17.0,
+    13.5,
+    10.0,
+    10.0
+   ],
+   "mana": 90.0,
+   "castRange": 925.0,
+   "castRadius": 315.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1750.0,
+   "mCastTime": 0.25,
+   "mAnimationName": "Spell3",
+   "name": "Flame Chompers!",
+   "tooltip": "Jinx tosses out 3 chompers that last for @GrenadeDuration@ seconds. They explode on contact with enemy champions, <status>Rooting</status> them for @RootDuration@ seconds and dealing <magicDamage>@TotalDamage@ magic damage</magicDamage> to nearby enemies.",
+   "summary": "Jinx throws out a line of snare grenades that explode after 5 seconds, lighting enemies on fire. Flame Chompers will bite enemy champions who walk over them, rooting them in place."
+  },
+  "JinxQ": {
+   "script": "JinxQ",
+   "data_values": {
+    "RocketAoERadius": 250.0,
+    "RocketBonusRange": [
+     75.0,
+     100.0,
+     125.0,
+     150.0,
+     175.0,
+     200.0,
+     225.0
+    ],
+    "MinigunAttackSpeedMax": [
+     5.0,
+     30.0,
+     55.0,
+     80.0,
+     105.0,
+     130.0,
+     155.0
+    ],
+    "MinigunAttackSpeedDuration": 2.5,
+    "MinigunAttackSpeedStacks": 3.0,
+    "RocketTAD": 1.1,
+    "RocketASPDPenalty": 0.1
+   },
+   "calcs": {
+    "#37d9a590": "RocketTAD*AD"
+   },
+   "cooldownTime": 0.9,
+   "mana": 20.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2000.0,
+   "mCastTime": 0.25,
+   "mAnimationName": "Spell1",
+   "name": "Switcheroo!",
+   "tooltip": "Jinx swaps weapons between Fishbones the rocket launcher and Pow-Pow the minigun.<br><br>While using the rocket launcher, Jinx's Attacks deal <physicalDamage>@RocketDamage@ physical damage</physicalDamage> to the target and nearby enemies, gain @RocketBonusRange@ range, cost Mana, and scale @RocketASPDPenalty*100@% less with bonus Attack Speed.<br><br>While using the minigun, Jinx's Attacks grant <attackSpeed>Attack Speed</attackSpeed> for @MinigunAttackSpeedDuration@ seconds, stacking up to @MinigunAttackSpeedStacks@ times (<attackSpeed>+@MinigunAttackSpeedMax@% %i:scaleAS% max</attackSpeed>).",
+   "summary": "Jinx modifies her basic attacks by swapping between Pow-Pow, her minigun and Fishbones, her rocket launcher. Attacks with Pow-Pow grant Attack Speed, while attacks with Fishbones deal area of effect damage, gain increased range, but drain Mana and attack slower."
+  },
+  "JinxQAttack2": {
+   "script": "JinxQAttack2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 10000.0,
+   "castRadius": 710.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2000.0,
+   "mLineWidth": 20.0,
+   "mAnimationName": "Attack2",
+   "mAlternateName": "JinxQAttack"
+  },
+  "JinxQCritAttack": {
+   "script": "JinxQCritAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 10000.0,
+   "castRadius": 710.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2000.0,
+   "mLineWidth": 20.0,
+   "mAlternateName": "JinxQAttack"
+  },
+  "JinxQAttack": {
+   "script": "JinxQAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 10000.0,
+   "castRadius": 710.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2000.0,
+   "mLineWidth": 20.0,
+   "mAlternateName": "JinxQAttack"
+  },
+  "JinxPassiveKillAttackSpeed": {
+   "script": "JinxPassiveKillAttackSpeed",
+   "data_values": {}
+  },
+  "JinxPassiveMarker": {
+   "script": "JinxPassiveMarker",
+   "data_values": {
+    "BuffDuration": 6.0,
+    "ASBuff": 25.0,
+    "MSBuff": 175.0,
+    "MSDecayRate": 0.875,
+    "AssistMarkerDuration": 3.0
+   },
+   "castRange": 0.0,
+   "name": "Get Excited!",
+   "tooltip": "Whenever a champion, epic monster, or structure that Jinx has dealt damage to within the last @AssistMarkerDuration@ seconds is killed or destroyed, she gains <speed>@MSBuff@% decaying Move Speed</speed> and <attackSpeed>@ASBuff@% Attack Speed</attackSpeed> for @BuffDuration@ seconds.<br><br>Champion takedowns stack the <attackSpeed>Attack Speed</attackSpeed> up to 5 times.",
+   "summary": "Jinx receives massively increased Move Speed and Attack Speed whenever she helps kill or destroy an enemy champions epic jungle monster, or structure."
+  },
+  "ItemHurricaneJinxAttack": {
+   "script": "ItemHurricaneJinxAttack",
+   "data_values": {},
+   "cooldownTime": 4.0,
+   "castRange": 1400.0,
+   "castRadius": 710.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2000.0,
+   "mAnimationName": "Spell3",
+   "mAlternateName": "Disintegrate"
+  },
+  "JinxR": {
+   "script": "JinxR",
+   "data_values": {
+    "BaseDamage": [
+     5.0,
+     20.0,
+     35.0,
+     50.0,
+     65.0,
+     80.0,
+     95.0
+    ],
+    "MaxDamage": [
+     50.0,
+     200.0,
+     350.0,
+     500.0,
+     650.0,
+     800.0,
+     950.0
+    ],
+    "PercentDamage": [
+     20.0,
+     25.0,
+     30.0,
+     35.0,
+     40.0,
+     45.0,
+     50.0
+    ],
+    "AoEDamageMult": 0.8,
+    "MonsterExecuteMax": 1200.0,
+    "AoERadius": 400.0
+   },
+   "calcs": {
+    "#d2546436": "BaseDamage + 0.12*bonusAD",
+    "#5fb9bd8e": "MaxDamage + 1.2*bonusAD"
+   },
+   "cooldownTime": [
+    85.0,
+    85.0,
+    65.0,
+    45.0,
+    45.0,
+    45.0,
+    45.0
+   ],
+   "mana": 100.0,
+   "castRange": 25000.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1700.0,
+   "mLineWidth": 140.0,
+   "mCastTime": 0.6000000238418579,
+   "mAnimationName": "Spell4",
+   "mAlternateName": "JinxR",
+   "name": "Super Mega Death Rocket!",
+   "tooltip": "Jinx fires a rocket that explodes on the first enemy champion hit, dealing <physicalDamage>@DamageFloor@ to @DamageMax@ + @PercentDamage@% missing Health physical damage</physicalDamage>, gaining damage over the first second of travel time. Nearby enemies take @AoEDamageMult*100@% Damage.<br><br><rules>Missing Health damage cannot exceed @MonsterExecuteMax@ against Monsters.</rules>",
+   "summary": "Jinx fires a super rocket across the map that gains damage as it travels. The rocket will explode upon colliding with an enemy champion, dealing damage to it and surrounding enemies based on their missing Health."
+  },
+  "JinxCritAttack": {
+   "script": "JinxCritAttack",
+   "data_values": {},
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2750.0,
+   "mAlternateName": "JinxBasicAttack"
+  },
+  "JinxCritAttack5": {
+   "script": "JinxCritAttack5",
+   "data_values": {},
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2750.0,
+   "mAnimationName": "Attack5",
+   "mAlternateName": "JinxBasicAttack"
+  },
+  "JinxCritAttack4": {
+   "script": "JinxCritAttack4",
+   "data_values": {},
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2750.0,
+   "mAnimationName": "Attack4",
+   "mAlternateName": "JinxBasicAttack"
+  },
+  "JinxCritAttack6": {
+   "script": "JinxCritAttack6",
+   "data_values": {},
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2750.0,
+   "mAnimationName": "Attack6",
+   "mAlternateName": "JinxBasicAttack"
+  },
+  "JinxCritAttack3": {
+   "script": "JinxCritAttack3",
+   "data_values": {},
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2750.0,
+   "mAnimationName": "Attack3",
+   "mAlternateName": "JinxBasicAttack"
+  },
+  "JinxCritAttack2": {
+   "script": "JinxCritAttack2",
+   "data_values": {},
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2750.0,
+   "mAnimationName": "Attack2",
+   "mAlternateName": "JinxBasicAttack"
+  },
+  "JinxBasicAttack": {
+   "script": "JinxBasicAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2750.0,
+   "mAlternateName": "JinxBasicAttack"
+  },
+  "JinxBasicAttack5": {
+   "script": "JinxBasicAttack5",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2750.0,
+   "mAnimationName": "Attack5",
+   "mAlternateName": "JinxBasicAttack"
+  },
+  "JinxBasicAttack4": {
+   "script": "JinxBasicAttack4",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2750.0,
+   "mAnimationName": "Attack4",
+   "mAlternateName": "JinxBasicAttack"
+  },
+  "JinxBasicAttack6": {
+   "script": "JinxBasicAttack6",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2750.0,
+   "mAnimationName": "Attack6",
+   "mAlternateName": "JinxBasicAttack"
+  },
+  "JinxBasicAttack3": {
+   "script": "JinxBasicAttack3",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2750.0,
+   "mAnimationName": "Attack3",
+   "mAlternateName": "JinxBasicAttack"
+  },
+  "JinxBasicAttack2": {
+   "script": "JinxBasicAttack2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2750.0,
+   "mAnimationName": "Attack2",
+   "mAlternateName": "JinxBasicAttack"
+  },
+  "Crepe_JinxVsEkko_JinxPoroTracker": {
+   "script": "Crepe_JinxVsEkko_JinxPoroTracker",
+   "data_values": {}
+  },
+  "Crepe_JinxVsEkko_JinxReward": {
+   "script": "Crepe_JinxVsEkko_JinxReward",
+   "data_values": {
+    "AH": 10.0
+   }
+  },
+  "Crepe_JinxVsEkko_JinxStart": {
+   "script": "Crepe_JinxVsEkko_JinxStart",
+   "data_values": {}
+  },
+  "Crepe_JinxVsCaitlyn_CaitlynLose": {
+   "script": "Crepe_JinxVsCaitlyn_CaitlynLose",
+   "data_values": {}
+  },
+  "Crepe_JinxVsCaitlyn_JinxReward": {
+   "script": "Crepe_JinxVsCaitlyn_JinxReward",
+   "data_values": {}
+  },
+  "Crepe_JinxVsCaitlyn_JinxDescription": {
+   "script": "Crepe_JinxVsCaitlyn_JinxDescription",
+   "data_values": {}
+  },
+  "Crepe_JinxVsCaitlyn_JinxStart": {
+   "script": "Crepe_JinxVsCaitlyn_JinxStart",
+   "data_values": {}
+  }
+ }
+}
