@@ -1,0 +1,175 @@
+# ARAM: Mayhem augments (extracted from local game client)
+
+
+## Silver
+
+- **ADAPt** (`ARAM_ADAPt`): Convert Bonus Attack Damage to Ability Power, and gain {APAmpCalcTooltip} Ability Power.  Current Conversion: {f1}  Converts at a rate of 1.67 Ability Power per point of Attack Damage.
+- **Adamant** (`Adamant`): Each time you Immobilize or Ground an enemy, gain {ResistsPerLevel} Armor and Magic Resist for 10 seconds (up to 10 stacks).
+- **Adaptive Ward** (`WardingWeapon`):  Striking an enemy champion with {{SpellName}} grants you {Calc_Resists} Armor or Magic Resist based on their damage type for 6 seconds. This effect can stack.  Maximum Ward Level: {f2.0}
+- **Blunt Force** (`ARAM_BluntForce`): Gain 20% ({f1}) Attack Damage.
+- **Bolstered** (`DoubleDefense`): Shields granted from {{SpellName}} are up to 60% stronger, scaling with target's missing Health.  Bonus Shield: {f1} Most effective at 30% max health.
+- **Deft** (`ARAM_Deft`): Gain %i:scaleAS% 60% Attack Speed.
+- **Dive Bomber** (`ARAM_DiveBomber`): Explodes when you die, dealing 20% of the target's max Health as true damage to nearby enemies.  Damage Dealt: {f2}
+- **Don't Blink** (`ARAM_DontBlink`): Gain 1% bonus damage per 10 Movement Speed more you have than the target.  Bonus Damage: {f2}
+- **Don't Change the Channel** (`DontChangeTheChannel`): While Channeling gain {Calc_Shield} Shield every second. It decays when you are not Channeling.  Total Shield: {f1.0}
+- **Double Strike** (`DoubleStrike`): {{SpellName}} applies {{ Item_Keyword_OnHit }} effects an additional time.
+- **Erosion** (`ARAM_Erosion`): Damaging enemies shreds 1.5% Armor and Magic Resist for 4s, up to {MaxShredTooltipOnly}% at 20 stacks. 
+- **Escape Plan** (`EscapePlan`): Gain a massive {ShieldAmount} decaying Shield, decaying 150% Movement Speed, and a decaying shrink effect upon reaching 35% Health (75 seconds Cooldown).
+- **FireFox** (`ARAM_Firefox`): Autocast: Gain 25% movement speed and conjure three flames that orbit you every 7 seconds, targetting the closest visible enemy in range and dealing {SingleFireDamage} adaptive damage. Subsequent hits do 30% damage.  Damage Dealt Total: {f1}
+- **First-Aid Kit** (`ARAM_FirstAidKit`): Gain 20% Heal and Shield Power.
+- **Flash 2** (`Flash2`): Gain a second Flash Summoner Spell and 70 Summoner Haste.
+- **Flashbang** (`ARAM_Flashbang`): Your Flash causes an explosion that deals {ExplosiveDamage} damage and Slows (resets on death).  Damage Dealt: {f2}
+- **Goredrink** (`ARAM_Goredrink`): Gain 15% Omnivamp.
+- **Heavy Hitter** (`ARAM_HeavyHitter`): Your Attacks deal additional {HealthPercentDamage} physical damage.
+- **Ice Cold** (`ARAM_IceCold`): Your Slowing effects reduce Movement Speed by an extra 75.
+- **It's Go Time** (`ItsGoTime`): Activating {{SpellName}} grants you {Calc_Move_Speed} Movement Speed for its duration.
+- **Juiced** (`ARAM_Juiced`):  %i:OnHit% On-Hit deal {Calc_Damage} magic damage, this damage can Critically Strike.  Damage Dealt: {f1.0}
+- **Kill Secured** (`KillSecured`): Gain 60% Movement Speed towards enemies below 40% health.
+- **Leg Day** (`ARAM_LegDay`): Gain 50 Movement Speed and 50% Slow Resist.
+- **Light 'Em Up!** (`ARAM_LightemUp`): Every 4th Attack shoots 4 missiles dealing {TOOLTIPONLYDamage} magic damage.  Damage Dealt: {f2}
+- **Mighty Shield** (`MightyShield`): Gain %i:miniAdaptiveForce%{AdaptiveAmp} Adaptive Force for 3 seconds when you gain a Shield (5 seconds Cooldown).
+- **Mind to Matter** (`ARAM_MindtoMatter`): Gain {ManaToHealthCalc} Health.
+- **Poltergeist** (`Poltergeist`): Gain Poltergeist as a Summoner Spell.  Poltergeist casts both Barrier and Ghost.
+- **Scoped Weapons** (`ARAM_ScopedWeapons`): Gain {RangeIncrease} Attack Range.
+- **Shadow Runner** (`ARAM_ShadowRunner`): After using a Dash, Blink, or Teleport Ability or exiting Stealth, gain 300 Movement Speed for 2 seconds.
+- **Siphon** (`ARAM_SustainingStrike`): Heal for 30% of the damage dealt to enemy champions by {{SpellName}}.
+- **Slap Around** (`ARAM_SlapAround`): Each time you Immobilize or Ground an enemy, gain a stack granting 10 Adaptive Force. Lose 50% stacks on death. 
+- **Snowday** (`ARAM_Snowday`): Snowball gains 100 Ability Haste and deals 100% increased damage.
+- **Sonic Boom** (`ARAM_SonicBoom`): Buffing, healing, or Shielding your ally deals {Damage} true damage and Slows enemies surrounding them by 30% for 2 seconds (2 seconds Cooldown).  Damage Dealt: {f2}
+- **Stackosaurus Rex** (`ARAM_StackosaurusRex`): When you gain permanent Stacks of an Ability, gain 100% more!
+- **Stay Resolute** (`TitansPulse`): Damaging enemy champions with {{SpellName}} grants you {ARMR_Inc} Armor or Magic Resistance based on their %i:miniAdaptiveForce% Damage Type.   Bonus Armor: {f1} Bonus Magic Resistance: {f2}   If this is not your first augment, gain 20 Armor and Magic Resistance.
+- **Swift and Safe** (`SwiftAndSafe`): Gain a {ShieldAmount} Shield for 2 seconds after a Dash or Blink (5 seconds Cooldown). 
+- **Tank It Or Leave It** (`ARAM_TankItOrLeaveIt`): You can Critically Defend using your Crit Chance (max 50% chance), giving you a chance to reduce damage taken by 20%. Gain 25% Crit Chance.  Damage Reduced: {f2}
+- **Transmute: Gold** (`ARAM_TransmuteGold`): Gain a random %i:Augment% Gold Augment.
+- **Trusty Weapon** (`TrustyWeapon`): When you strike an enemy champion with {{SpellName}}, forge a bond of Friendship that grants it {Calc_Damage_Amp} increased damage for 6 seconds. This effect can stack.  Bonus Damage: {f1.0} Maximum Friendship Level: {f2.0}  "It's—it's not like I like you or anything!!" — {{SpellNameOnly}}
+- **Twin Fire** (`Twinfire`): {{Kiwi_TwinFire_Summary}}
+- **Typhoon** (`ARAM_Typhoon`): Your Attacks shoot a missile at an additional target, dealing 30% damage and applying {{ Item_Keyword_OnHit }} effects.
+- **Ultimate Unstoppable** (`ARAM_UltimateUnstoppable`): After using your Ultimate, you become immune to crowd control for 3 seconds. (8 second Cooldown).
+- **Veil of Warding** (`VeilOfWarding`): Gain a Spell Shield every 30 seconds that blocks the next enemy Ability.
+- **Witchful Thinking** (`ARAM_WitchfulThinking`): Gain %i:scaleAP% {AP} Ability Power.
+- **Zealot** (`ARAM_Zealot`): Gain {Calc_Crit_Chance} Critical Strike Chance and {Calc_AS} Attack Speed.
+- **escAPADe** (`ARAM_escAPADe`): Convert Ability Power to Bonus Attack Damage and gain {ADAmpCalcTooltip} Attack Damage.  Current Conversion: {f1}  Converts at a rate of 0.6 Attack Damage per point of Ability Power.
+
+## Gold
+
+- **All For You** (`ARAM_AllForYou`): Your Heals and Shields are 30% stronger when used on an ally.
+- **BONK!** (`Bonk`): Attacks and Abilities empowered by {{SpellName}} deal an additional 30% damage to the target and nearby enemies.  Additional Champions Bonked: {f1}
+- **Big Brain** (`ARAM_BigBrain`): Gain a {TotalShield} Shield. Resets on death or 70 seconds after depletion.
+- **Celestial Body** (`ARAM_CelestialBody`): Gain 1500 Health, but you deal 10% less damage.
+- **Chain Reaction** (`ChainReaction`): If a champion you Knock Back with {{SpellName}} hits another champion, they are Knocked Up for 0.5 seconds and are dealt {EnemyHitDamage} magic damage. If enemy champions collide with terrain, they are Knocked Up for 0.75 seconds and are dealt {WallCollisionDamage} magic damage.  Enemies Knocked Up: {f1} Walls Hit: {f2}  Knock Up Duration and Height scale with your spell's cooldown. Damage is increased to {Ult_DamageAmp} for Ultimate Abilities.
+- **Combusting Interest** (`BloodMoneyBurn`): Burn and damage-over-time on champions generate {GoldPerProc} + 0.75% of damage dealt as Gold.  Gold Generated: {f1}
+- **Critical Healing** (`ARAM_CriticalHealing`): Your healing and Shields can Critically Strike for 40% bonus amount. Gain %i:scaleCrit% 25% Crit Chance. 
+- **Critical Missile** (`CriticalMissile`): When you Crit, fire 1 plus {AdditionalMis} missiles that deal {Damage} magic damage each.   Gain %i:scaleCrit% 25% Crit chance.
+- **Critical Rhythm** (`CriticalRhythm`): Your basic Attack stacks 6% Attack Speed on Critical Strikes up to 10 stacks.  Gain %i:scaleCrit% 25% Crit chance.
+- **Dawnbringer's Resolve** (`ARAM_DawnbringersResolve`): When dropping below 50% Health, heal for 30% max Health over 3 seconds.  Resets on death or every 45 seconds. 
+- **Divine Intervention** (`ARAM_DivineIntervention`): Every 35 seconds, Autocast a protective star that slowly descends upon you. When it lands, you and nearby allies become Invulnerable for 2.5 seconds. 
+- **Donation** (`Donation`): Receive 1750 Gold. Thanks chat! :)
+- **Endless Decimation** (`EndlessDecimation`): Autocast a circular axe swing that deals physical damage every 8 seconds in combat. Enemies along the outer edge take increased damage ({FullDamage}) and heal you 18% of your Missing Health. Each enemy hit along the outer edge reduces this ability's cooldown by 10% down to a minimum of 3 seconds.
+- **Ethereal Weapon** (`ARAM_EtherealWeapon`): Your Abilities apply {{ Item_Keyword_OnHit }} effects. 1 second Cooldown per target.  Times Triggered: {f2}
+- **Firebrand** (`ARAM_Firebrand`): Your Attacks also Burn enemies, dealing 0.4% max Health magic damage damage per second over 5 seconds. This Burn stacks infinitely.  Damage Dealt: {f2}
+- **Flashy** (`ARAM_Flashy`): Your Flash has 3 charges. After 120 seconds, regain all charges.
+- **From Downtown** (`ARAM_BangBang`): {{Augment_BangBang_Tooltip{f3}}}  Bang! Bang! Oh, what a shot!
+- **Get Excited!** (`ARAM_GetExcited`): Gain 100% Movement Speed and 15% Attack Speed for 4 seconds on takedown.
+- **Growth Spurt** (`GrowthSpurt`): Gain Growth Spurt as a Summoner Spell.  Growth Spurt suddenly increases your size, Knocking Up nearby enemies for 1 second and granting {TotalBonusHealth} max Health for 7 seconds.
+- **Hide on Bush** (`BrushPower`): Entering Brush grants Brush Power for 2 seconds. While Brush Power is active, you deal 20% more damage.  Damage done: {f1}  Staying in Brush refreshes Brush Power.
+- **It's Critical** (`ARAM_ItsCritical`): Gain %i:scaleCrit% 50% Crit chance.
+- **It's Killing Time** (`ARAM_ItsKillingTime`): After casting your Ultimate, mark all enemies and store 40% of damage you deal to them. After 5 seconds, detonate the stored damage (8 second Cooldown).  Damage Dealt: {f2}
+- **Lil' Extra Help** (`LittleExtraHelp`): Gain {RangeIncrease} Attack Range and {ExtraAttackSpeed} Attack Speed during your {{SpellName}} duration.
+- **Magic Missile** (`ARAM_MagicMissile`): Dealing Ability damage fires 3 missiles at each enemy hit, each dealing up to 1% max Health true damage based on distance traveled.  Damage Dealt: {f2}
+- **Marksmage** (`ARAM_Marksmage`): Your Attacks deal an additional {APDamage} physical damage.  Damage Dealt Total: {f2}
+- **Minionmancer** (`ARAM_Minionmancer`): Your summons gain 40% increased size, health, and damage.
+- **Nature is Healing** (`NatureIsHealing`): Entering Brush restores {FlatHeal} + {MissingHealthHeal} Missing Health, 20 second cooldown per brush.  Total Healing: {f1.0}
+- **Nightstalking** (`Nightstalking`): Takedowns against enemy champions within 3 seconds of damaging them grants you 40% Move Speed and renders you invisible for 1.5 seconds.
+- **Ok Boomerang** (`ARAM_OkBoomerang`): Autocast a boomerang at a nearby enemy every 7 seconds, dealing {Damage} adaptive damage to enemies hit.  Damage Dealt: {f2}
+- **Our Healing** (`Equilibrium`): {{Kiwi_Augment_Equilibrium_Summary}}
+- **Outlaw's Grit** (`ARAM_OutlawsGrit`): After using a Dash, Blink, or Teleport Ability you gain 12 Armor and Magic Resist up to {MaxResistTooltipOnly} at 5 stacks.  Resets every 15 seconds.
+- **Overflow** (`ARAM_Overflow`): Your Mana costs double. Your Ability Heals, Shields, and damage are {ManaCalc} more effective.
+- **Pat On The Back** (`PatOnTheBack`): Allies encourage you when you walk past them, granting you {Calc_Shield} Shield and {Calc_MS} Movement Speed for 3 seconds. This effect can stack.  Each ally has a {Calc_Per_Target_Cooldown} cooldown before they can pat you on the back again.  Encouragements Received: {f1.0}
+- **Perseverance** (`ARAM_Perseverance`): Gain 1000% base Health Regen, increased to 2000% base Health Regen below 25% Health.  Total Healing Done: {f2}
+- **Phenomenal Evil** (`ARAM_PhenomenalEvil`): Permanently gain 1 Ability Power when you damage enemy champions with Abilities.  If taken as your second Augment, starts with 40 Ability Power.  You have gained {f1} AP. Veigar would be proud!
+- **Pinball** (`PinballSnowball`): Your Snowball gains 50 Ability Haste, deals extra {TrueDamage} true damage and bounces off walls. Each bounce increases its size by 25%, increases its damage dealt by 20% and reduces its Cooldown by 30%.  Number of Bounces: {f1}
+- **Porcupine** (`PinCushion`): Taking damage from champions builds up a burst of needles. At critical mass, the needles burst, dealing {Calc_Damage} physical damage and Slowing  nearby enemies by {Calc_Slow} for 2 seconds.  Bursts: {f1.0} Damage: {f2.0}
+- **Pressure Cooker** (`PressureCooker`): {{Kiwi_PressureCooker_Tooltip{f4}}}
+- **Pursuit of Power** (`SpecializedEmpowerment`): {{Augment_SpecializedEmpowerment_Tooltip{f6}}}
+- **Quickstep** (`ARAM_Quickstep`): {{Kiwi_Augment_Vanguard_Desc}}
+- **Ravenous Bind** (`DarkWind`): Immobilizing or Grounding enemy champions with {{SpellName}} deals an additional {Damage} magic damage and heals {f3} Health.  Total Damage: {f2} Minimum healing: {Heal} Total Healing: {f1}  Healing increases up to 50% based on spell cooldown.
+- **Rejuvenation** (`ARAM_RabbleRousing`): Using {{SpellName}} restores {f1} Health  Total Healing Done: {f2} Heal amount equal to {HealAmount}, scale up to 50% more for longer cooldown abilities.
+- **Reload** (`KeepGoing`): Basic Attacks {{ Item_Keyword_OnHit }} during {{SpellName}} reduce its cooldown by {f2} seconds.  Seconds Saved: {f1}
+- **Scopier Weapons** (`ARAM_ScopierWeapons`): Gain {RangeIncrease} Attack Range.
+- **Searing Dawn** (`ARAM_SearingDawn`): Your Abilities mark enemies, causing them to take an additional {Damage} magic damage from your ally's next Attack or Ability.  Damage Dealt Total: {f2}
+- **Shark Bait** (`FishBait`): On death, become Shark Bait. You can take no actions other than moving, which slows nearby enemies by 40%. After a few seconds, a Shark emerges, knocking up all nearby Enemies and biting them for {BaseDamageToApply} + {MissingHealthPercentDamage} Missing Health Magic Damage.  Times the Shark consumed an Enemy Champion: {f2.0}
+- **Shark Tempest** (`SharkTempest`): Sharks circle your Snowball, slowing and dealing {BaseDamageTotal} magic damage to enemies they pass through. If your Snowball hits a Champion, the Sharks attach to them and create a Shark Tempest, which deals {AttachedDamagePerSecond} magic damage per second and Slows nearby enemies by 40% for 3 seconds.
+- **Shrink Ray** (`ARAM_ShrinkRay`): Your Attacks reduce an enemy's damage by 15% for 3 seconds.  Damage Reduced: {f2}
+- **Skilled Sniper** (`ARAM_SkilledSniper`): Snipe an enemy with a non-Ultimate Ability refunds 80% Cooldown (65% for periodic Abilities).  Snipe - Damage enemies over 600 distance away  
+- **Snap Back** (`SnapBack`): Recast {{SpellName}} to explode for {SnapDamage} magic damage and return to your original position.
+- **Snowball Upgrade** (`SnowballUpgrade`): Gain 50 Ability Haste on your Snowball.  Hitting a target creates an area that Slows enemies by {TotalSlowAmount} and deals {TotalDamagePerSecond} magic damage per second for 2 seconds (total {TotalDamage} magic damage).   
+- **Snowblast** (`Snowbomb`): Your Snowball gains 100 Ability Haste. The ability's recast deals {DamageAmp} increased damage, Knocks Up the target, and knocks back nearby enemies.  Units knocked back: {f1}
+- **Sonata** (`Sonata`): Every 10 seconds, automatically cast the Aria of Perseverence and Song of Celerity in an alternating melody.  Aria of Perseverence heals nearby allies and grants a temporary shielding aura.  Song of Celerity grants a temporary aura that provides bonus Movement Speed.
+- **Soul Eater** (`SoulEater`): Immobilizing an enemy champion grants 20 max Health.  Total Health Gained: {HealthGained} If taken as your second Augment, starts with {StartingHPIfSecondAugmentTT} Health.
+- **Soul Siphon** (`ARAM_SoulSiphon`): Gain 25% Crit Chance and 12% Lifesteal on Critical Strikes.  Total Healing Done: {f2}
+- **Spiritual Purification** (`ARAM_SpiritualPurification`): Takedowns create an explosion that deals damage to nearby enemies equal to 15% of their current health and leave a slowing area. Enemies within are slowed by 60% for 1.5 seconds.
+- **Tank Engine** (`ARAM_TankEngine`): On takedown, gain a stack that grants 5% increased size and 5% max Health. Lose 65% of stacks on death.  Total Health Gained: {f1} 
+- **Terror** (`ARAM_Terror`): Whenever you cast {{SpellName}}, Fear enemies around you for 1.75 seconds.
+- **Thread the Needle** (`ARAM_ThreadtheNeedle`): Gain 18% %i:scaleAPen% Armor Penetration and %i:scaleMPen% Magic Penetration.
+- **Tooth Fairy** (`BurstingTeeth`): When you deal more than {BurstRequirement} of an enemy champion's Health in less than 2.5 seconds, they drop a Tooth.  Your {f1} Teeth collection currently gives you {LethalityPerTooth} Lethality and {MPenPerTooth} Magic Penetration.   4 seconds cooldown per target
+- **Transmute: Prismatic** (`ARAM_TransmutePrismatic`): Gain a random %i:Augment% Prismatic Augment.
+- **Vampirism** (`Vampirism`): You cannot be healed by allies or gain Health Regen. Gain 25% Omnivamp.
+- **Void Dash** (`VoidDash`): {{SpellName}} spawns a Void Zone at the targeted destination. It Slows enemy champions for 35% for 1 seconds, and deals {TotalDamage} magic damage.   Champions Slowed: {f1}
+- **Vulnerability** (`ARAM_Vulnerability`): Your Item and damage over time effects can Critically Strike for 145% extra damage.   Gain %i:scaleCrit% 25% Crit chance.  Damage Dealt: {f2}
+- **Warlock Juicebox** (`WarlockJuicebox`): Gain {Calc_Vamp} Omnivamp.
+- **Wee Woo Wee Woo** (`ARAM_WeeWooWeeWoo`): Gain up to {Calc_Move_Speed_Max} Move Speed toward nearby allies based on their missing Health. Your healing and shielding are also increased up to {Calc_HS_Amp_Max} based on the target's missing Health.  Bonus Healing: {f1.0} Bonus Shielding: {f2.0}
+- **Yowch, My Coins!** (`ARAM_YowchMyCoins`): On takedown, enemy champions drop {Calc_Max_Coins_To_Drop} coins nearby, which you and your allies can collect. Each is worth 15 gold.  Out of {f5} total Coins dropped from {f6} voluntary donors, your team has gained {f3} Gold, with {f4} Gold picked by yourself.
+
+## Prismatic
+
+- **Archmage** (`ARAM_Archmage`): Casting a spell refunds another random spell's cost by 30% of the original spell's Cooldown.
+- **Biggest Snowball Ever** (`BiggestSnowballEver`): Gain 100 Ability Haste on Snowball.   Your snowball is BIG and will pass through minions. It Slows enemies for 20% for 2 seconds, Knocks Up for 0.75 seconds, and deals an additional {SnowballDamage} damage.  If you don't have one, gain a Snowball.
+- **Blade Waltz** (`ARAM_BladeWaltz`): Makes you untargetable while you dash at and deal {Damage} damage to enemies 8 times (deals 50% On-Hit damage).
+- **Can't Touch This** (`ARAM_CantTouchThis`): Casting your Ultimate makes you Invulnerable for 2 seconds (8s Cooldown).
+- **Circle of Death** (`ARAM_CircleofDeath`): Your healing and Health Regen deal 70% of the value magic damage to the nearest enemy champion.  Damage Dealt: {f2}
+- **Clown College** (`ARAM_ClownCollege`): Backstab: You deal {BasicAttackDamage} bonus physical damage when striking from behind.  Deceive: You teleport and become Invisible for 3 seconds. Your next Attack while Invisible deals an additional {TotalDamage} physical damage. If striking from behind, this Attack critically strikes for {QCritDamageMod} damage.  Hallucinate: Death: On death, deal 25% maximum Health true damage and fear for 1s around you.
+- **Courage of the Colossus** (`ARAM_CourageoftheColossus`): Gain {TotalShield} Shield after Immobilizing or Grounding an enemy champion.  Shields Generated: {f2}
+- **Cruelty** (`ARAM_Cruelty`): On Immobilizing or Grounding an enemy champion, summon a comet above them. The comet lands after 1 second, dealing {TotalDamage} magic damage to nearby enemies.  This effect has a 6 seconds Cooldown per target per spell cast.  Damage Dealt: {f1}
+- **Devil on Your Shoulder** (`ARAM_LittleDevil`): You've forged a pact with the Little Devil himself. He drains {Calc_Drain_Per_Second_Non_Combat} of your current Health per second, increased to {Calc_Drain_Per_Second} if there are nearby enemies.  In return, he amplifies your Attacks and Abilities to deal an additional {Calc_Damage_Amp} true damage, which cause a Life Remnant to appear nearby for 5 seconds.  Absorbing a Life Remnant heals you for {Calc_Remnant_Healing} and grants you {Calc_Move_Speed} Movement Speed for 1 second.  Health Drained: {f1.0} Damage Dealt: {f2.0} Remnants Acquired: {f4.0} Health Restored: {f5.0} Periodic damage has a 1.5 second cooldown
+- **Dimension Shift** (`DimensionShift_Active`): Gain the Summoner Spell When the Darkness Comes.  When the Darkness Comes: Launch a brilliant light at a position. When it lands, every living unit within the area will be sent to a different Realm for 8 seconds.  While you are in this Realm, you gain: %i:scaleHealth% {HealthIncrease} Health %i:scaleAP% {APIncrease} Ability Power %i:scaleAD% {ADIncrease} Attack Damage %i:scaleSize% {SelfScaleIncrease} Size  All units can move and act freely in that Realm but cannot target objectives such as Turrets or Inhibitors.  "Follow your Light..." — A Lost Soul
+- **Double Tap** (`ARAM_DoubleTap`): Your Critical Strikes apply %i:OnHit% On-Hit effects an additional time.  Gain %i:scaleCrit% {Calc_Crit_Chance} Crit chance.
+- **Draw Your Sword** (`ARAM_DrawYourSword`): You are now melee. Gain 24% Attack Damage, 24% Health, 20% Attack Speed, 20% Lifesteal, and 20% Move Speed (each further increased based on Attack Range lost).
+- **DropBear** (`ARAM_DropBear`): On Death, summon Tibbers, dealing {AOEDamage} Magic Damage to all enemies around you, Stunning them for 0.5 seconds. Tibbers then chases your Killer.  Tibbers also has all of your Augments.
+- **Dropkick** (`ARAM_Dropkick`): Your Attacks and Abilities execute enemy champions below {Calc_Execute_Threshold} max Health, restoring {Calc_Heal} Health and Knocking Back the target.  Upon colliding with an enemy or terrain or reaching their terminus, Knocked Back enemies will explode dealing {Calc_Damage} magic damage to nearby enemies.  These explosions can chain.  Enemies Dropkicked: {f3.0} Total Health Gained: {f2.0} Damage Dealt: {f1.0}
+- **Dual Wield** (`ARAM_DualWield`): When you Attack, fire a bolt that deals 40% damage and applies your {{ Item_Keyword_OnHit }} effects at 40% effectiveness.   Gain 10% total Attack Speed.
+- **Earthwake** (`ARAM_Earthwake`): Your dash, leap, blink, or teleport Abilities leave behind a trail that detonates after 1 second, dealing {Damage} physical damage.  Damage Dealt Total: {f2}
+- **Echo Cast** (`Ability_SelfAOE_DoubleCast`): Casting your {{SpellName}} sends a clone of the ability toward your mouse position and recasts it after 0.25 seconds.
+- **Empyrean Promise** (`EmpyreanPromise`): Gain  %i:scaleHealShield% 15% Heal and Shield power. Gain Empyrean Promise as a Summoner Spell.  Vigilance Teleport to an ally and grant {ShieldAmount} Shield for 3 seconds after landing.
+- **En Passant** (`ARAM_EndlessHunt`): Periodically identify Vitals on enemy champions. Hitting Vitals with Attacks or Abilities deals an additional 6% + 1.5% per stack max Health true damage, restores {VitalHeal} + 5% Missing Health, and grants {MovementSpeed} + 5% per stack Bonus Movement Speed, decaying over 2 seconds.  Most Vitals hit in a row: {f1}
+- **Fan The Hammer** (`ARAM_FanTheHammer`): When you Attack enemy champions, fire 5 missiles that each deal {DamagePerBolt} physical damage, increased up to 50% with distance traveled. Each cardinal direction has a 8 second Cooldown.  Each bolt can Critically Strike and applies On-Hits at 20% effectiveness.  Damage Dealt: {f2}
+- **Fey Magic** (`ARAM_FeyMagic`): Damaging with your Ultimate Polymorphs enemies for 2 seconds (15 second Cooldown).
+- **Final Form** (`FinalForm`): After casting your Ultimate, gain a 50% max Health Shield, 20% Omnivamp and 30% bonus Movement Speed for 10 seconds. (20 seconds Cooldown).
+- **Giant Slayer** (`ARAM_GiantSlayer`): Become tiny, gain 20% Movement Speed, and deal between 10% and 30% bonus damage to champions based on how much larger they are than you.  Damage Dealt: {f2}
+- **Glass Cannon** (`GlassCannon`): {{Kiwi_GlassCannon_Summary}}  Damage Dealt: {f1}
+- **Goldrend** (`Goldrend`): Damaging a champion with Attacks or Abilities deals an additional {ReaperDamage} magic damage, grants you {TotalGoldPerProcTooltip} Gold and 25% Movement Speed for 1.5 seconds (30 seconds Cooldown per champion).  Damage Dealt: {f1} Gold Earned: {f2}
+- **Goliath** (`ARAM_Goliath`): Become large, gaining 35% Health and 15% Adaptive Force.
+- **Hellbent** (`ARAM_Hellbent`): Striking enemy champions with Attacks or Abilities grants you a stack of Revivemaxxing for 6 seconds (max: 10). At max stacks become Hellbent.  Hellbent: Upon dying, revive over the course of 4 seconds at {Calc_Revive_Max_Health} max Health. Afterwards, you gain {Calc_AdaptiveForce} Adaptive Force, {Calc_MoveSpeed} Move Speed towards enemy champions, and {Calc_Omnivamp} Omnivamp for 15 seconds.  This has a 90 second cooldown.
+- **Holy Snowball** (`GoldenSnowball`): Gain 100 Ability Haste on Snowball.   You become Invulnerable for 1.5 seconds when you dash with Snowball.  If you don't have one, gain a Snowball.  
+- **Infernal Conduit** (`ARAM_InfernalConduit`): Your Abilities apply an infinitely stacking Burn, dealing {BleedDamagePerSecond} magic damage per second for 3 seconds.  All your Burn effects lower your basic Ability Cooldowns by 0.08 seconds when they damage enemy champions.  Damage Dealt: {f2}
+- **Jeweled Gauntlet** (`ARAM_JeweledGauntlet`): Your Abilities can Critically Strike for 145% total damage.  Gain %i:scaleCrit% {CritGranted} Crit Chance.  Bonus Damage: {f2}
+- **Master of Duality** (`ARAM_MasterofDuality`): Your Attacks grant you {APGained} Ability Power and your Abilities that damage enemies grant you {ADGained} Attack Damage.  This buff stacks and refreshes infinitely but lasts 5 seconds.
+- **Multishot** (`ARAM_Multishot`): QUEST: Hit enemy Champions with {{SpellName}} {QuestRequirement} times.  REWARD: Fire additional missiles per Quest Level.
+- **Mystic Punch** (`ARAM_MysticPunch`): {{ Item_Keyword_OnHit }} reduce the cooldown of your abilities by 1.25 seconds %i:scaleCooldown%.
+- **Ominous Pact** (`OminousPact`): Gain {APPerLevel} Ability Power, 50% Movement Speed, and 20% Omnivamp based on missing Health. Spell casts cost 5% of your current Health.  Max benefit at 30% Health. 
+- **Overloaded** (`Overloaded`): {{Augment_Overloaded_Summary}}  Resets: {f1.0} Useful Resets: {f2.0} Reset Efficacy: {f3.0}%  "They come for the scroll... Stick to the plan... EQEQEQ..." — The Blue One
+- **Pin Cushion** (`Overkill`): Attacks during {{SpellName}} gouge your target with Nails.  Nails explode once {{SpellName}} expires, dealing {DamagePerStack} Physical Damage and granting 10 Move Speed per stack for 3 seconds. Nails will explode early and execute if the accumulated damage would kill the enemy champion.  Most Nails Detonated: {f1}
+- **Prom Queen** (`PromQueen`): Every 35 seconds, Autocast a sparkly tiara descends upon you. When it lands, gain Rakan's Ultimate, charming enemies you touch.
+- **Protein Shake** (`ARAM_ProteinShake`): Gain %i:scaleHealShield%{BonusHSPower}% Heal and Shield Power based on bonus Armor and Magic Resist.
+- **Quantum Computing** (`ARAM_QuantumComputing`): Every 30 seconds, Autocast a massive slash around you, dealing {BaseDamageTotal} physical damage. Enemies hit by the outer half are Slowed by 80% decaying over 2 seconds, and take an additional {OuterEdgeTooltip} max Health physical damage. You restore 80% champion damage dealt as Health.  Total Healing Done: {f2}
+- **Rite of Ascension** (`ARAM_DivineDomain`): Champion takedowns within 3 seconds of damaging them causes them to leave behind their Essence for 8 seconds. Attacking an Essence consumes it.  Consuming an Essence blinks you to its location, makes you Untargetable and Unstoppable, grants {Calc_Move_Speed} Move Speed decaying over 2 seconds, heals you {Calc_Heal_Min} to {Calc_Heal_Max} based on your Missing Health, and resets your basic Ability cooldowns.   Healing: {f1.0} Cooldown Time Refunded: {f3.0}  Today, you will see the power of Ascension! — Azir, the Emperor of the Sands
+- **Scopiest Weapons** (`ARAM_ScopiestWeapons`): Gain {RangeIncrease} Attack Range.
+- **Spell Split** (`Missile_Split`): {{Kiwi_Missile_Split_Summary}}   Additional target hit: {f1} Enemies take less damage if hit by the same spell.
+- **Spirit Bomb** (`ARAM_SpiritBomb`): Healing and Shielding builds up a Spirit Bomb. At max stacks, toss the Spirit Bomb at your lowest Health ally. After reaching the target, it heals nearby allies for {Calc_Heal} of their missing Health and grants them a {Calc_Shield} current Health shield for 2 seconds.  Spirit Bombs Tossed: {f1.0} Healing: {f2.0} Shielding: {f3.0}
+- **Squishy Slappy Grab** (`SquishySlappyGrab`): Occasionally send out Squishy Slappy Hands that latch on to all nearby enemy champions for 4 seconds. While you're latched onto enemies, your next attack will pull them to you, deal {Calc_Damage} magic damage, and stun them for 0.25 seconds. You gain {Calc_Shield} shield for 2.5 seconds per pulled enemy.  This has a 30 second cooldown.  Enemies Yoinked: {f1.0} Damage Dealt: {f2.0} Shield Gained: {f3.0}
+- **Tap Dancer** (`ARAM_TapDancer`): Your Attacks grant you 10 Movement Speed. Gain {MSToASConversionCalc} Attack Speed.  The buff stacks and refreshes infinitely but lasts 5 seconds.
+- **Titan's Resolve** (`ARAM_ImTheJuggernaut`): Dealing and receiving champion damage grants you 1 stack of Juggernauting for 6 seconds. For every 10 stacks of Juggernauting you gain {Calc_AF} Adaptive Force, {Calc_Defenses} Armor, {Calc_Defenses} Magic Resist, {Calc_Size} Size, and {Calc_Tenacity} Tenacity.  Stacks fall off faster the more you have. Maximum Juggernauting Level: {f1.0}
+- **Transmute: Chaos** (`ARAM_TransmuteChaos`): Gain 2 random %i:Augment%Augments.
+- **Triggered Inferno** (`ARAM_InfernoTriggered`): Damaging enemy champions with Attacks or Abilities different from the previous one grants Style (from F to S).  Gain {Calc_Style_MS_Per_Stack} Movement Speed per Style rank.  At S Style consume your Style to unleash a torrent of gunshots at all nearby enemies 10 times over 2 seconds. Each shot deals {Calc_Damage_Per_Shot} physical damage. Enemies below {Calc_Crit_Threshold} Health are struck Critically for {Calc_Crit_Damage_Per_Shot} physical damage.This has a 5 second Cooldown.  Shots apply Lifesteal and deal 25% damage to minions.  Damage Dealt: {f1.0} Infernos Triggered: {f2.0}
+- **Tripleshot** (`SpellVolley`): {{Kiwi_SpellVolley_Summary}}  Additional Targets Hit: {f1} Units take less damage from the same spell.
+- **Ultimate Revolution** (`ARAM_UltimateRevolution`): Refresh your Ultimate after casting it (75 seconds Cooldown or reset on death).
+- **Windspeaker's Blessing** (`ARAM_WindspeakersBlessing`): Your Healing and Shielding also increases the target's Armor and Magic Resist by {Resists} for 3 seconds.
