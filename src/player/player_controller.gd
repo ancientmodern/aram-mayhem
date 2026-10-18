@@ -184,6 +184,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		champ.issue_hold()
 	elif event.is_action_pressed("dance"):
 		champ.play_anim("dance" if not k.shift_pressed else "taunt", 1.0, 0.2)
+		if match_ref.audio != null:
+			match_ref.audio.emote(champ, "dance" if not k.shift_pressed else "taunt")
 		champ.anim_lock = 6.0 if not k.shift_pressed else 2.5
 		champ.issue_stop()
 	elif k.keycode == KEY_ESCAPE:
@@ -205,9 +207,13 @@ func _right_click() -> void:
 	if hovered != null and _is_enemy_target(hovered):
 		champ.issue_attack(hovered)
 		_click_marker(hovered.global_position, true)
+		if hovered.kind == G.Kind.CHAMPION and match_ref.audio != null:
+			match_ref.audio.player_order("attack")
 	else:
 		champ.issue_move(mouse_ground)
 		_click_marker(mouse_ground, false)
+		if match_ref.audio != null:
+			match_ref.audio.player_order("move")
 
 
 func _click_marker(pos: Vector3, attack: bool) -> void:

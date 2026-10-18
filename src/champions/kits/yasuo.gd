@@ -327,7 +327,7 @@ class WayOfTheWanderer extends Effect:
 		if o == null:
 			return {}
 		var other := 0.0
-		for e in o.effects:
+		for e in o.effects.duplicate():
 			if e != self and not e.removed:
 				other += float(e.get_stat_mods().get("crit", 0.0))
 		var mult := val("CritChanceMultiplier", 1.0)
@@ -405,7 +405,7 @@ class SteelTempest extends YAbility:
 	func start_cooldown(_override: float = -1.0) -> void:
 		var bas: float = owner.stats.bonus_as
 		var c := maxf(1.33, dv("Cooldown", 4.0) * (1.0 - minf(maxf(0.0, bas) / 1.67, 0.6675)))
-		for e in owner.effects:
+		for e in owner.effects.duplicate():
 			c = e.modify_cooldown(self, c)
 		cd = c
 		cd_total = c

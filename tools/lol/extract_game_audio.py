@@ -528,6 +528,102 @@ def do_champion(ex, alias):
             "failed": st["failed"], "mb": round(mb, 2)}
 
 
+def _play(e):
+    return e.lower().startswith("play")
+
+
+def _music(e):
+    return not e.lower().startswith(("stop", "set_"))
+
+
+def _any(*kws, exclude=()):
+    kws = tuple(k.lower() for k in kws)
+    exclude = tuple(k.lower() for k in exclude)
+    return lambda e: (_play(e) and any(k in e.lower() for k in kws)
+                      and not any(k in e.lower() for k in exclude))
+
+
+MINION_BANKS = [f"ASSETS/Sounds/Wwise2016/SFX/Shared/NPC_Global_Minions_{t}{k}_SFX_{s}.bnk"
+                for t in ("Chaos", "Order") for k in ("Melee", "Range", "Siege", "Super")
+                for s in ("audio", "events")]
+
+# output name -> (wad list, [(bank unit name, event filter, cap, json section)], extra bank paths)
+EXTRAS = {
+    "announcer": (["Maps/Shipping/Map12.wad.client", "Maps/Shipping/Map12.en_US.wad.client"], [
+        ("Announcer_Global_Female1_VO", _play, VO_CAP, "vo"),
+    ], []),
+    "map12": (["Maps/Shipping/Map12.wad.client", "Maps/Shipping/Map12.en_US.wad.client",
+               "Maps/Shipping/Common.wad.client"], [
+        ("ENV_Map12_SFX", _play, SFX_CAP, "sfx"),
+        ("MISC_Map12_SFX", _play, SFX_CAP, "sfx"),
+        ("MUS_Map12", _music, SFX_CAP, "music"),
+    ], []),
+    "shared": (["Maps/Shipping/Common.wad.client", "Maps/Shipping/Map12.wad.client"], [
+        ("MISC_Gameplay_SFX", _play, SFX_CAP, "sfx"),
+        ("HUD_Global", _any("hud_base_", "hud_turret_targetingwarning", "hud_store_buy",
+                            exclude=("scn7", "spectator", "hol_", "objectivevote", "options", "emotes",
+                                     "intromode", "camera", "pings_srp")), SFX_CAP, "sfx"),
+        ("ITEMS_Global", _any("relic", "potion", "item2003", "crystalflask", "elixir", "zhonyas",
+                              "quicksilver", "porosnack"), SFX_CAP, "sfx"),
+        ("NPC_Global_Minions_SFX", _any("_ha_", "minionsspawn"), SFX_CAP, "sfx"),
+        ("ENV_Global_Buildings_SFX", _any("", exclude=("palisades", "spawnturret", "spwancrystal")),
+         SFX_CAP, "sfx"),
+        ("ENV_EoG_SFX", _play, SFX_CAP, "sfx"),
+        ("ENV_Global_Emitters_SFX", _any("brush"), SFX_CAP, "sfx"),
+        ("ENV_Map12_Crepe_SFX", _any("healthpickup"), SFX_CAP, "sfx"),
+        ("MUS_Global", _music, SFX_CAP, "music"),
+    ], MINION_BANKS),
+}
+EXTRA_DIRS = {"announcer": "announcer", "map12": "map", "shared": "shared"}
+MISC_EXCLUDE = ("perks_", "map33", "crepe", "poro", "bilgewater", "10year")
+
+
+def do_extras(ex):
+    m12 = Wad(f"{GAME}/Maps/Shipping/Map12.wad.client")
+    units = {}
+    for u in bank_units(m12.read("data/maps/shipping/map12/map12.bin")):
+        if u.name not in units or len(u.events) > len(units[u.name].events):
+            units[u.name] = u
+    m12.close()
+    report = {}
+    for out_name, (wad_names, specs, extra_paths) in EXTRAS.items():
+        wads = [Wad(f"{GAME}/{w}") for w in wad_names if os.path.exists(f"{GAME}/{w}")]
+        paths = list(extra_paths)
+        for uname, _f, _c, _s in specs:
+            if uname in units:
+                paths += units[uname].paths
+            else:
+                print(f"  [{out_name}] bank unit {uname} not found")
+        graph = load_graph(wads, sorted(set(paths), key=str.lower), log=print)
+        groups, seen = {}, set()
+        for uname, filt, cap, section in specs:
+            u = units.get(uname)
+            if not u:
+                continue
+            for ev in u.events:
+                if ev in seen or not filt(ev):
+                    continue
+                if uname == "MISC_Gameplay_SFX" and any(k in ev.lower() for k in MISC_EXCLUDE):
+                    continue
+                seen.add(ev)
+                groups.setdefault(section, []).append((ev, graph, cap))
+        out_dir = os.path.join(OUT_AUDIO, EXTRA_DIRS[out_name])
+        clear_wavs(out_dir)
+        os.makedirs(out_dir, exist_ok=True)
+        result, st = ex.run_groups(groups, out_dir)
+        with open(os.path.join(OUT_DATA, f"{out_name}.json"), "w", encoding="utf-8") as f:
+            json.dump(result, f, indent=1)
+        mb = dir_size(out_dir) / 1e6
+        cand = {k: len(v) for k, v in groups.items()}
+        got = {k: len(v) for k, v in result.items()}
+        print(f"{out_name:12s} candidates={cand} resolved={got} files={st['files']} failed={st['failed']} "
+              f"{mb:.1f} MB")
+        report[out_name] = got
+        for w in wads:
+            w.close()
+    return report
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("champions", nargs="*")

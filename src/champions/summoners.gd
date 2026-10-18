@@ -70,7 +70,7 @@ class FlashSpell extends Ability:
 		owner.cancel_windup()
 		owner.face_toward(o + G.flat_dir(o, t.pos) * 10.0, 100.0)
 		Vfx.burst(m, dest + Vector3(0, 0.8, 0), Color(1.0, 0.9, 0.4), 0.9, {"ring": false, "sparks": 16})
-		for e in owner.effects:
+		for e in owner.effects.duplicate():
 			e.on_dash(o, dest)
 			e.on_summoner_cast(self)
 		notify_cast(t)
@@ -99,7 +99,7 @@ class MarkSpell extends Ability:
 
 	func damage() -> float:
 		var base: float = 10.0 + 5.0 * owner.level
-		for e in owner.effects:
+		for e in owner.effects.duplicate():
 			if e.has_method("snowball_damage_mult"):
 				base *= e.snowball_damage_mult()
 		return base
@@ -111,7 +111,7 @@ class MarkSpell extends Ability:
 			var tgt = marked
 			marked = null
 			owner.start_dash(tgt.global_position, {"speed": 18.0, "on_arrive": func(_u):
-				for e in owner.effects:
+				for e in owner.effects.duplicate():
 					if e.has_method("on_snowball_dash_arrive"):
 						e.on_snowball_dash_arrive(tgt)
 				Vfx.burst(m, owner.global_position + Vector3(0, 0.5, 0), Color(0.8, 0.95, 1.0), 1.2)})
@@ -129,14 +129,14 @@ class MarkSpell extends Ability:
 			recast_window = 3.0
 			cd = 0.0
 			Vfx.burst(m, u.global_position + Vector3(0, 1.0, 0), Color(0.85, 0.95, 1.0), 1.0, {"ring": false})
-			for e in owner.effects:
+			for e in owner.effects.duplicate():
 				if e.has_method("on_snowball_hit"):
 					e.on_snowball_hit(u)
-		for e in owner.effects:
+		for e in owner.effects.duplicate():
 			if e.has_method("modify_snowball"):
 				e.modify_snowball(mi)
 		m.add_missile(mi, from)
-		for e in owner.effects:
+		for e in owner.effects.duplicate():
 			e.on_summoner_cast(self)
 		notify_cast(t)
 

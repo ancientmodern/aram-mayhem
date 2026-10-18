@@ -125,7 +125,7 @@ func champ(alias: String, kind: String, volume_db: float = 0.0) -> void:
 
 # ===================================================================== music
 ## Crossfade to a music track (file name in assets/audio/music, without extension). "" stops.
-func music(name: String, fade: float = 1.5, layers: Array = []) -> void:
+func music(name: String, fade: float = 1.5, layers: Array = [], loop: bool = true) -> void:
 	if name == _music_name:
 		return
 	_music_name = name
@@ -139,11 +139,16 @@ func music(name: String, fade: float = 1.5, layers: Array = []) -> void:
 		_music_cur = null
 		return
 	var nxt := music_b if old == music_a else music_a
-	var s := stream("res://assets/audio/music/%s.ogg" % name)
+	var s := stream(name if name.begins_with("res://") else "res://assets/audio/music/%s.ogg" % name)
 	if s == null:
 		return
 	if s is AudioStreamOggVorbis:
-		s.loop = true
+		s.loop = loop
+	elif s is AudioStreamWAV:
+		var w := s as AudioStreamWAV
+		w.loop_mode = AudioStreamWAV.LOOP_FORWARD if loop else AudioStreamWAV.LOOP_DISABLED
+		w.loop_begin = 0
+		w.loop_end = int(w.get_length() * w.mix_rate)
 	nxt.stream = s
 	nxt.volume_db = -40.0
 	nxt.play()
@@ -163,6 +168,24 @@ func music(name: String, fade: float = 1.5, layers: Array = []) -> void:
 		lp.play()
 		create_tween().tween_property(lp, "volume_db", -10.0, fade * 2.0)
 		_layers.append(lp)
+
+
+## Longest track of a League music event from data/audio/<map>.json ("" if missing).
+func game_music(map_file: String, event: String) -> String:
+	var path := "res://data/audio/%s.json" % map_file
+	if not FileAccess.file_exists(path):
+		return ""
+	var d = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if not (d is Dictionary) or not d.has("music") or not d.music.has(event):
+		return ""
+	var best := ""
+	var best_len := -1.0
+	for p in d.music[event]:
+		var st := stream(p)
+		if st != null and st.get_length() > best_len:
+			best_len = st.get_length()
+			best = p
+	return best
 
 
 func _fade_out(p: AudioStreamPlayer, fade: float, free_after: bool) -> void:

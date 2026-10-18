@@ -76,6 +76,7 @@ func _process(delta: float) -> void:
 	if paused:
 		return
 	G.beat += 1
+	Combat.depth = 0
 	_update_death_gray(delta)
 	var dt := minf(delta, 0.05) * game_speed
 	time += dt
@@ -100,14 +101,17 @@ func _process(delta: float) -> void:
 	if not tickers.is_empty():
 		var keep := []
 		G.ctx = "tickers"
-		for tk in tickers:
+		# snapshot: tickers added by a ticker run from the next frame (prevents runaway chains)
+		var running := tickers
+		tickers = []
+		for tk in running:
 			if time <= tk.until and tk.fn.is_valid():
 				G.ctx2 = tk.site
 				if G.debug_sites: G.crumb("ticker " + str(tk.site))
 				var r = tk.fn.call(dt)
 				if r != false:
 					keep.append(tk)
-		tickers = keep
+		tickers = keep + tickers
 	if not blockers.is_empty():
 		blockers = blockers.filter(func(b): return time <= b.until)
 	if spawner != null:
@@ -880,6 +884,7 @@ func team_ai(team: int) -> TeamAI:
 		_team_ai[team] = t
 	return _team_ai[team]
 var menu_layer: CanvasLayer = null
+var audio: GameAudio = null
 var death_gray: ColorRect = null
 var _gray := 0.0
 var pause_menu: PauseMenu = null
@@ -896,6 +901,10 @@ func _bot_summoner(c: Champion) -> String:
 
 
 func _setup_view() -> void:
+	audio = GameAudio.new()
+	audio.name = "Audio"
+	audio.setup(self)
+	add_child(audio)
 	camera_rig = CameraRig.new()
 	add_child(camera_rig)
 	camera_rig.target = G.player

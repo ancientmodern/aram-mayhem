@@ -97,6 +97,10 @@ func _on_cast_failed(_ab, reason: String) -> void:
 		"cc": fail_msg = "Can't cast right now"
 		_: fail_msg = ""
 	fail_t = 1.2 if fail_msg != "" else 0.0
+	if match_ref != null and match_ref.audio != null:
+		var ev := {"cooldown": "Play_sfx_hud_base_SpellFail_Cooldown", "mana": "Play_sfx_hud_base_SpellFail_NoMana",
+			"cc": "Play_sfx_hud_base_SpellFail_Silence"}.get(reason, "")
+		match_ref.audio.play(ev, null, -6.0, 0.0)
 
 
 func _on_announce(text: String, sub: String, col: Color) -> void:

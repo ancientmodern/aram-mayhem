@@ -8,7 +8,10 @@ grep -A2 "SCRIPT ERROR" tools/extracted/import.log | grep -E "ERROR|at:" | paste
 for s in "$@"; do
   (timeout $((T * 2 + 120)) "$GODOT" --headless --path . --fixed-fps 60 -- --sim --time=$T --seed=$s > tools/extracted/sim_s$s.log 2>&1; echo "EXIT $?" >> tools/extracted/sim_s$s.log) &
 done
+# external memory guard: kill any Godot process above 4 GB private memory (protects the pagefile / disk)
+powershell -NoProfile -Command "Start-Sleep 5; while (Get-Process godot* -ErrorAction SilentlyContinue) { Get-Process godot* -ErrorAction SilentlyContinue | Where-Object { \$_.PrivateMemorySize64 -gt 4GB } | ForEach-Object { Write-Output ('MEMGUARD killed ' + \$_.Id); Stop-Process -Id \$_.Id -Force }; Start-Sleep 3 }" > tools/extracted/memguard.log 2>&1 &
 wait
+cat tools/extracted/memguard.log 2>/dev/null
 for s in "$@"; do
   L=tools/extracted/sim_s$s.log
   echo "=== seed $s: $(grep -E '^EXIT' $L) last=$(grep -E '^\[' $L | tail -1 | cut -c1-8) $(grep -E 'WATCHDOG|GAME OVER' $L | head -2 | tr '\n' ' ')"

@@ -62,7 +62,7 @@ func adaptive_type() -> int:
 ## Sum of a stat key from every effect on u except `skip` (for stat conversions).
 static func sum_other(u, key: String, skip) -> float:
 	var t := 0.0
-	for e in u.effects:
+	for e in u.effects.duplicate():
 		if e == skip:
 			continue
 		t += float(e.get_stat_mods().get(key, 0.0))

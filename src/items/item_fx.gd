@@ -636,7 +636,7 @@ class Heartsteel extends Item:
 		var dmg: float = 70.0 + 0.06 * ItemFx.bonus_hp(owner)
 		proc(t, dmg, G.DmgType.PHYSICAL, "heartsteel")
 		var mult := 1.0
-		for e in owner.effects:
+		for e in owner.effects.duplicate():
 			if e.has_method("heartsteel_mult"):
 				mult *= e.heartsteel_mult()
 		gained += dmg * 0.1 * mult
