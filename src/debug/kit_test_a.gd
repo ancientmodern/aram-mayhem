@@ -113,6 +113,7 @@ func _setup() -> void:
 		b.cc = Buff.CC.DISARM
 		b.cleansable = false
 		d.add_buff(b, d)
+		_neutralize(d)
 	_reset_positions(4.0)
 
 
@@ -162,6 +163,27 @@ func _cast_wait(slot: int, target, settle: float) -> bool:
 	var ok := await _cast(slot, target)
 	await _wait(settle)
 	return ok
+
+
+## Dummies are real enemy champions: strip their own kit effects (passives such as Miss Fortune's Strut,
+## Garen's Perseverance regen glow, Malphite's Granite Shield) and the visuals those already attached, so the
+## lingering-VFX checks only see what the tested champion applied.
+func _neutralize(d) -> void:
+	for e in d.effects.duplicate():
+		if e.id != "mayhem_aura" and not e.id.begins_with("harness") and not e.id.begins_with("kitb"):
+			d.remove_effect(e)
+	var nodes := []
+	_collect_fx(d, nodes)
+	for n in nodes:
+		n.queue_free()
+
+
+func _collect_fx(root: Node, out: Array) -> void:
+	for ch in root.get_children():
+		if ch is LolVfx or ch is VfxNode:
+			out.append(ch)
+		else:
+			_collect_fx(ch, out)
 
 
 # ===================================================================== inspection
@@ -364,7 +386,9 @@ func _summoners() -> void:
 	ba.try_cast({"pos": c.global_position, "dir": c.facing, "unit": null})
 	await _qwait(0.2)
 	var bub_before := _attached(c).size()
-	Combat.deal(d, c, c.total_shield() + 20.0, G.DmgType.TRUE, {})
+	# margin: per-champion ARAM damage dealt/taken modifiers (MayhemAura, down to 0.9 x 0.95) must not leave a
+	# sliver of shield
+	Combat.deal(d, c, (c.total_shield() + 20.0) * 1.3, G.DmgType.TRUE, {})
 	await _qwait(0.3)
 	c.hp = c.stats.max_hp
 	_check("Summ_Barrier_bubble_gone_on_break", bub_before > 0 and _attached(c).is_empty(), "before=%d after=[%s]" % [bub_before, _fx_desc(_attached(c))])

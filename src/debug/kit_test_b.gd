@@ -88,6 +88,28 @@ func _setup() -> void:
 	c.add_effect(Recorder.new(rec))
 	for f in foes:
 		_disarm(f)
+		_neutralize(f)
+
+
+## Dummies are real enemy champions: strip their own kit effects (passives such as Miss Fortune's Strut,
+## Garen's Perseverance regen glow, Malphite's Granite Shield) and the visuals those already attached, so the
+## lingering-VFX checks only see what the tested champion applied.
+func _neutralize(d) -> void:
+	for e in d.effects.duplicate():
+		if e.id != "mayhem_aura" and not e.id.begins_with("harness") and not e.id.begins_with("kitb"):
+			d.remove_effect(e)
+	var nodes := []
+	_collect_fx(d, nodes)
+	for n in nodes:
+		n.queue_free()
+
+
+func _collect_fx(root: Node, out: Array) -> void:
+	for ch in root.get_children():
+		if ch is LolVfx or ch is VfxNode:
+			out.append(ch)
+		else:
+			_collect_fx(ch, out)
 
 
 ## Hidden, permanent disarm so idle auto-attacks never interfere with a check (removed by _attack()).
@@ -451,18 +473,41 @@ func _malphite() -> void:
 
 
 # ===================================================================== Master Yi
+## Records on-hit hook calls (with their effectiveness) so Alpha Strike's on-hit application can be checked.
+class OnHitProbe extends Effect:
+	var calls: Array = []
+
+	func _init() -> void:
+		id = "kitb_onhit_probe"
+		hidden = true
+
+	func on_attack_hit(target, info) -> void:
+		calls.append([target, info.on_hit_mult if info != null else -1.0])
+
+
 func _yi() -> void:
 	var a = foes[0]
 	var b = foes[1]
 	_place(5.0)
 	await _wait(0.2)
 	var i0 := rec.size()
+	var probe := OnHitProbe.new()
+	c.add_effect(probe)
 	_cast(0, a.global_position, a)
 	await _wait(0.25)
 	_check("q_untargetable", c.untargetable_count > 0 and not c.is_targetable_by(a.team))
 	await _wait(1.0)
 	_check("q_damage_main", _dmg(i0, "yi_q", a) > 0.0)
 	_check("q_damage_bounce", _dmg(i0, "yi_q", b) > 0.0)
+	# League: each mark applies on-hit effects, 75% for a target's first mark, 18.75% for later marks
+	var primary_ok := false
+	var mults := []
+	for call in probe.calls:
+		mults.append(snappedf(call[1], 0.0001))
+		if call[0] == a and is_equal_approx(call[1], 0.75):
+			primary_ok = true
+	_check("q_applies_on_hit", primary_ok, str(mults))
+	c.remove_effect(probe)
 	_check("q_restored", c.untargetable_count == 0 and c.invulnerable_count == 0 and c.channel.is_empty() and not c.channel_disarm \
 			and (c.model == null or c.model.visible))
 	_check("q_reappears_near", G.flat_dist(c.global_position, a.global_position) < 3.0)
