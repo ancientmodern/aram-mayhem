@@ -58,5 +58,11 @@ static func title(alias: String) -> String:
 	return client_data(alias).get("title", "")
 
 
+## "the Nine-Tailed Fox" -> "The Nine-Tailed Fox"
+static func display_title(alias: String) -> String:
+	var t := title(alias)
+	return t.substr(0, 1).to_upper() + t.substr(1) if t != "" else ""
+
+
 static func roles(alias: String) -> Array:
 	return client_data(alias).get("roles", [])

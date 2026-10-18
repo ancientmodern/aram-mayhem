@@ -3,6 +3,8 @@ extends Node3D
 ## Owns and drives a single game on the Howling Abyss.
 
 const GRID_CELL := 4.0
+var _grid_min := Vector2i.ZERO
+var _grid_max := Vector2i.ZERO
 
 var time := 0.0
 var paused := false
@@ -38,6 +40,7 @@ var augment_levels := [1, 7, 11, 15]
 var vision_timer := 0.0
 var events: Array = []          ## kill feed entries
 var game_speed := 1.0
+var trace_from := INF          ## debug: print per-frame phases after this time
 var tickers: Array = []         ## [{fn: Callable(dt) -> bool, until: float}] per-frame callbacks
 var blockers: Array = []        ## projectile walls [{team, a: Vector3, b: Vector3, until: float}]
 
@@ -62,17 +65,24 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if paused:
 		return
+	G.beat += 1
 	var dt := minf(delta, 0.05) * game_speed
 	time += dt
+	G.ctx = "timers"
 	_run_timers()
+	G.ctx = "grid"
 	_rebuild_grid()
 	for u in units.duplicate():
 		if is_instance_valid(u):
+			G.ctx_unit = u.display_name
 			u.tick(dt)
+	G.ctx = "collide"
 	_resolve_collisions(dt)
+	G.ctx = "missiles"
 	for mi in missiles.duplicate():
 		if is_instance_valid(mi) and mi.alive:
 			mi.tick(dt, self)
+	G.ctx = "rest"
 	missiles = missiles.filter(func(x): return is_instance_valid(x) and x.alive)
 	if not tickers.is_empty():
 		var keep := []
@@ -176,11 +186,15 @@ func add_fx(n: Node3D, pos: Vector3 = Vector3.INF) -> Node3D:
 # ===================================================================== spatial queries
 func _rebuild_grid() -> void:
 	_grid.clear()
+	_grid_min = Vector2i(1 << 30, 1 << 30)
+	_grid_max = Vector2i(-(1 << 30), -(1 << 30))
 	for u in units:
 		if u.dead:
 			continue
 		var p: Vector3 = u.global_position
 		var key := Vector2i(int(floor(p.x / GRID_CELL)), int(floor(p.z / GRID_CELL)))
+		_grid_min = Vector2i(mini(_grid_min.x, key.x), mini(_grid_min.y, key.y))
+		_grid_max = Vector2i(maxi(_grid_max.x, key.x), maxi(_grid_max.y, key.y))
 		if _grid.has(key):
 			_grid[key].append(u)
 		else:
@@ -190,8 +204,12 @@ func _rebuild_grid() -> void:
 ## Units (alive) whose center is within r (+ their radius) of center. team_filter -1 = all.
 func units_in_radius(center: Vector3, r: float, team_filter: int = -1) -> Array:
 	var out := []
-	var c0 := Vector2i(int(floor((center.x - r - 4.0) / GRID_CELL)), int(floor((center.z - r - 4.0) / GRID_CELL)))
-	var c1 := Vector2i(int(floor((center.x + r + 4.0) / GRID_CELL)), int(floor((center.z + r + 4.0) / GRID_CELL)))
+	if not center.is_finite() or not is_finite(r) or r < 0.0:
+		return out
+	r = minf(r, 400.0)
+	# clamp the scanned cells to the occupied grid bounds (huge radii stay cheap)
+	var c0 := Vector2i(maxi(int(floor((center.x - r - 4.0) / GRID_CELL)), _grid_min.x), maxi(int(floor((center.z - r - 4.0) / GRID_CELL)), _grid_min.y))
+	var c1 := Vector2i(mini(int(floor((center.x + r + 4.0) / GRID_CELL)), _grid_max.x), mini(int(floor((center.z + r + 4.0) / GRID_CELL)), _grid_max.y))
 	for j in range(c0.y, c1.y + 1):
 		for i in range(c0.x, c1.x + 1):
 			var cell = _grid.get(Vector2i(i, j))
@@ -376,8 +394,14 @@ func spawn_attack_missile(src: Unit, tgt: Unit, crit: bool) -> Missile:
 	mi.setup_homing(src, from, tgt, src.attack_missile_speed * G.U)
 	mi.is_attack = true
 	mi.height = src.height * 0.55
-	mi.visual = Vfx.attack_missile(src, crit)
-	mi.on_hit = func(_m, u): src.attack_hit(u, crit)
+	mi.blockable = src.kind != G.Kind.TURRET
+	var vis = null
+	if src is Champion and src.kit != null and src.kit.has_method("attack_missile_visual"):
+		vis = src.kit.attack_missile_visual(crit)
+	mi.visual = vis if vis != null else Vfx.attack_missile(src, crit)
+	mi.on_hit = func(_m, u):
+		if is_instance_valid(src) and not src.is_queued_for_deletion():
+			src.attack_hit(u, crit)
 	add_missile(mi, from)
 	return mi
 
@@ -528,6 +552,26 @@ func end_game(winning_team: int) -> void:
 	winner = winning_team
 	G.time_scale_target = 0.25
 	after(1.2, func(): G.time_scale_target = 1.0)
+	# camera flies to the destroyed nexus; the battlefield freezes once it has exploded
+	var nx = nexus_units[1 - winning_team]
+	if hud != null:
+		hud.visible = false
+	if overlay != null:
+		overlay.visible = false
+	if camera_rig != null and nx != null:
+		camera_rig.target = nx
+		camera_rig.locked = true
+	after(3.0, func():
+		for u in units:
+			if not u.dead and u.kind == G.Kind.CHAMPION:
+				u.stop_moving()
+				u.play_anim("idle", 1.0, 0.3)
+		paused = true)
+	if menu_layer != null:
+		end_screen = EndScreen.new()
+		end_screen.match_ref = self
+		end_screen.action.connect(func(id): G.flow_request.emit(id))
+		menu_layer.add_child(end_screen)
 	G.match_over.emit(winning_team)
 
 
@@ -710,8 +754,9 @@ func _update_hexgates() -> void:
 
 
 func _spawn_champions(cfg: Dictionary) -> void:
-	var ally: Array = cfg.get("ally_champions", [])
-	var enemy: Array = cfg.get("enemy_champions", [])
+	var ally: Array = cfg.get("ally_champions", []).duplicate()
+	var enemy: Array = cfg.get("enemy_champions", []).duplicate()
+	cfg_summoners = cfg.get("player_summoners", [])
 	var pool: Array = ChampionDB.ROSTER.duplicate()
 	pool.shuffle()
 	var used := {cfg.player_champion: true}
@@ -744,7 +789,11 @@ func _spawn_champion(alias: String, team: int, skin: int, is_player: bool, idx: 
 	add_unit(c, pos)
 	c.facing = G.flat_dir(pos, nexus_units[1 - team].global_position)
 	c.face_toward(c.global_position + c.facing, 1000.0)
-	Summoners.give_default(c)
+	if is_player:
+		var sums: Array = cfg_summoners if not cfg_summoners.is_empty() else ["Flash", "Mark"]
+		Summoners.give_default(c, sums[0], sums[1])
+	else:
+		Summoners.give_default(c, "Flash", _bot_summoner(c))
 	if is_player:
 		G.player = c
 	else:
@@ -756,6 +805,21 @@ func _spawn_champion(alias: String, team: int, skin: int, is_player: bool, idx: 
 	c.play_anim("idle", 1.0, 0.0)
 	c.augments_pending = 1   # game-start augment screen (level 3)
 	return c
+
+
+var cfg_summoners: Array = []
+var menu_layer: CanvasLayer = null
+var pause_menu: PauseMenu = null
+var end_screen: EndScreen = null
+
+
+## ARAM-ish second summoner for bots: mostly Mark, otherwise something fitting the champion.
+func _bot_summoner(c: Champion) -> String:
+	if G.rng.randf() < 0.55:
+		return "Mark"
+	var melee: bool = c.stats.attack_range < 300.0
+	var opts := ["Ghost", "Ignite", "Barrier"] if melee else ["Heal", "Barrier", "Ignite", "Cleanse"]
+	return opts[G.rng.randi() % opts.size()]
 
 
 func _setup_view() -> void:
@@ -786,6 +850,13 @@ func _setup_view() -> void:
 	hud = Hud.new()
 	hud.match_ref = self
 	hud_layer.add_child(hud)
+	menu_layer = CanvasLayer.new()
+	menu_layer.name = "MenuLayer"
+	menu_layer.layer = 5
+	add_child(menu_layer)
+	pause_menu = PauseMenu.new()
+	pause_menu.match_ref = self
+	menu_layer.add_child(pause_menu)
 
 
 # ===================================================================== augments
@@ -894,3 +965,15 @@ func bot_choose_augment(c: Champion) -> void:
 			if probe.power + probe.synergy(c) < 1.0 and G.rng.randf() < 0.7:
 				reroll_offer(c, i)
 	choose_augment(c, AugmentDB.bot_pick(c, off.ids))
+
+
+# ===================================================================== shopping
+func bot_shop(c: Champion) -> void:
+	if not c.can_shop():
+		return
+	var guard := 0
+	while guard < 8:
+		guard += 1
+		var nxt := ItemDB.bot_next_purchase(c)
+		if nxt < 0 or not ItemDB.buy(c, nxt):
+			break

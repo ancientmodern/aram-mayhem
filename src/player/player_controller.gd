@@ -113,7 +113,7 @@ static func _set_glow_rec(n: Node, c: Color) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if champ == null or match_ref == null or match_ref.over:
+	if champ == null or match_ref == null or match_ref.over or match_ref.paused:
 		return
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
@@ -183,6 +183,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif k.keycode == KEY_ESCAPE:
 		if aiming >= 0:
 			_cancel_aim()
+		elif attack_move_armed:
+			attack_move_armed = false
+		elif match_ref.pause_menu != null:
+			match_ref.pause_menu.open()
 		attack_move_armed = false
 	for i in 6:
 		if event.is_action_pressed("item_%d" % (i + 1)):

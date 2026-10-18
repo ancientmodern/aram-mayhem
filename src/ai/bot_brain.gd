@@ -54,11 +54,17 @@ func think(dt: float) -> void:
 		_shop_and_augments()
 	if c.is_busy() and not c.casting.is_empty():
 		return
+	if not c.channel.is_empty() and not c.channel.ability.can_move_while_channeling:
+		return
 	if _ability_timer <= 0.0:
 		if _try_abilities():
 			_ability_timer = 0.25
 	if _try_summoners():
 		pass
+	for it in c.items:
+		if it.has_active() and it.active_left <= 0.0 and it.ai_should_activate(self):
+			var tp: Vector3 = focus.global_position if focus != null and is_instance_valid(focus) else c.global_position + c.facing * 3.0
+			it.activate(tp, focus)
 	if _should_retreat():
 		mode = "retreat"
 		_retreat()
@@ -333,7 +339,7 @@ func _try_abilities() -> bool:
 		if ab == null or ab.cast_block_reason() != "":
 			continue
 		var t := ab.ai_consider(self)
-		if t.is_empty():
+		if t.get("_default", false):
 			t = default_consider(ab)
 		if not t.is_empty():
 			if ab.try_cast(t):
@@ -346,7 +352,7 @@ func _try_summoners() -> bool:
 		if sm == null or sm.cast_block_reason() != "":
 			continue
 		var t: Dictionary = sm.ai_consider(self)
-		if not t.is_empty():
+		if not t.is_empty() and not t.get("_default", false):
 			return sm.try_cast(t)
 	return false
 
