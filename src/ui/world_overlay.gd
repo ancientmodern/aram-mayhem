@@ -20,7 +20,7 @@ const TINT_ALLY := Color(0.34, 0.87, 1.0)
 const TICK_COL := Color(0.0, 0.0, 0.0, 0.85)
 const MICRO_COL := Color(0.0, 0.0, 0.0, 0.7)
 const NAME_OUTLINE := Color(0, 0, 0, 0.85)
-const LEVEL_UP_FX := ["LevelUp", "Global_LevelUp", "LevelUp_Global", "Jade_LevelUp", "Global_Levelup"]
+const LEVEL_UP_FX := ["LevelUp_glb", "LevelUp", "Global_LevelUp", "LevelUp_Global", "Jade_LevelUp", "Global_Levelup"]
 const CC_MASK := Buff.CC.STUN | Buff.CC.AIRBORNE | Buff.CC.SUPPRESS | Buff.CC.CHARM | Buff.CC.FEAR | Buff.CC.TAUNT | Buff.CC.SLEEP
 
 ## One League FHB element, pre-placed relative to its bar's anchor at our canvas scale.
