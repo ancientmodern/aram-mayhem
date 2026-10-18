@@ -146,7 +146,9 @@ static func _cc(target: Unit, id: String, name: String, flags: int, duration: fl
 static func stun(target: Unit, duration: float, src) -> Buff:
 	var b := _cc(target, "stun", "Stunned", Buff.CC.STUN, duration, src)
 	if b != null and b.vfx == null:
-		b.vfx = Vfx.stun_stars(target, b.duration)
+		b.vfx = LolVfx.attach(target, "LOC_Stun", {"loop": true, "center": target.height})
+		if b.vfx == null:
+			b.vfx = Vfx.stun_stars(target, b.duration)
 	return b
 
 
@@ -158,7 +160,10 @@ static func root(target: Unit, duration: float, src, color: Color = Color(1.0, 0
 
 
 static func silence(target: Unit, duration: float, src) -> Buff:
-	return _cc(target, "silence", "Silenced", Buff.CC.SILENCE, duration, src)
+	var b := _cc(target, "silence", "Silenced", Buff.CC.SILENCE, duration, src)
+	if b != null and b.vfx == null:
+		b.vfx = LolVfx.attach(target, "LOC_Silence", {"loop": true, "center": target.height})
+	return b
 
 
 static func disarm(target: Unit, duration: float, src) -> Buff:
@@ -193,6 +198,8 @@ static func taunt(target: Unit, duration: float, src: Unit) -> Buff:
 	var b := _cc(target, "taunt", "Taunted", Buff.CC.TAUNT, duration, src)
 	if b != null:
 		b.forced_target = src
+		if b.vfx == null:
+			b.vfx = LolVfx.attach(target, "LOC_Taunt", {"loop": true, "center": target.height})
 	return b
 
 
@@ -220,7 +227,10 @@ static func slow(target: Unit, amount: float, duration: float, src, decays: bool
 	b.slow_decays = decays
 	b.is_debuff = true
 	b.stack_mode = Buff.Stack.REFRESH
-	return target.add_buff(b, src)
+	var got := target.add_buff(b, src)
+	if got != null and got.vfx == null and target.kind == G.Kind.CHAMPION:
+		got.vfx = LolVfx.attach(target, "Global_Slow", {"loop": true})
+	return got
 
 
 ## Generic timed stat buff (positive unless is_debuff).
