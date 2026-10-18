@@ -10,29 +10,35 @@ extends Node3D
 const PARTICLES_JSON := "res://data/map/map12_particles.json"
 const SPAWN_R := 40.0
 const FREE_R := 50.0
-const SKIP_PREFIX := ["HA_Audio_Emitter", "HA_Order_Inhibitor", "HA_Chaos_Inhibitor",
-		# wind-streak mesh systems: LolVfx currently draws their scrolling streak texture as flat bright wedges
-		# (same symptom as the snow quads below); re-enable once the particle renderer handles them
-		"HA_Env_bridgeWind", "HA_Env_hightWind", "HA_Env_lowWind", "HA_Env_highWind_belowBridge"]
+## Wind-streak mesh systems (HA_Env_bridgeWind / hightWind / lowWind / highWind_belowBridge) are back on: since the
+## LolVfx renderer fix they draw as soft scrolling bands instead of flat bright wedges (checked 2026-10-18).
+const SKIP_PREFIX := ["HA_Audio_Emitter", "HA_Order_Inhibitor", "HA_Chaos_Inhibitor"]
 
 var match_ref = null
 var _placements: Array = []      ## [{system, xform: Transform3D, pos: Vector3, node: LolVfx|null}]
 var _check := 0.0
 var _poros: Array = []           ## [{node, home, anim, state, t, from, to}]
+var _full := false
 
 
 func setup(m) -> void:
 	match_ref = m
 	name = "MapAmbient"
 	LolVfx.load_set("map12")
-	_strip_snow_quads()
+	_full = OS.get_cmdline_user_args().has("--ambfull")   # debug: keep League's snow quads
+	if not _full:
+		_strip_snow_quads()
 	_load_placements()
 	_spawn_poros()
+	var props := MapProps.new()
+	add_child(props)
+	props.setup(m)
 
 
-## The wind/snow systems' "Snow" quad emitters (texture env_mb_snow_flakes: opaque alpha, faint RGB) currently
-## render as solid squares in LolVfx; until the particle renderer handles them, drop those emitters and let the
-## camera-following snow (MapBuilder.build_snow) stand in. The wind streak meshes and sparkles stay.
+## The wind/snow systems' "Snow" quad emitters (texture env_mb_snow_flakes: opaque alpha, faint RGB) no longer render
+## as solid squares, but in LolVfx they are nearly invisible (a few faint specks per screen, where League shows clear
+## white flakes); until that is fixed drop those emitters and let the camera-following snow (MapBuilder.build_snow)
+## stand in. The wind streak meshes and sparkles stay.
 func _strip_snow_quads() -> void:
 	for nm in ["HA_Env_Snow_01", "HA_Env_hightWind_01", "HA_Env_lowWind_01"]:
 		if not LolVfx._db.has(nm):

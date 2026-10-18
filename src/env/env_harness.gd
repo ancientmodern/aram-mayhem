@@ -88,7 +88,7 @@ func _build() -> void:
 			_at(t + 4.0, func(): _shot("i_die_b"))
 			_at(t + 11.0, func(): _shot("i_dead"))
 		"nav":
-			_draw_nav_edges()
+			_draw_nav_edges(match_ref.nav.walk, Color(1, 0.1, 0.1), false)
 			var spots2 := {
 				"nav_order_outer": m.outer_turrets[0].global_position,
 				"nav_mid": m.lane_path[m.lane_path.size() / 2],
@@ -100,6 +100,53 @@ func _build() -> void:
 				var p2: Vector3 = spots2[k]
 				_at(t, func(): _free_cam(p2))
 				_at(t + 1.0, func(): _shot(k))
+				t += 1.5
+		"weather":
+			# League snow + wind systems (run with --ambfull to keep the snow quads and wind streaks)
+			var wspots := {
+				"w_base_snow": G.lol_pos(1396, -182, 1570), "w_bridgewind": G.lol_pos(6161, -192, 6369),
+				"w_highwind": G.lol_pos(7414, -179, 8197), "w_lowwind": G.lol_pos(6940, -134, 5841),
+				"w_bridgewind2": G.lol_pos(4329, -192, 4967),
+			}
+			for k in wspots:
+				var wp: Vector3 = wspots[k]
+				_at(t, _free_cam.bind(Vector3(wp.x, -1.8, wp.z)))
+				_at(t + 2.0, _shot.bind(k + "_a"))
+				_at(t + 2.6, _shot.bind(k + "_b"))
+				t += 3.0
+		"props":
+			# Map12 LevelProps (MapProps) + sun direction check
+			var pspots := {
+				"p_chains1": G.lol_pos(3930, -150, 6102), "p_statue2": G.lol_pos(6321, -150, 5004),
+				"p_mid": G.lol_pos(7000, -150, 6700), "p_cutaway": G.lol_pos(7814, -221, 7517),
+				"p_hermit": G.lol_pos(11195, -208, 12129), "p_viking": G.lol_pos(520, -185, 1912),
+				"p_statue4": G.lol_pos(9188, -150, 7740),
+			}
+			for k in pspots:
+				var pp: Vector3 = pspots[k]
+				_at(t, func(): _free_cam(Vector3(pp.x, -1.8, pp.z)))
+				_at(t + 1.5, func(): _shot(k))
+				t += 2.0
+		"brushmap":
+			# brush cell outlines (green) over the grass, one shot per brush region centroid
+			_draw_nav_edges(match_ref.nav.brush, Color(0.1, 1.0, 0.2), true)
+			var nv: NavGrid = m.nav
+			var sums := {}
+			for j in nv.h:
+				for i in nv.w:
+					var id: int = nv.brush[j * nv.w + i]
+					if id != 0:
+						if not sums.has(id):
+							sums[id] = [Vector3.ZERO, 0]
+						sums[id][0] += nv.cell_center(Vector2i(i, j))
+						sums[id][1] += 1
+			for id in sums:
+				var cen2: Vector3 = sums[id][0] / float(sums[id][1])
+				_at(t, _free_cam.bind(cen2))
+				_at(t + 0.2, func():
+					rig.target_distance = 14.0
+					rig.distance = 14.0)
+				_at(t + 1.2, _shot.bind("brushmap_%d" % id))
 				t += 1.5
 		"brush":
 			var pl = G.player
@@ -144,15 +191,19 @@ func _build() -> void:
 
 
 ## Red line strips along every walkable/unwalkable cell edge (0.5 m cells), slightly above the ground.
-func _draw_nav_edges() -> void:
+func _draw_nav_edges(grid: PackedByteArray, col: Color, nonzero: bool) -> void:
 	var nav: NavGrid = match_ref.nav
 	var im := ImmediateMesh.new()
 	im.surface_begin(Mesh.PRIMITIVE_LINES)
 	for j in nav.h - 1:
 		for i in nav.w - 1:
-			var a: int = nav.walk[j * nav.w + i]
-			var b: int = nav.walk[j * nav.w + i + 1]
-			var c: int = nav.walk[(j + 1) * nav.w + i]
+			var a: int = grid[j * nav.w + i]
+			var b: int = grid[j * nav.w + i + 1]
+			var c: int = grid[(j + 1) * nav.w + i]
+			if nonzero:
+				a = mini(a, 1)
+				b = mini(b, 1)
+				c = mini(c, 1)
 			if a != b:
 				var x := nav.origin.x + (i + 1) * nav.cell
 				var z0 := nav.origin.y + j * nav.cell
@@ -170,7 +221,7 @@ func _draw_nav_edges() -> void:
 	mi.mesh = im
 	var mat := StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.albedo_color = Color(1, 0.1, 0.1)
+	mat.albedo_color = col
 	mat.no_depth_test = true
 	mi.material_override = mat
 	match_ref.add_child(mi)
