@@ -46,6 +46,18 @@ func _run() -> void:
 		await _wait(0.2)
 	await _wait(5.0)
 	await _shot("06_ingame")
+	var c = G.player
+	if c.augments_pending > 0:
+		main.current.get_offer(c)
+		main.current.choose_augment(c, 0)
+	main.current.hud.toggle_shop()
+	await _wait(0.8)
+	await _shot("06b_shop")
+	main.current.hud.toggle_shop()
+	Input.action_press("scoreboard")
+	await _wait(0.5)
+	await _shot("06c_scoreboard")
+	Input.action_release("scoreboard")
 	main.current.pause_menu.open()
 	await _wait(0.5)
 	await _shot("07_pause")

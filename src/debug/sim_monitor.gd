@@ -49,13 +49,24 @@ func _watchdog() -> void:
 	var stuck := 0
 	while _wd_run:
 		OS.delay_msec(1000)
+		# hard memory cap: a runaway sim must never grow the pagefile / fill the disk
+		var mem_mb := OS.get_static_memory_usage() / 1048576
+		if mem_mb > 3000:
+			print("WATCHDOG MEMORY CAP %d MB ctx=%s unit=%s | %s" % [mem_mb, G.ctx, G.ctx_unit, G.ctx2])
+			for cr in G._ring:
+				print("  crumb " + str(cr))
+			OS.kill(OS.get_process_id())
 		if G.beat == last:
 			stuck += 1
 			if stuck == 4:
 				var f := FileAccess.open("user://watchdog.txt", FileAccess.WRITE)
 				var msg := "HANG ctx=%s unit=%s | %s | %s" % [G.ctx, G.ctx_unit, G.ctx2, G.ctx3]
 				f.store_line(msg)
-				for cr in G.crumbs():
+				# read the ring directly (calling script functions from this thread corrupts the call stack)
+				var ring: Array = G._ring
+				var ri: int = G._ri
+				for i in ring.size():
+					var cr = ring[(ri + i) % ring.size()] if ring.size() == 64 else ring[i]
 					f.store_line("  crumb " + str(cr))
 					print("  crumb " + str(cr))
 				f.flush()
