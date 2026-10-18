@@ -182,6 +182,9 @@ static func _heal(source, target, amount: float, opts: Dictionary) -> float:
 	for e in target.effects.duplicate():
 		amt = e.modify_heal_received(amt, source)
 	amt *= 1.0 - target.grievous_wounds()
+	# ARAM: heals on others are halved (self-heals, vamp and relics are not)
+	if not is_vamp and source != null and is_instance_valid(source) and source != target and source.kind == G.Kind.CHAMPION:
+		amt *= Rules.ARAM_OUTGOING_HEAL
 	var before: float = target.hp
 	target.hp = minf(target.stats.max_hp, target.hp + amt)
 	var healed: float = target.hp - before

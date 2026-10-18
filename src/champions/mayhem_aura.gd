@@ -39,8 +39,12 @@ func on_attach(u) -> void:
 
 func get_stat_mods() -> Dictionary:
 	var lvl: int = owner.level if owner != null else 1
-	var d := {"hp": Rules.mayhem_hp_bonus(lvl, melee), "mana_regen%": 0.1, "summoner_haste": Rules.SUMMONER_HASTE}
-	if melee:
+	# classic ARAM: only the global +70 summoner haste; the HP/resist/mana bonuses are Mayhem-only
+	var d := {"summoner_haste": Rules.SUMMONER_HASTE}
+	if Rules.MAYHEM_MODE:
+		d["hp"] = Rules.mayhem_hp_bonus(lvl, melee)
+		d["mana_regen%"] = 0.1
+	if melee and Rules.MAYHEM_MODE:
 		d["armor"] = 15.0
 		d["mr"] = 15.0
 	if bal.has("total_as") and owner != null:
