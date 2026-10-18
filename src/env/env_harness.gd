@@ -10,6 +10,12 @@ var _t := 0.0
 var _steps: Array = []     ## [time, Callable]
 var _dir := "user://env_shots"
 var _plan := "look"
+var _track = null          ## floorwalk: unit whose height is sampled every frame
+var _walk_last := INF
+var _walk_max := 0.0
+var _walk_n := 0
+var _walk_min := 99.0
+var _walk_maxy := -99.0
 
 
 func _ready() -> void:
@@ -127,6 +133,69 @@ func _build() -> void:
 				_at(t, func(): _free_cam(Vector3(pp.x, -1.8, pp.z)))
 				_at(t + 1.5, func(): _shot(k))
 				t += 2.0
+		"floor":
+			# ground height field check: the player stands at League spots where the old cell heights spiked
+			# (centerHeight 0) or where League's sampled heights and the floor mesh disagree; --floorpts=x:z,x:z
+			var fpts := ["7018:5704", "7130:5593", "8175:7373", "2298:4209", "1678:740", "4999:4279",
+				"5637:4789", "8478:7660", "10936:10724", "9693:9526", "927:1069"]
+			for a in OS.get_cmdline_user_args():
+				if a.begins_with("--floorpts="):
+					fpts = a.substr(11).split(",")
+			var pl2 = G.player
+			for s in fpts:
+				var xz: PackedStringArray = s.split(":")
+				var fp := G.lol_pos(float(xz[0]), 0.0, float(xz[1]))
+				_at(t, func():
+					var q: Vector3 = m.nav.nearest_walkable(fp)
+					pl2.teleport(q)
+					_free_cam(q)
+					rig.target_distance = 9.0
+					rig.distance = 9.0
+					print("FLOOR ", s, " walk=", m.nav.is_walkable(fp), " y=", m.nav.height_at(q)))
+				_at(t + 1.2, _shot.bind("floor_" + s.replace(":", "_")))
+				t += 1.5
+		"gates":
+			# hexgates (entry + exits, both teams) and the four health relics, close and wide
+			var gs := []
+			for hg in m.hexgates:
+				gs.append(hg.pos)
+			for r in m.relics:
+				gs.append(r.global_position)
+			var gi := 0
+			for gp in gs:
+				var gp2: Vector3 = gp
+				_at(t, func(): _free_cam(gp2))
+				_at(t + 0.4, func():
+					rig.target_distance = 11.0
+					rig.distance = 11.0)
+				_at(t + 2.2, _shot.bind("gate_%d" % gi))
+				gi += 1
+				t += 2.6
+		"floorwalk":
+			# the player walks across League's old height-spike areas (centerHeight 0 cells around the mid lane);
+			# per-frame |dy| is tracked and printed (--walk=x1:z1:x2:z2 in League units)
+			var wa := [7053.0, 5200.0, 7300.0, 6000.0]
+			for a in OS.get_cmdline_user_args():
+				if a.begins_with("--walk="):
+					var ps := a.substr(7).split(":")
+					wa = [float(ps[0]), float(ps[1]), float(ps[2]), float(ps[3])]
+			var pw = G.player
+			var wp0 := G.lol_pos(wa[0], 0.0, wa[1])
+			var wp1 := G.lol_pos(wa[2], 0.0, wa[3])
+			_at(t, func():
+				pw.teleport(m.nav.nearest_walkable(wp0))
+				pw.stop_moving()
+				rig.locked = true
+				rig.target_distance = 10.0
+				rig.distance = 10.0)
+			_at(t + 0.6, func():
+				_track = pw
+				pw.issue_move(wp1))
+			for k in 6:
+				_at(t + 1.0 + k * 0.8, _shot.bind("walk_%d" % k))
+			_at(t + 7.0, func():
+				print("FLOORWALK max|dy|/frame=", _walk_max, " frames=", _walk_n, " minY=", _walk_min, " maxY=", _walk_maxy)
+				_track = null)
 		"brushmap":
 			# brush cell outlines (green) over the grass, one shot per brush region centroid
 			_draw_nav_edges(match_ref.nav.brush, Color(0.1, 1.0, 0.2), true)
@@ -256,6 +325,14 @@ func _shot(nm: String) -> void:
 
 func _process(dt: float) -> void:
 	_t += dt
+	if _track != null and is_instance_valid(_track):
+		var y: float = _track.global_position.y
+		if _walk_last != INF:
+			_walk_max = maxf(_walk_max, absf(y - _walk_last))
+		_walk_last = y
+		_walk_n += 1
+		_walk_min = minf(_walk_min, y)
+		_walk_maxy = maxf(_walk_maxy, y)
 	var i := 0
 	while i < _steps.size():
 		if _t >= _steps[i][0]:
