@@ -279,6 +279,13 @@ static func _team_name(u) -> String:
 	return "Order" if u.team == G.Team.ORDER else "Chaos"
 
 
+## Howling Abyss turrets: Order uses Turret skin 24 (blue), Chaos skin 25 (red) - data/characters/turret/skins.
+## Systems: <skin>_BA (vs minions), _BA_Champ_01..04 (escalating vs champions), _BA_Cas_Champ_01..04 (muzzle),
+## _BA_Tar / _BA_Tar_Champ / _BA_Tar_Champ_02..04 (hits), _BA_LaserSight_beam (opts length), _Idle.
+static func turret_skin(t) -> String:
+	return "Turret_Skin24" if t == null or t.team == G.Team.ORDER else "Turret_Skin25"
+
+
 ## Missile visual for minion / turret basic attacks (shared League set) or null.
 static func unit_attack_visual(src, tgt) -> LolVfx:
 	load_set("shared")
@@ -290,9 +297,9 @@ static func unit_attack_visual(src, tgt) -> LolVfx:
 			Minion.Type.SIEGE: nm = "SRU_%sMinionSiege_Base_SRU_%s_CanM_BA1" % [tn, tn]
 	elif src.kind == G.Kind.TURRET:
 		if tgt != null and is_instance_valid(tgt) and tgt.kind == G.Kind.CHAMPION:
-			nm = "Turret_Skin24_BA_Champ_%02d" % clampi(int(src.ramp) + 1, 1, 4)
+			nm = "%s_BA_Champ_%02d" % [turret_skin(src), clampi(int(src.ramp) + 1, 1, 4)]
 		else:
-			nm = "Turret_Skin24_BA"
+			nm = "%s_BA" % turret_skin(src)
 	return make(nm, {"loop": true, "mis": {"end_bone": DEFAULT_HIT_BONE}}) if nm != "" else null
 
 
@@ -310,9 +317,9 @@ static func on_attack_hit(src, t, crit: bool) -> void:
 		elif src.kind == G.Kind.TURRET:
 			if t.kind == G.Kind.CHAMPION:
 				var shot: int = clampi(int(src.ramp), 1, 4)
-				nm2 = "Turret_Skin24_BA_Tar_Champ" if shot <= 1 else "Turret_Skin24_BA_Tar_Champ_%02d" % shot
+				nm2 = ("%s_BA_Tar_Champ" % turret_skin(src)) if shot <= 1 else "%s_BA_Tar_Champ_%02d" % [turret_skin(src), shot]
 			else:
-				nm2 = "Turret_Skin24_BA_Tar"
+				nm2 = "%s_BA_Tar" % turret_skin(src)
 		if nm2 != "" and src.match_ref != null:
 			load_set("shared")
 			_spawn_hit(src.match_ref, nm2, src, t, DEFAULT_HIT_BONE)
@@ -536,6 +543,11 @@ func _ready() -> void:
 	_live.append(self)
 	_refresh()
 	Prof.add("vfx.spawn", t0)
+	if _log_spawns:
+		print("VFXLOG t=%.2f %s host=%s pos=%s" % [Time.get_ticks_msec() / 1000.0, name, _host.name if _host != null else "-", global_position.snapped(Vector3.ONE * 0.1)])
+
+
+static var _log_spawns: bool = "--vfxlog" in OS.get_cmdline_user_args()
 
 
 ## Recompute whether this instance needs a tick every frame or can sleep until its next timer / free time.
@@ -1424,21 +1436,22 @@ static func _ero_tex(e: Dictionary) -> ImageTexture:
 
 
 # ----------------------------------------------------------------- materials
-static func _shader(blend: int, distort := false, bias := false) -> Shader:
+static func _shader(blend: int, distort := false, bias := false, solid := false) -> Shader:
 	# League blendMode (from texture statistics over all champions): 0 (default) / 2 / 4 = additive,
-	# 1 = alpha blend, 3 = multiply, 5 = premultiplied alpha
+	# 1 = alpha blend, 3 = solid (opaque meshes: rocks, rockets, relic icons), 5 = premultiplied alpha
 	var mode := "blend_add"
 	match blend:
 		1, 3: mode = "blend_mix"
 		5: mode = "blend_premul_alpha"
 	if distort:
 		mode = "blend_mix"
-	var key := mode + ("|d" if distort else "") + ("|b" if bias else "")
+	var key := mode + ("|d" if distort else "") + ("|b" if bias else "") + ("|s" if solid else "")
 	if _shaders.has(key):
 		return _shaders[key]
 	var hint := "" if mode == "blend_add" else "source_color,"
-	var code := FileAccess.get_file_as_string("res://src/vfx/lol_particle.gdshader.txt").replace("__BLEND__", mode) \
-			.replace("__TEXHINT__", hint).replace("__DEFINES__", ("#define DISTORT\n" if distort else "") + ("#define DEPTH_BIAS\n" if bias else ""))
+	var modes := "unshaded, cull_disabled, depth_draw_always" if solid else "unshaded, cull_disabled, depth_draw_never"
+	var defs := ("#define DISTORT\n" if distort else "") + ("#define DEPTH_BIAS\n" if bias else "") + ("#define SOLID\n" if solid else "")
+	var code := FileAccess.get_file_as_string("res://src/vfx/lol_particle.gdshader.txt").replace("__BLEND__", mode).replace("__TEXHINT__", hint).replace("__DEFINES__", defs).replace("__MODES__", modes)
 	var sh := Shader.new()
 	sh.code = code
 	_shaders[key] = sh
@@ -1460,7 +1473,7 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 			e.get("alpha_ref"), e.get("uvscale"), e.get("uvrate"), e.get("uvint"), e.get("tex2"), e.get("uv2scale"), e.get("uv2rate"),
 			e.get("uv2int"), e.get("ero_tex"), e.get("ero_curve"), e.get("ero_ch"), e.get("soft"), e.get("pass"), e.get("plife"),
 			e.get("uvrot"), e.get("uvrotrate"), e.get("uvclamp"), e.get("uv2rot"), e.get("uv2off"), e.get("uv2clamp"), e.get("flip"),
-			e.get("fresnel"), e.get("falloff"), e.get("dbias"), e.get("distort"), e.get("ground"), e.get("soft_in"), e.get("uvmode")])]
+			e.get("fresnel"), e.get("falloff"), e.get("dbias"), e.get("distort"), e.get("ground"), e.get("soft_in"), e.get("uvmode"), e.get("palette"), e.get("uvoff")])]
 	if _mats.has(key):
 		e[ek] = _mats[key]
 		return _mats[key]
@@ -1479,14 +1492,14 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 	if amesh:
 		bias = 0.02
 	bias = clampf(bias, 0.0, 1.0)
-	mat.shader = _shader(blend, is_dist, bias > 0.0)
+	mat.shader = _shader(blend, is_dist, bias > 0.0, blend == 3 and o == 3 and not amesh)
 	if blend == 1 or blend == 3 or blend == 5:
 		mat.set_shader_parameter("linear_color", true)
 	else:
 		mat.set_shader_parameter("intensity", 0.85)   # stacked gamma-emulated additive layers blow out otherwise
 	if is_dist:
-		var nt := _tex(dist.get("normal"))
-		mat.set_shader_parameter("tex", nt if nt != null else _tex(e.get("tex")))
+		mat.set_shader_parameter("tex", _tex(e.get("tex")))
+		mat.set_shader_parameter("normal_tex", _tex(dist.get("normal")))
 		mat.set_shader_parameter("distort_strength", float(dist.get("strength", 0.1)))
 	else:
 		mat.set_shader_parameter("tex", _tex(e.get("tex")))
@@ -1504,6 +1517,15 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 	mat.set_shader_parameter("uv_rot_rate", float(e.get("uvrotrate", 0.0)))
 	mat.set_shader_parameter("uv_clamp", bool(e.get("uvclamp", false)))
 	mat.set_shader_parameter("alpha_lock", int(e.get("uvmode", 0)) == 2)
+	var uo2 = e.get("uvoff")
+	if uo2 is Array and uo2.size() == 2 and frames <= 1 and (_v2(uo2[0], Vector2.ZERO) != Vector2.ZERO or _v2(uo2[1], Vector2.ZERO) != Vector2.ZERO):
+		mat.set_shader_parameter("uv_off_pack", true)
+	var pal = e.get("palette")
+	if pal is Dictionary and _tex(pal.get("tex")) != null:
+		mat.set_shader_parameter("palette_tex", _tex(pal.get("tex")))
+		mat.set_shader_parameter("has_palette", true)
+		var cnt := maxf(float(pal.get("count", 1)), 1.0)
+		mat.set_shader_parameter("palette_v", (clampf(float(pal.get("row", 0.0)), 0.0, cnt - 1.0) + 0.5) / cnt)
 	var fl: Array = e.get("flip", [false, false])
 	mat.set_shader_parameter("uv_flip", Vector2(1.0 if fl[0] else 0.0, 1.0 if fl[1] else 0.0))
 	var plife: Array = e.get("plife", [1.0, 1.0])
@@ -1535,10 +1557,12 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 	var fr = e.get("fresnel")
 	if fr is Dictionary and (o == 3 or amesh):
 		var fc := _col(fr.get("color", [0, 0, 0, 0]))
-		if fc.r + fc.g + fc.b > 0.01:
+		if fc.r + fc.g + fc.b > 0.01 or (amesh and blend == 1):
 			mat.set_shader_parameter("fresnel_color", fc)
 			# League "fresnel" is the rim width: 0.15 = thin rim, 1 = broad
 			mat.set_shader_parameter("fresnel_pow", clampf(1.0 / maxf(float(fr.get("f", 0.2)), 0.05) * 0.5, 0.8, 8.0))
+			# alpha-blended attached-mesh shells are rim lights, not opaque silhouettes (Annie stun, Ahri Q/W)
+			mat.set_shader_parameter("rim_alpha", amesh and blend == 1)
 	var ft := _tex(e.get("falloff"))
 	if ft != null and (o == 3 or amesh):
 		mat.set_shader_parameter("falloff_tex", ft)
@@ -1812,6 +1836,11 @@ static func _process_material(e: Dictionary, single: bool, life_scale: float, bu
 	pm.set_shader_parameter("fps", float(e.get("fps", 0.0)))
 	pm.set_shader_parameter("rand_frame", bool(e.get("rand_frame", false)))
 	pm.set_shader_parameter("start_frame", float(e.get("start_frame", 0)))
+	var uo = e.get("uvoff")
+	if uo is Array and uo.size() == 2 and frames <= 1 and (_v2(uo[0], Vector2.ZERO) != Vector2.ZERO or _v2(uo[1], Vector2.ZERO) != Vector2.ZERO):
+		pm.set_shader_parameter("uv_off_lo", _v2(uo[0], Vector2.ZERO))
+		pm.set_shader_parameter("uv_off_hi", _v2(uo[1], Vector2.ZERO))
+		pm.set_shader_parameter("uv_off_pack", true)
 	return pm
 
 

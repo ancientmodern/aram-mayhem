@@ -62,6 +62,7 @@ uniform bool rand_frame = false;
 uniform float start_frame = 0.0;
 uniform vec2 uv_off_lo = vec2(0.0);    // random birth uv offset range
 uniform vec2 uv_off_hi = vec2(0.0);
+uniform bool uv_off_pack = false;     // no flipbook: CUSTOM.z carries the birth uv offset (8+8 bits) to the material
 uniform int rot_order = 4;             // euler order for free quads / meshes (calibration)
 
 float rnd(inout uint seed) {
@@ -193,6 +194,10 @@ void start() {
 	// ---- flipbook / uv offset
 	CUSTOM.z = rand_frame ? floor(rnd(seed) * frames) : start_frame;
 	USERDATA4 = vec4(mix(uv_off_lo, uv_off_hi, vec2(rnd(seed), rnd(seed))), 0.0, 0.0);
+	if (uv_off_pack) {
+		vec2 o = fract(USERDATA4.xy);
+		CUSTOM.z = floor(o.x * 255.0) * 256.0 + floor(o.y * 255.0);
+	}
 	// ---- orbit / drag / origin
 	mat3 eb = mat3(EMISSION_TRANSFORM);
 	USERDATA5 = vec4(EMISSION_TRANSFORM[3].xyz, rnd(seed) * 100.0);   // origin + noise phase
