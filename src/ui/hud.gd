@@ -338,7 +338,9 @@ func _on_kill(victim, killer, assisters) -> void:
 		feed.pop_back()
 	_pending_kill = {"killer": kv, "victim": victim, "ally": ally}
 	_pending_kill_frame = Engine.get_process_frames()
+	var pc := Prof.t0()
 	chat.kill(victim, kv)
+	Prof.slow("death.hud_chat", pc, "")
 
 
 func _on_announce(text: String, sub: String, col: Color) -> void:

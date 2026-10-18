@@ -111,7 +111,10 @@ func _process(delta: float) -> void:
 		if is_instance_valid(mi) and mi.alive:
 			if G.debug_sites:
 				G.ctx2 = "%s %s %s" % [mi.source.display_name if is_instance_valid(mi.source) else "?", mi.ability.display_name if mi.ability != null and is_instance_valid(mi.ability) else "-", mi.site]
+			var pmi := Prof.t0()
 			mi.tick(dt, self)
+			if Prof.enabled:
+				Prof.slow("missile", pmi, "%s %s" % [mi.source.display_name if is_instance_valid(mi.source) else "?", mi.ability.display_name if mi.ability != null and is_instance_valid(mi.ability) else ("attack" if mi.is_attack else "-")])
 	Prof.add("missiles", pt)
 	pt = Prof.t0()
 	G.ctx = "rest"
@@ -185,7 +188,12 @@ func _run_timers() -> void:
 		if t[1].is_valid():
 			G.ctx2 = t[2]
 			if G.debug_sites: G.crumb("timer " + str(t[2]))
+			var ptm := Prof.t0()
 			t[1].call()
+			if Prof.enabled:
+				var cb: Callable = t[1]
+				var obj = cb.get_object()
+				Prof.slow("timer", ptm, "%s.%s %s" % [obj.get_script().resource_path.get_file() if obj != null and obj.get_script() != null else str(obj), cb.get_method(), t[2]])
 
 
 # ===================================================================== registry
@@ -343,28 +351,8 @@ func champions_of(team: int, alive_only: bool = true) -> Array:
 
 # ===================================================================== collisions
 func _resolve_collisions(_dt: float) -> void:
-	for key in _grid:
-		var cell: Array = _grid[key]
-		var neighbors := []
-		for dj in range(0, 2):
-			for di in range(-1, 2):
-				if dj == 0 and di < 0:
-					continue
-				var n = _grid.get(Vector2i(key.x + di, key.y + dj))
-				if n != null:
-					neighbors.append(n)
-		for a in cell:
-			if a.mass <= 0.0 or a.dead or not a.dash.is_empty() or (a.cc & Buff.CC.GHOSTED) != 0:
-				continue
-			for n in neighbors:
-				for b in n:
-					if b == a or b.dead:
-						continue
-					if n == cell and b.uid < a.uid and b.mass > 0.0:
-						continue
-					if not b.dash.is_empty() or (b.cc & Buff.CC.GHOSTED) != 0:
-						continue
-					_push_pair(a, b)
+	# [motion] pair search + League body-block response live in Unit.resolve_collisions / resolve_pair
+	Unit.resolve_collisions(_grid, nav)
 
 
 func _push_pair(a: Unit, b: Unit) -> void:
@@ -549,23 +537,34 @@ func _on_champion_killed(victim: Unit, killer, killer_champ) -> void:
 			elif st >= 8:
 				announce_text = "Legendary!"
 		if G.debug_sites: G.crumb("kill_gold")
+		var pg := Prof.t0()
 		killer_champ.add_gold(bounty, victim)
+		Prof.slow("death.gold", pg, killer_champ.display_name)
+		pg = Prof.t0()
 		if G.debug_sites: G.crumb("kill_xp")
 		killer_champ.gain_xp(victim.xp_bounty())
+		Prof.slow("death.xp", pg, killer_champ.display_name)
+		pg = Prof.t0()
 		for e in killer_champ.effects.duplicate():
 			if G.debug_sites: G.crumb("takedown " + str(e.id))
 			e.on_takedown(victim)
+		Prof.slow("death.takedown", pg, killer_champ.display_name)
+	var pas := Prof.t0()
 	for a in assisters:
 		a.assists += 1
 		a.add_gold(bounty * 0.5 / maxf(1.0, assisters.size()) + 50.0, victim)
 		a.gain_xp(victim.xp_bounty() * 0.5)
 		for e in a.effects.duplicate():
 			e.on_takedown(victim)
+	Prof.slow("death.assists", pas, "%d" % assisters.size())
 	var entry := {"killer": killer_champ if killer_champ != null else killer, "victim": victim,
 			"assists": assisters, "time": time, "team": team}
 	events.append(entry)
 	if G.debug_sites: G.crumb("champion_killed emit")
+	var pk := Prof.t0()
 	G.champion_killed.emit(victim, killer_champ if killer_champ != null else killer, assisters)
+	Prof.slow("death.killed_signal", pk, victim.display_name)
+	pk = Prof.t0()
 	if announce_text == "":
 		announce_text = ("An enemy has been slain" if victim.team != G.player.team else "An ally has been slain") if G.player != null else "Slain"
 		if victim == G.player:
@@ -574,8 +573,13 @@ func _on_champion_killed(victim: Unit, killer, killer_champ) -> void:
 			announce_text = "You have slain an enemy"
 	var col := G.COLOR_ALLY if team == (G.player.team if G.player else 0) else G.COLOR_ENEMY
 	announce_sub = "%s  ⚔  %s" % [killer_champ.display_name if killer_champ != null else (killer.display_name if killer != null and is_instance_valid(killer) else "Executed"), victim.display_name]
+	Prof.slow("death.text", pk, "")
+	pk = Prof.t0()
 	G.announce(announce_text, announce_sub, col)
+	Prof.slow("death.announce", pk, announce_text)
+	pk = Prof.t0()
 	G.announcer_event.emit(_announce_key(announce_text, victim, killer_champ), team == (G.player.team if G.player else 0))
+	Prof.slow("death.announcer_vo", pk, "")
 	# ace: the whole enemy team is down
 	if champions_of(victim.team, true).is_empty():
 		after(1.6, func():

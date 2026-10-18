@@ -265,6 +265,9 @@ static func merge_extra_clips(ap: AnimationPlayer, alias: String) -> void:
 ## Skeleton-space ground speed (m/s at playback speed 1) of every run-like clip, measured from the
 ## planted foot (League foot buff bones): during stance the foot moves backwards at the authored
 ## ground speed, so playback = move_speed / stride gives zero foot sliding. Cached per model file.
+## Foot pairs are tried in order (buff bone, foot, ankle) until one actually steps (the super minion's
+## buff bones are static but its L_Foot / R_Foot walk); wheeled units (siege minion) use the wheel
+## spin bone: ground speed = angular speed * wheel radius (hub height above the ground).
 static func run_strides(ap: AnimationPlayer, skel: Skeleton3D) -> Dictionary:
 	var key := ""
 	if ap.owner != null:
@@ -274,62 +277,106 @@ static func run_strides(ap: AnimationPlayer, skel: Skeleton3D) -> Dictionary:
 	if _stride_cache.has(key):
 		return _stride_cache[key]
 	var out := {}
-	var feet: Array = []
 	var by_norm := {}
 	for i in skel.get_bone_count():
 		var n := skel.get_bone_name(i).to_lower().replace("_", "")
 		by_norm[n] = i
-	for pair in [["lbuffboneglbfootloc", "rbuffboneglbfootloc"], ["lfoot", "rfoot"], ["lankle", "rankle"]]:
-		if by_norm.has(pair[0]) and by_norm.has(pair[1]):
-			feet = [by_norm[pair[0]], by_norm[pair[1]]]
-			break
-	if feet.is_empty():
-		_stride_cache[key] = out
-		return out
-	var was_active := ap.active
-	ap.active = true
+	var clips: Array = []
 	for an in ap.get_animation_list():
 		var low := String(an).to_lower()
-		if not (low.contains("run") or low.contains("walk") or low.contains("haste")) or low.contains("_in") \
-				or low.contains("_out") or low.contains("toidle") or low.contains("torun"):
+		if not (low.contains("run") or low.contains("walk") or low.contains("haste")) or low.contains("_in") 				or low.contains("_out") or low.contains("toidle") or low.contains("torun"):
 			continue
 		var a := ap.get_animation(an)
-		if a == null or a.length < 0.2:
+		if a != null and a.length >= 0.2:
+			clips.append(String(an))
+	var was_active := ap.active
+	ap.active = true
+	for pair in [["lbuffboneglbfootloc", "rbuffboneglbfootloc"], ["lfoot", "rfoot"], ["lankle", "rankle"]]:
+		if not (by_norm.has(pair[0]) and by_norm.has(pair[1])):
 			continue
-		var n_s := 60
-		ap.play(an, 0.0, 1.0)
-		var tracks := []
-		for f in feet:
-			tracks.append([])
-		for i in n_s + 1:
-			var t := a.length * float(i) / float(n_s)
-			ap.seek(minf(t, a.length - 0.0001), true)
-			for k in feet.size():
-				tracks[k].append(skel.get_bone_global_pose(feet[k]).origin)
-		var speeds: Array = []
-		var dt := a.length / float(n_s)
-		for tr in tracks:
-			var ymin := INF
-			var ymax := -INF
-			for p in tr:
-				ymin = minf(ymin, p.y)
-				ymax = maxf(ymax, p.y)
-			if ymax - ymin < 0.04:
-				continue   # foot bone does not lift (legless minions, static buff bone)
-			var thr := ymin + (ymax - ymin) * 0.12
-			for i in range(1, tr.size()):
-				if tr[i].y <= thr and tr[i - 1].y <= thr:
-					var d := Vector2(tr[i].x - tr[i - 1].x, tr[i].z - tr[i - 1].z).length()
-					speeds.append(d / dt)
-		if speeds.size() >= 4:
-			speeds.sort()
-			var med := float(speeds[speeds.size() / 2])
-			if med > 0.8 and med < 12.0:
-				out[String(an)] = med
+		for an in clips:
+			var st := _foot_stride(ap, skel, an, [by_norm[pair[0]], by_norm[pair[1]]])
+			if st > 0.0:
+				out[an] = st
+		if not out.is_empty():
+			break
+	if out.is_empty():
+		var wheels: Array = []
+		for n in by_norm:
+			if String(n).contains("wheelspin"):
+				wheels.append(by_norm[n])
+		if wheels.is_empty():
+			for n in by_norm:
+				if String(n).contains("wheel"):
+					wheels.append(by_norm[n])
+		var ground_y := 0.0
+		if by_norm.has("buffboneglbgroundloc"):
+			ground_y = skel.get_bone_global_rest(by_norm["buffboneglbgroundloc"]).origin.y
+		for an in clips:
+			var best := 0.0
+			for w in wheels:
+				best = maxf(best, _wheel_stride(ap, skel, an, w, ground_y))
+			if best > 0.0:
+				out[an] = best
 	ap.stop()
 	ap.active = was_active
 	_stride_cache[key] = out
 	return out
+
+
+## Planted-foot ground speed of one clip (0 = the bones do not step).
+static func _foot_stride(ap: AnimationPlayer, skel: Skeleton3D, an: String, feet: Array) -> float:
+	var a := ap.get_animation(an)
+	var n_s := 60
+	ap.play(an, 0.0, 1.0)
+	var tracks := []
+	for f in feet:
+		tracks.append([])
+	for i in n_s + 1:
+		var t := a.length * float(i) / float(n_s)
+		ap.seek(minf(t, a.length - 0.0001), true)
+		for k in feet.size():
+			tracks[k].append(skel.get_bone_global_pose(feet[k]).origin)
+	var speeds: Array = []
+	var dt := a.length / float(n_s)
+	for tr in tracks:
+		var ymin := INF
+		var ymax := -INF
+		for p in tr:
+			ymin = minf(ymin, p.y)
+			ymax = maxf(ymax, p.y)
+		if ymax - ymin < 0.04:
+			continue   # foot bone does not lift (legless minions, static buff bone)
+		var thr := ymin + (ymax - ymin) * 0.12
+		for i in range(1, tr.size()):
+			if tr[i].y <= thr and tr[i - 1].y <= thr:
+				var d := Vector2(tr[i].x - tr[i - 1].x, tr[i].z - tr[i - 1].z).length()
+				speeds.append(d / dt)
+	if speeds.size() < 4:
+		return 0.0
+	speeds.sort()
+	var med := float(speeds[speeds.size() / 2])
+	return med if med > 0.8 and med < 12.0 else 0.0
+
+
+## Rolling ground speed of a wheel spin bone over one clip (0 = it does not spin).
+static func _wheel_stride(ap: AnimationPlayer, skel: Skeleton3D, an: String, bone: int, ground_y: float) -> float:
+	var a := ap.get_animation(an)
+	var n_s := 60
+	ap.play(an, 0.0, 1.0)
+	var ang := 0.0
+	var prev := Quaternion.IDENTITY
+	var hub := 0.0
+	for i in n_s + 1:
+		ap.seek(minf(a.length * float(i) / float(n_s), a.length - 0.0001), true)
+		var q := skel.get_bone_pose_rotation(bone)
+		if i > 0:
+			ang += prev.angle_to(q)
+		prev = q
+		hub += skel.get_bone_global_pose(bone).origin.y - ground_y
+	var r := hub / float(n_s + 1)
+	var spd := ang / a.length * r
+	return spd if r > 0.05 and spd > 0.3 and spd < 12.0 else 0.0
 
 
 ## Map logical animation names to available clips.

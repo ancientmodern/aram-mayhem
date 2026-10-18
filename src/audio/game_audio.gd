@@ -393,6 +393,12 @@ func _on_gold(c, amount, src) -> void:
 
 
 func _on_champion_killed(victim, killer, _assisters) -> void:
+	var pa := Prof.t0()
+	_on_champion_killed_impl(victim, killer)
+	Prof.slow("death.audio", pa, "")
+
+
+func _on_champion_killed_impl(victim, killer) -> void:
 	if _is_champ(victim):
 		play("Play_sfx_%s_Death3D_cast" % victim.alias, victim.global_position, -2.0, 0.0)
 		_vo_line(victim, ["Death3D"], 0.0, 0)
