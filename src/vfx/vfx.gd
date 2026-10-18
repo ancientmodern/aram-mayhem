@@ -404,6 +404,8 @@ static func indicator_mesh(shape: int, color: Color) -> MeshInstance3D:
 		mat.set_shader_parameter("tex_main", load("res://assets/ui/world/ind_%s.png" % main_tex))
 	if shape == 1:
 		mat.set_shader_parameter("tex_tip", load("res://assets/ui/world/ind_locallinemissiletarget.png"))
+	GroundDecal.apply(mat)   # [world-ui] ground-decal projection needs the terrain height map
 	mi.material_override = mat
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mi.extra_cull_margin = 2.0   # the shader enlarges the quad (cover) to catch sloped ground
 	return mi
