@@ -8,6 +8,7 @@ Emitter values are converted to the game's conventions: meters (League units * 0
 colors 0..1, curves as {"t": [...], "v": [...]}. Random ranges come from League probability tables.
 
 Usage: python tools/lol/extract_vfx.py [Alias ...]      (default: whole roster)
+       python tools/lol/extract_vfx.py --shared | --map   (shared systems / Howling Abyss ambient particles)
 """
 import json
 import os
@@ -200,8 +201,13 @@ def _read_scb(d):
         p += 4
     verts = [struct.unpack_from("<3f", d, p + i * 12) for i in range(nv)]
     p += nv * 12
+    cols = None
     if vtype == 1:
+        # vertex colors, BGRA bytes (Ezreal's Q cone fades along its length through vertex alpha)
+        cols = [(d[p + i * 4 + 2] / 255.0, d[p + i * 4 + 1] / 255.0, d[p + i * 4] / 255.0, d[p + i * 4 + 3] / 255.0)
+                for i in range(nv)]
         p += nv * 4
+    _read_scb.cols = cols
     p += 12  # central point
     faces = []
     for i in range(nf):
@@ -237,12 +243,26 @@ def _read_sco(d):
     return verts, faces
 
 
+def _has_normals(path):
+    try:
+        with open(path) as f:
+            for ln in f:
+                if ln.startswith("vn "):
+                    return True
+                if ln.startswith("f "):
+                    return False
+    except OSError:
+        pass
+    return False
+
+
 def export_mesh(w, path):
     if not path or not isinstance(path, str):
         return None
     rel = "assets/vfx/" + path.lower().replace("\\", "/").rsplit(".", 1)[0] + ".obj"
     out = os.path.join(ROOT, rel)
-    if not os.path.exists(out):
+    if not os.path.exists(out) or not _has_normals(out) or not os.path.exists(out[:-4] + ".vmesh.json") \
+            or os.environ.get("VFX_REMESH"):
         data = w.read(path.lower())
         if data is None:
             return None
@@ -254,18 +274,47 @@ def export_mesh(w, path):
         if not r or not r[0]:
             return None
         verts, faces = r
+        gverts = [(x * U, y * U, -z * U) for x, y, z in verts]
+        # smooth vertex normals (fresnel / falloff need them), in the written (z-flipped, re-wound) winding
+        nrm = [[0.0, 0.0, 0.0] for _ in gverts]
+        for (i0, i1, i2), _u, _v in faces:
+            a, b, c = gverts[i0], gverts[i2], gverts[i1]
+            e1 = [b[k] - a[k] for k in range(3)]
+            e2 = [c[k] - a[k] for k in range(3)]
+            n = [e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0]]
+            for i in (i0, i1, i2):
+                for k in range(3):
+                    nrm[i][k] += n[k]
         os.makedirs(os.path.dirname(out), exist_ok=True)
         with open(out, "w") as f:
-            for x, y, z in verts:
-                f.write(f"v {x * U:.5f} {y * U:.5f} {-z * U:.5f}\n")
+            for x, y, z in gverts:
+                f.write(f"v {x:.5f} {y:.5f} {z:.5f}\n")
+            for n in nrm:
+                l = max((n[0] ** 2 + n[1] ** 2 + n[2] ** 2) ** 0.5, 1e-9)
+                f.write(f"vn {n[0] / l:.4f} {n[1] / l:.4f} {n[2] / l:.4f}\n")
             n = 1
             for (i0, i1, i2), u, v in faces:
                 # one vt per corner; Godot's OBJ importer flips V (OBJ is bottom-left origin)
                 for k in range(3):
                     f.write(f"vt {u[k]:.5f} {1.0 - v[k]:.5f}\n")
                 # z flip mirrors the mesh -> swap winding
-                f.write(f"f {i0 + 1}/{n} {i2 + 1}/{n + 2} {i1 + 1}/{n + 1}\n")
+                f.write(f"f {i0 + 1}/{n}/{i0 + 1} {i2 + 1}/{n + 2}/{i2 + 1} {i1 + 1}/{n + 1}/{i1 + 1}\n")
                 n += 3
+        # sidecar for LolVfx: unrolled triangles with vertex colors incl. alpha (OBJ cannot carry them)
+        cols = getattr(_read_scb, "cols", None) if path.lower().endswith(".scb") else None
+        _read_scb.cols = None
+        sv, sn, su, sc = [], [], [], []
+        for (i0, i1, i2), u, v in faces:
+            for idx, k in ((i0, 0), (i2, 2), (i1, 1)):
+                sv += [round(c, 5) for c in gverts[idx]]
+                nn = nrm[idx]
+                ln = max((nn[0] ** 2 + nn[1] ** 2 + nn[2] ** 2) ** 0.5, 1e-9)
+                sn += [round(nn[0] / ln, 4), round(nn[1] / ln, 4), round(nn[2] / ln, 4)]
+                su += [round(u[k], 5), round(v[k], 5)]
+                if cols:
+                    sc += [round(c, 4) for c in cols[idx]]
+        with open(out[:-4] + ".vmesh.json", "w") as f:
+            json.dump({"v": sv, "n": sn, "uv": su, "c": sc or None}, f, separators=(",", ":"))
     return "res://" + rel
 
 
@@ -274,140 +323,375 @@ PRIMS = {"VfxPrimitiveArbitraryQuad": "aquad", "VfxPrimitiveMesh": "mesh", "VfxP
          "VfxPrimitiveArbitraryTrail": "atrail", "VfxPrimitiveAttachedMesh": "amesh", "VfxPrimitiveRay": "ray",
          "VfxPrimitiveBeam": "beam", "VfxPrimitivePlanarProjection": "proj", "VfxPrimitiveCameraUnitQuad": "quad",
          "VfxPrimitiveCameraSegmentBeam": "beam"}
+NQ = 32   # quantile samples per random table
+NE = 16   # emitter-time samples for birth curves
 
 
-def emitter(w, e):
+def quantiles(v):
+    """Inverse-CDF samples (NQ per component) of the value's probability tables, or None.
+
+    League probability tables are piecewise-linear inverse CDFs: keyTimes = cumulative probability, keyValues = the
+    multiplier at that probability (e.g. keyTimes [0, .5, .51, 1] / keyValues [1, 1, -1, -1] = 50% +1, 50% -1)."""
+    if not isinstance(v, dict):
+        return None
+    dyn = v.get("dynamics")
+    tabs = dyn.get("probabilityTables") if isinstance(dyn, dict) else None
+    if not tabs:
+        return None
+    cols = []
+    any_rand = False
+    for t in tabs:
+        kv = t.get("keyValues") if isinstance(t, dict) else None
+        if not kv:
+            cols.append([1.0] * NQ)
+            continue
+        kt = t.get("keyTimes") or [i / max(len(kv) - 1, 1) for i in range(len(kv))]
+        col = [float(_curve_at(kt, kv, (i + 0.5) / NQ)) for i in range(NQ)]
+        if any(abs(c - 1.0) > 1e-4 for c in col):
+            any_rand = True
+        cols.append(col)
+    if not any_rand:
+        return None
+    return [[round(c[i], 4) for c in cols] for i in range(NQ)]
+
+
+def ecurve(v):
+    """Emitter-time samples (NE) of a birth value whose dynamics have several keys, else None.
+    Birth values are evaluated at the emitter's normalized age when each particle is born."""
+    if not isinstance(v, dict):
+        return None
+    dyn = v.get("dynamics")
+    if not (isinstance(dyn, dict) and dyn.get("times") and len(dyn["times"]) > 1):
+        return None
+    out = []
+    for i in range(NE):
+        x = _curve_at(dyn["times"], dyn["values"], i / (NE - 1))
+        out.append([round(a, 4) for a in x] if isinstance(x, list) else round(x, 4))
+    return out
+
+
+def _r(x, n=4):
+    if isinstance(x, list):
+        return [_r(a, n) for a in x]
+    if isinstance(x, float):
+        return round(x, n)
+    return x
+
+
+def _f(x, d=0.0):
+    try:
+        return float(x)
+    except (TypeError, ValueError):
+        return d
+
+
+H = {  # unnamed hashes identified by context
+    "lingerColor": "6b77a8ca", "useLingerColor": "2fec8a25", "birthUVOffsetMult": "740ca9c0",
+    "particleUVScrollRateMult": "22c3cf3e", "emitterUvScrollRateMult": "e19d1593",
+}
+
+
+def emitter(w, e, ctx):
     o = {"name": e.get("emitterName", "")}
     prim = e.get("primitive")
     pcls = prim.get("__class") if isinstance(prim, dict) else None
     o["prim"] = PRIMS.get(pcls, "quad")
+    # ---- children (spawned per particle) - keep the emitter even without a texture
+    ch = e.get("childParticleSetDefinition")
+    children = []
+    if isinstance(ch, dict):
+        for c in ch.get("childrenIdentifiers") or []:
+            k = c.get("effectKey") if isinstance(c, dict) else None
+            nm = ctx["resolve"](k) if k else None
+            if nm is None and isinstance(c, dict) and c.get("effectName"):
+                nm = c["effectName"]
+            if nm:
+                children.append(nm)
+        if children:
+            o["children"] = children
+            bones = ch.get("boneToSpawnAt")
+            if bones:
+                o["child_bones"] = bones
     if o["prim"] == "mesh":
         m = prim.get("mMesh") or {}
         mesh = export_mesh(w, m.get("mSimpleMeshName") or m.get("mMeshName"))
-        if mesh is None:
+        if mesh is None and not children:
             return None
         o["mesh"] = mesh
+        if mesh is None:
+            o["prim"] = "quad"
+    if o["prim"] == "amesh":
+        m = prim.get("mMesh") or {}
+        o["amesh"] = {"submeshes": len(m.get("mSubmeshesToDraw") or []), "lock": bool(m.get("mLockMeshToAttachment", False))}
     if o["prim"] in ("ctrail", "atrail"):
         t = prim.get("mTrail") or {}
-        o["trail"] = {"cutoff": t.get("mCutoff", 0.0) * U if t.get("mCutoff") else 0.0,
-                      "tiling": t.get("mBirthTilingSize", [0, 0]), "mode": t.get("mMode", 0)}
+        til = t.get("mBirthTilingSize")
+        o["trail"] = {"cutoff": _f(t.get("mCutoff")) * U, "mode": int(t.get("mMode", 0) or 0),
+                      "smooth": int(t.get("mSmoothingMode", 0) or 0), "max_add": int(t.get("mMaxAddedPerFrame", 0) or 0),
+                      "tiling": _f((val(til, [0, 0, 0]) or [0])[0]) * U if isinstance(val(til), list) else _f(val(til)) * U,
+                      "tiling_ec": [round(_f(x[0] if isinstance(x, list) else x) * U, 4) for x in ecurve(til)] if ecurve(til) else None}
+    if o["prim"] == "beam":
+        b = prim.get("mBeam") or {}
+        o["beam_segments"] = int(b.get("mSegments", 0) or 0)
+    if o["prim"] == "proj":
+        pj = prim.get("mProjection") or {}
+        o["proj"] = {"yrange": _f(pj.get("mYRange"), 0.0) * U, "fade": _f(pj.get("mFading"), 0.0) * U}
     tex = export_tex(w, e.get("texture"))
-    if tex is None and o["prim"] not in ("amesh",):
+    if tex is None and o["prim"] != "amesh" and not children:
         return None
     o["tex"] = tex
-    o["blend"] = e.get("blendMode", 0)
+    o["blend"] = int(e.get("blendMode", 0) or 0)
+    # ---- timing
+    # isSingleParticle: one burst of `rate` particles when the emitter starts (rate is the count)
     o["single"] = bool(e.get("isSingleParticle", False))
-    o["rate"] = float(val(e.get("rate"), 1.0) or 0.0)
-    o["life"] = float(e.get("lifetime", -1.0)) if e.get("lifetime") is not None else -1.0
-    o["delay"] = float(e.get("timeBeforeFirstEmission", 0.0) or 0.0)
-    pl = float(val(e.get("particleLifetime"), 1.0) or 1.0)
-    rm = rand_mult(e.get("particleLifetime"))
-    o["plife"] = [pl * rm[0][0], pl * rm[1][0]] if rm else [pl, pl]
-    o["linger"] = float(e.get("particleLinger", 0.0) or 0.0)
+    rate = e.get("rate")
+    o["rate"] = float(val(rate, 1.0) or 0.0)
+    o["rate_ec"] = ecurve(rate)
+    if o["rate_ec"]:
+        o["rate"] = max(o["rate_ec"])
+    o["life"] = float(e["lifetime"]) if e.get("lifetime") is not None else -1.0
+    o["delay"] = _f(e.get("timeBeforeFirstEmission"))
+    if e.get("period"):
+        o["period"] = _f(e.get("period"))
+        o["active"] = _f(e.get("timeActiveDuringPeriod"), o["period"])
+    pl_v = e.get("particleLifetime")
+    pl = float(val(pl_v, 1.0) if val(pl_v, 1.0) is not None else 1.0)
+    q = quantiles(pl_v)
+    if q:
+        m0 = [r[0] for r in q]
+        o["plife"] = [pl * min(m0), pl * max(m0)]
+        o["plife_q"] = [round(x / max(m0), 4) if max(m0) > 0 else 1.0 for x in m0]
+    else:
+        o["plife"] = [pl, pl]
+    o["linger"] = _f(e.get("particleLinger"))
+    o["elinger"] = _f(e.get("emitterLinger"))
+    lg = e.get("linger")
+    if isinstance(lg, dict):
+        lc = curve(lg.get(H["lingerColor"]))
+        if lc:
+            o["linger_color"] = lc
+    # ---- placement / space
     o["pos"] = gvm(val(e.get("emitterPosition"), [0, 0, 0]))
-    bw = val(e.get("bindWeight"), 0.0)
-    o["local"] = bool(e.get("isLocalOrientation", False)) or (bw is not None and bw >= 0.5)
+    bw = val(e.get("bindWeight"), None)
+    o["bind"] = _f(bw, 0.0) if bw is not None else 0.0
+    o["local"] = o["bind"] >= 0.5
+    o["lorient"] = bool(e.get("isLocalOrientation", True))
+    o["plorient"] = bool(e.get("particleIsLocalOrientation", False))
     o["ground"] = bool(e.get("isGroundLayer", False))
+    o["terrain"] = bool(e.get("isFollowingTerrain", False))
     o["dir"] = bool(e.get("isDirectionOriented", False))
+    if e.get("directionVelocityScale"):
+        o["dvs"] = _f(e.get("directionVelocityScale"))
+        o["dvmin"] = _f(e.get("directionVelocityMinScale"), 0.0)
     o["uniform"] = bool(e.get("isUniformScale", False))
     o["pass"] = int(e.get("pass", 0) or 0)
     o["alpha_ref"] = int(e.get("alphaRef", 0) or 0)
-    # color
-    bc = val(e.get("birthColor"), [1, 1, 1, 1])
+    db = e.get("depthBiasFactors")
+    if isinstance(db, list) and len(db) == 2:
+        o["dbias"] = [_f(db[0]), _f(db[1])]
+    o["disable_cull"] = bool(e.get("disableBackfaceCull", False))
+    # ---- color
+    bcv = e.get("birthColor")
+    bc = val(bcv, [1, 1, 1, 1])
     o["bcolor"] = bc if isinstance(bc, list) and len(bc) == 4 else [1, 1, 1, 1]
-    o["bcolor_rand"] = rand_mult(e.get("birthColor"))
+    o["bcolor_ec"] = ecurve(bcv)
+    o["bcolor_q"] = quantiles(bcv)
     o["color"] = curve(e.get("color"))
     if o["color"] is None and isinstance(e.get("color"), dict) and e["color"].get("constantValue"):
         o["bcolor"] = [a * b for a, b in zip(o["bcolor"], e["color"]["constantValue"])]
+        if o["bcolor_ec"]:
+            o["bcolor_ec"] = [[round(a * b, 4) for a, b in zip(x, e["color"]["constantValue"])] for x in o["bcolor_ec"]]
     o["ctex"] = export_tex(w, e.get("particleColorTexture"))
-    o["ctype"] = [e.get("colorLookUpTypeX", 0), e.get("colorLookUpTypeY", 0)]
-    # scale
-    bs = val(e.get("birthScale0"), [1, 1, 1])
+    o["ctype"] = [int(e.get("colorLookUpTypeX", 0) or 0), int(e.get("colorLookUpTypeY", 0) or 0)]
+    if e.get("colorLookUpScales"):
+        o["cscale"] = e.get("colorLookUpScales")
+    if e.get("colorLookUpOffsets"):
+        o["coff"] = e.get("colorLookUpOffsets")
+    # ---- scale
+    bsv = e.get("birthScale0")
+    bs = val(bsv, [1, 1, 1])
     if not isinstance(bs, list):
         bs = [bs, bs, bs]
     o["bscale"] = bs
-    o["bscale_rand"] = rand_mult(e.get("birthScale0"))
+    o["bscale_ec"] = ecurve(bsv)
+    o["bscale_q"] = quantiles(bsv)
     o["scale"] = curve(e.get("scale0"))
     if o["scale"] is None:
         s0 = val(e.get("scale0"))
         if isinstance(s0, list) and any(abs(x - 1) > 1e-4 for x in s0):
             o["bscale"] = [a * b for a, b in zip(bs, s0)]
-    # rotation (degrees)
+    # ---- rotation (degrees)
     o["brot"] = val(e.get("birthRotation0"), [0, 0, 0])
-    o["brot_rand"] = rand_mult(e.get("birthRotation0"))
+    o["brot_q"] = quantiles(e.get("birthRotation0"))
     o["rotvel"] = val(e.get("birthRotationalVelocity0"), [0, 0, 0])
-    o["rotvel_rand"] = rand_mult(e.get("birthRotationalVelocity0"))
+    o["rotvel_q"] = quantiles(e.get("birthRotationalVelocity0"))
     o["rot"] = curve(e.get("rotation0"))
-    # motion
-    o["bvel"] = gvm(val(e.get("birthVelocity"), [0, 0, 0]))
-    o["bvel_rand"] = rand_mult(e.get("birthVelocity"))
+    # ---- motion (League units -> meters, z flipped)
+    bvv = e.get("birthVelocity")
+    o["bvel"] = gvm(val(bvv, [0, 0, 0]))
+    o["bvel_ec"] = [gvm(x) for x in ecurve(bvv)] if ecurve(bvv) else None
+    o["bvel_q"] = quantiles(bvv)
     o["drag"] = val(e.get("birthDrag"), [0, 0, 0])
+    o["drag_q"] = quantiles(e.get("birthDrag"))
     acc = val(e.get("birthAcceleration"), [0, 0, 0]) or [0, 0, 0]
     wacc = val(e.get("worldAcceleration"), [0, 0, 0]) or [0, 0, 0]
-    o["accel"] = gvm([a + b for a, b in zip(acc, wacc)]) if isinstance(acc, list) and isinstance(wacc, list) else [0, 0, 0]
-    # emission shape
+    o["laccel"] = gvm(acc)
+    o["accel"] = gvm(wacc)
+    ov = e.get("birthOrbitalVelocity")
+    if ov is not None:
+        o["orbit"] = gv(val(ov, [0, 0, 0]))   # radians / second around the emitter's axes
+        o["orbit_q"] = quantiles(ov)
+    fc = e.get("fieldCollectionDefinition")
+    if isinstance(fc, dict):
+        f = {}
+        for a in fc.get("fieldAccelerationDefinitions") or []:
+            f.setdefault("accel", [0, 0, 0])
+            v = gvm(val(a.get("acceleration"), [0, 0, 0]) or [0, 0, 0])
+            f["accel"] = [x + y for x, y in zip(f["accel"], v)]
+        for a in fc.get("fieldDragDefinitions") or []:
+            f["drag"] = f.get("drag", 0.0) + _f(val(a.get("strength"), 1.0), 1.0)
+        for a in fc.get("fieldNoiseDefinitions") or []:
+            f["noise"] = {"freq": _f(val(a.get("frequency"), 1.0), 1.0), "delta": _f(val(a.get("velocityDelta"), 0.0)) * U,
+                          "axis": gv(a.get("axisFraction") or [1, 1, 1])}
+        for a in fc.get("fieldAttractionDefinitions") or []:
+            f["attract"] = {"pos": gvm(val(a.get("position"), [0, 0, 0])), "accel": _f(val(a.get("acceleration"), 0.0)) * U,
+                            "radius": _f(val(a.get("radius"), 0.0)) * U}
+        for a in fc.get("fieldOrbitalDefinitions") or []:
+            d = val(a.get("direction"), None)
+            if isinstance(d, list):
+                f["orbital"] = gv(d)
+        if f:
+            o["fields"] = f
+    # ---- emission shape
     sh = e.get("shape")
     shape = None
     if isinstance(sh, dict):
         c = sh.get("__class", "")
+        flags = int(sh.get("flags", 0) or 0)
         if c == "VfxShapeSphere":
-            shape = {"type": "sphere", "radius": float(sh.get("radius", 0.0)) * U}
+            shape = {"type": "sphere", "radius": _f(sh.get("radius")) * U, "flags": flags}
         elif c == "VfxShapeBox":
-            shape = {"type": "box", "size": [abs(x) * U for x in (sh.get("boxSize") or [0, 0, 0])]}
+            shape = {"type": "box", "size": [abs(x) * U for x in (sh.get("boxSize") or [0, 0, 0])], "flags": flags}
         elif c == "VfxShapeCylinder":
-            shape = {"type": "cyl", "radius": float(sh.get("radius", 0.0)) * U, "height": float(sh.get("height", 0.0)) * U}
+            shape = {"type": "cyl", "radius": _f(sh.get("radius")) * U, "height": _f(sh.get("height")) * U, "flags": flags}
         else:
+            shape = {"type": "offset"}
             off = sh.get("emitOffset")
             if isinstance(off, dict):
-                off = val(off)
-            if isinstance(off, list):
-                shape = {"type": "offset", "offset": gvm(off)}
+                shape["offset"] = gvm(val(off, [0, 0, 0]) or [0, 0, 0])
+                qo = quantiles(off)
+                if qo:
+                    shape["offset_q"] = qo
+            elif isinstance(off, list):
+                shape["offset"] = gvm(off)
+            angs = sh.get("emitRotationAngles") or []
+            axes = sh.get("emitRotationAxes") or []
+            rots = []
+            for a, ax in zip(angs, axes):
+                if not isinstance(ax, list) or sum(abs(x) for x in ax) < 1e-4:
+                    continue
+                base = _f(val(a, 0.0), 0.0) if isinstance(a, dict) else _f(a)
+                qa = quantiles(a) if isinstance(a, dict) else None
+                lo = base * (min(r[0] for r in qa) if qa else 1.0)
+                hi = base * (max(r[0] for r in qa) if qa else 1.0)
+                if abs(lo) < 1e-4 and abs(hi) < 1e-4:
+                    continue
+                rots.append({"axis": gv(ax), "q": [round(base * r[0], 3) for r in qa] if qa else [base] * NQ})
+            if rots:
+                shape["rots"] = rots[:2]
+            if not shape.get("offset") and not rots:
+                shape = None
     o["shape"] = shape
-    # flipbook / uv
+    # ---- flipbook / uv
     td = e.get("texDiv")
     o["texdiv"] = [int(td[0]), int(td[1])] if isinstance(td, list) and len(td) == 2 else [1, 1]
     o["frames"] = int(val(e.get("numFrames"), 0) or 0)
     o["fps"] = float(val(e.get("frameRate"), 0) or val(e.get("birthFrameRate"), 0) or 0)
     o["start_frame"] = int(val(e.get("startFrame"), 0) or 0)
     o["rand_frame"] = bool(e.get("isRandomStartFrame", False))
-    us = val(e.get("particleUVScrollRate"), None) or val(e.get("birthUVScrollRate"), None)
-    o["uvscroll"] = us if isinstance(us, list) else None
-    o["disable_cull"] = bool(e.get("disableBackfaceCull", False))
     life_max = o["plife"][1] if o["plife"][1] > 0 else 1.0
-    # uv transforms
     o["uvscale"] = val(e.get("uvScale"), None)
     o["uvrate"] = val(e.get("birthUVScrollRate"), None)
+    o["uvrate_q"] = quantiles(e.get("birthUVScrollRate"))
     o["uvint"] = integrate(e.get("particleUVScrollRate"), life_max)
+    o["uvrot"] = _f(val(e.get("uvRotation"), 0.0))
+    o["uvrotrate"] = _f(val(e.get("birthUVRotateRate"), 0.0))
+    o["uvmode"] = int(e.get("uvMode", 0) or 0)
+    o["uvclamp"] = bool(e.get("uvScrollClamp", False))
+    o["addr"] = int(e.get("texAddressModeBase", 0) or 0)
+    if e.get("emitterUvScrollRate"):
+        o["emuv"] = e.get("emitterUvScrollRate")
+    o["flip"] = [bool(e.get("textureFlipU", False)), bool(e.get("textureFlipV", False))]
     uo = val(e.get("birthUVOffset"), None)
-    ur = rand_mult(e.get("birthUVOffset"))
+    ur = quantiles(e.get("birthUVOffset"))
     if isinstance(uo, list) and len(uo) == 2:
         if ur:
-            o["uvoff"] = [[uo[0] * ur[0][0], uo[1] * ur[0][1]], [uo[0] * ur[1][0], uo[1] * ur[1][1]]]
+            xs = [r[0] for r in ur]
+            ys = [r[1] if len(r) > 1 else 1.0 for r in ur]
+            o["uvoff"] = [[uo[0] * min(xs), uo[1] * min(ys)], [uo[0] * max(xs), uo[1] * max(ys)]]
         else:
             o["uvoff"] = [uo, uo]
-    # multiply texture layer
+    # ---- multiply texture layer
     tm = e.get("texturemult")
-    if isinstance(tm, dict):
+    if isinstance(tm, dict) and tm.get("texturemult"):
         o["tex2"] = export_tex(w, tm.get("texturemult"))
         o["uv2scale"] = val(tm.get("uvScaleMult"), None)
+        tdm = tm.get("texDivMult")
+        if isinstance(tdm, list) and len(tdm) == 2:
+            s2 = o["uv2scale"] or [1.0, 1.0]
+            o["uv2scale"] = [s2[0] / max(tdm[0], 1e-3), s2[1] / max(tdm[1], 1e-3)]
         o["uv2rate"] = val(tm.get("birthUvScrollRateMult"), None)
-        o["uv2int"] = integrate(tm.get("22c3cf3e"), life_max)
-    # erosion (dissolve)
+        o["uv2int"] = integrate(tm.get(H["particleUVScrollRateMult"]), life_max)
+        o["uv2rot"] = _f(val(tm.get("uvRotationMult"), 0.0))
+        o["uv2off"] = val(tm.get(H["birthUVOffsetMult"]), None)
+        o["addr2"] = int(tm.get("texAddressModeMult", 0) or 0)
+        o["uv2clamp"] = bool(tm.get("uvScrollClampMult", False))
+        if tm.get(H["emitterUvScrollRateMult"]):
+            o["emuv2"] = tm.get(H["emitterUvScrollRateMult"])
+    # ---- erosion (dissolve)
     er = e.get("alphaErosionDefinition")
     if isinstance(er, dict) and er.get("erosionMapName"):
         o["ero_tex"] = export_tex(w, er.get("erosionMapName"))
-        drive = er.get("erosionDrive")
-        o["ero_curve"] = sample_curve(drive, 16)
-        ch = val(er.get("erosionMapChannelMixer"), [1, 0, 0, 0])
-        o["ero_ch"] = ch if isinstance(ch, list) and len(ch) == 4 else [1, 0, 0, 0]
-        o["ero_feather"] = float(er.get("erosionFeatherIn", 0.1) or 0.1)
-    o["soft"] = isinstance(e.get("softParticle"), dict) or isinstance(e.get("softParticleParams"), dict)
-    if isinstance(e.get("distortionDefinition"), dict):
-        o["distort"] = True
-    return o
+        o["ero_curve"] = sample_curve(er.get("erosionDrive"), 16)
+        ch2 = val(er.get("erosionMapChannelMixer"), [1, 0, 0, 0])
+        o["ero_ch"] = ch2 if isinstance(ch2, list) and len(ch2) == 4 else [1, 0, 0, 0]
+        o["ero_feather"] = _f(er.get("erosionFeatherIn"), 0.1) or 0.1
+        o["ero_slice"] = _f(er.get("erosionSliceWidth"), 0.0)
+    # ---- soft particles (depth fade), League units
+    sp = e.get("softParticleParams")
+    if isinstance(sp, dict):
+        o["soft"] = True
+        o["soft_in"] = (_f(sp.get("beginIn")) + _f(sp.get("deltaIn"), 0.0)) * U or 0.3
+    elif isinstance(e.get("softParticle"), dict):
+        o["soft"] = True
+    else:
+        o["soft"] = False
+    # ---- distortion / reflection / falloff
+    dd = e.get("distortionDefinition")
+    if isinstance(dd, dict):
+        o["distort"] = {"strength": _f(dd.get("distortion"), 0.1), "mode": int(dd.get("distortionMode", 0) or 0),
+                        "normal": export_tex(w, dd.get("normalMapTexture"))}
+    rd = e.get("reflectionDefinition")
+    if isinstance(rd, dict):
+        o["fresnel"] = {"f": _f(rd.get("fresnel"), 0.0), "color": rd.get("fresnelColor") or [0, 0, 0, 0],
+                        "rf": _f(rd.get("reflectionFresnel"), 0.0), "glance": _f(rd.get("reflectionOpacityGlancing"), 0.0),
+                        "direct": _f(rd.get("reflectionOpacityDirect"), 0.0)}
+    if e.get("falloffTexture"):
+        o["falloff"] = export_tex(w, e.get("falloffTexture"))
+    pd = e.get("paletteDefinition")
+    if isinstance(pd, dict):
+        sel = val(pd.get("paletteSelector"), [0, 0, 0])
+        o["palette"] = {"row": _f(sel[0] if isinstance(sel, list) else sel), "count": int(pd.get("paletteCount", 1) or 1),
+                        "tex": export_tex(w, pd.get("paletteTexture"))}
+    # drop keys that carry no information (smaller json)
+    for k in [k for k, v in o.items() if v is None or v is False or v == [] or v == {}]:
+        if k not in ("tex", "single", "local", "ground", "dir", "uniform", "soft", "lorient"):
+            del o[k]
+    return _r(o)
 
 
-def system(w, sysobj):
+def system(w, sysobj, ctx=None):
+    ctx = ctx or {"resolve": lambda k: None}
     name = sysobj.get("particleName")
     if not name:
         return None, None
@@ -416,8 +700,10 @@ def system(w, sysobj):
         for e in sysobj.get(key) or []:
             if isinstance(e, dict):
                 try:
-                    r = emitter(w, e)
+                    r = emitter(w, e, ctx)
                 except Exception as ex:
+                    import traceback
+                    traceback.print_exc()
                     print("   emitter fail", name, e.get("emitterName"), ex)
                     r = None
                 if r is not None:
@@ -427,8 +713,75 @@ def system(w, sysobj):
     dur = 0.0
     for e in ems:
         life = e["life"] if e["life"] >= 0 else 2.0
-        dur = max(dur, e["delay"] + life + e["plife"][1] + e["linger"])
-    return name, {"emitters": ems, "dur": round(dur, 3), "loop": any(e["life"] < 0 for e in ems)}
+        pl = e["plife"][1] if e["plife"][1] > 0 else 0.0
+        dur = max(dur, e.get("delay", 0.0) + (0.0 if e.get("single") else life) + pl)
+    out = {"emitters": ems, "dur": round(dur, 3), "loop": any(e["life"] < 0 for e in ems)}
+    if sysobj.get("overrideScaleCap"):
+        out["scale_cap"] = _f(sysobj.get("overrideScaleCap"))
+    return name, out
+
+
+def _resolver(entries, rr_maps):
+    """effectKey (resource-resolver hash or entry link) -> particleName."""
+    def res(k):
+        s = str(k)
+        h = None
+        if s.startswith("hash:") or s.startswith("link:"):
+            h = int(s[5:], 16)
+        elif isinstance(k, int):
+            h = int(k)
+        if h is None:
+            return None
+        if h in entries:
+            return entries[h]
+        for m in rr_maps:
+            ln = m.get(h)
+            if ln is not None and ln in entries:
+                return entries[ln]
+        return None
+    return res
+
+
+def _rr_map(pyobj):
+    out = {}
+    rm = pyobj.get("resourceMap") if isinstance(pyobj, dict) else None
+    if isinstance(rm, dict):
+        for a, b in rm.items():
+            try:
+                out[int(str(a).split(":")[-1], 16)] = int(str(b).split(":")[-1], 16)
+            except ValueError:
+                pass
+    return out
+
+
+SPELL_MISSILE_HASH = "fdfac367"   # mMissileSpec.movement
+MOV_START_BONE = "b886d871"
+MOV_END_BONE = "95bb67b8"
+MOV_START_H = "90d578dd"
+MOV_END_H = "f20fdeef"
+
+
+def spell_meta(sp):
+    """Per-spell VFX placement data: hit bone, missile start/end bones and heights (League units -> m)."""
+    s = sp.get("mSpell") if isinstance(sp, dict) else None
+    if not isinstance(s, dict):
+        return None
+    o = {}
+    if s.get("mHitBoneName"):
+        o["hit_bone"] = s["mHitBoneName"]
+    ms = s.get("mMissileSpec")
+    if isinstance(ms, dict):
+        mv = ms.get(SPELL_MISSILE_HASH)
+        if isinstance(mv, dict):
+            if mv.get(MOV_START_BONE):
+                o["start_bone"] = mv[MOV_START_BONE]
+            if mv.get(MOV_END_BONE):
+                o["end_bone"] = mv[MOV_END_BONE]
+            if mv.get(MOV_START_H) is not None:
+                o["start_h"] = round(_f(mv[MOV_START_H]) * U, 3)
+            if mv.get(MOV_END_H) is not None:
+                o["end_h"] = round(_f(mv[MOV_END_H]) * U, 3)
+    return o or None
 
 
 def extract_champion(alias):
@@ -436,21 +789,41 @@ def extract_champion(alias):
     w = wad(f"{GAME}/Champions/{alias}.wad.client")
     sk = BinFile(w.read(f"data/characters/{low}/skins/skin0.bin"))
     bins = [f"data/characters/{low}/skins/skin0.bin"] + [l.lower() for l in sk.links]
-    out = {}
+    parsed = []
     for b in bins:
         d = w.read(b)
         if d is None:
             continue
         try:
-            bf = BinFile(d)
+            parsed.append(BinFile(d))
         except Exception:
             continue
+    # pass 1: names of every particle system and the resource resolvers (for child effect keys)
+    entries, rr, spells = {}, [], {}
+    for bf in parsed:
+        for k, v in bf.entries.items():
+            if v.cls == 0x45cd899f:
+                p = to_py(v, TABLE)
+                if p.get("particleName"):
+                    entries[k] = p["particleName"]
+            elif TABLE.get(v.cls) == "ResourceResolver":
+                rr.append(_rr_map(to_py(v, TABLE)))
+            elif TABLE.get(v.cls) == "SpellObject":
+                p = to_py(v, TABLE)
+                sm = spell_meta(p)
+                if sm and p.get("mScriptName"):
+                    spells[p["mScriptName"]] = sm
+    ctx = {"resolve": _resolver(entries, rr)}
+    out = {}
+    for bf in parsed:
         for k, v in bf.entries.items():
             if v.cls != 0x45cd899f:
                 continue
-            name, s = system(w, to_py(v, TABLE))
+            name, s = system(w, to_py(v, TABLE), ctx)
             if s is not None and name not in out:
                 out[name] = s
+    if spells:
+        out["_spells"] = spells
     path = os.path.join(ROOT, "data", "vfx", f"{low}.json")
     os.makedirs(os.path.dirname(path), exist_ok=True)
     json.dump(out, open(path, "w", encoding="utf-8"), separators=(",", ":"))
@@ -470,6 +843,7 @@ def extract_shared():
     import re
     out = {}
     pats = [re.compile(p) for p in SHARED_PATTERNS]
+    ctx = {"resolve": lambda k: None}
     for wp in (f"{GAME}/Global.wad.client", f"{GAME}/Maps/Shipping/Map12.wad.client"):
         w = wad(wp)
         es = w.entries.values() if isinstance(w.entries, dict) else w.entries
@@ -495,19 +869,315 @@ def extract_shared():
                         nm = fv
                 if not nm or nm in out or not any(p.search(nm) for p in pats):
                     continue
-                name, sysd = system(w, to_py(v, TABLE))
+                name, sysd = system(w, to_py(v, TABLE), ctx)
                 if sysd is not None:
                     out[name] = sysd
+    for name, tpath in LEGACY_TROY.items():
+        try:
+            sysd = troy_system(tpath)
+        except Exception as ex:
+            print("   troy fail", tpath, ex)
+            sysd = None
+        if sysd is not None:
+            out[name] = sysd
     path = os.path.join(ROOT, "data", "vfx", "shared.json")
     json.dump(out, open(path, "w", encoding="utf-8"), separators=(",", ":"))
     print(f"shared: {len(out)} systems")
     print("   ", sorted(out))
 
 
+# ===================================================================== legacy .troybin systems
+# Summoner Flash / Barrier and the champion level-up burst still ship as legacy troy particles (inibin v2 in
+# DATA.wad.client). They are converted to bin-like emitter dicts and run through emitter() above.
+LEGACY_TROY = {
+    "Global_SS_Flash": "data/particles/global_ss_flash.troybin",          # cast (departure)
+    "Global_SS_Flash_02": "data/particles/global_ss_flash_02.troybin",    # arrival
+    "Global_SS_Barrier": "data/particles/global_ss_barrier.troybin",      # shield bubble
+    "LevelUp_glb": "data/particles/levelup_glb.troybin",                  # champion level up
+}
+
+
+def _ihash(s):
+    h = 0
+    for c in s.lower():
+        h = (ord(c) + 65599 * h) & 0xffffffff
+    return h
+
+
+def _parse_inibin2(d):
+    if d[0] != 2:
+        raise ValueError("inibin version %d" % d[0])
+    _slen, flags = struct.unpack_from("<HH", d, 1)
+    p = 5
+    out = {}
+    for bit in range(16):
+        if not flags & (1 << bit):
+            continue
+        n = struct.unpack_from("<H", d, p)[0]
+        p += 2
+        ks = struct.unpack_from("<%dI" % n, d, p)
+        p += 4 * n
+        if bit == 0:
+            vs = struct.unpack_from("<%di" % n, d, p); p += 4 * n
+        elif bit == 1:
+            vs = struct.unpack_from("<%df" % n, d, p); p += 4 * n
+        elif bit == 2:
+            vs = [b / 10.0 for b in d[p:p + n]]; p += n
+        elif bit == 3:
+            vs = struct.unpack_from("<%dh" % n, d, p); p += 2 * n
+        elif bit == 4:
+            vs = list(d[p:p + n]); p += n
+        elif bit == 5:
+            nb = (n + 7) // 8
+            bits = d[p:p + nb]; p += nb
+            vs = [int(bits[i // 8] >> (i % 8) & 1) for i in range(n)]
+        elif bit == 6:
+            vs = [[b / 10.0 for b in d[p + 3 * i:p + 3 * i + 3]] for i in range(n)]; p += 3 * n
+        elif bit == 7:
+            vs = [list(struct.unpack_from("<3f", d, p + 12 * i)) for i in range(n)]; p += 12 * n
+        elif bit == 8:
+            vs = [[b / 10.0 for b in d[p + 2 * i:p + 2 * i + 2]] for i in range(n)]; p += 2 * n
+        elif bit == 9:
+            vs = [list(struct.unpack_from("<2f", d, p + 8 * i)) for i in range(n)]; p += 8 * n
+        elif bit == 10:
+            vs = [[b / 10.0 for b in d[p + 4 * i:p + 4 * i + 4]] for i in range(n)]; p += 4 * n
+        elif bit == 11:
+            vs = [list(struct.unpack_from("<4f", d, p + 16 * i)) for i in range(n)]; p += 16 * n
+        elif bit == 12:
+            offs = struct.unpack_from("<%dH" % n, d, p); p += 2 * n
+            base = p
+            vs = []
+            for o in offs:
+                e = d.index(b"\x00", base + o)
+                vs.append(d[base + o:e].decode("latin1"))
+        else:
+            raise ValueError("inibin type bit %d" % bit)
+        for k, v in zip(ks, vs):
+            out[k] = v
+    return out
+
+
+def _troy_nums(v):
+    if isinstance(v, str):
+        try:
+            return [float(x) for x in v.split()]
+        except ValueError:
+            return None
+    if isinstance(v, (list, tuple)):
+        return [float(x) for x in v]
+    return [float(v)]
+
+
+def troy_system(tpath):
+    w = wad(f"{GAME}/DATA.wad.client")
+    d = w.read(tpath)
+    if d is None:
+        return None
+    kv = _parse_inibin2(d)
+
+    def get(sec, key):
+        return kv.get(_ihash(sec + "*" + key))
+
+    def nums(sec, key):
+        v = get(sec, key)
+        return _troy_nums(v) if v is not None else None
+
+    def ptable(sec, key, comp=""):
+        kt, vals = [], []
+        for i in range(1, 9):
+            r = nums(sec, f"{key}{comp}P{i}")
+            if not r or len(r) < 2:
+                break
+            kt.append(r[0])
+            vals.append(r[1])
+        return {"__class": "VfxProbabilityTableData", "keyTimes": kt, "keyValues": vals} if len(kt) >= 2 else {}
+
+    def value(sec, key, n, default=None, rand=True):
+        base = nums(sec, key)
+        if base is None:
+            base = default
+        if base is None:
+            return None
+        base = (base + [base[-1]] * n)[:n] if n > 1 else base[:1]
+        out = {"constantValue": base if n > 1 else base[0]}
+        if rand:
+            tabs = [ptable(sec, key, c) for c in (["X", "Y", "Z", "W"][:n] if n > 1 else [""])]
+            if any(tabs):
+                out["dynamics"] = {"probabilityTables": tabs, "times": [0.0], "values": [out["constantValue"]]}
+        return out
+
+    def curve(sec, key, n):
+        ts, vs = [], []
+        for i in range(1, 12):
+            r = nums(sec, f"{key}{i}")
+            if not r or len(r) < 2:
+                break
+            ts.append(r[0])
+            row = r[1:1 + n]
+            vs.append((row + [row[-1]] * n)[:n] if n > 1 else row[0])
+        return {"dynamics": {"times": ts, "values": vs}} if len(ts) >= 2 else None
+
+    groups = []
+    for i in range(1, 20):
+        g = get("System", f"GroupPart{i}")
+        if isinstance(g, str):
+            groups.append(g)
+    ems = []
+    for g in groups:
+        e = {"emitterName": g, "texture": get(g, "p-texture")}
+        if not isinstance(e["texture"], str):
+            continue
+        mesh = get(g, "p-mesh")
+        if isinstance(mesh, str):
+            e["primitive"] = {"__class": "VfxPrimitiveMesh", "mMesh": {"mSimpleMeshName": mesh}}
+        elif int((nums(g, "p-type") or [0])[0]) == 1:
+            e["primitive"] = {"__class": "VfxPrimitiveArbitraryQuad"}
+        e["blendMode"] = int((nums(g, "rendermode") or [0])[0])
+        e["rate"] = value(g, "e-rate", 1, [1.0], rand=False)
+        el = nums(g, "e-life")
+        if el:
+            e["lifetime"] = el[0]
+        to = nums(g, "e-timeoffset")
+        if to:
+            e["timeBeforeFirstEmission"] = to[0]
+        e["particleLifetime"] = value(g, "p-life", 1, [1.0])
+        lg = nums(g, "p-linger")
+        if lg and lg[0] > 0:
+            e["particleLinger"] = lg[0]
+        off = value(g, "p-offset", 3)
+        if off:
+            e["shape"] = {"__class": "VfxShapeLegacy", "emitOffset": off}
+        po = nums(g, "p-postoffset")
+        if po:
+            e["emitterPosition"] = {"constantValue": (po + [0, 0, 0])[:3]}
+        e["birthScale0"] = value(g, "p-scale", 3, [10.0])
+        sc = curve(g, "p-xscale", 3)
+        if sc:
+            e["scale0"] = sc
+        rgba = get(g, "p-rgba")
+        if isinstance(rgba, str) and "/" in rgba:
+            e["particleColorTexture"] = rgba
+        base = nums(g, "p-xrgba")
+        col = curve(g, "p-xrgba", 4)
+        if col:
+            if base and len(base) >= 4:
+                col["dynamics"]["values"] = [[a * b for a, b in zip(v, base)] for v in col["dynamics"]["values"]]
+            e["color"] = col
+        elif base and len(base) >= 4:
+            e["birthColor"] = {"constantValue": base[:4]}
+        for k_src, k_dst in (("p-vel", "birthVelocity"), ("p-accel", "birthAcceleration"), ("p-drag", "birthDrag"),
+                             ("p-orbitvel", "birthOrbitalVelocity"), ("p-quadrot", "birthRotation0"),
+                             ("p-rotvel", "birthRotationalVelocity0")):
+            v = value(g, k_src, 3)
+            if v and nums(g, k_src) is not None:
+                e[k_dst] = v
+        td = nums(g, "p-texdiv")
+        if td and len(td) >= 2:
+            e["texDiv"] = td[:2]
+        nf = nums(g, "p-numframes")
+        if nf:
+            e["numFrames"] = {"constantValue": nf[0]}
+        if (nums(g, "p-randomstartframe") or [0])[0]:
+            e["isRandomStartFrame"] = True
+        b = nums(g, "p-bindtoemitter")
+        if b:
+            e["bindWeight"] = {"constantValue": b[0]}
+        ps = nums(g, "pass")
+        if ps:
+            e["pass"] = int(ps[0])
+        ems.append(e)
+    sysobj = {"particleName": os.path.basename(tpath).rsplit(".", 1)[0], "complexEmitterDefinitionData": ems}
+    _n, sysd = system(w, sysobj, {"resolve": lambda k: None})
+    return sysd
+
+
+# ===================================================================== map environment (--map)
+MAP_BIN = "data/maps/mapgeometry/map12/base.materials.bin"
+MAP_EXTRA_PATTERNS = [r"^HA_AP_(Order|Chaos)_Turret_Shatter", r"^SRU_(Order|Chaos)_Turret_BA_Cas_Champ_0\d$"]
+PLACEMENT_CLS = 0x592ef6c3   # map particle placement: name, transform (0xe1ad931b), system link (0x491e0a9c)
+
+
+def extract_map():
+    """Howling Abyss ambient particles: every VfxSystemDefinitionData in the map materials bin goes to
+    data/vfx/map12.json; every particle placement (snow, braziers, wind, sparkles, gem glows, god rays...)
+    goes to data/map/map12_particles.json as {name, system, xform (16 floats, League space), group}."""
+    w = wad(f"{GAME}/Maps/Shipping/Map12.wad.client")
+    bf = BinFile(w.read(MAP_BIN))
+    systems = {}
+    by_key = {}
+    for k, v in bf.entries.items():
+        if v.cls != 0x45cd899f:
+            continue
+        name, sysd = system(w, to_py(v, TABLE))
+        if sysd is not None:
+            systems[name] = sysd
+            by_key[k] = name
+    placements = []
+
+    def walk(o):
+        if hasattr(o, "cls") and hasattr(o, "fields"):
+            if o.cls == PLACEMENT_CLS:
+                f = o.fields
+                link = f.get(0x491e0a9c)
+                xf = f.get(0xe1ad931b)
+                sysname = by_key.get(int(link)) if link is not None else None
+                if sysname and isinstance(xf, tuple) and len(xf) == 16:
+                    placements.append({"name": f.get(fnv1a("name"), ""), "system": sysname,
+                                       "xform": [round(x, 4) for x in xf],
+                                       "group": f.get(0xd0e71bc7, "")})
+            for v in o.fields.values():
+                walk(v)
+        elif isinstance(o, dict):
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, (list, tuple)):
+            for v in o:
+                walk(v)
+    for k, v in bf.entries.items():
+        walk(v)
+    # structure damage / destruction systems used by the map's turrets (animation-graph particle events)
+    import re
+    pats = [re.compile(x) for x in MAP_EXTRA_PATTERNS]
+    es = w.entries.values() if isinstance(w.entries, dict) else w.entries
+    for e in es:
+        if e.size > 30_000_000:
+            continue
+        try:
+            d = w.read_entry(e)
+        except Exception:
+            continue
+        if d[:4] not in (b"PROP", b"PTCH"):
+            continue
+        try:
+            bf2 = BinFile(d)
+        except Exception:
+            continue
+        for k, v in bf2.entries.items():
+            if v.cls != 0x45cd899f:
+                continue
+            nm = None
+            for fk, fv in v.fields.items():
+                if TABLE.get(fk) == "particleName":
+                    nm = fv
+            if not nm or nm in systems or not any(p.search(nm) for p in pats):
+                continue
+            name, sysd = system(w, to_py(v, TABLE))
+            if sysd is not None:
+                systems[name] = sysd
+    json.dump(systems, open(os.path.join(ROOT, "data", "vfx", "map12.json"), "w", encoding="utf-8"),
+              separators=(",", ":"))
+    json.dump(placements, open(os.path.join(ROOT, "data", "map", "map12_particles.json"), "w", encoding="utf-8"),
+              indent=0)
+    print(f"map12: {len(systems)} systems, {len(placements)} placements")
+    print("   ", sorted(systems))
+
+
 if __name__ == "__main__":
     args = sys.argv[1:]
     if args == ["--shared"]:
         extract_shared()
+    elif args == ["--map"]:
+        extract_map()
     else:
         for a in (args or ROSTER):
             extract_champion(a)
