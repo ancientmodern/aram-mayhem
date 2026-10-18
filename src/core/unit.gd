@@ -630,6 +630,7 @@ func attack_hit(t: Unit, crit: bool, mult: float = 1.0) -> DamageInfo:
 	var info := Combat.deal(self, t, dmg, G.DmgType.PHYSICAL, {"is_attack": true, "is_crit": crit})
 	if match_ref != null and match_ref.audio != null:
 		match_ref.audio.attack_hit(self, t, crit)
+	LolVfx.on_attack_hit(self, t, crit)
 	for e in effects.duplicate():
 		e.on_attack_hit(t, info)
 	on_attack_landed(t, info)

@@ -308,6 +308,7 @@ func begin_cast(t: Dictionary) -> void:
 	cast_count += 1
 	if owner.match_ref != null and owner.match_ref.audio != null:
 		owner.match_ref.audio.spell_cast(owner, self)
+	LolVfx.on_cast(self, t)
 	if face_target and t.has("pos"):
 		owner.face_toward(t.pos, 100.0)
 	if cast_time > 0.0:

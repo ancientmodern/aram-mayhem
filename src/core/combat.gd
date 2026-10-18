@@ -92,6 +92,8 @@ static func _apply(info: DamageInfo) -> DamageInfo:
 	target.hp -= remaining
 	if info.ability != null and not info.is_attack and source != null and is_instance_valid(source) and source.match_ref != null and source.match_ref.audio != null:
 		source.match_ref.audio.spell_hit(source, info.ability, target)
+	if info.ability != null and not info.is_attack and not info.is_dot:
+		LolVfx.on_spell_hit(source, info.ability, target)
 	target.on_damaged(info)
 	if source != null:
 		target.record_damage(source, post)
