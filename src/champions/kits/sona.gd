@@ -185,11 +185,11 @@ class PowerChord extends Effect:
 
 	func chord_damage() -> float:
 		var lvl: float = owner.level
-		return lerpf(20.0, 240.0, (lvl - 1.0) / 17.0) + 0.2 * owner.stats.ap
+		return lerpf(20.0, 270.0, (lvl - 1.0) / 17.0) + 0.2 * owner.stats.ap   # League: 20 - 270 (+20% AP)
 
 	func staccato_damage() -> float:
 		var lvl: float = owner.level
-		return lerpf(30.0, 360.0, (lvl - 1.0) / 17.0) + 0.3 * owner.stats.ap
+		return lerpf(30.0, 405.0, (lvl - 1.0) / 17.0) + 0.3 * owner.stats.ap   # League: 30 - 405 (+30% AP)
 
 	func on_tick(u, _dt: float) -> void:
 		if u.is_bot and u.ability_points > 0:
@@ -387,10 +387,22 @@ class AriaOfPerseverance extends KAbility:
 		var sdur := dv("ShieldDuration", 1.5)
 		var bp := dv("AccelerandoShieldBreakpoint", 25.0)
 		SonaUtil.melody(self, "W", func(u):
-			Combat.shield(o, u, shield, sdur, {"id": "sona_w"})
+			var sh: Dictionary = Combat.shield(o, u, shield, sdur, {"id": "sona_w"})
 			var sfx := SonaUtil.fx_on(u, "Sona_Base_W_Shield", {"loop": true})
 			if sfx != null:
-				m.after(sdur, func():
+				# the shield bubble ends with the shield (broken early, expired or the unit died)
+				m.add_ticker(sdur + 0.1, func(_dt) -> bool:
+					var alive := false
+					if is_instance_valid(u) and not u.dead:
+						for s2 in u.shields:
+							if is_same(s2, sh):
+								alive = true
+					if not alive:
+						if is_instance_valid(sfx):
+							sfx.stop()
+						return false
+					return true)
+				m.after(sdur + 0.05, func():
 					if is_instance_valid(sfx):
 						sfx.stop())
 			if u != o:

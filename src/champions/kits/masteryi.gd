@@ -174,11 +174,22 @@ class AlphaStrike extends YiAbility:
 		anim_lock = 0.0
 		uninterruptible = true
 
+	## Expected damage (bots): crit chance folded in.
 	func damage_vs(first: bool) -> float:
 		var d := dv("BaseDamage") + dv("AttackDamageRatio", 0.7) * ad()
 		if not first:
 			d *= dv("SubsequentHitMultiplier", 0.25)
-		return d * (1.0 + owner.stats.crit_chance * dv("BonusCritDamageRatio", 1.0))
+		return d * (1.0 + owner.stats.crit_chance * dv("BonusCritDamageRatio", 1.0) * (owner.stats.crit_damage - 1.0))
+
+	## One strike: each strike rolls its own crit (bonus = BonusCritDamageRatio * (crit damage - 1)).
+	func strike_damage(first: bool) -> Array:
+		var d := dv("BaseDamage") + dv("AttackDamageRatio", 0.7) * ad()
+		if not first:
+			d *= dv("SubsequentHitMultiplier", 0.25)
+		var crit: bool = G.rng.randf() < owner.stats.crit_chance
+		if crit:
+			d *= 1.0 + dv("BonusCritDamageRatio", 1.0) * (owner.stats.crit_damage - 1.0)
+		return [d, crit]
 
 	func extra_block_reason() -> String:
 		return "casting" if active else ""
@@ -189,6 +200,9 @@ class AlphaStrike extends YiAbility:
 		if u == null or not is_instance_valid(u) or u.dead:
 			return
 		var m = o.match_ref
+		# Alpha Strike cancels Meditate (end its channel properly so its aura / state are cleaned up)
+		if not o.channel.is_empty() and o.channel.get("ability") != self:
+			o.interrupt_channel(true)
 		active = true
 		o.cancel_windup()
 		o.stop_moving()
@@ -197,12 +211,12 @@ class AlphaStrike extends YiAbility:
 		if o.model != null:
 			o.model.visible = false
 		var strikes := int(dv("AlphaStrikeBounces", 4.0))
-		var interval := 0.19
+		var interval := 0.231   # League: one strike every 0.231 s, marks detonate when Yi reappears
 		var total := strikes * interval + 0.08
 		start_channel(total, {})
 		o.channel_disarm = true
 		LolVfx.spawn(m, "MasterYi_Base_Q_Cas", o.global_position + Vector3(0, 1.0, 0), {"dir": G.flat_dir(o.global_position, u.global_position)})
-		var st := {"last": null, "pos": o.global_position, "hit": {}}
+		var st := {"last": null, "pos": o.global_position, "start": o.global_position, "hit": {}, "marks": []}
 		var self_ref := self
 		for i in strikes:
 			m.after(0.04 + i * interval, func(): self_ref._strike(i, u, st))
@@ -243,10 +257,9 @@ class AlphaStrike extends YiAbility:
 			return
 		var first: bool = not st.hit.has(tgt)
 		st.hit[tgt] = true
-		hit(tgt, damage_vs(first), G.DmgType.PHYSICAL, {"tag": "yi_q"})
-		var e_ab = o.abilities[2]
-		if e_ab != null and e_ab.is_active() and is_instance_valid(tgt) and not tgt.dead:
-			hit(tgt, e_ab.on_hit_damage() * dv("BaseOnHitMultiplier", 0.75), G.DmgType.TRUE, {"tag": "yi_wuju"})
+		# League: the strike's damage is computed now and lands when Yi reappears (Q_mark detonation)
+		var dc := strike_damage(first)
+		st.marks.append([tgt, dc[0], dc[1], first])
 		var from: Vector3 = st.pos
 		var tp: Vector3 = tgt.global_position
 		var a := G.rng.randf() * TAU
@@ -283,13 +296,28 @@ class AlphaStrike extends YiAbility:
 			o.channel = {}
 		o.channel_disarm = false
 		var m = o.match_ref
-		var tgt = primary if is_instance_valid(primary) and not primary.dead else st.last
-		if tgt != null and is_instance_valid(tgt) and not tgt.dead:
+		# reappear in front of the primary target; if it died (or got away), back where Alpha Strike was cast
+		var tgt = primary if is_instance_valid(primary) and not primary.dead else null
+		if tgt != null and G.flat_dist(tgt.global_position, st.start) <= cast_range * G.U * 2.0:
 			var tp: Vector3 = tgt.global_position
-			var back: Vector3 = tp + G.flat_dir(tp, st.pos) * (tgt.radius + o.radius + 0.3)
+			var back: Vector3 = tp + G.flat_dir(tp, st.start) * (tgt.radius + o.radius + 0.3)
 			if m.nav != null and m.nav.is_walkable(back):
 				o.teleport(back)
 			o.face_toward(tp, 100.0)
+		else:
+			o.teleport(st.start)
+			tgt = st.last
+		# marks detonate: all strike damage (and Wuju Style's on-hit at 75%) lands now
+		var e_ab = o.abilities[2]
+		var wuju: bool = e_ab != null and e_ab.is_active()
+		for mk in st.marks:
+			var u = mk[0]
+			if not is_instance_valid(u) or u.dead:
+				continue
+			hit(u, mk[1], G.DmgType.PHYSICAL, {"tag": "yi_q", "is_crit": mk[2]})
+			if wuju and mk[3] and is_instance_valid(u) and not u.dead:
+				hit(u, e_ab.on_hit_damage() * dv("BaseOnHitMultiplier", 0.75), G.DmgType.TRUE, {"tag": "yi_wuju"})
+		st.marks.clear()
 		o.reset_attack()
 		if o.is_bot and tgt != null and is_instance_valid(tgt) and not tgt.dead and tgt.kind == G.Kind.CHAMPION:
 			o.issue_attack(tgt)
@@ -401,6 +429,11 @@ class Meditate extends YiAbility:
 			var total := dv("BaseHeal") + ap()
 			var amt: float = total / ticks * (1.0 + (1.0 - o.hp_ratio()) * dv("MaxMissingHealthPercent", 1.0))
 			Combat.heal(o, o, amt)
+		# League: Meditate grants a Double Strike stack every second
+		var ps = o.passive
+		if ps != null and int(ch.elapsed) > int(ch.elapsed - dt):
+			ps.count = mini(ps.count + 1, int(ps.val("AttackCount", 4.0)) - 1)
+			ps.last_attack = now()
 		if o.is_bot and ch.elapsed > 1.0 and o.hp_ratio() > 0.9:
 			ch.t = 0.0
 

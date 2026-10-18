@@ -244,8 +244,8 @@ class DoubleUp extends KitAbility:
 		if crit:
 			LolVfx.spawn(m, "MissFortune_Base_Q_second_02_tar", p2, {"dir": d2})
 
-	## Unit behind `first` (relative to the shot direction): champions in a narrow cone first,
-	## then anything in the narrow cone, then champions / anything in a wide cone.
+	## Unit behind `first` (relative to the shot direction). League priority: 500 units within a 20° cone,
+	## then 40°, then 110°, then 150 units within 160° (full angles); champions first inside a tier.
 	func bounce_target(first, pos: Vector3, dir: Vector3) -> Unit:
 		var o = owner
 		var best: Unit = null
@@ -259,13 +259,17 @@ class DoubleUp extends KitAbility:
 				continue
 			var ang := rad_to_deg(dir.angle_to(to / d))
 			var tier := -1
-			if ang <= 20.0:
-				tier = 0 if u.kind == G.Kind.CHAMPION else 1
+			if ang <= 10.0:
+				tier = 0
+			elif ang <= 20.0:
+				tier = 1
 			elif ang <= 55.0:
-				tier = 2 if u.kind == G.Kind.CHAMPION else 3
+				tier = 2
+			elif ang <= 80.0 and d <= 150.0 * G.U + u.radius:
+				tier = 3
 			if tier < 0:
 				continue
-			var s := tier * 100.0 + d
+			var s := tier * 100.0 + (0.0 if u.kind == G.Kind.CHAMPION else 50.0) + d
 			if s < best_s:
 				best_s = s
 				best = u
@@ -523,8 +527,11 @@ class MakeItRain extends KitAbility:
 
 # ===================================================================== R
 class BulletTime extends KitAbility:
-	const ANGLE := 40.0
+	## Full cone angle: twice the data's castConeAngle (17, a half-angle) over castConeDistance 1400.
+	const ANGLE := 34.0
+	const MAX_WAVES_PER_TICK := 3   ## a long frame never fires more than a few waves at once
 	var _cone: LolVfx = null
+	var _token := 0                 ## bumps on every cast / end: stale delayed hits are dropped
 
 	func _init() -> void:
 		target_type = Target.DIRECTION
@@ -543,11 +550,14 @@ class BulletTime extends KitAbility:
 		var dir: Vector3 = t.dir
 		var waves := int(dv("BaseWaves", 14.0))
 		var dur := dv("BaseChannelDuration", 3.0)
-		var interval := dur / float(maxi(waves, 1))
+		var interval := maxf(0.05, dur / float(maxi(waves, 1)))
+		# a previous Bullet Time still marked active (its channel was replaced without channel_end): clean it first
+		_cleanup()
+		_token += 1
 		o.stop_moving()
 		o.cancel_windup()
 		o.face_toward(o.global_position + dir, 1000.0)
-		start_channel(dur, {"dir": dir, "interval": interval, "acc": interval, "left": waves, "n": 0})
+		start_channel(dur, {"dir": dir, "interval": interval, "acc": interval, "left": clampi(waves, 0, 64), "n": 0, "token": _token})
 		o.channel_disarm = true
 		o.play_anim("spell4", 1.0, 0.1)
 		o.anim_lock = dur
@@ -562,17 +572,38 @@ class BulletTime extends KitAbility:
 
 	func channel_tick(dt: float, ch: Dictionary) -> void:
 		var o = owner
+		if o.dead or int(ch.get("token", -1)) != _token:
+			o.interrupt_channel(true)
+			return
 		# a player's move order cancels the channel (League behaviour)
 		if not o.is_bot and o.moving and o.cmd == Unit.Cmd.MOVE:
 			o.interrupt_channel(true)
 			return
 		o.face_toward(o.global_position + ch.dir, dt)
-		ch.acc += dt
-		while ch.acc >= ch.interval and ch.left > 0:
+		# League (V13.3): the cone follows Miss Fortune if she is displaced
+		if _cone != null and is_instance_valid(_cone):
+			_cone.global_position = o.global_position + Vector3(0, 0.05, 0)
+		ch.acc = minf(ch.acc + dt, ch.interval * MAX_WAVES_PER_TICK)
+		var fired := 0
+		while ch.acc >= ch.interval and ch.left > 0 and fired < MAX_WAVES_PER_TICK:
 			ch.acc -= ch.interval
 			ch.left -= 1
 			ch.n += 1
+			fired += 1
 			_wave(ch)
+			# a wave can kill / interrupt (on-kill effects, Collector): stop if the channel is gone
+			if o.dead or not is_same(o.channel, ch):
+				return
+
+	## Safety net: the channel was replaced or dropped without channel_end (cone decal, disarm left behind).
+	func on_tick(_dt: float) -> void:
+		var o = owner
+		if _cone == null and not o.channel_disarm:
+			return
+		var ch: Dictionary = o.channel
+		if ch.is_empty() or ch.get("ability") != self:
+			if _cone != null or o.channel_disarm:
+				_cleanup()
 
 	func _wave(ch: Dictionary) -> void:
 		var o = owner
@@ -585,10 +616,14 @@ class BulletTime extends KitAbility:
 		if crit:
 			dmg *= 1.0 + dv("CritDamageMultiplier", 0.3) * (o.stats.crit_damage - 1.0)
 		var self_ref := self
-		for u in K.enemies_cone(self, origin, dir, len_u, ANGLE):
-			var delay := G.flat_dist(origin, u.global_position) / 20.0
+		var targets: Array = K.enemies_cone(self, origin, dir, len_u, ANGLE)
+		# each target is hit once per wave when the bullets (2000 u/s) reach it; bullets already fired still land
+		# after the channel ends. Bounded: one timer per target per wave, no re-scheduling.
+		var wr := weakref(o)
+		for u in targets:
+			var delay: float = clampf(G.flat_dist(origin, u.global_position) / 20.0, 0.0, 1.0)
 			m.after(delay, func():
-				if is_instance_valid(u) and not u.dead and is_instance_valid(o):
+				if wr.get_ref() != null and is_instance_valid(u) and not u.dead:
 					self_ref.hit(u, dmg, G.DmgType.PHYSICAL, {"tag": "r", "is_aoe": true, "is_crit": crit}))
 		# visuals: alternate guns, a fan of tracer rounds
 		var side := Vector3(-dir.z, 0, dir.x)
@@ -608,9 +643,14 @@ class BulletTime extends KitAbility:
 			m.camera_rig.shake(0.06)
 
 	func channel_end(_ch: Dictionary, _interrupted: bool) -> void:
+		_token += 1
+		_cleanup()
+
+	func _cleanup() -> void:
 		var o = owner
 		o.channel_disarm = false
-		o.anim_lock = 0.0
+		if o.anim_lock > 0.0 and o.channel.is_empty():
+			o.anim_lock = 0.0
 		if _cone != null and is_instance_valid(_cone):
 			_cone.stop()
 		_cone = null

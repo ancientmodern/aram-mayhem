@@ -168,12 +168,19 @@ class GraniteShield extends Effect:
 		var left := recharge_time() - (now() - last_hit)
 		return str(int(ceil(left))) if left > 0.0 else ""
 
+	## League: damage absorbed by Granite Shield itself does not restart the recharge timer.
 	func on_damage_taken(info) -> void:
-		if info.final + info.absorbed > 0.0:
+		if info.final > 0.0:
 			last_hit = now()
 
 	func on_respawn() -> void:
 		last_hit = -100.0
+
+	## The shell and its pending break effect must not stay on the corpse (shields are cleared on death).
+	func on_death(_killer) -> void:
+		was_active = false
+		if shell != null and is_instance_valid(shell):
+			shell.visible = false
 
 	func on_tick(u, _dt: float) -> void:
 		if u.dead:
@@ -354,6 +361,7 @@ class Thunderclap extends MAbility:
 		var o = owner
 		empowered = true
 		window_until = now() + dv("ThunderclapBuffDuration", 5.0)
+		o.stats.mark_dirty()
 		# League: burning fists (the "next hit" variant until the empowered attack lands)
 		LFx.kill(fx, 0.1)
 		fx = LolVfx.attach(o, "Malphite_Base_W_buf_hands_NextHit", {"loop": true, "height": 1.5, "dir": o.facing})
@@ -374,9 +382,13 @@ class Thunderclap extends MAbility:
 		next_hit_fx = false
 
 	func on_tick(_dt: float) -> void:
-		if fx != null and not in_window():
+		if owner.dead and (empowered or window_until > now()):
+			window_until = -1.0
+		if (fx != null or empowered) and not in_window():
 			end_fx()
-			empowered = false
+			if empowered:
+				empowered = false
+				owner.stats.mark_dirty()
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -402,8 +414,14 @@ class ThunderclapHook extends Effect:
 		hidden = true
 
 	func get_stat_mods() -> Dictionary:
+		var d := {}
 		var pct: float = w.armor_bonus_pct()
-		return {"armor%": pct} if pct > 0.0 else {}
+		if pct > 0.0:
+			d["armor%"] = pct
+		# League: the empowered Thunderclap attack has +50 range
+		if w.empowered and w.in_window():
+			d["range"] = 50.0
+		return d
 
 	func on_pre_damage_dealt(info) -> void:
 		if info.is_attack and w.empowered and info.target != null and info.tag == "":
@@ -413,6 +431,7 @@ class ThunderclapHook extends Effect:
 			if owner.match_ref != null:
 				owner.kit.w_hit_time = owner.match_ref.time
 			w.empowered = false
+			owner.stats.mark_dirty()
 
 	func on_attack_hit(target, info) -> void:
 		if info == null or target == null or not is_instance_valid(target):
@@ -502,7 +521,7 @@ class UnstoppableForce extends MAbility:
 	func _init() -> void:
 		target_type = Target.POINT
 		indicator = Ind.CIRCLE
-		ind_radius = 270.0
+		ind_radius = 325.0   # League effect radius (data castRadius 270 is the targeting reticle)
 		cast_range = 1000.0
 		cast_time = 0.0
 		anim = ""
@@ -524,7 +543,7 @@ class UnstoppableForce extends MAbility:
 		var dest: Vector3 = t.pos
 		if G.flat_dist(from, dest) > range_m():
 			dest = from + G.flat_dir(from, dest) * range_m()
-		var speed_u: float = 1835.0 + o.stats.move_speed
+		var speed_u: float = 1500.0 + o.stats.move_speed   # League: 1500 + 100% move speed
 		var dur: float = maxf(0.12, G.flat_dist(from, dest) / (speed_u * G.U))
 		K.buff(o, "malph_r_unstoppable", dur + 0.15, {}, o, {"name": "Unstoppable Force", "cc": Buff.CC.UNSTOPPABLE, "hidden": true})
 		var self_ref := self

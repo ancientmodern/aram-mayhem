@@ -407,18 +407,27 @@ class EventHorizon extends KAbility:
 			m.add_ticker(life, func(_dt):
 				if not is_instance_valid(o):
 					return false
-				for u in m.enemies_in_radius(o.team, pos, R + 2.5):
-					if stunned.has(u):
+				var cands: Array = m.enemies_in_radius(o.team, pos, R + 2.5)
+				# units already tracked stay tracked even if they blink / get displaced far away in one frame
+				for u in state.keys():
+					if not is_instance_valid(u) or u.dead:
+						state.erase(u)
+					elif not cands.has(u):
+						cands.append(u)
+				for u in cands:
+					if stunned.has(u) or u.dead:
 						continue
 					var d := G.flat_dist(pos, u.global_position)
 					var inside := d < R
-					if first[0] or not state.has(u):
-						# units standing on the edge as it forms (or appear on it) are caught
-						if absf(d - R) <= u.radius + 0.3:
-							trap.call(u)
+					if state.has(u):
+						if state[u] != inside:
+							trap.call(u)   # crossed the wall (walk, dash or blink)
 							continue
-					elif state[u] != inside:
-						trap.call(u)
+					elif absf(d - R) <= u.radius + 0.3:
+						trap.call(u)       # standing on the edge as it forms, or arriving on it
+						continue
+					elif not first[0] and inside:
+						trap.call(u)       # appeared inside from beyond the tracking range (blinked in)
 						continue
 					state[u] = inside
 				first[0] = false

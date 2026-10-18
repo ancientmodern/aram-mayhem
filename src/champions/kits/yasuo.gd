@@ -2,7 +2,7 @@ extends ChampionKit
 ## Yasuo, the Unforgiven.
 
 const WIND := Color(0.5, 0.82, 1.0)
-const EQ_RADIUS := 220.0      ## units
+const EQ_RADIUS := 215.0      ## units (League EQ effect radius)
 
 
 func build_kit() -> void:
@@ -235,6 +235,13 @@ class SteelTempest extends YAbility:
 	func on_tick(_dt: float) -> void:
 		if stacks > 0 and now() >= stack_until:
 			set_stacks(0)
+		# the whirlwind-ready aura never stays on a dead Yasuo
+		if owner.dead and ready_fx != null:
+			if is_instance_valid(ready_fx):
+				ready_fx.stop()
+			ready_fx = null
+		elif not owner.dead and is_q3() and ready_fx == null:
+			ready_fx = LolVfx.attach(owner, "Yasuo_Base_Q_wind_ready_buff", {"loop": true, "height": 0.3})
 		var bas: float = owner.stats.bonus_as
 		cast_time = maxf(0.175, 0.35 / (1.0 + maxf(0.0, bas)))
 		if is_q3():

@@ -105,8 +105,9 @@ class Illumination extends Effect:
 		dur = float(pd.get("DebuffDuration", 6.0))
 		ap_ratio = float(pd.get("APRatio", 0.35))
 
+	## League: 30 - 200 by level (+35% AP).
 	func damage() -> float:
-		return 10.0 + 10.0 * owner.level + ap_ratio * owner.stats.ap
+		return 20.0 + 10.0 * owner.level + ap_ratio * owner.stats.ap
 
 	func mark(u) -> void:
 		if u == null or not is_instance_valid(u) or u.dead:
@@ -140,6 +141,11 @@ class Illumination extends Effect:
 
 	func on_attack_hit(target, _info) -> void:
 		detonate(target)
+
+	func on_takedown(victim) -> void:
+		var r = owner.abilities[3]
+		if r != null and r.has_method("note_takedown"):
+			r.note_takedown(victim)
 
 
 # ===================================================================== Q
@@ -179,6 +185,8 @@ class LightBinding extends KitAbility:
 			if b.vfx != null and is_instance_valid(b.vfx):
 				b.vfx.queue_free()
 			b.vfx = fx
+		elif fx != null:
+			fx.queue_free()   # root resisted (unstoppable): no prison
 		if p != null:
 			p.mark(u)
 
@@ -236,10 +244,21 @@ class PrismaticBarrier extends KitAbility:
 			return
 		# same as K.shield without the generic bubble: League's W_tar_shield draws it
 		var dur := dv("ShieldDuration", 2.5)
-		Combat.shield(owner, u, shield_amount(), dur, {"id": ""})
+		var sh: Dictionary = Combat.shield(owner, u, shield_amount(), dur, {"id": ""})
 		var fx := LolVfx.attach(u, "Lux_Base_W_tar_shield", {"height": u.height * 0.5})
 		if fx != null and u.match_ref != null:
-			u.match_ref.after(dur, func():
+			u.match_ref.add_ticker(dur + 0.1, func(_dt) -> bool:
+				var alive := false
+				if is_instance_valid(u) and not u.dead:
+					for s2 in u.shields:
+						if is_same(s2, sh):
+							alive = true
+				if not alive:
+					if is_instance_valid(fx):
+						fx.stop()
+					return false
+				return true)
+			u.match_ref.after(dur + 0.05, func():
 				if is_instance_valid(fx):
 					fx.stop())
 
@@ -327,9 +346,7 @@ class LucentSingularity extends KitAbility:
 		anim = "spell3"
 		anim_lock = 0.35
 
-	func auto_cooldown() -> bool:
-		return false
-
+	## League: Lucent Singularity's cooldown starts on cast; the recast is free.
 	func damage() -> float:
 		return dv("BaseDamage") + 0.8 * ap()
 
@@ -378,8 +395,6 @@ class LucentSingularity extends KitAbility:
 	func on_recast_expired() -> void:
 		if not zone.is_empty():
 			_detonate()
-		else:
-			start_cooldown()
 
 	func _detonate() -> void:
 		var o = owner
@@ -388,7 +403,6 @@ class LucentSingularity extends KitAbility:
 		var st := zone
 		zone = {}
 		recast_window = 0.0
-		start_cooldown()
 		if not is_instance_valid(o):
 			return
 		var m = o.match_ref
@@ -452,6 +466,19 @@ class LucentSingularity extends KitAbility:
 # ===================================================================== R
 class FinalSpark extends KitAbility:
 	var _beam_fx: LolVfx = null
+	var _hit_champs := {}     ## champions hit by the last beam
+	var _hit_time := -100.0
+	var _refunded := false
+
+	## League: a champion takedown within ResetAssistWindow of being hit refunds ResetPercent of the cooldown.
+	func note_takedown(victim) -> void:
+		if _refunded or not _hit_champs.has(victim) or owner.match_ref == null:
+			return
+		if owner.match_ref.time - _hit_time > dv("ResetAssistWindow", 1.75):
+			return
+		_refunded = true
+		_hit_champs.clear()
+		cd = maxf(0.0, cd - cd_total * dv("ResetPercent", 0.3))
 
 	func _init() -> void:
 		target_type = Target.DIRECTION
@@ -490,17 +517,17 @@ class FinalSpark extends KitAbility:
 		_beam_fx = null   # fired: the League beam plays out on its own
 		var dmg := damage()
 		var p = illum()
-		var killed_champ := []
+		_hit_champs.clear()
+		_refunded = false
+		_hit_time = o.match_ref.time
 		for u in K.enemies_line(self, o.global_position, o.global_position + dir * cast_range * G.U, ind_width):
+			if u.kind == G.Kind.CHAMPION:
+				_hit_champs[u] = true
 			if p != null:
 				p.detonate(u)
-			var info := hit(u, dmg, G.DmgType.MAGIC, {"tag": "r", "is_aoe": true})
-			if info != null and info.killed and u.kind == G.Kind.CHAMPION:
-				killed_champ.append(u)
+			hit(u, dmg, G.DmgType.MAGIC, {"tag": "r", "is_aoe": true})
 			if p != null and not u.dead:
 				p.mark(u)
-		if not killed_champ.is_empty():
-			cd = maxf(0.0, cd - cd_total * dv("ResetPercent", 0.3))
 		if m.camera_rig != null:
 			var near_player: bool = G.player != null and NavGrid._dist_to_segment(G.player.global_position, from, to) < 12.0
 			m.camera_rig.shake(0.4 if o == G.player or near_player else 0.1)
