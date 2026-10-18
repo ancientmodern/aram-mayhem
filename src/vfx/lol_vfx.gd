@@ -403,63 +403,143 @@ static func _tex(path) -> Texture2D:
 	return Assets.tex(path)
 
 
-# ----------------------------------------------------------------- meshes
-static func _mesh_for(e: Dictionary) -> Mesh:
+# ----------------------------------------------------------------- orientation / meshes
+## 0 camera billboard, 1 free quad, 2 ground decal, 3 mesh, 4 velocity aligned billboard
+static func _orient(e: Dictionary) -> int:
 	var prim: String = e.get("prim", "quad")
-	var bs: Array = e.get("bscale", [1, 1, 1])
-	var bx := float(bs[0])
-	var by := float(bs[1]) if bs.size() > 1 else bx
-	var bz := float(bs[2]) if bs.size() > 2 else bx
-	var rot: Array = e.get("brot", [0, 0, 0])
-	var key := "%s|%s|%s|%s|%s|%s" % [prim, e.get("mesh", ""), str(bs), str(rot), e.get("ground", false), e.get("uniform", false)]
+	if e.get("ground", false):
+		return 2
+	if prim == "mesh":
+		return 3
+	if prim == "aquad":
+		return 1
+	if e.get("dir", false):
+		return 4
+	return 0
+
+
+static func _mesh_for(e: Dictionary) -> Mesh:
+	var o := _orient(e)
+	var key := "m|%d|%s" % [o, e.get("mesh", "")]
 	if _meshes.has(key):
 		return _meshes[key]
 	var mesh: Mesh
-	if prim == "mesh":
+	if o == 3:
 		var src = load(e.mesh) if ResourceLoader.exists(e.mesh) else null
-		if src is Mesh:
-			var sx := absf(bx) if bx != 0.0 else 1.0
-			var sy := absf(by) if by != 0.0 else sx
-			var sz := absf(bz) if bz != 0.0 else sx
-			if e.get("uniform", false):
-				sy = sx
-				sz = sx
-			var basis := Basis.from_euler(Vector3(deg_to_rad(float(rot[0])), deg_to_rad(float(rot[1])), deg_to_rad(-float(rot[2])))).scaled(Vector3(sx, sy, sz))
-			mesh = _transformed(src, Transform3D(basis, Vector3.ZERO))
-		else:
-			mesh = QuadMesh.new()
+		mesh = src if src is Mesh else QuadMesh.new()
 	else:
 		var q := QuadMesh.new()
-		var w := absf(bx) * S * QUAD_SCALE
-		var h := w
-		if prim == "aquad" and not e.get("uniform", false) and by > 0.01:
-			h = absf(by) * S * QUAD_SCALE
-		q.size = Vector2(maxf(w, 0.01), maxf(h, 0.01))
-		if e.get("ground", false):
+		q.size = Vector2.ONE
+		if o == 2:
 			q.orientation = PlaneMesh.FACE_Y
 		mesh = q
-		if prim == "aquad" and not e.get("ground", false) and (absf(float(rot[0])) > 0.1 or absf(float(rot[1])) > 0.1):
-			var b := Basis.from_euler(Vector3(deg_to_rad(float(rot[0])), deg_to_rad(float(rot[1])), 0.0))
-			mesh = _transformed(q, Transform3D(b, Vector3.ZERO))
 	_meshes[key] = mesh
 	return mesh
 
 
-static func _transformed(src: Mesh, xf: Transform3D) -> Mesh:
-	var st := SurfaceTool.new()
-	var out := ArrayMesh.new()
-	for s in src.get_surface_count():
-		st.clear()
-		st.create_from(src, s)
-		var arr := st.commit_to_arrays()
-		var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
-		for i in verts.size():
-			verts[i] = xf * verts[i]
-		arr[Mesh.ARRAY_VERTEX] = verts
-		arr[Mesh.ARRAY_NORMAL] = null
-		arr[Mesh.ARRAY_TANGENT] = null
-		out.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
-	return out
+# ----------------------------------------------------------------- curve textures
+## rows: Array of Color (float RGBA) sampled uniformly over particle life
+static func _float_tex(rows: Array) -> ImageTexture:
+	var n := rows.size()
+	var img := Image.create(maxi(n, 1), 1, false, Image.FORMAT_RGBAF)
+	for i in n:
+		img.set_pixel(i, 0, rows[i])
+	return ImageTexture.create_from_image(img)
+
+
+static func _curve_vec(cur: Dictionary, u: float):
+	var times: Array = cur.t
+	var vals: Array = cur.v
+	if u <= float(times[0]):
+		return vals[0]
+	for i in range(1, times.size()):
+		if u <= float(times[i]):
+			var k := (u - float(times[i - 1])) / maxf(float(times[i]) - float(times[i - 1]), 0.0001)
+			var a = vals[i - 1]
+			var b = vals[i]
+			if a is Array:
+				var out := []
+				for j in a.size():
+					out.append(lerpf(float(a[j]), float(b[j]), k))
+				return out
+			return lerpf(float(a), float(b), k)
+	return vals[vals.size() - 1]
+
+
+static func _scale_tex(e: Dictionary) -> ImageTexture:
+	var sc = e.get("scale")
+	if not (sc is Dictionary) or not sc.has("t"):
+		return null
+	var rows := []
+	for i in 32:
+		var v = _curve_vec(sc, i / 31.0)
+		if v is Array:
+			var vx := float(v[0])
+			var vy := float(v[1]) if v.size() > 1 else vx
+			var vz := float(v[2]) if v.size() > 2 else vx
+			rows.append(Color(vx, vy, vz, 1.0))
+		else:
+			rows.append(Color(float(v), float(v), float(v), 1.0))
+	return _float_tex(rows)
+
+
+static func _color_tex(e: Dictionary) -> ImageTexture:
+	var cur = e.get("color")
+	var ctex = e.get("ctex")
+	if cur == null and ctex == null:
+		return null
+	var ctype: Array = e.get("ctype", [0, 0])
+	var img: Image = null
+	if ctex != null:
+		var t := _tex(ctex)
+		if t != null:
+			img = t.get_image()
+			if img != null and img.is_compressed():
+				img.decompress()
+	var rows := []
+	for i in 32:
+		var u := i / 31.0
+		var col := Color.WHITE
+		if cur is Dictionary:
+			col = _sample_color_curve(cur, u)
+		if img != null:
+			var w := img.get_width()
+			var h := img.get_height()
+			# lookup texture: X follows particle life (type 0/3), Y follows life only for type 3
+			var px := w / 2
+			var py := h / 2
+			if int(ctype[1]) == 3 and int(ctype[0]) != 3:
+				py = clampi(int(u * (h - 1)), 0, h - 1)
+			else:
+				px = clampi(int(u * (w - 1)), 0, w - 1)
+				if int(ctype[1]) == 3:
+					py = clampi(int(u * (h - 1)), 0, h - 1)
+			col *= img.get_pixel(px, py)
+		rows.append(col)
+	return _float_tex(rows)
+
+
+static func _uv_tex(e: Dictionary) -> ImageTexture:
+	var a = e.get("uvint")
+	var b = e.get("uv2int")
+	if a == null and b == null:
+		return null
+	var rows := []
+	for i in 16:
+		var ra: Array = a[i] if a is Array and i < a.size() else [0.0, 0.0]
+		var rb: Array = b[i] if b is Array and i < b.size() else [0.0, 0.0]
+		rows.append(Color(float(ra[0]), float(ra[1]), float(rb[0]), float(rb[1])))
+	return _float_tex(rows)
+
+
+static func _ero_tex(e: Dictionary) -> ImageTexture:
+	var c = e.get("ero_curve")
+	if not (c is Array):
+		return null
+	var rows := []
+	for v in c:
+		rows.append(Color(float(v), 0, 0, 1))
+	return _float_tex(rows)
 
 
 # ----------------------------------------------------------------- materials
@@ -473,238 +553,204 @@ static func _shader(blend: int) -> Shader:
 		5: mode = "blend_premul_alpha"
 	if _shaders.has(mode):
 		return _shaders[mode]
-	var code := FileAccess.get_file_as_string("res://src/vfx/lol_particle.gdshader.txt").replace("__BLEND__", mode)
+	var hint := "" if mode == "blend_add" else "source_color,"
+	var code := FileAccess.get_file_as_string("res://src/vfx/lol_particle.gdshader.txt").replace("__BLEND__", mode).replace("__TEXHINT__", hint)
 	var sh := Shader.new()
 	sh.code = code
 	_shaders[mode] = sh
 	return sh
 
 
+static func _v2(a, d: Vector2) -> Vector2:
+	if a is Array and a.size() >= 2:
+		return Vector2(float(a[0]), float(a[1]))
+	return d
+
+
 static func _material(e: Dictionary) -> ShaderMaterial:
-	var prim: String = e.get("prim", "quad")
-	var bb := 1
-	if prim == "mesh" or prim == "aquad":
-		bb = 0
-	if e.get("ground", false):
-		bb = 3
-	if e.get("dir", false) and prim in ["quad", "ray"]:
-		bb = 2
+	var key := "mat|" + JSON.stringify([e.get("tex"), e.get("blend"), _orient(e), e.get("texdiv"), e.get("frames"), e.get("alpha_ref"),
+			e.get("uvscale"), e.get("uvrate"), e.get("uvint"), e.get("tex2"), e.get("uv2scale"), e.get("uv2rate"), e.get("uv2int"),
+			e.get("ero_tex"), e.get("ero_curve"), e.get("ero_ch"), e.get("soft"), e.get("pass"), e.get("plife")])
+	if _mats.has(key):
+		return _mats[key]
+	var o := _orient(e)
+	var mat := ShaderMaterial.new()
+	var blend := int(e.get("blend", 0))
+	mat.shader = _shader(blend)
+	if blend == 1 or blend == 3 or blend == 5:
+		mat.set_shader_parameter("linear_color", true)
+	mat.set_shader_parameter("tex", _tex(e.get("tex")))
+	mat.set_shader_parameter("billboard", 1 if o == 0 else (2 if o == 4 else 0))
 	var div: Array = e.get("texdiv", [1, 1])
 	var frames := int(e.get("frames", 0))
 	if frames <= 0:
 		frames = int(div[0]) * int(div[1])
-	var key := "%s|%d|%d|%s|%d|%d|%s" % [e.get("tex"), int(e.get("blend", 1)), bb, str(div), frames, int(e.get("alpha_ref", 0)), str(e.get("uvscroll")), ]
-	key += "|%d" % int(e.get("pass", 0))
-	if _mats.has(key):
-		return _mats[key]
-	var mat := ShaderMaterial.new()
-	mat.shader = _shader(int(e.get("blend", 1)))
-	mat.set_shader_parameter("tex", _tex(e.get("tex")))
-	mat.set_shader_parameter("billboard", bb)
 	mat.set_shader_parameter("texdiv", Vector2(maxf(1, float(div[0])), maxf(1, float(div[1]))))
 	mat.set_shader_parameter("total_frames", float(frames))
 	mat.set_shader_parameter("alpha_ref", float(e.get("alpha_ref", 0)) / 255.0)
-	var us = e.get("uvscroll")
-	if us is Array and us.size() >= 2:
-		mat.set_shader_parameter("uv_scroll", Vector2(float(us[0]), float(us[1])))
+	mat.set_shader_parameter("uv_scale", _v2(e.get("uvscale"), Vector2.ONE))
+	mat.set_shader_parameter("uv_rate", _v2(e.get("uvrate"), Vector2.ZERO))
+	var plife: Array = e.get("plife", [1.0, 1.0])
+	mat.set_shader_parameter("life_max", maxf(float(plife[1]), 0.05))
+	var t2 := _tex(e.get("tex2"))
+	if t2 != null:
+		mat.set_shader_parameter("tex2", t2)
+		mat.set_shader_parameter("has_tex2", true)
+		mat.set_shader_parameter("uv2_scale", _v2(e.get("uv2scale"), Vector2.ONE))
+		mat.set_shader_parameter("uv2_rate", _v2(e.get("uv2rate"), Vector2.ZERO))
+	var uvt := _uv_tex(e)
+	if uvt != null:
+		mat.set_shader_parameter("uv_curve", uvt)
+		mat.set_shader_parameter("has_uv_curve", true)
+	var et := _tex(e.get("ero_tex"))
+	var ec := _ero_tex(e)
+	if et != null and ec != null:
+		mat.set_shader_parameter("ero_tex", et)
+		mat.set_shader_parameter("ero_curve", ec)
+		mat.set_shader_parameter("has_erosion", true)
+		var ch: Array = e.get("ero_ch", [1, 0, 0, 0])
+		mat.set_shader_parameter("ero_channel", Vector4(float(ch[0]), float(ch[1]), float(ch[2]), float(ch[3])))
+		mat.set_shader_parameter("ero_feather", float(e.get("ero_feather", 0.1)))
+	if e.get("soft", false) and o != 2:
+		mat.set_shader_parameter("soft_dist", 0.35)
 	mat.render_priority = clampi(int(e.get("pass", 0)) / 2, -60, 60)
 	_mats[key] = mat
 	return mat
 
 
-static func _process_material(e: Dictionary) -> ParticleProcessMaterial:
+static var _proc_shader: Shader = null
+
+
+static func _vec3_or(a, d: Vector3) -> Vector3:
+	if a is Array and a.size() >= 3:
+		return Vector3(float(a[0]), float(a[1]), float(a[2]))
+	return d
+
+
+static func _process_material(e: Dictionary) -> ShaderMaterial:
 	var key := JSON.stringify(e)
 	if _pmats.has(key):
 		return _pmats[key]
-	var pm := ParticleProcessMaterial.new()
-	pm.gravity = _v3(e.get("accel", [0, 0, 0]))
+	if _proc_shader == null:
+		_proc_shader = load("res://src/vfx/lol_process.gdshader")
+	var pm := ShaderMaterial.new()
+	pm.shader = _proc_shader
+	var o := _orient(e)
+	var prim: String = e.get("prim", "quad")
+	pm.set_shader_parameter("orient", o)
 	var plife: Array = e.get("plife", [1.0, 1.0])
-	pm.lifetime_randomness = clampf(1.0 - float(plife[0]) / maxf(float(plife[1]), 0.001), 0.0, 1.0)
+	pm.set_shader_parameter("life_lo", clampf(float(plife[0]) / maxf(float(plife[1]), 0.001), 0.0, 1.0))
 	# emission shape
 	var sh = e.get("shape")
 	if sh is Dictionary:
 		match str(sh.get("type", "")):
 			"sphere":
-				pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
-				pm.emission_sphere_radius = maxf(float(sh.radius), 0.001)
+				pm.set_shader_parameter("shape_type", 1)
+				pm.set_shader_parameter("shape_radius", float(sh.radius))
 			"box":
-				pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
 				var sz: Array = sh.get("size", [0, 0, 0])
-				pm.emission_box_extents = Vector3(float(sz[0]), float(sz[1]), float(sz[2])) * 0.5
+				pm.set_shader_parameter("shape_type", 2)
+				pm.set_shader_parameter("shape_box", Vector3(float(sz[0]), float(sz[1]), float(sz[2])) * 0.5)
 			"cyl":
-				pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_RING
-				pm.emission_ring_radius = maxf(float(sh.radius), 0.001)
-				pm.emission_ring_inner_radius = 0.0
-				pm.emission_ring_height = float(sh.get("height", 0.0))
-				pm.emission_ring_axis = Vector3.UP
+				pm.set_shader_parameter("shape_type", 3)
+				pm.set_shader_parameter("shape_radius", float(sh.radius))
+				pm.set_shader_parameter("shape_height", float(sh.get("height", 0.0)))
 			"offset":
-				pm.emission_shape_offset = _v3(sh.get("offset", [0, 0, 0]))
-	# velocity
-	var bv := _v3(e.get("bvel", [0, 0, 0]))
-	var speed := bv.length()
-	if speed > 0.0001:
-		pm.direction = bv / speed
-		var r = e.get("bvel_rand")
-		var lo := 1.0
-		var hi := 1.0
-		var spread := 0.0
-		if r is Array:
-			var a := Vector3(float(r[0][0]), float(r[0][1]), float(r[0][2]))
-			var b := Vector3(float(r[1][0]), float(r[1][1]), float(r[1][2]))
-			var va := bv * a
-			var vb := bv * b
-			lo = minf(va.length(), vb.length()) / speed
-			hi = maxf(va.length(), vb.length()) / speed
-			if va.length() > 0.0001 and vb.length() > 0.0001:
-				spread = rad_to_deg(va.angle_to(vb)) * 0.5
-			if a.x < 0.0 or a.y < 0.0 or a.z < 0.0:
-				spread = maxf(spread, 90.0)
-		pm.spread = clampf(spread, 0.0, 180.0)
-		pm.initial_velocity_min = speed * lo
-		pm.initial_velocity_max = speed * hi
+				pm.set_shader_parameter("shape_offset", _v3(sh.get("offset", [0, 0, 0])))
+	# velocity / forces
+	pm.set_shader_parameter("vel_base", _v3(e.get("bvel", [0, 0, 0])))
+	var vr = e.get("bvel_rand")
+	if vr is Array:
+		pm.set_shader_parameter("vel_lo", _vec3_or(vr[0], Vector3.ONE))
+		pm.set_shader_parameter("vel_hi", _vec3_or(vr[1], Vector3.ONE))
+	pm.set_shader_parameter("drag", _vec3_or(e.get("drag"), Vector3.ZERO).abs())
+	pm.set_shader_parameter("accel", _v3(e.get("accel", [0, 0, 0])))
+	# scale: meters for quads (League quads are half-extents), multipliers for meshes
+	var bs: Array = e.get("bscale", [1, 1, 1])
+	var bx := absf(float(bs[0]))
+	var by := absf(float(bs[1])) if bs.size() > 1 else bx
+	var bz := absf(float(bs[2])) if bs.size() > 2 else bx
+	var uni: bool = e.get("uniform", false)
+	var base := Vector3.ONE
+	if o == 3:
+		base = Vector3(bx, by if by > 0.0001 and not uni else bx, bz if bz > 0.0001 and not uni else bx)
+	elif o == 0:
+		base = Vector3(bx, bx, 1.0) * S * QUAD_SCALE
 	else:
-		pm.initial_velocity_min = 0.0
-		pm.initial_velocity_max = 0.0
-		pm.spread = 0.0
-	var drag: Array = e.get("drag", [0, 0, 0])
-	if drag is Array and drag.size() >= 3:
-		var dm := maxf(absf(float(drag[0])), maxf(absf(float(drag[1])), absf(float(drag[2]))))
-		if dm > 0.0:
-			pm.damping_min = dm * maxf(speed, 0.5)
-			pm.damping_max = pm.damping_min
-	# rotation (camera quads spin around the view axis, meshes / ground quads around Y)
-	var rot: Array = e.get("brot", [0, 0, 0])
-	var rv: Array = e.get("rotvel", [0, 0, 0])
-	var prim: String = e.get("prim", "quad")
-	var spin_axis_y: bool = prim == "mesh" or e.get("ground", false)
-	var ang := float(rot[2]) if not spin_axis_y else float(rot[1]) if prim == "mesh" else float(rot[2])
-	var rr = e.get("brot_rand")
-	var amin := ang
-	var amax := ang
-	if rr is Array:
-		var k := 2 if not spin_axis_y or prim != "mesh" else 1
-		amin = ang * float(rr[0][k]) if absf(ang) > 0.01 else float(rr[0][k])
-		amax = ang * float(rr[1][k]) if absf(ang) > 0.01 else float(rr[1][k])
-		if absf(ang) < 0.01 and absf(amin) <= 1.01 and absf(amax) <= 1.01:
-			amin = 0.0
-			amax = 360.0
-	if prim != "mesh":
-		pm.angle_min = -minf(amin, amax)
-		pm.angle_max = -maxf(amin, amax)
-	var spin := float(rv[1]) if spin_axis_y and prim == "mesh" else float(rv[2])
-	var rvr = e.get("rotvel_rand")
-	var smin := spin
-	var smax := spin
-	if rvr is Array:
-		var k2 := 1 if spin_axis_y and prim == "mesh" else 2
-		smin = spin * float(rvr[0][k2])
-		smax = spin * float(rvr[1][k2])
-	pm.angular_velocity_min = -maxf(smin, smax)
-	pm.angular_velocity_max = -minf(smin, smax)
-	if spin_axis_y:
-		pm.particle_flag_rotate_y = true
-	if e.get("dir", false):
-		pm.particle_flag_align_y = true
-	# scale
+		var hy := by if (by > 0.01 and not uni and prim == "aquad") else bx
+		base = Vector3(bx * S * QUAD_SCALE, hy * S * QUAD_SCALE, 1.0)
+	pm.set_shader_parameter("scale_base", base)
+	pm.set_shader_parameter("uniform_scale", uni or o == 0)
 	var br = e.get("bscale_rand")
 	if br is Array:
-		pm.scale_min = float(br[0][0])
-		pm.scale_max = float(br[1][0])
-	var sc = e.get("scale")
-	if sc is Dictionary and sc.has("t"):
-		pm.scale_curve = _scale_curve(sc)
-	# color: birth color x over-life curve x lookup texture
-	var bc := _col(e.get("bcolor", [1, 1, 1, 1]))
-	pm.color = bc
+		pm.set_shader_parameter("scale_lo", _vec3_or(br[0], Vector3.ONE))
+		pm.set_shader_parameter("scale_hi", _vec3_or(br[1], Vector3.ONE))
+	var stex := _scale_tex(e)
+	if stex != null:
+		pm.set_shader_parameter("scale_curve", stex)
+		pm.set_shader_parameter("has_scale_curve", true)
+	# rotation: League stores the billboard roll in X; meshes / free quads use full euler (mirrored for the z flip)
+	var rot := _vec3_or(e.get("brot"), Vector3.ZERO)
+	var rr = e.get("brot_rand")
+	var rlo := _vec3_or(rr[0], Vector3.ONE) if rr is Array else Vector3.ONE
+	var rhi := _vec3_or(rr[1], Vector3.ONE) if rr is Array else Vector3.ONE
+	var rv := _vec3_or(e.get("rotvel"), Vector3.ZERO)
+	var rvr = e.get("rotvel_rand")
+	var vlo := _vec3_or(rvr[0], Vector3.ONE) if rvr is Array else Vector3.ONE
+	var vhi := _vec3_or(rvr[1], Vector3.ONE) if rvr is Array else Vector3.ONE
+	var spin_i := 0
+	if absf(rv.y) >= absf(rv.x) and absf(rv.y) >= absf(rv.z):
+		spin_i = 1
+	elif absf(rv.z) > absf(rv.x):
+		spin_i = 2
+	if o == 0 or o == 4:
+		pm.set_shader_parameter("rot_base", Vector3(0, 0, rot.x))
+		pm.set_shader_parameter("rot_lo", Vector3(1, 1, rlo.x))
+		pm.set_shader_parameter("rot_hi", Vector3(1, 1, rhi.x))
+		pm.set_shader_parameter("spin_base", rv.x)
+		pm.set_shader_parameter("spin_lo", vlo.x)
+		pm.set_shader_parameter("spin_hi", vhi.x)
+	elif o == 2:
+		var k := 0 if prim == "quad" else 2
+		pm.set_shader_parameter("rot_base", Vector3(0, 0, rot[k]))
+		pm.set_shader_parameter("rot_lo", Vector3(1, 1, rlo[k]))
+		pm.set_shader_parameter("rot_hi", Vector3(1, 1, rhi[k]))
+		pm.set_shader_parameter("spin_base", rv[spin_i])
+		pm.set_shader_parameter("spin_lo", vlo[spin_i])
+		pm.set_shader_parameter("spin_hi", vhi[spin_i])
+	else:
+		pm.set_shader_parameter("rot_base", Vector3(-rot.x, -rot.y, rot.z))
+		pm.set_shader_parameter("rot_lo", rlo)
+		pm.set_shader_parameter("rot_hi", rhi)
+		pm.set_shader_parameter("spin_axis", spin_i)
+		pm.set_shader_parameter("spin_base", rv[spin_i] * (-1.0 if spin_i < 2 else 1.0))
+		pm.set_shader_parameter("spin_lo", vlo[spin_i])
+		pm.set_shader_parameter("spin_hi", vhi[spin_i])
+	# color
+	pm.set_shader_parameter("color_base", _col(e.get("bcolor", [1, 1, 1, 1])))
 	var cr = e.get("bcolor_rand")
-	if cr is Array:
-		var g := Gradient.new()
-		g.set_color(0, Color(float(cr[0][0]), float(cr[0][1]), float(cr[0][2]), float(cr[0][3])))
-		g.set_color(1, Color(float(cr[1][0]), float(cr[1][1]), float(cr[1][2]), float(cr[1][3])))
-		var gt := GradientTexture1D.new()
-		gt.gradient = g
-		pm.color_initial_ramp = gt
-	var ramp := _color_ramp(e)
-	if ramp != null:
-		pm.color_ramp = ramp
-	# flipbook
+	if cr is Array and cr[0].size() >= 4:
+		pm.set_shader_parameter("color_lo", Color(float(cr[0][0]), float(cr[0][1]), float(cr[0][2]), float(cr[0][3])))
+		pm.set_shader_parameter("color_hi", Color(float(cr[1][0]), float(cr[1][1]), float(cr[1][2]), float(cr[1][3])))
+	var ct := _color_tex(e)
+	if ct != null:
+		pm.set_shader_parameter("color_curve", ct)
+		pm.set_shader_parameter("has_color_curve", true)
+	# flipbook / uv offset
 	var div: Array = e.get("texdiv", [1, 1])
 	var frames := int(e.get("frames", 0))
 	if frames <= 0:
 		frames = int(div[0]) * int(div[1])
-	if frames > 1:
-		var fps := float(e.get("fps", 0.0))
-		var spd := 1.0 if fps <= 0.0 else fps * float(plife[1]) / float(frames)
-		pm.anim_speed_min = spd
-		pm.anim_speed_max = spd
-		if e.get("rand_frame", false):
-			pm.anim_offset_max = 1.0
-		elif int(e.get("start_frame", 0)) > 0:
-			pm.anim_offset_min = float(e.start_frame) / float(frames)
-			pm.anim_offset_max = pm.anim_offset_min
+	pm.set_shader_parameter("frames", float(frames))
+	pm.set_shader_parameter("fps", float(e.get("fps", 0.0)))
+	pm.set_shader_parameter("rand_frame", bool(e.get("rand_frame", false)))
+	pm.set_shader_parameter("start_frame", float(e.get("start_frame", 0)))
+	var uo = e.get("uvoff")
+	if uo is Array and uo.size() == 2:
+		pm.set_shader_parameter("uv_off_lo", _v2(uo[0], Vector2.ZERO))
+		pm.set_shader_parameter("uv_off_hi", _v2(uo[1], Vector2.ZERO))
 	_pmats[key] = pm
 	return pm
-
-
-static func _scale_curve(sc: Dictionary) -> Texture2D:
-	var times: Array = sc.t
-	var vals: Array = sc.v
-	var c := Curve.new()
-	c.max_value = 64.0
-	for i in times.size():
-		var v = vals[i]
-		var s := float(v[0]) if v is Array else float(v)
-		c.add_point(Vector2(clampf(float(times[i]), 0.0, 1.0), clampf(s, 0.0, 64.0)))
-	var ct := CurveTexture.new()
-	ct.curve = c
-	return ct
-
-
-static func _color_ramp(e: Dictionary) -> GradientTexture1D:
-	var cur = e.get("color")
-	var ctex = e.get("ctex")
-	var ctype: Array = e.get("ctype", [0, 0])
-	if cur == null and ctex == null:
-		return null
-	var key := "%s|%s|%s" % [JSON.stringify(cur), ctex, str(ctype)]
-	if _ramps.has(key):
-		return _ramps[key]
-	var g := Gradient.new()
-	var img: Image = null
-	if ctex != null:
-		var t := _tex(ctex)
-		if t != null:
-			img = t.get_image()
-			if img != null and img.is_compressed():
-				img.decompress()
-	var n := 16
-	var cols := PackedColorArray()
-	var offs := PackedFloat32Array()
-	for i in n:
-		var u := float(i) / float(n - 1)
-		var col := Color.WHITE
-		if cur is Dictionary:
-			col = _sample_color_curve(cur, u)
-		if img != null:
-			var w := img.get_width()
-			var h := img.get_height()
-			var tc := Color.WHITE
-			if int(ctype[1]) == 3:
-				tc = img.get_pixel(w / 2, clampi(int(u * (h - 1)), 0, h - 1))
-			elif int(ctype[0]) == 3:
-				tc = img.get_pixel(clampi(int(u * (w - 1)), 0, w - 1), h / 2)
-			else:
-				tc = img.get_pixel(w / 2, h / 2)
-			col *= tc
-		cols.append(col)
-		offs.append(u)
-	g.offsets = offs
-	g.colors = cols
-	var gt := GradientTexture1D.new()
-	gt.gradient = g
-	gt.width = 64
-	_ramps[key] = gt
-	return gt
 
 
 static func _sample_color_curve(cur: Dictionary, u: float) -> Color:

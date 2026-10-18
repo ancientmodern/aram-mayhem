@@ -33,6 +33,8 @@ func _material() -> ShaderMaterial:
 	mat.shader = LolVfx._shader(blend)
 	mat.set_shader_parameter("tex", texture)
 	mat.set_shader_parameter("billboard", 0)
+	if blend == 1 or blend == 3 or blend == 5:
+		mat.set_shader_parameter("linear_color", true)
 	mat.render_priority = 5
 	_mats[key] = mat
 	return mat
