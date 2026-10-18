@@ -145,6 +145,7 @@ func _process(delta: float) -> void:
 		vision_timer = 0.1
 		pt = Prof.t0()
 		_update_vision()
+		_update_missile_fog()
 		Prof.add("vision", pt)
 
 
@@ -371,6 +372,19 @@ func _update_vision() -> void:
 				u.visible_to[t] = true
 				continue
 			u.visible_to[t] = _seen_by(u, t)
+
+
+## Enemy missiles are only drawn inside the player's team vision (League: projectiles appear as they enter vision).
+func _update_missile_fog() -> void:
+	if G.player == null:
+		return
+	var pt: int = G.player.team
+	if pt > 1:
+		return
+	for mi in missiles:
+		if not is_instance_valid(mi) or not mi.alive or mi.team == pt:
+			continue
+		mi.visible = pos_visible(mi.global_position, pt)
 
 
 func _seen_by(u: Unit, t: int) -> bool:
@@ -665,7 +679,33 @@ func end_game(winning_team: int) -> void:
 var _fx_frame := 0
 
 
+## Fog of war for feedback: no numbers/text over units the player's team can't see.
+func _player_sees(u) -> bool:
+	if G.player == null or u == null or not is_instance_valid(u):
+		return true
+	var pt: int = G.player.team
+	return u.team == pt or pt > 1 or u.visible_to[pt]
+
+
+## Is a world position inside the given team's vision (sight ranges, brush rules)? Used for missiles.
+func pos_visible(pos: Vector3, team: int) -> bool:
+	var pb: int = nav.brush_id(pos) if nav != null else 0
+	for v in units_in_radius(pos, 13.5, team):
+		if v.dead:
+			continue
+		var sight: float = v.sight_range() if v.has_method("sight_range") else 12.0
+		var d := G.flat_dist(v.global_position, pos)
+		if d > sight:
+			continue
+		if pb > 0 and v.in_brush != pb and d > 1.5:
+			continue
+		return true
+	return false
+
+
 func fx_damage(info: DamageInfo) -> void:
+	if not _player_sees(info.target):
+		return
 	_fx_frame += 1
 	if _fx_frame > 80:
 		return
@@ -674,12 +714,12 @@ func fx_damage(info: DamageInfo) -> void:
 
 
 func fx_heal(u: Unit, amount: float) -> void:
-	if overlay != null:
+	if overlay != null and _player_sees(u):
 		overlay.heal_number(u, amount)
 
 
 func fx_text(u: Unit, text: String, color: Color, _info = null) -> void:
-	if overlay != null:
+	if overlay != null and _player_sees(u):
 		overlay.float_text(u, text, color)
 
 
