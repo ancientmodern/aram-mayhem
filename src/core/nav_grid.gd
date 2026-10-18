@@ -12,6 +12,13 @@ var walk := PackedByteArray()   ## 1 = walkable
 var heights := PackedFloat32Array()
 var astar := AStarGrid2D.new()
 var brush := PackedByteArray()  ## brush region id per cell (0 = none)
+## Ground height field units stand on (data/map/floor_height.bin, tools/lol/bake_floor_height.py): League's
+## ngrid sampled-height node grid (~0.25 m) snapped to the rendered floor mesh. Node (0,0) is at floor_origin.
+var floor_h := PackedFloat32Array()
+var floor_origin := Vector2.ZERO
+var floor_inv := Vector2.ONE    ## 1 / node spacing (x, z)
+var floor_w := 0
+var floor_hh := 0
 
 
 func load_from(dir: String) -> bool:
@@ -31,6 +38,23 @@ func load_from(dir: String) -> bool:
 	if walk.size() != w * h or heights.size() != w * h:
 		push_error("navgrid size mismatch")
 		return false
+	var fm = meta.get("floor")
+	var fp := dir.path_join("floor_height.bin")
+	if fm is Dictionary and FileAccess.file_exists(fp):
+		var fb := FileAccess.get_file_as_bytes(fp).to_float32_array()
+		if fb.size() == int(fm.width) * int(fm.height):
+			floor_h = fb
+			floor_w = int(fm.width)
+			floor_hh = int(fm.height)
+			floor_origin = Vector2(fm.origin_x, fm.origin_z)
+			floor_inv = Vector2(1.0 / float(fm.dx), 1.0 / float(fm.dz))
+			# per-cell heights (cell_center, debug draws) from the same field; the ngrid's own centerHeight is 0
+			# on ~280 walkable cells, which used to lift units 1.8 m on those tiles
+			for j in h:
+				for i in w:
+					heights[j * w + i] = height_at(Vector3(origin.x + (i + 0.5) * cell, 0.0, origin.y + (j + 0.5) * cell))
+		else:
+			push_error("floor_height.bin size mismatch")
 	_build_astar()
 	return true
 
@@ -153,8 +177,19 @@ func brush_id(p: Vector3) -> int:
 	return brush[c.y * w + c.x]
 
 
-## Bilinear terrain height.
+## Bilinear terrain height (hot path: ~70 units per frame).
 func height_at(p: Vector3) -> float:
+	if floor_w > 0:
+		var gx := clampf((p.x - floor_origin.x) * floor_inv.x, 0.0, floor_w - 1.001)
+		var gz := clampf((p.z - floor_origin.y) * floor_inv.y, 0.0, floor_hh - 1.001)
+		var fi := int(gx)
+		var fj := int(gz)
+		var ux := gx - fi
+		var uz := gz - fj
+		var k := fj * floor_w + fi
+		var h0 := floor_h[k] + (floor_h[k + 1] - floor_h[k]) * ux
+		var h1 := floor_h[k + floor_w] + (floor_h[k + floor_w + 1] - floor_h[k + floor_w]) * ux
+		return h0 + (h1 - h0) * uz
 	if w == 0:
 		return 0.0
 	var fx := (p.x - origin.x) / cell - 0.5

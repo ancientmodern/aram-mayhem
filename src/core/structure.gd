@@ -112,7 +112,10 @@ func on_died(_killer) -> void:
 	elif model != null:
 		create_tween().tween_property(model, "scale", model.scale * Vector3(1.0, 0.25, 1.0), 1.5)
 	# explosions: the nexus goes off in a rolling chain
-	var blasts := (1 if is_inhibitor else 6) if boom == null else (0 if is_inhibitor else 2)
+	# [juice] with League's own explosion system there are no procedural rings / sparks, only the camera kick
+	var blasts := (1 if is_inhibitor else 6) if boom == null else 0
+	if boom != null and m.camera_rig != null and G.flat_dist(m.camera_rig.focus, p) < 30.0:
+		m.camera_rig.shake(0.35 if is_inhibitor else 0.7)
 	for i in blasts:
 		m.after(i * 0.32, func():
 			var off := Vector3(G.rng.randf_range(-1.5, 1.5), G.rng.randf_range(0.5, 3.0), G.rng.randf_range(-1.5, 1.5)) * (0.4 if is_inhibitor else 1.0)
