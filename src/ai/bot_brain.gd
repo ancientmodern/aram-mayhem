@@ -34,6 +34,18 @@ var _chase_since := -1.0
 var _strafe_dir := 1.0
 var _strafe_t := 0.0
 var _kite_cycle := -1
+# --- persona: every bot plays a little differently (human-like variety)
+var forward_bias := 0.5          ## 0 = hangs back near own turret, 1 = walks up to the middle
+var caution := 1.0               ## extra spacing (m) kept from enemy threat ranges
+var wander := 1.4                ## radius (m) of idle "fidget" clicks around the spot it holds
+var fidget_rate := 1.0           ## scales the time between fidget clicks
+var emote_chance := 0.35         ## chance to emote after a kill (when safe)
+var harass := 0.5                ## how eagerly a ranged bot steps in for a free auto during the face-off
+var _fidget_at := 0.0
+var _emote_until := -1.0
+var _last_kills := 0
+var _harass_until := -1.0
+var _next_harass := 0.0
 var _mode_since := 0.0
 var _retreat_until := -1.0
 var _kite_target: Unit = null
@@ -57,6 +69,13 @@ func setup(champ: Champion, p_match) -> void:
 		var t: Dictionary = c.kit.ai_tuning()
 		aggression = t.get("aggression", aggression)
 	team_ai = p_match.team_ai(c.team)
+	forward_bias = clampf(G.rng.randf_range(0.15, 0.95) * (0.6 + aggression * 0.8), 0.05, 1.0)
+	caution = G.rng.randf_range(0.6, 2.4) * (1.4 - aggression)
+	wander = G.rng.randf_range(0.8, 2.2)
+	fidget_rate = G.rng.randf_range(0.6, 1.5)
+	emote_chance = G.rng.randf_range(0.1, 0.6)
+	harass = clampf(G.rng.randf_range(0.2, 1.0) * (0.5 + aggression), 0.0, 1.0)
+	_next_harass = G.rng.randf_range(2.0, 6.0)
 
 
 # ===================================================================== main loop
@@ -71,6 +90,15 @@ func think(dt: float) -> void:
 			return
 	if m.time < _dodge_until:
 		return
+	if c.has_meta("hexgate_busy"):   # [env3] walking to / using a hexgate: HexgateNet drives this bot
+		return
+	if m.time < _emote_until:
+		if enemies.is_empty() or _nearest_enemy_dist() > 9.0:
+			return
+		_emote_until = -1.0
+	if c.kills > _last_kills:
+		_last_kills = c.kills
+		_maybe_emote(0.6)
 	if think_timer > 0.0:
 		return
 	think_timer = reaction * G.rng.randf_range(0.8, 1.2)
@@ -465,8 +493,10 @@ func _lane() -> void:
 	goal += side * personal_offset
 	if _under_enemy_turret(goal) and (enemy_turret == null or not _minions_tanking(enemy_turret)):
 		goal -= lane_dir * 4.0
-	if G.flat_dist(p, goal) > 1.5:
-		_move(goal)
+	if enemy_minions.is_empty() and ally_minions.is_empty() and ta.stance != "retreat":
+		_opening(goal)
+		return
+	_hold_area(goal)
 
 
 # ===================================================================== dodging
@@ -691,3 +721,99 @@ func _shop_and_augments() -> void:
 		m.bot_shop(c)
 	if c.augments_pending > 0 and m.has_method("bot_choose_augment"):
 		m.bot_choose_augment(c)
+
+
+# ===================================================================== human-like idle play
+## Before the waves meet (game start, or a cleared lane): walk up toward the middle according to persona,
+## face off with the enemy at a safe distance, step in for the occasional free auto, otherwise fidget.
+func _opening(lane_goal: Vector3) -> void:
+	var ta := team_ai
+	var p := c.global_position
+	var mid := ta.lane_coord(ta.enemy_nexus) * 0.5
+	var own := ta.lane_coord(lane_goal)
+	var k := lerpf(own, mid - (2.0 if frontline else 5.0), forward_bias)
+	var side := Vector3(-ta.lane_dir.z, 0, ta.lane_dir.x)
+	var anchor := ta.lane_point(k) + side * personal_offset
+	var e := _nearest_enemy()
+	if e != null:
+		var away := G.flat_dir(e.global_position, p)
+		var threat: float = e.attack_range_m() + e.radius + c.radius
+		var dist := G.flat_dist(e.global_position, p)
+		# a ranged bot with the longer reach (or a bold one) steps in for a poke now and then
+		if is_ranged and m.time >= _next_harass and not _under_enemy_turret(e.global_position) 				and (c.attack_range_m() >= e.attack_range_m() - 0.5 or G.rng.randf() < harass * 0.4) and G.rng.randf() < harass:
+			_harass_until = m.time + G.rng.randf_range(0.9, 1.6)
+			_next_harass = m.time + G.rng.randf_range(3.0, 8.0) / maxf(harass, 0.2)
+		if m.time < _harass_until:
+			_attack(e)
+			return
+		# otherwise keep just outside their threat range (cautious personas a bit further)
+		var keep := threat + caution
+		if dist < keep:
+			anchor = p + away * minf(keep - dist + 0.5, 3.0) + side * G.rng.randf_range(-0.8, 0.8)
+		elif ta.lane_coord(anchor) > ta.lane_coord(e.global_position) - keep:
+			anchor = e.global_position + away * keep
+	_hold_area(anchor)
+
+
+## Hold a spot like a player does: walk there, then keep making small clicks around it (sometimes pausing),
+## drifting to face the enemy side, instead of freezing in place.
+func _hold_area(anchor: Vector3) -> void:
+	var p := c.global_position
+	if G.flat_dist(p, anchor) > wander + 1.5:
+		_move(anchor)
+		_fidget_at = m.time + G.rng.randf_range(0.2, 0.6)
+		return
+	if m.time < _fidget_at:
+		return
+	_fidget_at = m.time + G.rng.randf_range(0.5, 1.8) * fidget_rate
+	if G.rng.randf() < 0.3:
+		return   # pause a moment
+	var dir := Vector3(G.rng.randf_range(-1.0, 1.0), 0, G.rng.randf_range(-1.0, 1.0)).normalized()
+	var e := _nearest_enemy()
+	if e != null:
+		dir = (dir + G.flat_dir(p, e.global_position) * 0.35).normalized()
+	var goal := anchor + dir * G.rng.randf_range(0.4, wander)
+	if not m.nav.is_walkable(goal):
+		goal = m.nav.nearest_walkable(goal)
+	if _under_enemy_turret(goal) and not _under_enemy_turret(p):
+		return
+	_move(goal, true)
+
+
+func _nearest_enemy() -> Unit:
+	var best: Unit = null
+	var bd := INF
+	for e in enemies:
+		var d := G.flat_dist(e.global_position, c.global_position)
+		if d < bd:
+			bd = d
+			best = e
+	return best
+
+
+func _nearest_enemy_dist() -> float:
+	var e := _nearest_enemy()
+	return G.flat_dist(e.global_position, c.global_position) if e != null else INF
+
+
+## After a kill, when nobody is close: laugh / taunt / dance / joke for a moment, like players do.
+func _maybe_emote(delay: float) -> void:
+	if G.rng.randf() > emote_chance:
+		return
+	m.after(delay, func():
+		if not is_instance_valid(c) or c.dead or c.is_busy() or _nearest_enemy_dist() < 9.0:
+			return
+		var opts := ["laugh", "taunt", "dance", "joke", "laugh", "taunt"]
+		var kind: String = opts[G.rng.randi() % opts.size()]
+		if not c.has_anim(kind):
+			kind = "taunt" if c.has_anim("taunt") else ""
+		if kind == "":
+			return
+		var dur := G.rng.randf_range(2.5, 4.0) if kind == "dance" else G.rng.randf_range(1.4, 2.2)
+		c.issue_stop()
+		c.play_anim(kind, 1.0, 0.2)
+		c.anim_lock = dur
+		_emote_until = m.time + dur
+		if m.audio != null:
+			m.audio.emote(c, kind))
+
