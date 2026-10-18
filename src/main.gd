@@ -44,14 +44,14 @@ func _ready() -> void:
 	if direct:
 		start_match(G.next_match)
 		if "--sim" in args:
-			var mon := SimMonitor.new()
+			var mon = _debug_node("sim_monitor")
 			mon.match_ref = current
 			add_child(mon)
 	else:
 		show_menu()
 	for a in args:
 		if a.begins_with("--vfxtest"):
-			add_child(VfxTest.new())
+			add_child(_debug_node("vfx_test"))
 		elif a.begins_with("--harness="):
 			# generic test harness: a Node script; gets `main` and `match_ref` (if it declares them)
 			var hs = load(a.substr(10))
@@ -63,12 +63,21 @@ func _ready() -> void:
 					hn.set("match_ref", current)
 				add_child(hn)
 	if "--ctrltest" in args:
-		var ct := ControlTest.new()
+		var ct = _debug_node("control_test")
 		add_child(ct)
 	if "--uitest" in args:
-		var ut := UITest.new()
+		var ut = _debug_node("ui_test")
 		ut.main = self
 		add_child(ut)
+
+
+## Debug harnesses load by path so a half-edited test script can never stop the game from starting.
+func _debug_node(file: String) -> Node:
+	var scr = load("res://src/debug/%s.gd" % file)
+	if scr == null or not scr.can_instantiate():
+		push_error("debug harness %s failed to load" % file)
+		return Node.new()
+	return scr.new()
 
 
 # ===================================================================== screens
