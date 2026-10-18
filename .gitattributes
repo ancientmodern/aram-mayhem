@@ -1,6 +1,10 @@
-*.glb binary
-*.png binary
-*.jpg binary
-*.ogg binary
-*.otf binary
-*.bin binary
+*.gd text eol=lf
+*.gdshader text eol=lf
+*.txt text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.tscn text eol=lf
+*.godot text eol=lf
+*.bat text eol=crlf
