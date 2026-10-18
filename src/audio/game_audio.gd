@@ -87,6 +87,8 @@ func has(ev: String) -> bool:
 ## Every stream this match can play is requested on background threads at setup (during the loading
 ## screen), so playback never loads/decodes from disk on the main thread (that caused 20-60 ms hitches).
 func prefetch_all() -> void:
+	if "--noprefetch" in OS.get_cmdline_user_args():
+		return
 	for ev in events:
 		var list = events[ev]
 		if not (list is Array):
