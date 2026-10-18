@@ -3,6 +3,7 @@ shader_type spatial;
 // line03.tex scrolling radially (-4 uv/s) and color-movetogreen.tex over life, 0.2 s additive. Reads as a fast
 // ground ripple: one thin bright line sweeping out across the annulus while the colour fades bright -> dark green.
 render_mode unshaded, blend_add, cull_disabled, depth_draw_never;
+#include "res://src/render/gamma.gdshaderinc"
 
 uniform sampler2D line_tex : source_color, filter_linear, repeat_enable;
 uniform sampler2D color_ramp : source_color, filter_linear, repeat_disable;
@@ -27,6 +28,6 @@ void fragment() {
 	vec3 ramp = texture(color_ramp, vec2(clamp(u, 0.02, 0.98), 0.5)).rgb;
 	vec3 c = swap_rg ? ramp.grb : ramp.rgb;
 	float edge = smoothstep(0.0, 0.08, rn) * (1.0 - smoothstep(0.85, 1.0, rn));
-	ALBEDO = c * tint * line * edge * 1.6 * (1.0 - u);
+	ALBEDO = to_out(c * tint * line * edge * 1.6 * (1.0 - u));
 	ALPHA = 1.0;
 }
