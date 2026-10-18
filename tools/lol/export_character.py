@@ -65,7 +65,10 @@ def vocabulary(char: str):
             "recall", "recall_base", "recall_winddown", "recall_leadout", "recall_loop", "recall_in", "recall_out",
             "respawn", "spawn", "channel", "channel_loop", "channel_wndup", "channel_windup", "channel_base",
             "stunned", "stun", "stunned_base", "knockup", "knockup_loop", "airborne", "airborne_base", "taunted",
-            "homeguard", "idle_toshop", "turn", "turn_left", "turn_right", "emote", "flinch", "hit", "pain"]
+            "homeguard", "idle_toshop", "turn", "turn_left", "turn_right", "emote", "flinch", "hit", "pain",
+            # map props (HA_Hexgate / HA_Hexgate_Exit / HA_AP_HealthRelic ...)
+            "open", "close", "click", "open_loop", "cast", "activate", "deactivate", "appear", "disappear",
+            "reappear", "idle_open", "idle_closed", "idle_active", "idle_inactive", "pickup", "respawn_loop"]
     for sp in ("spell1", "spell2", "spell3", "spell4", "spell5", "spell6"):
         for suf in ("", "_base", "a", "b", "c", "d", "_a", "_b", "_c", "_in", "_out", "_loop", "_cast", "_channel",
                     "_windup", "_winddown", "_wndup", "_toidle", "_torun", "_to_idle", "_to_run", "_idle", "_run",
