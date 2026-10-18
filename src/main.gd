@@ -14,6 +14,13 @@ func _ready() -> void:
 	add_child(ui_layer)
 	G.flow_request.connect(_on_flow)
 	var args := OS.get_cmdline_user_args()
+	if "--offscreen" in args and DisplayServer.get_name() != "headless":
+		# test previews: never steal focus, stay off-screen (tools/preview.sh)
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_NO_FOCUS, true)
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_set_size(Vector2i(1280, 720))
+		DisplayServer.window_set_position(Vector2i(-3000, -3000))
+		G.settings.edge_pan = false   # the real mouse is outside this hidden window
 	if not ("--uitest" in args or "--windowed" in args):
 		G.apply_window_mode()
 	Sfx.apply_volumes()

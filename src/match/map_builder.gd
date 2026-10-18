@@ -98,10 +98,10 @@ static func build_environment(parent: Node3D) -> void:
 	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
 	env.tonemap_exposure = 1.0
 	env.glow_enabled = true
-	env.glow_intensity = 0.55
+	env.glow_intensity = 0.35
 	env.glow_strength = 1.0
 	env.glow_bloom = 0.04
-	env.glow_hdr_threshold = 1.05
+	env.glow_hdr_threshold = 1.4
 	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
 	env.set_glow_level(1, 0.6)
 	env.set_glow_level(2, 0.8)

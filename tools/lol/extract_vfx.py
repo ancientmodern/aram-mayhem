@@ -98,6 +98,58 @@ def curve(v):
     return None
 
 
+def _curve_at(times, values, t):
+    if t <= times[0]:
+        return values[0]
+    for i in range(1, len(times)):
+        if t <= times[i]:
+            k = (t - times[i - 1]) / max(times[i] - times[i - 1], 1e-6)
+            a, b = values[i - 1], values[i]
+            if isinstance(a, list):
+                return [x + (y - x) * k for x, y in zip(a, b)]
+            return a + (b - a) * k
+    return values[-1]
+
+
+def sample_curve(v, n=16):
+    """n samples over life of a ValueFloat-like (constant or curve)."""
+    if not isinstance(v, dict):
+        return None
+    dyn = v.get("dynamics")
+    if isinstance(dyn, dict) and dyn.get("times"):
+        return [_curve_at(dyn["times"], dyn["values"], i / (n - 1)) for i in range(n)]
+    c = v.get("constantValue")
+    return [c] * n if c is not None else None
+
+
+def integrate(v, life, n=16):
+    """UV offset over life (n samples) of an IntegratedValueVector2 rate (uv units / second)."""
+    if not isinstance(v, dict):
+        return None
+    dyn = v.get("dynamics")
+    times = dyn.get("times") if isinstance(dyn, dict) else None
+    vals = dyn.get("values") if isinstance(dyn, dict) else None
+    c = v.get("constantValue")
+    if not times:
+        if not isinstance(c, list):
+            return None
+        return [[c[0] * life * i / (n - 1), c[1] * life * i / (n - 1)] for i in range(n)]
+    out = [[0.0, 0.0]]
+    acc = [0.0, 0.0]
+    steps = 64
+    prev = _curve_at(times, vals, 0.0)
+    for k in range(1, steps + 1):
+        t = k / steps
+        cur = _curve_at(times, vals, t)
+        acc = [acc[0] + (prev[0] + cur[0]) * 0.5 * life / steps, acc[1] + (prev[1] + cur[1]) * 0.5 * life / steps]
+        prev = cur
+        if k % (steps // (n - 1)) == 0 and len(out) < n:
+            out.append(list(acc))
+    while len(out) < n:
+        out.append(list(acc))
+    return out
+
+
 def gv(x):
     """League vector -> Godot axes (no scaling)."""
     return [x[0], x[1], -x[2]] if isinstance(x, list) and len(x) == 3 else x
@@ -321,6 +373,35 @@ def emitter(w, e):
     us = val(e.get("particleUVScrollRate"), None) or val(e.get("birthUVScrollRate"), None)
     o["uvscroll"] = us if isinstance(us, list) else None
     o["disable_cull"] = bool(e.get("disableBackfaceCull", False))
+    life_max = o["plife"][1] if o["plife"][1] > 0 else 1.0
+    # uv transforms
+    o["uvscale"] = val(e.get("uvScale"), None)
+    o["uvrate"] = val(e.get("birthUVScrollRate"), None)
+    o["uvint"] = integrate(e.get("particleUVScrollRate"), life_max)
+    uo = val(e.get("birthUVOffset"), None)
+    ur = rand_mult(e.get("birthUVOffset"))
+    if isinstance(uo, list) and len(uo) == 2:
+        if ur:
+            o["uvoff"] = [[uo[0] * ur[0][0], uo[1] * ur[0][1]], [uo[0] * ur[1][0], uo[1] * ur[1][1]]]
+        else:
+            o["uvoff"] = [uo, uo]
+    # multiply texture layer
+    tm = e.get("texturemult")
+    if isinstance(tm, dict):
+        o["tex2"] = export_tex(w, tm.get("texturemult"))
+        o["uv2scale"] = val(tm.get("uvScaleMult"), None)
+        o["uv2rate"] = val(tm.get("birthUvScrollRateMult"), None)
+        o["uv2int"] = integrate(tm.get("22c3cf3e"), life_max)
+    # erosion (dissolve)
+    er = e.get("alphaErosionDefinition")
+    if isinstance(er, dict) and er.get("erosionMapName"):
+        o["ero_tex"] = export_tex(w, er.get("erosionMapName"))
+        drive = er.get("erosionDrive")
+        o["ero_curve"] = sample_curve(drive, 16)
+        ch = val(er.get("erosionMapChannelMixer"), [1, 0, 0, 0])
+        o["ero_ch"] = ch if isinstance(ch, list) and len(ch) == 4 else [1, 0, 0, 0]
+        o["ero_feather"] = float(er.get("erosionFeatherIn", 0.1) or 0.1)
+    o["soft"] = isinstance(e.get("softParticle"), dict) or isinstance(e.get("softParticleParams"), dict)
     if isinstance(e.get("distortionDefinition"), dict):
         o["distort"] = True
     return o
