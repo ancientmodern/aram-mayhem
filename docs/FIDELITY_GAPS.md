@@ -32,9 +32,12 @@ Owner tags: [motion] [vfx] [world-ui] [hud] [env] [kits-a] [kits-b]
   fresnel/falloff, mesh vertex colours, depth bias, rays, planar projections, missile frame (+Y = flight),
   League missile heights + hit bones, sockets for casts/CC, trails tiled by distance. Central updater + load-time
   prebuild (spawn ~0.1-0.3 ms).
-- [vfx] Open: palettes (paletteDefinition), per-particle birth UV offset, isLocalOrientation, VfxShapeSphere/Box
-  flag semantics beyond "radial", troybin conversion is approximate (Flash/Barrier/LevelUp), Map12 snow texture is
-  near-black (stays disabled), size/brightness calibration only spot-checked (Ezreal W ring, Lux Q rings).
+- [vfx] Also done: palettes (gradient maps), per-particle birth UV offsets (non-flipbook emitters), blendMode 3 =
+  solid depth-writing meshes, masked distortion (no screen-copy patches), rim-only alpha-blended avatar shells,
+  Order/Chaos turret skins 24/25, relic pickup/heal systems.
+- [vfx] Open: isLocalOrientation, VfxShapeSphere/Box flag semantics beyond "radial", troybin conversion is
+  approximate (Flash/Barrier/LevelUp), Map12 snow texture is near-black (stays disabled), global brightness vs.
+  League only spot-checked; the environment's glow (threshold 1.4) adds bloom League does not have.
 
 ## World UI & feedback
 - [world-ui] Health bars are flat rects. League's have textured frames, 100-HP tick marks, a level box, shield
