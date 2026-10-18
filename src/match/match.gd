@@ -77,6 +77,8 @@ func _process(delta: float) -> void:
 		return
 	G.beat += 1
 	Combat.depth = 0
+	Combat.frame_events = 0
+	_fx_frame = 0
 	_update_death_gray(delta)
 	var dt := minf(delta, 0.05) * game_speed
 	time += dt
@@ -547,9 +549,12 @@ func _on_champion_killed(victim: Unit, killer, killer_champ) -> void:
 				announce_text = "Godlike!"
 			elif st >= 8:
 				announce_text = "Legendary!"
+		if G.debug_sites: G.crumb("kill_gold")
 		killer_champ.add_gold(bounty, victim)
+		if G.debug_sites: G.crumb("kill_xp")
 		killer_champ.gain_xp(victim.xp_bounty())
 		for e in killer_champ.effects.duplicate():
+			if G.debug_sites: G.crumb("takedown " + str(e.id))
 			e.on_takedown(victim)
 	for a in assisters:
 		a.assists += 1
@@ -560,6 +565,7 @@ func _on_champion_killed(victim: Unit, killer, killer_champ) -> void:
 	var entry := {"killer": killer_champ if killer_champ != null else killer, "victim": victim,
 			"assists": assisters, "time": time, "team": team}
 	events.append(entry)
+	if G.debug_sites: G.crumb("champion_killed emit")
 	G.champion_killed.emit(victim, killer_champ if killer_champ != null else killer, assisters)
 	if announce_text == "":
 		announce_text = ("An enemy has been slain" if victim.team != G.player.team else "An ally has been slain") if G.player != null else "Slain"
@@ -653,7 +659,13 @@ func end_game(winning_team: int) -> void:
 
 
 # ===================================================================== floating text
+var _fx_frame := 0
+
+
 func fx_damage(info: DamageInfo) -> void:
+	_fx_frame += 1
+	if _fx_frame > 80:
+		return
 	if overlay != null:
 		overlay.damage_number(info)
 
@@ -889,7 +901,8 @@ func _spawn_champion(alias: String, team: int, skin: int, is_player: bool, idx: 
 		c.auto_level_abilities()
 	c.add_effect(MayhemAura.new())
 	c.play_anim("idle", 1.0, 0.0)
-	c.augments_pending = 1   # game-start augment screen (level 3)
+	if Rules.AUGMENTS_ENABLED:
+		c.augments_pending = 1   # game-start augment screen (level 3)
 	return c
 
 

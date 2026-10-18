@@ -15,6 +15,8 @@ const KILL_XP := [0, 35, 95, 155, 215, 275, 335, 395, 455, 515, 590, 640, 690, 7
 const KILL_GOLD := 200.0
 const FIRST_BLOOD_GOLD := 90.0
 const ASSIST_GOLD_POOL := 90.0
+## Mayhem augments are off: the game focuses on classic ARAM (code kept, not run).
+const AUGMENTS_ENABLED := false
 const AUGMENT_LEVELS := [3, 7, 11, 15]
 const AUGMENT_CHOICES := 3
 ## Tier weights per augment screen index [silver, gold, prismatic]
