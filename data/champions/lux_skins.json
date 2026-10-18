@@ -1,0 +1,232 @@
+[
+ {
+  "id": 99000,
+  "num": 0,
+  "name": "Lux",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99001,
+  "num": 1,
+  "name": "Sorceress Lux",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99002,
+  "num": 2,
+  "name": "Spellthief Lux",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99003,
+  "num": 3,
+  "name": "Commando Lux",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99004,
+  "num": 4,
+  "name": "Imperial Lux",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99005,
+  "num": 5,
+  "name": "Steel Legion Lux",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99006,
+  "num": 6,
+  "name": "Star Guardian Lux",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99007,
+  "num": 7,
+  "name": "Elementalist Lux",
+  "rarity": "kUltimate",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99008,
+  "num": 8,
+  "name": "Lunar Empress Lux",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99014,
+  "num": 14,
+  "name": "Pajama Guardian Lux",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99015,
+  "num": 15,
+  "name": "Battle Academia Lux",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99016,
+  "num": 16,
+  "name": "Prestige Battle Academia Lux",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99017,
+  "num": 17,
+  "name": "Dark Cosmic Lux",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99018,
+  "num": 18,
+  "name": "Cosmic Lux",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99019,
+  "num": 19,
+  "name": "Space Groove Lux",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99029,
+  "num": 29,
+  "name": "Porcelain Lux",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99038,
+  "num": 38,
+  "name": "Soul Fighter Lux",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99039,
+  "num": 39,
+  "name": "Prestige Battle Academia Lux (2022)",
+  "rarity": "kMythic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99040,
+  "num": 40,
+  "name": "Prestige Porcelain Lux",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99042,
+  "num": 42,
+  "name": "Empyrean Lux",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99061,
+  "num": 61,
+  "name": "Faerie Court Lux",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99070,
+  "num": 70,
+  "name": "Prestige Spirit Blossom Lux",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 99072,
+  "num": 72,
+  "name": "Panda Pal Lux",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ }
+]

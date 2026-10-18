@@ -1,0 +1,414 @@
+{
+ "alias": "Lux",
+ "name": "Lux",
+ "stats": {
+  "base_hp": 580.0,
+  "hp_per_level": 99.0,
+  "base_hp_regen": 1.1,
+  "hp_regen_per_level": 0.11,
+  "base_ad": 54.0,
+  "ad_per_level": 3.3,
+  "base_armor": 21.0,
+  "armor_per_level": 5.2,
+  "base_mr": 30.0,
+  "mr_per_level": 1.3,
+  "base_ms": 330.0,
+  "attack_range": 550.0,
+  "attack_speed": 0.669,
+  "attack_speed_ratio": 0.625,
+  "attack_speed_per_level": 3.0,
+  "resource_type": 0,
+  "mana_base": 440.0,
+  "mana_per_level": 23.5,
+  "mana_regen": 1.8,
+  "mana_regen_per_level": 0.16,
+  "critDamageMultiplier": 2.0,
+  "acquisitionRange": 625.0,
+  "selectionHeight": 85.0,
+  "selectionRadius": 100.0,
+  "pathfindingCollisionRadius": 35.0,
+  "attack_cast_offset": -0.14374999701976776,
+  "attack_total_time": null,
+  "attack_cast_time": null
+ },
+ "spell_slots": {
+  "Q": "LuxLightBinding",
+  "W": "LuxPrismaticWave",
+  "E": "LuxLightStrikeKugel",
+  "R": "LuxR"
+ },
+ "passive": "LuxIlluminationPassive",
+ "passive_name": null,
+ "passive_desc": "Lux's damaging spells charge the target with energy for a few seconds. Lux's next attack ignites the energy, dealing bonus magic damage (depending on Lux's level) to the target.",
+ "spells": {
+  "LuxPrismaticWaveMissile": {
+   "script": "LuxPrismaticWaveMissile",
+   "data_values": {},
+   "cooldownTime": 9.0,
+   "castRange": 1175.0,
+   "castRadius": 299.3,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2200.0,
+   "mLineWidth": 110.0,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "SpiralBladeMissile"
+  },
+  "LuxPrismaticWaveReturnDead": {
+   "script": "LuxPrismaticWaveReturnDead",
+   "data_values": {},
+   "cooldownTime": 9.0,
+   "castRange": 25000.0,
+   "castRadius": 299.3,
+   "castConeDistance": 100.0,
+   "missileSpeed": 50.0,
+   "mLineWidth": 110.0,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "SpiralBladeMissile"
+  },
+  "LuxPrismaticWave": {
+   "script": "LuxPrismaticWave",
+   "data_values": {
+    "BaseShieldAmount": [
+     25.0,
+     40.0,
+     55.0,
+     70.0,
+     85.0,
+     100.0,
+     115.0
+    ],
+    "APRatio": 0.4,
+    "ShieldDuration": 2.5
+   },
+   "calcs": {
+    "#93488990": "BaseShieldAmount + APRatio*AP"
+   },
+   "cooldownTime": [
+    12.0,
+    12.0,
+    11.5,
+    11.0,
+    10.5,
+    10.0,
+    9.5
+   ],
+   "mana": [
+    60.0,
+    65.0,
+    70.0,
+    75.0,
+    80.0,
+    85.0
+   ],
+   "castRange": 10000.0,
+   "castRangeDisplayOverride": 1150.0,
+   "castRadius": 299.3,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mLineWidth": 150.0,
+   "mAnimationName": "Spell2",
+   "mAlternateName": "LuxPrismaticWave",
+   "name": "Prismatic Barrier",
+   "tooltip": "Lux throws her wand, granting <shield>@TotalShieldTT@ Shield</shield> for @ShieldDuration@ seconds to allies it passes through. Then it returns, granting the same <shield>Shield</shield> on its return.",
+   "summary": "Lux throws her wand and bends the light around any friendly target it touches, protecting them from enemy damage."
+  },
+  "LuxPrismaticWaveReturn": {
+   "script": "LuxPrismaticWaveReturn",
+   "data_values": {},
+   "cooldownTime": 9.0,
+   "castRange": 25000.0,
+   "castRadius": 299.3,
+   "castConeDistance": 100.0,
+   "missileSpeed": 50.0,
+   "mLineWidth": 110.0,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "SpiralBladeMissile"
+  },
+  "LuxLightBindingDummy": {
+   "script": "LuxLightBindingDummy",
+   "data_values": {},
+   "cooldownTime": 12.0,
+   "castRange": 1300.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mLineWidth": 50.0,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "LuxLightBindingMis"
+  },
+  "LuxLightBindingMis": {
+   "script": "LuxLightBindingMis",
+   "data_values": {},
+   "cooldownTime": 12.0,
+   "castRange": 1300.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mLineWidth": 70.0,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "LuxLightBindingMis"
+  },
+  "LuxLightBinding": {
+   "script": "LuxLightBinding",
+   "data_values": {
+    "BaseDamage": [
+     40.0,
+     80.0,
+     120.0,
+     160.0,
+     200.0,
+     240.0,
+     280.0
+    ],
+    "APRatio": 0.75,
+    "RootDuration": 2.0
+   },
+   "calcs": {
+    "#bcc89a20": "BaseDamage + APRatio*AP"
+   },
+   "mana": 50.0,
+   "castRange": 10000.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mLineWidth": 80.0,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "LuxLightBinding",
+   "name": "Light Binding",
+   "tooltip": "Lux fires a ball of light, <status>Rooting</status> the first two enemies for @RootDuration@ seconds and dealing <magicDamage>@TotalDamageTT@ magic damage</magicDamage> to each.",
+   "summary": "Lux releases a sphere of light that binds and deals damage to up to two enemy units."
+  },
+  "LuxIlluminatingFraulein": {
+   "script": "LuxIlluminatingFraulein",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1400.0,
+   "mAlternateName": "LuxIlluminatingFraulein"
+  },
+  "LuxIlluminationPassive": {
+   "script": "LuxIlluminationPassive",
+   "data_values": {
+    "DebuffDuration": 6.0,
+    "APRatio": 0.35
+   },
+   "calcs": {
+    "#1ddee768": "2421b258 + APRatio*AP"
+   },
+   "cooldownTime": 0.0,
+   "castRange": 0.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1400.0,
+   "name": "Illumination",
+   "tooltip": "Lux's damaging Abilities mark enemies for @DebuffDuration@ seconds. Lux's Attacks consume the mark, dealing <magicDamage>@TotalDamage@ magic damage</magicDamage>.<br><br><spellName>Final Spark</spellName> will consume marks on enemies it hits and refresh them.",
+   "summary": "Lux's damaging spells charge the target with energy for a few seconds. Lux's next attack ignites the energy, dealing bonus magic damage (depending on Lux's level) to the target."
+  },
+  "LuxLightStrikeKugel": {
+   "script": "LuxLightStrikeKugel",
+   "data_values": {
+    "VisionRadius": 650.0,
+    "SlowLingerDuration": 1.0,
+    "SlowPercent": [
+     20.0,
+     25.0,
+     30.0,
+     35.0,
+     40.0,
+     45.0,
+     50.0
+    ],
+    "SlowZoneDuration": 5.0,
+    "BaseDamage": [
+     20.0,
+     65.0,
+     115.0,
+     165.0,
+     215.0,
+     265.0,
+     315.0
+    ]
+   },
+   "calcs": {
+    "#bcc89a20": "BaseDamage + 0.8*AP",
+    "#ee9714e4": "(SlowPercent) * -0.01"
+   },
+   "cooldownTime": [
+    10.0,
+    10.0,
+    9.5,
+    9.0,
+    8.5,
+    8.0,
+    8.0
+   ],
+   "mana": [
+    70.0,
+    80.0,
+    90.0,
+    100.0,
+    110.0,
+    110.0
+   ],
+   "castRange": 1100.0,
+   "castRadius": 295.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1300.0,
+   "mAnimationName": "Spell3",
+   "name": "Lucent Singularity",
+   "tooltip": "Lux creates a light zone that <status>Slows</status> by @SlowPercent@% and reveals the area. After @SlowZoneDuration@ seconds or on <recast>Recasting</recast> this Ability, it detonates, dealing <magicDamage>@TotalDamageTT@ magic damage</magicDamage> and <status>Slowing</status> for an additional @SlowLingerDuration@ second.",
+   "summary": "Fires an anomaly of twisted light to an area, which slows nearby enemies. Lux can detonate it to damage enemies in the area of effect."
+  },
+  "LuxLightstrikeToggle": {
+   "script": "LuxLightstrikeToggle",
+   "data_values": {},
+   "cooldownTime": [
+    10.0,
+    10.0,
+    9.5,
+    9.0,
+    8.5,
+    8.0,
+    8.0
+   ],
+   "castRange": 1200.0,
+   "castRadius": 250.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1400.0,
+   "mAnimationName": "Spell2",
+   "mAlternateName": "LuxLightstrikeKugel"
+  },
+  "LuxUltimateSkinElementMissile": {
+   "script": "LuxUltimateSkinElementMissile",
+   "data_values": {},
+   "cooldownTime": 9.0,
+   "castRange": 25000.0,
+   "castConeAngle": 0.0,
+   "castConeDistance": 0.0,
+   "mAnimationName": "Spell1"
+  },
+  "LuxR": {
+   "script": "LuxR",
+   "data_values": {
+    "Damage": [
+     200.0,
+     300.0,
+     400.0,
+     500.0,
+     600.0,
+     700.0,
+     800.0
+    ],
+    "ResetPercent": [
+     0.2,
+     0.3,
+     0.4,
+     0.5,
+     0.6,
+     0.7,
+     0.8
+    ],
+    "ResetAssistWindow": 1.75
+   },
+   "calcs": {
+    "#1ddee768": "Damage + 1.2*AP"
+   },
+   "cooldownTime": [
+    60.0,
+    60.0,
+    50.0,
+    40.0,
+    40.0,
+    40.0,
+    30.0
+   ],
+   "mana": 100.0,
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 3340.0,
+   "castRadius": 250.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 3000.0,
+   "mLineWidth": 190.0,
+   "mAnimationName": "Spell4",
+   "name": "Final Spark",
+   "tooltip": "Lux fires a dazzling ray of light, dealing <magicDamage>@TotalDamage@ magic damage</magicDamage> to all enemies in a line.",
+   "summary": "After gathering energy, Lux fires a beam of light that deals damage to all targets in the area. In addition, triggers Lux's passive ability and refreshes the Illumination debuff duration."
+  },
+  "LuxRVfxMis": {
+   "script": "LuxRVfxMis",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 10000.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 3600.0,
+   "mLineWidth": 60.0,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "EzrealMysticShotMissile"
+  },
+  "LuxBasicAttack2": {
+   "script": "LuxBasicAttack2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1600.0,
+   "mAnimationName": "Attack2",
+   "mAlternateName": "LuxBasicAttack"
+  },
+  "LuxUltimateSkinTransformAnimation": {
+   "script": "LuxUltimateSkinTransformAnimation",
+   "data_values": {},
+   "mChannelDuration": 2.5,
+   "mAnimationName": ""
+  },
+  "LuxRMis": {
+   "script": "LuxRMis",
+   "data_values": {},
+   "cooldownTime": [
+    60.0,
+    60.0,
+    60.0,
+    60.0,
+    10.0,
+    10.0,
+    10.0
+   ],
+   "castRange": 3500.0,
+   "castRadius": 299.3,
+   "castConeDistance": 100.0,
+   "missileSpeed": 3000.0,
+   "mLineWidth": 250.0,
+   "mAnimationName": "Spell4",
+   "mAlternateName": "LuxMaliceCannon"
+  },
+  "LuxCritAttack": {
+   "script": "LuxCritAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1600.0,
+   "mAnimationName": "Crit",
+   "mAlternateName": "LuxBasicAttack"
+  },
+  "LuxBasicAttack": {
+   "script": "LuxBasicAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1600.0,
+   "mAlternateName": "LuxBasicAttack"
+  }
+ }
+}
