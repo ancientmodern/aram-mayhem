@@ -1,0 +1,343 @@
+class_name Assets
+extends RefCounted
+## Asset loading: models (converted from League files), icons, fonts, shaders.
+
+const CHAMP_SHADER := preload("res://src/vfx/shaders/champion.gdshader")
+
+static var _scene_cache := {}
+static var _mat_cache := {}
+static var _tex_cache := {}
+static var _font_cache := {}
+static var _sidecar_cache := {}
+
+
+static func champion_model_path(alias: String, skin: int) -> String:
+	var low := alias.to_lower()
+	var name := low if skin == 0 else "%s_skin%d" % [low, skin]
+	return "res://assets/champions/%s/%s.glb" % [low, name]
+
+
+static func unit_model_path(unit_name: String, skin: int) -> String:
+	var low := unit_name.to_lower()
+	var name := low if skin == 0 else "%s_skin%d" % [low, skin]
+	return "res://assets/units/%s/%s.glb" % [low, name]
+
+
+static func _load_scene(path: String) -> PackedScene:
+	if _scene_cache.has(path):
+		return _scene_cache[path]
+	var ps: PackedScene = null
+	if ResourceLoader.exists(path):
+		ps = load(path)
+	_scene_cache[path] = ps
+	return ps
+
+
+static func sidecar(path: String) -> Dictionary:
+	var sp := path.get_basename() + ".anims.json"
+	if _sidecar_cache.has(sp):
+		return _sidecar_cache[sp]
+	var d := {}
+	if FileAccess.file_exists(sp):
+		var parsed = JSON.parse_string(FileAccess.get_file_as_string(sp))
+		if parsed is Dictionary:
+			d = parsed
+	_sidecar_cache[sp] = d
+	return d
+
+
+static func champion_model(alias: String, skin: int) -> Node3D:
+	var path := champion_model_path(alias, skin)
+	if not ResourceLoader.exists(path):
+		path = champion_model_path(alias, 0)
+	return _instance_model(path, 1.0)
+
+
+static func unit_model(unit_name: String, skin: int) -> Node3D:
+	return _instance_model(unit_model_path(unit_name, skin), 0.0)
+
+
+static func _instance_model(path: String, self_illum: float) -> Node3D:
+	var ps := _load_scene(path)
+	if ps == null:
+		return null
+	var inst: Node3D = ps.instantiate()
+	var meta := sidecar(path)
+	var holder := Node3D.new()
+	holder.name = "Model"
+	holder.add_child(inst)
+	var sc: float = float(meta.get("skin_scale", 1.0))
+	if sc <= 0.0:
+		sc = 1.0
+	inst.scale = Vector3.ONE * sc
+	holder.set_meta("anim_aliases", meta.get("aliases", {}))
+	_apply_materials(inst, self_illum)
+	_setup_anim_player(inst)
+	return holder
+
+
+static func _apply_materials(n: Node, self_illum: float) -> void:
+	if n is MeshInstance3D:
+		var mi := n as MeshInstance3D
+		if mi.name.begins_with("HIDDEN__"):
+			mi.visible = false
+		if mi.mesh != null:
+			for i in mi.mesh.get_surface_count():
+				var src := mi.mesh.surface_get_material(i)
+				mi.set_surface_override_material(i, _champion_material(src, self_illum))
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	for c in n.get_children():
+		_apply_materials(c, self_illum)
+
+
+static func _champion_material(src: Material, self_illum: float) -> Material:
+	var key := src
+	if _mat_cache.has(key):
+		return _mat_cache[key]
+	var sm := ShaderMaterial.new()
+	sm.shader = CHAMP_SHADER
+	var tex: Texture2D = null
+	var masked := false
+	if src is BaseMaterial3D:
+		var bm := src as BaseMaterial3D
+		tex = bm.albedo_texture
+		masked = bm.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR or bm.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA
+	if tex != null:
+		sm.set_shader_parameter("albedo_tex", tex)
+	sm.set_shader_parameter("use_alpha_scissor", masked)
+	sm.set_shader_parameter("self_illum", 0.55 if self_illum > 0.0 else 0.35)
+	_mat_cache[key] = sm
+	return sm
+
+
+static func _setup_anim_player(root: Node) -> void:
+	var ap := _find_anim(root)
+	if ap == null:
+		return
+	ap.playback_default_blend_time = 0.12
+	for lib_name in ap.get_animation_library_list():
+		var lib := ap.get_animation_library(lib_name)
+		for an in lib.get_animation_list():
+			var a := lib.get_animation(an)
+			var low := String(an).to_lower()
+			if _is_loop_name(low):
+				a.loop_mode = Animation.LOOP_LINEAR
+	_ensure_reset(ap, root)
+
+
+static func _is_loop_name(low: String) -> bool:
+	for k in ["idle", "run", "dance", "channel", "_loop", "stunned", "knockup", "recall", "walk"]:
+		if low.find(k) >= 0 and low.find("_in") < 0 and low.find("windup") < 0 and low.find("wndup") < 0 \
+				and low.find("_out") < 0 and low.find("winddown") < 0 and low.find("leadout") < 0:
+			return true
+	return false
+
+
+## Build a RESET animation holding the rest pose of every bone, so bones that a clip does not
+## animate fall back to the rest pose (the converter omits tracks equal to the bind pose).
+static func _ensure_reset(ap: AnimationPlayer, root: Node) -> void:
+	var lib := ap.get_animation_library("")
+	if lib == null or lib.has_animation("RESET"):
+		return
+	var skel := _find_skeleton(root)
+	if skel == null:
+		return
+	var a := Animation.new()
+	a.length = 0.001
+	var path_prefix := String(ap.get_node(ap.root_node).get_path_to(skel))
+	for b in skel.get_bone_count():
+		var rest := skel.get_bone_rest(b)
+		var bn := skel.get_bone_name(b)
+		var np := NodePath(path_prefix + ":" + bn)
+		var tp := a.add_track(Animation.TYPE_POSITION_3D)
+		a.track_set_path(tp, np)
+		a.position_track_insert_key(tp, 0.0, rest.origin)
+		var tr := a.add_track(Animation.TYPE_ROTATION_3D)
+		a.track_set_path(tr, np)
+		a.rotation_track_insert_key(tr, 0.0, rest.basis.get_rotation_quaternion())
+		var ts := a.add_track(Animation.TYPE_SCALE_3D)
+		a.track_set_path(ts, np)
+		a.scale_track_insert_key(ts, 0.0, rest.basis.get_scale())
+	lib.add_animation("RESET", a)
+	ap.deterministic = true
+
+
+static func _find_anim(n: Node) -> AnimationPlayer:
+	if n is AnimationPlayer:
+		return n
+	for c in n.get_children():
+		var r := _find_anim(c)
+		if r != null:
+			return r
+	return null
+
+
+static func _find_skeleton(n: Node) -> Skeleton3D:
+	if n is Skeleton3D:
+		return n
+	for c in n.get_children():
+		var r := _find_skeleton(c)
+		if r != null:
+			return r
+	return null
+
+
+static func find_skeleton(n: Node) -> Skeleton3D:
+	return _find_skeleton(n)
+
+
+## Map logical animation names to available clips.
+static func build_anim_map(ap: AnimationPlayer, overrides: Dictionary, aliases: Dictionary = {}) -> Dictionary:
+	var out := {}
+	if ap == null:
+		return out
+	var names: Array = []
+	for an in ap.get_animation_list():
+		if an != "RESET":
+			names.append(String(an))
+	var lowmap := {}
+	for n in names:
+		lowmap[_strip_prefix(n.to_lower())] = n
+	var model_root := ap.get_parent()
+	while model_root != null and not model_root.has_meta("anim_aliases"):
+		model_root = model_root.get_parent()
+	var al: Dictionary = aliases.duplicate()
+	if model_root != null:
+		al.merge(model_root.get_meta("anim_aliases"))
+
+	var pick := func(cands: Array) -> Array:
+		var res := []
+		for c in cands:
+			if lowmap.has(c):
+				res.append(lowmap[c])
+		return res
+
+	out["idle"] = pick.call(["idle1", "idle1_base", "idle_base", "idle", "idle2", "idle1_in", "minigun_idle1", "idle2_base", "idle_1"])
+	if out.idle.size() > 1:
+		out.idle = [out.idle[0]]
+	out["run"] = pick.call(["run", "run_base", "run1", "run2", "minigun_run", "run_fast", "run_haste", "walk"])
+	if out.run.size() > 1:
+		out.run = [out.run[0]]
+	out["run_fast"] = pick.call(["run_haste", "run_fast", "run_fast_loop"])
+	out["attack"] = pick.call(["attack1", "attack2", "attack3", "attack4", "attack1_base", "attack2_base", "attack3_base", "minigun_attack1", "minigun_attack2"])
+	out["crit"] = pick.call(["crit", "crit_base", "crit2"])
+	out["death"] = pick.call(["death", "death_base", "minigun_death"])
+	for i in range(1, 5):
+		var k := "spell%d" % i
+		out[k] = pick.call([k, k + "_base", k + "a", k + "_0", k + "_cast", k + "_in"])
+		if out[k].size() > 1:
+			out[k] = [out[k][0]]
+	out["dance"] = pick.call(["dance_loop", "dance", "dance_base", "dance_in"])
+	out["taunt"] = pick.call(["taunt", "taunt_base", "taunt_in"])
+	out["laugh"] = pick.call(["laugh", "laugh_base", "laugh_in", "laugh_loop"])
+	out["joke"] = pick.call(["joke", "joke_loop", "joke_in"])
+	out["recall"] = pick.call(["recall", "recall_loop", "recall_base"])
+	out["channel"] = pick.call(["channel", "channel_loop"])
+	out["stunned"] = pick.call(["stunned", "stun", "stunned_base"])
+	out["knockup"] = pick.call(["knockup", "knockup_loop", "airborne"])
+	out["respawn"] = pick.call(["respawn", "respawn_base"])
+	out["spawn"] = pick.call(["spawn"])
+	# aliases from the exporter (e.g. spell1 -> attack2)
+	for logical in ["spell1", "spell2", "spell3", "spell4", "crit", "dance", "idle", "run", "death", "taunt", "laugh", "joke", "channel"]:
+		if out.get(logical, []).is_empty():
+			var key: String = logical if logical != "idle" else "idle1"
+			if al.has(key) and lowmap.has(_strip_prefix(String(al[key]))):
+				out[logical] = [lowmap[_strip_prefix(String(al[key]))]]
+	if out.idle.is_empty() and not names.is_empty():
+		out.idle = [names[0]]
+	if out.crit.is_empty():
+		out.crit = out.attack.duplicate()
+	for i in range(1, 5):
+		var k := "spell%d" % i
+		if out[k].is_empty():
+			out[k] = out.attack.slice(0, 1) if not out.attack.is_empty() else []
+	for k in overrides:
+		var arr: Array = []
+		for n in overrides[k]:
+			var low := _strip_prefix(String(n).to_lower())
+			if lowmap.has(low):
+				arr.append(lowmap[low])
+		if not arr.is_empty():
+			out[k] = arr
+	return out
+
+
+static func _strip_prefix(low: String) -> String:
+	var re := RegEx.create_from_string("^(\\d{4}_)")
+	return re.sub(low, "")
+
+
+static func placeholder_model(team: int, h: float, r: float = 0.45) -> Node3D:
+	var root := Node3D.new()
+	root.name = "Model"
+	var mi := MeshInstance3D.new()
+	var cm := CapsuleMesh.new()
+	cm.radius = r
+	cm.height = h
+	mi.mesh = cm
+	mi.position.y = h * 0.5
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = G.COLOR_ALLY if team == G.Team.ORDER else G.COLOR_ENEMY
+	mi.material_override = mat
+	root.add_child(mi)
+	return root
+
+
+# ------------------------------------------------------------------ textures / icons
+static func tex(path: String) -> Texture2D:
+	if _tex_cache.has(path):
+		return _tex_cache[path]
+	var t: Texture2D = null
+	if ResourceLoader.exists(path):
+		t = load(path)
+	_tex_cache[path] = t
+	return t
+
+
+static func ability_icon(alias: String, key: String) -> Texture2D:
+	return tex("res://assets/champions/%s/ui/%s.png" % [alias.to_lower(), key])
+
+
+static func champion_square(alias: String) -> Texture2D:
+	return tex("res://assets/champions/%s/ui/square.png" % alias.to_lower())
+
+
+static func champion_art(alias: String, skin: int, kind: String) -> Texture2D:
+	var t := tex("res://assets/champions/%s/ui/skins/%d_%s.jpg" % [alias.to_lower(), skin, kind])
+	if t == null and skin != 0:
+		t = tex("res://assets/champions/%s/ui/skins/0_%s.jpg" % [alias.to_lower(), kind])
+	return t
+
+
+static func augment_icon(aug_id: String) -> Texture2D:
+	var t := tex("res://assets/ui/augments_large/%s.png" % aug_id.to_lower())
+	if t == null:
+		t = tex("res://assets/ui/augments/%s.png" % aug_id.to_lower())
+	return t
+
+
+static func item_icon(item_id: int) -> Texture2D:
+	return tex("res://assets/ui/items/%d.png" % item_id)
+
+
+static func summoner_icon(name: String) -> Texture2D:
+	return tex("res://assets/ui/summoners/%s.png" % name)
+
+
+# ------------------------------------------------------------------ fonts
+static func font(family: String = "beaufort", weight: String = "Bold") -> Font:
+	var key := family + weight
+	if _font_cache.has(key):
+		return _font_cache[key]
+	var path := ""
+	if family == "beaufort":
+		path = "res://assets/fonts/Beaufort_for_LOL_%s.otf" % weight
+	else:
+		path = "res://assets/fonts/Spiegel_%s.otf" % weight
+	var f: Font = null
+	if ResourceLoader.exists(path):
+		f = load(path)
+	if f == null:
+		f = ThemeDB.fallback_font
+	_font_cache[key] = f
+	return f
