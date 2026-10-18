@@ -153,13 +153,18 @@ class DecisiveStrike extends Ability:
 	func consume(target: Unit) -> void:
 		empowered_until = -1.0
 		end_fx()
-		K.silence(target, dv("SilenceDuration", 1.5), owner)
+		var sb: Buff = K.silence(target, dv("SilenceDuration", 1.5), owner)
 		var m = owner.match_ref
 		owner.kit.q_hit_time = m.time
 		LolVfx.spawn(m, "Garen_Base_Q_Tar", target.global_position + Vector3(0, target.height * 0.5, 0), {"dir": G.flat_dir(owner.global_position, target.global_position)})
 		LolVfx.spawn(m, "Garen_Base_Q_Land", target.global_position, {"dir": G.flat_dir(owner.global_position, target.global_position)})
-		var sil := LolVfx.attach(target, "Garen_Base_Q_Silence", {"loop": true, "height": target.height + 0.4})
-		m.after(dv("SilenceDuration", 1.5), func(): LFx.kill(sil))
+		# League silence mark replaces the generic LOC_Silence; it is the silence buff's vfx so it ends with
+		# the silence (expiry, cleanse, death) instead of a fixed timer
+		if sb != null:
+			var sil := LolVfx.attach(target, "Garen_Base_Q_Silence", {"loop": true, "height": target.height + 0.4})
+			if sil != null:
+				K.kill_fx(sb.vfx, 0.0)
+				sb.vfx = sil
 		if m.camera_rig != null and owner == G.player:
 			m.camera_rig.shake(0.25)
 
@@ -183,6 +188,12 @@ class QAttackHook extends Effect:
 	func on_tick(_u, _dt: float) -> void:
 		if q.sword_fx != null and not q.is_empowered():
 			q.end_fx()
+
+	## Effects don't tick while dead: drop the empowered sword (and its looping glow) on death.
+	func on_death(_killer) -> void:
+		q.empowered_until = -1.0
+		q.end_fx()
+		LFx.stop(q.boost_fx)
 
 	func on_pre_damage_dealt(info) -> void:
 		if info.is_attack and q.is_empowered() and info.target != null:
@@ -261,9 +272,20 @@ class Judgment extends Ability:
 	func make_target(world_pos: Vector3, hovered = null) -> Dictionary:
 		return {"pos": owner.global_position, "dir": owner.facing, "unit": null}
 
+	## League: the cooldown starts when the spin ends; recasting during the spin ends it early.
+	func auto_cooldown() -> bool:
+		return false
+
+	func on_recast_expired() -> void:
+		pass
+
 	func execute(t: Dictionary) -> void:
 		var o = owner
 		if spinning:
+			# recast (GarenECancel): stop spinning now
+			recast_window = 0.0
+			if not o.channel.is_empty() and o.channel.ability == self:
+				o.interrupt_channel(true)
 			return
 		spinning = true
 		hits_on.clear()
@@ -276,6 +298,7 @@ class Judgment extends Ability:
 		o.anim_lock = dur
 		start_channel(dur, {"interval": interval, "acc": 0.0})
 		o.channel_disarm = true
+		recast_window = dur + 0.1
 		notify_cast(t)
 
 	func channel_tick(dt: float, ch: Dictionary) -> void:
@@ -311,11 +334,13 @@ class Judgment extends Ability:
 				var n: int = hits_on.get(u, 0) + 1
 				hits_on[u] = n
 				if n == int(dv("StacksToShred", 6.0)):
-					var sb := K.buff(u, "garen_shred", dv("ShredDuration", 6.0), {"armor%": -dv("ShredAmount", 0.25)}, o, {"name": "Judgment", "debuff": true})
+					var sb := K.buff(u, "garen_shred", dv("ShredDuration", 6.0), {"armor%": -dv("ShredAmount", 0.25)}, o, {"name": "Judgment", "debuff": true, "kill_fx": true})
 					if sb != null:
 						LolVfx.spawn(o.match_ref, "Garen_Base_E_ArmorShred_Cleaver", u.global_position + Vector3(0, u.height * 0.5, 0), {"dir": G.flat_dir(o.global_position, u.global_position)})
-						var shred := LolVfx.attach(u, "Garen_Base_E_ArmorShred", {"loop": true, "height": u.height * 0.5})
-						sb.on_expire = func(_b): LFx.stop(shred)
+						# buff vfx (re-applying the shred refreshes the buff and keeps one effect; it used to stack
+						# a new looping effect per application and leak the old one forever)
+						if sb.vfx == null or not is_instance_valid(sb.vfx):
+							sb.vfx = LolVfx.attach(u, "Garen_Base_E_ArmorShred", {"loop": true, "height": u.height * 0.5})
 
 	var spin_fx: LolVfx = null
 	var nearest_fx: LolVfx = null
@@ -333,6 +358,8 @@ class Judgment extends Ability:
 
 	func channel_end(_ch: Dictionary, interrupted: bool) -> void:
 		spinning = false
+		recast_window = 0.0
+		start_cooldown()
 		owner.channel_disarm = false
 		owner.anim_lock = 0.0
 		LFx.stop(spin_fx)
@@ -370,7 +397,7 @@ class DemacianJustice extends Ability:
 		var m = o.match_ref
 		# League: the target is marked and the giant sword of Demacia drops onto it
 		var dir := G.flat_dir(o.global_position, u.global_position)
-		LolVfx.attach(u, "Garen_Base_R_Buf_Enemy_Activate", {"height": u.height + 0.3})
+		LolVfx.attach(u, "Garen_Base_R_Buf_Enemy_Activate", {"height": u.height + 0.3, "max_life": 2.0})
 		LolVfx.spawn(m, "Garen_Base_R_Sword_Tar", u.global_position, {"dir": dir})
 		var self_ref := self
 		m.after(0.18, func():

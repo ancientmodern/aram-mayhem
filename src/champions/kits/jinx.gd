@@ -17,6 +17,9 @@ func build_kit() -> void:
 	c.passive = GetExcited.new(pd)
 	c.add_effect(c.passive)
 	var q = init_ability(Switcheroo.new(), "Q")
+	# JinxQ's mCastTime (0.25) would root Jinx on every swap: Switcheroo is instant in League (it even
+	# cancels into the next attack), so drop the windup
+	q.cast_time = 0.0
 	q.rocket_mana = q.rv(q.costs)
 	q.costs = [0.0]
 	c.abilities[0] = q
@@ -474,7 +477,10 @@ class Zap extends KitAbility:
 			"on_hit": func(_mi, u):
 				self_ref.hit(u, dmg, G.DmgType.PHYSICAL, {"tag": "w"})
 				var sb: Buff = K.slow(u, slow, slow_t, o, false, "jinx_w_slow")
-				if sb != null and (sb.vfx == null or not is_instance_valid(sb.vfx)):
+				# League W slow effect replaces the generic slow trail (K.slow attaches Global_Slow on champions)
+				if sb != null and not sb.has_meta("jinx_fx"):
+					sb.set_meta("jinx_fx", true)
+					K.kill_fx(sb.vfx, 0.0)
 					sb.vfx = LolVfx.attach(u, "Jinx_Base_W_Slow", {"loop": true}),
 		})
 		notify_cast(t)

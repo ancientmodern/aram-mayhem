@@ -14,8 +14,13 @@ func build_kit() -> void:
 	c.add_effect(c.passive)
 	c.abilities[0] = init_ability(OrbOfDeception.new(), "Q")
 	c.abilities[1] = init_ability(FoxFire.new(), "W")
+	# AhriW's mCastTime (0.25) belongs to the fox-fire missile sub-casts: Fox-Fire itself is instant in League
+	# (no windup, Ahri keeps moving / attacking)
+	c.abilities[1].cast_time = 0.0
 	c.abilities[2] = init_ability(Charm.new(), "E")
 	c.abilities[3] = init_ability(SpiritRush.new(), "R")
+	# castRangeDisplayOverride (450) is the cursor ring; the dash itself covers RDashDistance (500)
+	c.abilities[3].cast_range = c.abilities[3].dv("RDashDistance", 500.0)
 
 
 ## League VFX: Q hits are spawned by the kit (outbound Q_tar vs. return Q_tar_02).
@@ -56,6 +61,11 @@ class EssenceTheft extends Effect:
 
 	func on_takedown(victim) -> void:
 		if victim.kind != G.Kind.CHAMPION:
+			return
+		# League: only takedowns within TakedownWindow (3 s) of Ahri damaging the champion (assists use 10 s)
+		var m = owner.match_ref
+		var last = victim.damage_log.get(owner, -100.0)
+		if m != null and m.time - float(last) > takedown_window:
 			return
 		var heal: float = lerpf(75.0, 165.0, (owner.level - 1) / 17.0) + 0.3 * owner.stats.ap
 		Combat.heal(owner, owner, heal)
@@ -189,20 +199,41 @@ class FoxFire extends Ability:
 					d *= 2.0
 				self_ref.hit(u, d, G.DmgType.MAGIC, {"tag": "w"}),
 				{"lol": "Ahri_Base_W_mis_02"})
-		# fire all three after the initial delay if targets exist, otherwise keep checking
-		for i in 3:
-			var delay := dv("InitialDelay", 0.25) + i * 0.12
-			m.after(delay, func(): launch.call(i))
+		# fire after the initial delay (staggered) as soon as a target is in range; flames without a target keep
+		# orbiting and keep looking until FlameDuration ends (League), then fizzle with the holder
+		var st := {"age": 0.0, "fired": [false, false, false]}
+		var init_d := dv("InitialDelay", 0.25)
+		var stagger := 0.12
+		holder.lifetime = dv("FlameDuration", 2.5) + 0.1
+		m.add_ticker(dv("FlameDuration", 2.5), func(dt: float) -> bool:
+			st.age += dt
+			if not is_instance_valid(o) or o.dead:
+				return false
+			var all_done := true
+			for i in 3:
+				if st.fired[i]:
+					continue
+				all_done = false
+				if st.age < init_d + i * stagger:
+					continue
+				if self_ref._pick_target() == null:
+					continue
+				st.fired[i] = true
+				launch.call(i)
+			return not all_done)
 		notify_cast(t)
 
 	func _pick_target() -> Unit:
 		var o = owner
 		var r := dv("BonusAcquisitionRange", 725.0) * G.U
+		var r_small := dv("AcquisitionRange", 550.0) * G.U
 		var best: Unit = null
 		var bd := INF
 		var focus = o.attack_target
 		for u in o.match_ref.enemies_in_radius(o.team, o.global_position, r):
 			var d := G.flat_dist(o.global_position, u.global_position)
+			if u.kind != G.Kind.CHAMPION and d > r_small:
+				continue
 			if u == focus or u.has_buff("charm"):
 				d -= 50.0
 			if u.kind == G.Kind.CHAMPION:
@@ -237,7 +268,7 @@ class Charm extends Ability:
 		var dur := dv("CharmDuration", 1.2)
 		var self_ref := self
 		K.line_missile(self, K.cast_pos(o, 1.1), t.dir, 1550.0, 975.0, {
-			"width": 120.0, "lol": "Ahri_Base_E_mis",
+			"width": 60.0, "lol": "Ahri_Base_E_mis",
 			"on_hit": func(_m, u):
 				self_ref.hit(u, dmg, G.DmgType.MAGIC, {"tag": "e"})
 				var b: Buff = K.charm(u, dur, o, 0.65)
@@ -265,7 +296,7 @@ class SpiritRush extends Ability:
 
 	func _init() -> void:
 		target_type = Target.POINT
-		indicator = Ind.NONE
+		indicator = Ind.RANGE
 		cast_range = 500.0
 		cast_time = 0.0
 		anim = "spell4"
@@ -306,7 +337,7 @@ class SpiritRush extends Ability:
 		var dest: Vector3 = o.global_position + G.flat_dir(o.global_position, t.pos) * minf(G.flat_dist(o.global_position, t.pos), dv("RDashDistance", 500.0) * G.U)
 		var self_ref := self
 		var trail := LolVfx.attach(o, "Ahri_Base_R_mis", {"dir": G.flat_dir(o.global_position, dest)})
-		o.start_dash(dest, {"speed": 15.0, "on_arrive": func(_u):
+		o.start_dash(dest, {"speed": dv("RBaseDashSpeed", 1200.0) * G.U, "on_arrive": func(_u):
 			if trail != null and is_instance_valid(trail):
 				trail.stop()
 			self_ref._bolts()})

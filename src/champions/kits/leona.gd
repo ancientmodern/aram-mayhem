@@ -151,7 +151,8 @@ class Sunlight extends Effect:
 
 
 ## Sunlight debuff: the next damage from another allied champion detonates it.
-class SunlightMark extends Buff:
+## FxBuff: the sun tag vanishes the moment the mark is consumed / expires.
+class SunlightMark extends K.FxBuff:
 	var leona = null
 
 	func _init() -> void:
@@ -245,6 +246,11 @@ class QAttackHook extends Effect:
 		q = p_q
 		id = "leona_q_hook"
 		hidden = true
+
+	## Effects don't tick while dead: drop the empowered shield (and its looping glow) on death.
+	func on_death(_killer) -> void:
+		q.empowered_until = -1.0
+		q._clear_fx()
 
 	func on_tick(u, _dt: float) -> void:
 		if q.fx != null and not q.is_empowered():
@@ -370,7 +376,7 @@ class Eclipse extends KAbility:
 		return HOLD
 
 
-class EclipseBuff extends Buff:
+class EclipseBuff extends K.FxBuff:
 	var flat := 8.0
 	var cap := 0.5
 

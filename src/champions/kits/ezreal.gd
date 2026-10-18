@@ -148,7 +148,8 @@ class RisingSpellForce extends Effect:
 		b = o.find_buff("ezreal_rsf")
 		if b != null and b.stacks >= max_st and before < max_st:
 			# fully charged: golden glow while maxed
-			var n := Vfx.aura(o, GOLD, 1.0, dur, 0.1)
+			# lives as long as the maxed buff (refreshes keep it); freed with the buff
+			var n := Vfx.aura(o, GOLD, 1.0, 0.0, 0.1)
 			b.vfx = n
 			Vfx.rising(o, GOLD, 0.6, 24, 0.5)
 
@@ -271,11 +272,16 @@ class EssenceFlux extends KitAbility:
 		var old = u.find_buff("ezreal_w_mark", o)
 		if old != null:
 			u.remove_buff(old)
-		var b: Buff = K.buff(u, "ezreal_w_mark", dv("DetonationTimeout", 4.0), {}, o, {"name": "Essence Flux", "debuff": true})
+		# INDEPENDENT + source lookup: another Ezreal's mark is a separate debuff (REFRESH would merge them and
+		# orphan the second orb VFX). kill_fx: the orb (a 4 s particle) vanishes the moment the mark ends -
+		# detonation, expiry, death or removal - instead of fading for seconds after it.
+		var b: Buff = K.buff(u, "ezreal_w_mark", dv("DetonationTimeout", 4.0), {}, o, {"name": "Essence Flux", "debuff": true,
+			"stack_mode": Buff.Stack.INDEPENDENT, "kill_fx": true})
 		if b != null:
 			# League mark (orb + ring) on the target until it is detonated or expires
 			var h: float = u.height if u.kind == G.Kind.CHAMPION else 3.0
 			b.vfx = LolVfx.attach(u, "Ezreal_Base_W_tar_objects" if FX.is_structure(u) else "Ezreal_Base_W_tar", {"loop": true, "height": h * 0.5})
+			b.kill_fade = 0.0
 
 	## Detonate the mark on `u` (by_ability = the ability that triggered it, null for attacks).
 	func detonate(u, by_ability) -> void:

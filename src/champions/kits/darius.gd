@@ -253,7 +253,8 @@ class Hemorrhage extends Effect:
 		apply(target, 1)
 
 
-class HemoBuff extends Buff:
+## FxBuff: the blood-drop counter disappears with the bleed (not seconds later).
+class HemoBuff extends K.FxBuff:
 	var passive = null
 	var shown := 0
 
@@ -637,7 +638,8 @@ class NoxianGuillotine extends DAbility:
 		var m = o.match_ref
 		var self_ref := self
 		var from: Vector3 = o.global_position
-		var leap := 0.45
+		# leap time = DariusExecute mCastTime (0.367 s): the axe lands when the cast completes
+		var leap := 0.367
 		var off: float = u.radius + o.radius * 0.4
 		var dest: Vector3 = u.global_position - G.flat_dir(from, u.global_position) * off
 		o.play_anim("spell4", 1.0, 0.03, 0.95)

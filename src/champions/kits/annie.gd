@@ -186,8 +186,8 @@ class Pyromania extends Effect:
 
 	func _hide_ready() -> void:
 		for fx in [ready_fx, ready_fx2]:
-			if fx != null and is_instance_valid(fx):
-				fx.detach_and_fade()
+			# kill (not detach_and_fade): the stun-ready glow must not keep fading where Annie stood
+			K.kill_fx(fx, 0.15)
 		ready_fx = null
 		ready_fx2 = null
 
@@ -422,12 +422,14 @@ class MoltenShield extends KAbility:
 		b.annie = o
 		b.ab = self
 		b.reflect = dv("DamageReflection") + 0.4 * ap()
-		b.stats = {"dmg_reduction": dv("DamageReduction") / 100.0}
+		# live Molten Shield has no damage reduction (DamageReduction is a leftover of the old E; the
+		# tooltip only lists shield, decaying move speed and the damage return)
 		b.icon = icon
 		# the League buff origin sits ~0.5 m above the ground (its ground parts are offset downward)
 		b.vfx = LolVfx.attach(u, "Annie_Base_E_Tibbers_buf" if u is Tibbers else "Annie_Base_E_buf", {"height": 0.5})
 		u.add_buff(b, o)
-		K.haste(u, dv("MovementSpeed", 0.2), dv("MovementSpeedDuration", 1.5), o, true, "annie_e_ms")
+		# MoveSpeedCalc = lerpByLevel(0.2 -> 0.5) (the per-rank MovementSpeed values are unused by the tooltip)
+		K.haste(u, lerpf(0.2, 0.5, (o.level - 1) / 17.0), dv("MovementSpeedDuration", 1.5), o, true, "annie_e_ms")
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -462,7 +464,8 @@ class MoltenShield extends KAbility:
 		return HOLD
 
 
-class MoltenShieldBuff extends Buff:
+## FxBuff: the E_buf shield visual ends when the shield breaks.
+class MoltenShieldBuff extends K.FxBuff:
 	var annie = null
 	var ab = null
 	var reflect := 0.0
