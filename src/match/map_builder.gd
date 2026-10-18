@@ -41,10 +41,18 @@ static func build_terrain(parent: Node3D) -> Node3D:
 	return root
 
 
+## Render layer of the baked map geometry: the sun reaches it (for unit shadows), the champion fill light
+## does not (its lighting is already baked into the lightmaps).
+const MAP_LAYER := 2
+const SUN_DIR := Vector3(0.38, -1.0, 0.42)
+static var grass_material: ShaderMaterial = null   ## shared League "Wall_of_Grass" material (brush)
+
+
 static func _apply(n: Node, by_name: Dictionary) -> void:
 	if n is MeshInstance3D:
 		var mi := n as MeshInstance3D
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mi.layers = MAP_LAYER
 		for i in mi.mesh.get_surface_count():
 			var src := mi.mesh.surface_get_material(i)
 			var nm := src.resource_name if src != null else ""
@@ -56,6 +64,8 @@ static func _apply(n: Node, by_name: Dictionary) -> void:
 
 static func _make_material(info: Dictionary) -> Material:
 	var blend: bool = info.get("blend", false)
+	if info.get("grass", false) and grass_material != null:
+		return grass_material
 	var sm := ShaderMaterial.new()
 	sm.shader = BLEND_SHADER if blend else LIT_SHADER
 	var dp = info.get("diffuse")
@@ -82,6 +92,7 @@ static func _make_material(info: Dictionary) -> Material:
 		sm.set_shader_parameter("grass", info.get("grass", false))
 		if info.get("grass", false):
 			sm.render_priority = 1
+			grass_material = sm
 	elif float(info.get("alpha_test", 0.0)) > 0.0:
 		sm.set_shader_parameter("alpha_test", maxf(0.1, float(info.alpha_test)))
 	return sm
@@ -100,7 +111,7 @@ static func build_environment(parent: Node3D) -> void:
 	env.glow_enabled = true
 	env.glow_intensity = 0.35
 	env.glow_strength = 1.0
-	env.glow_bloom = 0.04
+	env.glow_bloom = 0.0
 	env.glow_hdr_threshold = 1.4
 	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
 	env.set_glow_level(1, 0.6)
@@ -121,18 +132,24 @@ static func build_environment(parent: Node3D) -> void:
 	sun.name = "Sun"
 	sun.light_color = Color(1.0, 0.95, 0.88)
 	sun.light_energy = 1.1
-	sun.rotation_degrees = Vector3(-58, -35, 0)
+	# light from the upper left, behind the camera: unit shadows fall short toward the lower right like League
+	sun.transform = Transform3D(Basis.looking_at(SUN_DIR, Vector3.UP), Vector3.ZERO)
 	sun.shadow_enabled = true
-	sun.shadow_opacity = 0.55
-	sun.shadow_blur = 1.5
-	sun.directional_shadow_max_distance = 45.0
+	sun.shadow_opacity = 0.85
+	sun.shadow_blur = 2.0
+	sun.shadow_bias = 0.04
+	sun.shadow_normal_bias = 1.2
+	sun.directional_shadow_max_distance = 42.0
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+	sun.directional_shadow_split_1 = 0.45
+	sun.directional_shadow_blend_splits = true
 	parent.add_child(sun)
 	var fill := DirectionalLight3D.new()
 	fill.name = "Fill"
 	fill.light_color = Color(0.55, 0.65, 1.0)
 	fill.light_energy = 0.35
 	fill.rotation_degrees = Vector3(-30, 150, 0)
+	fill.light_cull_mask = 0xFFFFF & ~MAP_LAYER   # the map's lighting is baked
 	parent.add_child(fill)
 
 
