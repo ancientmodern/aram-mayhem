@@ -1,0 +1,287 @@
+{
+ "alias": "Ezreal",
+ "name": "Ezreal",
+ "stats": {
+  "base_hp": 600.0,
+  "hp_per_level": 102.0,
+  "base_hp_regen": 0.8,
+  "hp_regen_per_level": 0.13,
+  "base_ad": 60.0,
+  "ad_per_level": 3.75,
+  "base_armor": 24.0,
+  "armor_per_level": 4.2,
+  "base_mr": 33.0,
+  "mr_per_level": 1.1,
+  "base_ms": 325.0,
+  "attack_range": 550.0,
+  "attack_speed": 0.625,
+  "attack_speed_ratio": 0.625,
+  "attack_speed_per_level": 2.5,
+  "resource_type": 0,
+  "mana_base": 375.0,
+  "mana_per_level": 70.0,
+  "mana_regen": 1.7,
+  "mana_regen_per_level": 0.2,
+  "critDamageMultiplier": 2.0,
+  "acquisitionRange": 550.0,
+  "selectionHeight": 170.0,
+  "selectionRadius": 115.0,
+  "pathfindingCollisionRadius": 35.0,
+  "healthBarHeight": 90.0,
+  "attack_cast_offset": -0.11161347478628159,
+  "attack_total_time": null,
+  "attack_cast_time": null
+ },
+ "spell_slots": {
+  "Q": "EzrealQ",
+  "W": "EzrealW",
+  "E": "EzrealE",
+  "R": "EzrealR"
+ },
+ "passive": "EzrealPassive",
+ "passive_name": "Rising Spell Force",
+ "passive_desc": "Ezreal gains increasing Attack Speed each time he successfully hits a spell, stacking up to 5 times.",
+ "spells": {
+  "EzrealPFEManager": {
+   "script": "EzrealPFEManager",
+   "data_values": {}
+  },
+  "EzrealBasicAttack": {
+   "script": "EzrealBasicAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2000.0,
+   "mAlternateName": "EzrealBasicAttack"
+  },
+  "EzrealBasicAttack2": {
+   "script": "EzrealBasicAttack2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2000.0,
+   "mAnimationName": "Attack2",
+   "mAlternateName": "EzrealBasicAttack2"
+  },
+  "EzrealEMissile": {
+   "script": "EzrealEMissile",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 1400.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2000.0,
+   "mLineWidth": 80.0
+  },
+  "EzrealE": {
+   "script": "EzrealE",
+   "data_values": {
+    "BaseDamage": [
+     30.0,
+     80.0,
+     130.0,
+     180.0,
+     230.0,
+     280.0,
+     330.0
+    ],
+    "MissileRange": 750.0,
+    "CherryBonusHaste": 15.0,
+    "EAPRatio": 0.75
+   },
+   "calcs": {
+    "#59e94c40": "BaseDamage + 0.6*bonusAD + EAPRatio*AP"
+   },
+   "cooldownTime": [
+    26.0,
+    26.0,
+    23.0,
+    20.0,
+    17.0,
+    14.0,
+    10.0
+   ],
+   "mana": 70.0,
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 475.0,
+   "castRadius": 270.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Spell3",
+   "name": "Arcane Shift",
+   "tooltip": "Ezreal teleports then fires a bolt at the nearest enemy, dealing <magicDamage>@Damage@ magic damage</magicDamage>. The bolt prioritizes enemies affected by <spellName>Essence Flux</spellName>.",
+   "summary": "Ezreal teleports to a target nearby location and fires a homing bolt which strikes the nearest enemy unit. Prioritizes enemies stuck with Essence Flux."
+  },
+  "EzrealRecallOverride": {
+   "script": "EzrealRecallOverride",
+   "data_values": {}
+  },
+  "EzrealQ": {
+   "script": "EzrealQ",
+   "data_values": {
+    "BaseDamage": [
+     -5.0,
+     20.0,
+     45.0,
+     70.0,
+     95.0,
+     120.0,
+     145.0
+    ],
+    "CDRefund": 1.5,
+    "BaseDamageADRatio": 1.3,
+    "BaseDamageAPRatio": 0.4
+   },
+   "calcs": {
+    "#59e94c40": "BaseDamage + BaseDamageADRatio*AD + BaseDamageAPRatio*AP"
+   },
+   "cooldownTime": [
+    5.75,
+    5.5,
+    5.25,
+    5.0,
+    4.75,
+    4.5,
+    3.5
+   ],
+   "mana": [
+    28.0,
+    31.0,
+    34.0,
+    37.0,
+    40.0,
+    43.0
+   ],
+   "castRange": 1200.0,
+   "castRangeDisplayOverride": 1150.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "mLineWidth": 60.0,
+   "mAnimationName": "Spell1",
+   "name": "Mystic Shot",
+   "tooltip": "Ezreal fires a bolt of energy, dealing <physicalDamage>@Damage@ physical damage</physicalDamage> to the first enemy hit and reducing his Ability Cooldowns by @CDRefund@ seconds.",
+   "summary": "Ezreal fires a damaging bolt of energy which reduces all of his cooldowns slightly if it strikes an enemy unit."
+  },
+  "EzrealPassiveStacks": {
+   "script": "EzrealPassiveStacks",
+   "data_values": {}
+  },
+  "EzrealPassive": {
+   "script": "EzrealPassive",
+   "data_values": {
+    "AttackSpeedPerStack": 0.1,
+    "StackDuration": 6.0,
+    "MaxStacks": 5.0
+   },
+   "castRange": 0.0,
+   "name": "Rising Spell Force",
+   "tooltip": "Ezreal's Ability hits grant him <attackSpeed>@AttackSpeedPerStack.0*100@% Attack Speed</attackSpeed> for @StackDuration@ seconds, stacking up to @MaxStacks@ times.",
+   "summary": "Ezreal gains increasing Attack Speed each time he successfully hits a spell, stacking up to 5 times."
+  },
+  "EzrealW": {
+   "script": "EzrealW",
+   "data_values": {
+    "BaseDamage": [
+     25.0,
+     80.0,
+     135.0,
+     190.0,
+     245.0,
+     300.0,
+     355.0
+    ],
+    "ManaReturn": 60.0,
+    "DetonationTimeout": 4.0,
+    "APRatio": 0.9
+   },
+   "calcs": {
+    "#59e94c40": "BaseDamage + 1*bonusAD + APRatio*AP"
+   },
+   "cooldownTime": 8.0,
+   "mana": 50.0,
+   "castRange": 1200.0,
+   "castRangeDisplayOverride": 1150.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mLineWidth": 60.0,
+   "mAnimationName": "Spell2",
+   "name": "Essence Flux",
+   "tooltip": "Ezreal fires a magical orb that sticks to the first champion, structure, or epic jungle monster hit for @DetonationTimeout@ seconds. If Ezreal hits that target with an Attack or Ability, it detonates, dealing <magicDamage>@Damage@ magic damage</magicDamage>. Detonating with an Ability refunds the Mana cost of that Ability plus <scaleMana>@ManaReturn@ Mana</scaleMana>.",
+   "summary": "Ezreal fires an orb that sticks to the first champion or objective hit. If Ezreal hits an enemy with the orb, it detonates and deals damage."
+  },
+  "EzrealCritAttack": {
+   "script": "EzrealCritAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2000.0,
+   "mAnimationName": "Crit",
+   "mAlternateName": "EzrealCritAttack"
+  },
+  "EzrealR": {
+   "script": "EzrealR",
+   "data_values": {
+    "BaseDamage": [
+     150.0,
+     350.0,
+     550.0,
+     750.0,
+     950.0,
+     1150.0,
+     1350.0
+    ],
+    "DamageReductionPerHit": 0.1,
+    "MinimumDamagePercent": 0.3,
+    "RAPRatio": 1.1,
+    "BaseDamageMinionMonster": [
+     75.0,
+     150.0,
+     225.0,
+     300.0,
+     375.0,
+     450.0,
+     525.0
+    ]
+   },
+   "calcs": {
+    "#59e94c40": "BaseDamage + 1*bonusAD + RAPRatio*AP",
+    "#37fb638c": "BaseDamageMinionMonster + 1*bonusAD + 1.1*AP"
+   },
+   "cooldownTime": [
+    10.0,
+    120.0,
+    105.0,
+    90.0,
+    10.0,
+    10.0,
+    10.0
+   ],
+   "mana": [
+    100.0,
+    100.0,
+    100.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "castRange": 25000.0,
+   "castRadius": 299.3,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2000.0,
+   "mLineWidth": 160.0,
+   "mAnimationName": "Spell4",
+   "mAlternateName": "EzrealTrueshotBarrage",
+   "name": "Trueshot Barrage",
+   "tooltip": "Ezreal fires a massive energy arc that deals <magicDamage>@Damage@ magic damage</magicDamage>. Damage to minions and non-epic jungle monsters is reduced to <magicDamage>@DamageMinionMonster@ magic damage</magicDamage>.",
+   "summary": "Ezreal winds up before firing a powerful barrage of energy that deals massive damage to each unit it passes through (damage is reduced for minions and non-epic monsters)."
+  }
+ }
+}

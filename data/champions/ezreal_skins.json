@@ -1,0 +1,232 @@
+[
+ {
+  "id": 81000,
+  "num": 0,
+  "name": "Ezreal",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81001,
+  "num": 1,
+  "name": "Nottingham Ezreal",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81002,
+  "num": 2,
+  "name": "Striker Ezreal",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81003,
+  "num": 3,
+  "name": "Frosted Ezreal",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81004,
+  "num": 4,
+  "name": "Explorer Ezreal",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81005,
+  "num": 5,
+  "name": "Pulsefire Ezreal",
+  "rarity": "kUltimate",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81006,
+  "num": 6,
+  "name": "TPA Ezreal",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81007,
+  "num": 7,
+  "name": "Debonair Ezreal",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81008,
+  "num": 8,
+  "name": "Ace of Spades Ezreal",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81009,
+  "num": 9,
+  "name": "Arcade Ezreal",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81018,
+  "num": 18,
+  "name": "Star Guardian Ezreal",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81019,
+  "num": 19,
+  "name": "SSG Ezreal",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81020,
+  "num": 20,
+  "name": "Pajama Guardian Ezreal",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81021,
+  "num": 21,
+  "name": "Battle Academia Ezreal",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81022,
+  "num": 22,
+  "name": "PsyOps Ezreal",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81023,
+  "num": 23,
+  "name": "Prestige PsyOps Ezreal",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81025,
+  "num": 25,
+  "name": "Porcelain Protector Ezreal",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81033,
+  "num": 33,
+  "name": "Faerie Court Ezreal",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81043,
+  "num": 43,
+  "name": "HEARTSTEEL Ezreal",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81044,
+  "num": 44,
+  "name": "Heavenscale Ezreal",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81054,
+  "num": 54,
+  "name": "Prestige Heavenscale Ezreal",
+  "rarity": "kMythic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81065,
+  "num": 65,
+  "name": "Masque of the Black Rose Ezreal",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 81078,
+  "num": 78,
+  "name": "HEARTSTEEL Live My Life Ezreal",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ }
+]
