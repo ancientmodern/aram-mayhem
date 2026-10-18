@@ -1,18 +1,31 @@
 class_name Relic
 extends Node3D
-## ARAM health relic: pickup heal + delayed area heal beam, respawns.
+## ARAM health relic (League HowlingAbyssRelicAura_AOE): walking within TriggerRadius (150 u) heals the picker for
+## 8% of their missing health / mana at once, then 2.5 s later a pulse over HealingRadius (850 u) heals every allied
+## champion in it for MissingHealthRestoreMult of their missing health (0.16; Mayhem/"Kiwi" mode 0.22, see Rules).
+## The relic respawns 90 s after the pulse. Visuals are League's own systems (data/vfx/shared.json):
+##   idle      ARAMHealthPickup_AOE (floating heart, light beams, ground glow; its ArrivalFlash is the respawn pop)
+##   pickup    HA_Health_PickUp on the picker + HA_HealthPickup_AOE_Cast at the pad, sound healthpickup_cast
+##   2.5 s     HowlingAbyss_HealthPickup_Redemption_Indicator over the 850 u radius
+##   pulse     HowlingAbyss_HealthPickup_Redemption_Heal_AOE at the pad + HA_Health_Hit on each healed ally
+## The HA_AP_HealthRelic character itself is a 26-vertex placeholder cube (its old Odin particles are replaced by the
+## systems above), so no model is drawn.
+
+const PICKUP_RADIUS := 1.5            ## TriggerRadius 150 u
+const MANA_MULT := 0.08               ## ManaRestoreMult
+const AOE_SCALE := 2.48               ## the Redemption indicator/pulse art is ~6.85 m wide (item radius); ours is 17 m
+const EV_PICKUP := "Play_sfx_Env_Map12_Crepe_healthpickup_cast"
 
 var m = null
 var active := false
 var respawn_at := 0.0
-var model: Node3D = null
-var glow: VfxNode = null
-const PICKUP_RADIUS := 1.1
+var lol_fx: LolVfx = null
 
 
 func setup(p_match, first_spawn: float) -> void:
 	m = p_match
 	respawn_at = first_spawn
+	LolVfx.load_set("shared")
 
 
 func tick(_dt: float) -> void:
@@ -23,64 +36,43 @@ func tick(_dt: float) -> void:
 	for c in m.champions:
 		if c.dead:
 			continue
-		if G.flat_dist(c.global_position, global_position) <= PICKUP_RADIUS + c.radius:
+		if G.flat_dist(c.global_position, global_position) <= PICKUP_RADIUS + c.radius * 0.5:
 			_pickup(c)
 			return
 
 
-var lol_fx: LolVfx = null
-
-
 func _spawn() -> void:
 	active = true
-	# League's ARAM health pickup effect (floating health icon, glow, light beams)
-	LolVfx.load_set("shared")
-	lol_fx = LolVfx.attach(self, "ARAMHealthPickup_AOE", {"loop": true})
-	if lol_fx != null:
-		if model != null:
-			model.visible = false
-		return
-	if model == null:
-		model = Assets.unit_model("HA_AP_HealthRelic", 0)
-		if model == null:
-			model = Vfx.sprite(Color(0.4, 1.0, 0.5), 0.8)
-		add_child(model)
-	model.visible = true
-	model.scale = Vector3.ONE * 0.2
-	var tw := create_tween()
-	tw.tween_property(model, "scale", Vector3.ONE, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
-	glow = VfxNode.new()
-	add_child(glow)
-	glow.add_child(Vfx.sprite(Color(0.3, 1.0, 0.45), 1.6, 1.2))
-	glow.position.y = 0.6
-	var bob := glow.create_tween().set_loops()
-	bob.tween_property(glow, "position:y", 0.9, 0.9).set_trans(Tween.TRANS_SINE)
-	bob.tween_property(glow, "position:y", 0.6, 0.9).set_trans(Tween.TRANS_SINE)
+	lol_fx = LolVfx.attach(self, "ARAMHealthPickup_AOE", {"loop": true, "face": false})
 
 
 func _pickup(c) -> void:
 	active = false
+	respawn_at = INF   # re-armed 90 s after the pulse (it used to keep its old value and respawn at once)
 	if lol_fx != null and is_instance_valid(lol_fx):
 		lol_fx.stop()
-		lol_fx = null
-	if model != null:
-		model.visible = false
-	if glow != null:
-		glow.queue_free()
-		glow = null
+	lol_fx = null
 	var team: int = c.team
-	Combat.heal(null, c, (c.stats.max_hp - c.hp) * Rules.RELIC_PICKUP_HEAL)
-	c.mana = minf(c.stats.max_mana, c.mana + (c.stats.max_mana - c.mana) * Rules.RELIC_PICKUP_HEAL)
 	var pos := global_position
-	var circle := Vfx.ground_circle(m, pos, Rules.RELIC_BEAM_RADIUS * G.U, Color(0.3, 1.0, 0.4, 0.8), Rules.RELIC_BEAM_DELAY + 0.3, 0.12)
+	_heal(c, Rules.RELIC_PICKUP_HEAL, MANA_MULT)
+	LolVfx.attach(c, "HA_Health_PickUp", {})
+	LolVfx.spawn(m, "HA_HealthPickup_AOE_Cast", pos, {})
+	LolVfx.spawn(m, "HowlingAbyss_HealthPickup_Redemption_Indicator", pos, {"scale": AOE_SCALE, "max_life": Rules.RELIC_BEAM_DELAY + 0.2})
+	if m.audio != null:
+		m.audio.play(EV_PICKUP, pos)
 	m.after(Rules.RELIC_BEAM_DELAY, func():
-		Vfx.burst(m, pos, Color(0.35, 1.0, 0.45), 2.5, {"sparks": 40})
-		Vfx.beam(m, pos + Vector3(0, 12, 0), pos, Color(0.4, 1.0, 0.5), 1.4, 0.5)
+		LolVfx.spawn(m, "HowlingAbyss_HealthPickup_Redemption_Heal_AOE", pos, {"scale": AOE_SCALE, "max_life": 3.0})
+		var r: float = Rules.RELIC_BEAM_RADIUS * G.U
 		for a in m.champions:
 			if a.dead or a.team != team:
 				continue
-			if G.flat_dist(a.global_position, pos) <= Rules.RELIC_BEAM_RADIUS * G.U:
-				Combat.heal(null, a, (a.stats.max_hp - a.hp) * Rules.RELIC_BEAM_HEAL)
-				a.mana = minf(a.stats.max_mana, a.mana + (a.stats.max_mana - a.mana) * Rules.RELIC_BEAM_HEAL)
-				Vfx.rising(a, Color(0.35, 1.0, 0.45), 0.6, 25)
+			if G.flat_dist(a.global_position, pos) <= r:
+				_heal(a, Rules.RELIC_BEAM_HEAL, MANA_MULT)
+				LolVfx.attach(a, "HA_Health_Hit", {})
 		respawn_at = m.time + Rules.RELIC_RESPAWN)
+
+
+func _heal(c, hp_mult: float, mana_mult: float) -> void:
+	Combat.heal(null, c, (c.stats.max_hp - c.hp) * hp_mult)
+	if c.stats.uses_mana:
+		c.mana = minf(c.stats.max_mana, c.mana + (c.stats.max_mana - c.mana) * mana_mult)

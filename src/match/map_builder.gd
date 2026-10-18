@@ -111,6 +111,9 @@ static func _make_material(info: Dictionary) -> Material:
 		sm.set_shader_parameter("grass", info.get("grass", false))
 		if info.get("grass", false):
 			sm.render_priority = 1
+			# [env3] the unshaded blade texture * 4.59 tint blew the ice-coral out to white (QA P1-16); League's brush is
+			# a desaturated pale blue that sits below the floor highlights
+			sm.set_shader_parameter("brightness", 0.5)
 			grass_material = sm
 	elif float(info.get("alpha_test", 0.0)) > 0.0:
 		sm.set_shader_parameter("alpha_test", maxf(0.1, float(info.alpha_test)))
@@ -127,7 +130,7 @@ static func build_environment(parent: Node3D) -> void:
 	env.ambient_light_energy = 0.55
 	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
 	env.tonemap_exposure = 1.0
-	env.glow_enabled = true
+	env.glow_enabled = false   # [env3] lead A/B: League has no global bloom; effects stay crisp
 	env.glow_intensity = 0.35
 	env.glow_strength = 1.0
 	env.glow_bloom = 0.0

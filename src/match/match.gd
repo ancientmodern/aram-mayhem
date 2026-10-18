@@ -65,6 +65,9 @@ func _ready() -> void:
 func _update_death_gray(delta: float) -> void:
 	if death_gray == null or G.player == null:
 		return
+	if audio != null and audio.moments != null:   # [juice] League death-screen timing lives in src/fx_moments/moments.gd
+		audio.moments.drive_gray(delta, death_gray)
+		return
 	var want := 1.0 if G.player.dead and not over else 0.0
 	_gray = move_toward(_gray, want, delta * (1.5 if want > _gray else 4.0))
 	death_gray.visible = _gray > 0.001
@@ -734,6 +737,7 @@ var inhibitor_units := [null, null]
 var outer_turrets := [null, null]
 var inhib_turrets := [null, null]
 var hexgates: Array = []
+var hexgate_net: HexgateNet = null   ## [env3]
 var augment_round := 0
 var augment_tiers: Array = []      ## rolled tier per screen (shared by everyone)
 var augments_seen := {}            ## id -> true (never repeat in a game)
@@ -856,17 +860,11 @@ func _build_relics() -> void:
 
 
 func _build_props() -> void:
+	var gate_props := []
 	for p in MapBuilder.props(layout):
 		var nm: String = p.name
 		if nm.begins_with("HA_Hexgate"):
-			var g := Assets.unit_model(nm, 0)
-			if g != null:
-				world_root.add_child(g)
-				g.global_position = p.pos
-				g.rotation.y = p.yaw
-				_play_idle(g)
-			hexgates.append({"pos": p.pos, "exit": nm.ends_with("Exit"), "node": g,
-					"team": G.Team.ORDER if p.pos.x - p.pos.z < 130.0 else G.Team.CHAOS})
+			gate_props.append(p)   # [env3] built by HexgateNet below
 		elif nm in ["HA_AP_Viking", "HA_AP_Hermit", "HA_AP_Poro"]:
 			var mdl := Assets.unit_model(nm, 0)
 			if mdl != null:
@@ -874,7 +872,11 @@ func _build_props() -> void:
 				mdl.global_position = p.pos
 				mdl.rotation.y = p.yaw
 				_play_idle(mdl)
-	_update_hexgates()
+	# [env3] hexgates: entry gates in the bases, exits at the outer / inhibitor turrets (src/env/hexgate_net.gd)
+	hexgate_net = HexgateNet.new()
+	hexgate_net.name = "HexgateNet"
+	add_child(hexgate_net)
+	hexgate_net.setup(self, gate_props)
 
 
 func _play_idle(n: Node) -> void:
@@ -891,7 +893,8 @@ func _play_idle(n: Node) -> void:
 
 
 func _update_hexgates() -> void:
-	pass
+	if hexgate_net != null:   # [env3] the exit moves from the outer to the inhibitor turret when the outer falls
+		hexgate_net.structure_fell()
 
 
 func _spawn_champions(cfg: Dictionary) -> void:
