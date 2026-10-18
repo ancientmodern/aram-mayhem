@@ -5,6 +5,7 @@ shader_type spatial;
 // Ambient and specular are disabled so the lightmap colours stay exactly as baked.
 render_mode cull_disabled, ambient_light_disabled, specular_disabled;
 #include "res://src/render/gamma.gdshaderinc"
+#include "res://src/render/fow.gdshaderinc"   // [fow]
 
 uniform sampler2D diffuse_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D lightmap_tex : source_color, filter_linear, repeat_disable;
@@ -58,6 +59,12 @@ void fragment() {
 		g = max(mix(vec3(0.5), g * grade_gain * grade_tint, grade_contrast), vec3(0.0));
 		ALBEDO = to_out(pow(g, vec3(2.2)));
 	}
+	// [fow] DefaultEnv_Flat: c = lerp(FOW.rgb, c, k). The final colour is albedo * light + emission, so scaling the
+	// albedo by k and adding the fog colour as emission is the same lerp, whatever lights (sun, point) are summed.
+	vec4 fw = fow_map((INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz);
+	float fk = fow_env_k(fw, (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).y);
+	ALBEDO *= fk;
+	EMISSION += fow_out(fw.rgb) * (1.0 - fk);
 }
 
 void light() {

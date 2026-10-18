@@ -1008,6 +1008,10 @@ func _setup_view() -> void:
 	var ambient := MapAmbient.new()   # [env] League map particles, poros, brush interaction
 	add_child(ambient)
 	ambient.setup(self)
+	var fow := FowMap.new()   # [fow] League fog-of-war visibility texture (src/render/fow_map.gd)
+	fow.name = "FowMap"
+	add_child(fow)
+	fow.setup(self)
 	var gray_layer := CanvasLayer.new()
 	gray_layer.name = "DeathGrayLayer"
 	gray_layer.layer = 0

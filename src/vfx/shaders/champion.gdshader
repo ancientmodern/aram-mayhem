@@ -7,6 +7,7 @@ shader_type spatial;
 // The characters still cast blurred shadows onto the terrain (the map shader receives them).
 render_mode unshaded, cull_back, depth_prepass_alpha, shadows_disabled;
 #include "res://src/render/gamma.gdshaderinc"
+#include "res://src/render/fow.gdshaderinc"   // [fow]
 
 uniform sampler2D albedo_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform bool use_alpha_scissor = false;
@@ -70,6 +71,9 @@ void fragment() {
 	// hit flash = League SELF_ILLUMINATION: raises L toward full-bright texture, never past it
 	vec3 L = clamp(vec3(flash + self_illum_scale * self_illum) + amb * lightgrid_scale, 0.0, 1.0);
 	vec3 col = clamp(d * L, 0.0, 1.0);
+	// [fow] lit_uber_ps: c = lerp(FOW.rgb, c, FOW.a)
+	vec4 fw = fow_map((INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz);
+	col = mix(fw.rgb, col, fw.a);
 	// our own highlight (player selection glow), not a League shader term
 	col += glow.rgb * glow.a * 0.35;
 	ALBEDO = gamma_out > 0.5 ? col : gamma_dec(col);

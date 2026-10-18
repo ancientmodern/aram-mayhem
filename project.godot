@@ -69,6 +69,14 @@ textures/vram_compression/import_etc2_astc=false
 
 [shader_globals]
 
+fow_on={
+"type": "float",
+"value": 0.0
+}
+fow_vis={
+"type": "sampler2D",
+"value": ""
+}
 gamma_out={
 "type": "float",
 "value": 0.0

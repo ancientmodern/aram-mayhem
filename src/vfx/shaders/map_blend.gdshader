@@ -5,6 +5,7 @@ shader_type spatial;
 // (SpreadStrength 1.5), and brush around the local player turns see-through (SeeThroughAlphaMin 0.25).
 render_mode unshaded, cull_disabled, blend_mix, depth_draw_never;
 #include "res://src/render/gamma.gdshaderinc"
+#include "res://src/render/fow.gdshaderinc"   // [fow]
 
 uniform sampler2D diffuse_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D lightmap_tex : source_color, filter_linear, repeat_disable;
@@ -55,6 +56,9 @@ void fragment() {
 	vec4 d = texture(diffuse_tex, UV);
 	vec3 lm = use_lightmap ? texture(lightmap_tex, UV2).rgb * lightmap_strength : vec3(1.0);
 	ALBEDO = to_out(d.rgb * lm * tint.rgb * 4.59 * brightness);
+	// [fow] DefaultEnv_Flat: c = lerp(FOW.rgb, c, k)
+	vec4 fw = fow_map(world_pos);
+	ALBEDO = mix(fow_out(fw.rgb), ALBEDO, fow_env_k(fw, world_pos.y));
 	float a = d.a * tint.a;
 	if (grass && see_through.w > 0.5) {
 		float dist = length(world_pos.xz - see_through.xz);
