@@ -1,0 +1,2754 @@
+[
+ {
+  "id": "ARAM_BigBrain",
+  "name": "Big Brain",
+  "rarity": "Gold",
+  "summary": "Gain 3 Shield for every %i:scaleAP% 1 Ability Power. Resets on death or 70 seconds after depletion.",
+  "tooltip": "Gain a {TotalShield} Shield. Resets on death or 70 seconds after depletion.",
+  "values": {
+   "ShieldBase": 3.0,
+   "APRatio": 3.0,
+   "AP": 1.0
+  },
+  "icon_hash": "8e897602a80444aa",
+  "small_icon_hash": "f305898d51a2c87f",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_AllForYou",
+  "name": "All For You",
+  "rarity": "Gold",
+  "summary": "Your Heals and Shields are stronger when used on an ally.",
+  "tooltip": "Your Heals and Shields are 30% stronger when used on an ally.",
+  "values": {
+   "HealShieldAmp": 0.30000001192092896
+  },
+  "icon_hash": "54143517cd45ae81",
+  "small_icon_hash": "5eacfaf08d1801d0",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_ApexInventor",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_BacktoBasics",
+  "missing": true
+ },
+ {
+  "id": "ARAM_BluntForce",
+  "name": "Blunt Force",
+  "rarity": "Silver",
+  "summary": "Gain %i:scaleAD% 20% Attack Damage.",
+  "tooltip": "Gain 20% ({f1}) Attack Damage.",
+  "values": {
+   "ADAmp": 0.20000000298023224
+  },
+  "icon_hash": "c0f8450d78e7099e",
+  "small_icon_hash": "14b3e929e32b04a4",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_BreadAndButter",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_BreadAndCheese",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_BreadAndJam",
+  "missing": true
+ },
+ {
+  "id": "ARAM_CantTouchThis",
+  "name": "Can't Touch This",
+  "rarity": "Prismatic",
+  "summary": "Casting your Ultimate makes you Invulnerable for a short duration.",
+  "tooltip": "Casting your Ultimate makes you Invulnerable for 2 seconds (8s Cooldown).",
+  "values": {
+   "Cooldown": 8.0,
+   "InvulnDuration": 2.0
+  },
+  "icon_hash": "7c6c62668377726d",
+  "small_icon_hash": "5c3bef86fa5300b3",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_CelestialBody",
+  "name": "Celestial Body",
+  "rarity": "Gold",
+  "summary": "Gain 1500 Health, but you deal 10% less damage.",
+  "tooltip": "Gain 1500 Health, but you deal 10% less damage.",
+  "values": {
+   "Health": 1500.0,
+   "DamageReduction": 0.10000000149011612
+  },
+  "icon_hash": "5ba92480ca142f00",
+  "small_icon_hash": "1f9e452b84aecc80",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_CircleofDeath",
+  "name": "Circle of Death",
+  "rarity": "Prismatic",
+  "summary": "Healing and Health Regen also deals magic damage to the nearest enemy champion. ",
+  "tooltip": "Your healing and Health Regen deal 70% of the value magic damage to the nearest enemy champion.  Damage Dealt: {f2}",
+  "values": {
+   "HealToDamageConversion": 0.699999988079071,
+   "DamageRange": 1000.0
+  },
+  "icon_hash": "14f9dd6994d05395",
+  "small_icon_hash": "5cbf85a7554f7d3f",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_CourageoftheColossus",
+  "name": "Courage of the Colossus",
+  "rarity": "Prismatic",
+  "summary": "Gain {TotalShield} Shield after Immobilizing or Grounding an enemy champion. ",
+  "tooltip": "Gain {TotalShield} Shield after Immobilizing or Grounding an enemy champion.  Shields Generated: {f2}",
+  "values": {
+   "HealthScalar": 0.03999999910593033,
+   "SpellIDCD": 5.0
+  },
+  "icon_hash": "4e70b2eb6224e209",
+  "small_icon_hash": "907c52252e3a0c99",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_CriticalHealing",
+  "name": "Critical Healing",
+  "rarity": "Gold",
+  "summary": "Your healing and Shields can Critically Strike for 40% bonus amount. Gain %i:scaleCrit% 25% Crit Chance. ",
+  "tooltip": "Your healing and Shields can Critically Strike for 40% bonus amount. Gain %i:scaleCrit% 25% Crit Chance. ",
+  "values": {
+   "CritHeal": 0.4000000059604645,
+   "CritChance": 0.25,
+   "SpellIDCD": 5.0,
+   "CriticalMissleTriggerRange": 550.0
+  },
+  "icon_hash": "28cd587f35303618",
+  "small_icon_hash": "8557016a522c5909",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Dashing",
+  "missing": true
+ },
+ {
+  "id": "ARAM_DawnbringersResolve",
+  "name": "Dawnbringer's Resolve",
+  "rarity": "Gold",
+  "summary": "When dropping below 50% Health, heal for 30% max Health over 3 seconds.  Resets on death or every 45 seconds. ",
+  "tooltip": "When dropping below 50% Health, heal for 30% max Health over 3 seconds.  Resets on death or every 45 seconds. ",
+  "values": {
+   "HealthThreshold": 0.5,
+   "HealAmount": 0.30000001192092896,
+   "Duration": 3.0,
+   "Cooldown": 45.0
+  },
+  "icon_hash": "4b9706f606414270",
+  "small_icon_hash": "3953f6f9e9f18b13",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Deft",
+  "name": "Deft",
+  "rarity": "Silver",
+  "summary": "Gain %i:scaleAS% 60% Attack Speed.",
+  "tooltip": "Gain %i:scaleAS% 60% Attack Speed.",
+  "values": {
+   "AttackSpeed": 0.6000000238418579
+  },
+  "icon_hash": "4db121ca43a8ff7b",
+  "small_icon_hash": "9658a84deeaf0e4d",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_DiveBomber",
+  "name": "Dive Bomber",
+  "rarity": "Silver",
+  "summary": "Explodes when you die, dealing massive true damage.",
+  "tooltip": "Explodes when you die, dealing 20% of the target's max Health as true damage to nearby enemies.  Damage Dealt: {f2}",
+  "values": {
+   "ExplosionRadius": 500.0,
+   "PercentMaxHPDamage": 0.20000000298023224
+  },
+  "icon_hash": "f5241ccd45ccd6da",
+  "small_icon_hash": "23c30a045de92e5a",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_DontBlink",
+  "name": "Don't Blink",
+  "rarity": "Silver",
+  "summary": "Gain 1% bonus damage per 10 Move Speed you have more than the target.",
+  "tooltip": "Gain 1% bonus damage per 10 Movement Speed more you have than the target.  Bonus Damage: {f2}",
+  "values": {
+   "BonusDamagePerMSDifference": 0.0010000000474974513
+  },
+  "icon_hash": "981210f32b5b786d",
+  "small_icon_hash": "1d6ce3f20d48adb7",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_EtherealWeapon",
+  "name": "Ethereal Weapon",
+  "rarity": "Gold",
+  "summary": "Your Abilities apply {{ Item_Keyword_OnHit }} effects. 1 second Cooldown per target.",
+  "tooltip": "Your Abilities apply {{ Item_Keyword_OnHit }} effects. 1 second Cooldown per target.  Times Triggered: {f2}",
+  "values": {
+   "Cooldown": 1.5
+  },
+  "icon_hash": "4e534c4809eb26ac",
+  "small_icon_hash": "818807f40b0305a3",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Eureka",
+  "missing": true
+ },
+ {
+  "id": "ARAM_Firebrand",
+  "name": "Firebrand",
+  "rarity": "Gold",
+  "summary": "Your Attacks apply an infinitely stacking Burn {{ Item_Keyword_OnHit }}, dealing damage over time.",
+  "tooltip": "Your Attacks also Burn enemies, dealing 0.4% max Health magic damage damage per second over 5 seconds. This Burn stacks infinitely.  Damage Dealt: {f2}",
+  "values": {
+   "PercentMaxHPDamagePer5Seconds": 0.019999999552965164,
+   "BleedDuration": 5.0
+  },
+  "icon_hash": "7a56a9cf2dc0a714",
+  "small_icon_hash": "a95e45d7458e7be8",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_FirstAidKit",
+  "name": "First-Aid Kit",
+  "rarity": "Silver",
+  "summary": "Gain 20% Heal and Shield Power.",
+  "tooltip": "Gain 20% Heal and Shield Power.",
+  "values": {
+   "HealShieldAmp": 0.20000000298023224
+  },
+  "icon_hash": "c4aec9f20d9ef5ec",
+  "small_icon_hash": "a2f66f0d4d05cd38",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Flashy",
+  "name": "Flashy",
+  "rarity": "Gold",
+  "summary": "Your Flash has 3 charges. After 120 seconds, regain all charges.",
+  "tooltip": "Your Flash has 3 charges. After 120 seconds, regain all charges.",
+  "values": {
+   "FlashCooldown": 2.0,
+   "FlashAmmoTooltip": 3.0,
+   "AmmoRechargeTime": 120.0
+  },
+  "icon_hash": "87fc779d9f6dec12",
+  "small_icon_hash": "0886a4ef6c2ea4b9",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_GetExcited",
+  "name": "Get Excited!",
+  "rarity": "Gold",
+  "summary": "Increase Movement Speed and Attack Speed for 4 seconds on takedown.",
+  "tooltip": "Gain 100% Movement Speed and 15% Attack Speed for 4 seconds on takedown.",
+  "values": {
+   "BuffDuration": 4.0,
+   "ASBuff": 0.15000000596046448,
+   "MSBuff": 1.0,
+   "MaxLevel": 2.0
+  },
+  "icon_hash": "69dac0b965b67433",
+  "small_icon_hash": "18ec135f22614f35",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Goliath",
+  "name": "Goliath",
+  "rarity": "Prismatic",
+  "summary": "Become large, gaining 35% Health and 15% Adaptive Force.",
+  "tooltip": "Become large, gaining 35% Health and 15% Adaptive Force.",
+  "values": {
+   "SizeAmp": 0.5,
+   "HealthAmp": 0.3499999940395355,
+   "ADAmp": 0.15000000596046448,
+   "APAmp": 0.15000000596046448,
+   "AFAmp": 0.15000000596046448
+  },
+  "icon_hash": "5b6c8b3642037c4d",
+  "small_icon_hash": "526e432a3d53cb84",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Goredrink",
+  "name": "Goredrink",
+  "rarity": "Silver",
+  "summary": "Gain 15% Omnivamp.",
+  "tooltip": "Gain 15% Omnivamp.",
+  "values": {
+   "Omnivamp": 0.15000000596046448
+  },
+  "icon_hash": "f9f78b22acda41bd",
+  "small_icon_hash": "025fd12daf74473f",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_HeavyHitter",
+  "name": "Heavy Hitter",
+  "rarity": "Silver",
+  "summary": "Your Attacks deal additional physical damage equal to 3.5% of your max Health.",
+  "tooltip": "Your Attacks deal additional {HealthPercentDamage} physical damage.",
+  "values": {
+   "HealthPercent": 0.03500000014901161
+  },
+  "icon_hash": "58996406dcfad27d",
+  "small_icon_hash": "e49f606a10d1645e",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_IceCold",
+  "name": "Ice Cold",
+  "rarity": "Silver",
+  "summary": "Your Slowing effects reduce Movement Speed by an extra 75.",
+  "tooltip": "Your Slowing effects reduce Movement Speed by an extra 75.",
+  "values": {
+   "ExtraSlowAmount": 75.0,
+   "SlowDuration": 1.0
+  },
+  "icon_hash": "db4f28171687eee9",
+  "small_icon_hash": "984e0eff0f09da18",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_InfernalConduit",
+  "name": "Infernal Conduit",
+  "rarity": "Prismatic",
+  "summary": "Your Abilities apply stacking Burn that deals damage over time.  Your Burn effects reduce your basic Ability Cooldowns.",
+  "tooltip": "Your Abilities apply an infinitely stacking Burn, dealing {BleedDamagePerSecond} magic damage per second for 3 seconds.  All your Burn effects lower your basic Ability Cooldowns by 0.08 seconds when they damage enemy champions.  Damage Dealt: {f2}",
+  "values": {
+   "BleedDuration": 3.0,
+   "FlatCooldownRefundPerTick": 0.07999999821186066,
+   "ProcCooldown": 1.0
+  },
+  "icon_hash": "a2f34de63103c668",
+  "small_icon_hash": "ed9de2d26e0159b5",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_InfernalSoul",
+  "missing": true
+ },
+ {
+  "id": "ARAM_ItsCritical",
+  "name": "It's Critical",
+  "rarity": "Gold",
+  "summary": "Gain %i:scaleCrit% 50% Crit chance.",
+  "tooltip": "Gain %i:scaleCrit% 50% Crit chance.",
+  "values": {
+   "CritChance": 0.5
+  },
+  "icon_hash": "7834401ad90d45b9",
+  "small_icon_hash": "9748b75a11adf6d1",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_JeweledGauntlet",
+  "name": "Jeweled Gauntlet",
+  "rarity": "Prismatic",
+  "summary": "Your Abilities can Critically Strike.   Gain %i:scaleCrit% {CritGranted}% Crit Chance.",
+  "tooltip": "Your Abilities can Critically Strike for 145% total damage.  Gain %i:scaleCrit% {CritGranted} Crit Chance.  Bonus Damage: {f2}",
+  "values": {
+   "CritDamage": 1.4500000476837158,
+   "CritChance": 0.25,
+   "CritConverRatio": 0.00044999999227002263
+  },
+  "icon_hash": "223451a41328d1e5",
+  "small_icon_hash": "a573e324005acdb7",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_LegDay",
+  "name": "Leg Day",
+  "rarity": "Silver",
+  "summary": "Gain 50 Movement Speed and 50% Slow Resist.",
+  "tooltip": "Gain 50 Movement Speed and 50% Slow Resist.",
+  "values": {
+   "MovementSpeed": 50.0,
+   "SlowResist": 0.5
+  },
+  "icon_hash": "498818d9d6c65bd5",
+  "small_icon_hash": "3762f36d6828f6aa",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_MadScientist",
+  "missing": true
+ },
+ {
+  "id": "ARAM_Marksmage",
+  "name": "Marksmage",
+  "rarity": "Gold",
+  "summary": "Your Attacks deal additional physical damage equal to 75% Ability Power.",
+  "tooltip": "Your Attacks deal an additional {APDamage} physical damage.  Damage Dealt Total: {f2}",
+  "values": {
+   "APRatio": 0.75
+  },
+  "icon_hash": "8bce0225d1b9ef19",
+  "small_icon_hash": "1fe19b6ce7b8a1ab",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_MasterofDuality",
+  "name": "Master of Duality",
+  "rarity": "Prismatic",
+  "summary": "Your Attacks grant you stacking Ability Power and your Abilities that damage enemies grant you Attack Damage.",
+  "tooltip": "Your Attacks grant you {APGained} Ability Power and your Abilities that damage enemies grant you {ADGained} Attack Damage.  This buff stacks and refreshes infinitely but lasts 5 seconds.",
+  "values": {
+   "StackDuration": 5.0
+  },
+  "icon_hash": "f354e178b18c0f2d",
+  "small_icon_hash": "764864735e0c3d14",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_MindtoMatter",
+  "name": "Mind to Matter",
+  "rarity": "Silver",
+  "summary": "Increase max Health by half of your Mana.",
+  "tooltip": "Gain {ManaToHealthCalc} Health.",
+  "values": {
+   "ConvertCap": 99999.0
+  },
+  "icon_hash": "34ee262d969478f3",
+  "small_icon_hash": "622194d6e6ea70e3",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Minionmancer",
+  "name": "Minionmancer",
+  "rarity": "Gold",
+  "summary": "Your summons gain 40% increased size, health, and damage.",
+  "tooltip": "Your summons gain 40% increased size, health, and damage.",
+  "values": {
+   "MinionSizeIncrease": 0.4000000059604645,
+   "MinionHealthIncrease": 0.4000000059604645,
+   "MinionDamageIncrease": 0.4000000059604645
+  },
+  "icon_hash": "033cb8ad4a1300af",
+  "small_icon_hash": "90da5f3b0e5f1920",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_MountainSoul",
+  "missing": true
+ },
+ {
+  "id": "ARAM_MysticPunch",
+  "name": "Mystic Punch",
+  "rarity": "Prismatic",
+  "summary": "{{ Item_Keyword_OnHit }} reduce the cooldown of your abilities by 1.25 seconds %i:scaleCooldown%.",
+  "tooltip": "{{ Item_Keyword_OnHit }} reduce the cooldown of your abilities by 1.25 seconds %i:scaleCooldown%.",
+  "values": {
+   "CooldownRefund": 1.25,
+   "MinCDR": 0.5
+  },
+  "icon_hash": "af46a6dfe6e2af02",
+  "small_icon_hash": "0c55168ed35f7521",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_OceanSoul",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_OmniSoul",
+  "missing": true
+ },
+ {
+  "id": "ARAM_OutlawsGrit",
+  "name": "Outlaw's Grit",
+  "rarity": "Gold",
+  "summary": "After using a Dash, Blink, or Teleport Ability you gain 12 Armor and Magic Resist up to 5 stacks.",
+  "tooltip": "After using a Dash, Blink, or Teleport Ability you gain 12 Armor and Magic Resist up to {MaxResistTooltipOnly} at 5 stacks.  Resets every 15 seconds.",
+  "values": {
+   "MaxStacks": 5.0,
+   "ResistsPerStack": 12.0,
+   "Refresh": 15.0
+  },
+  "icon_hash": "e478df27b7ccb8d6",
+  "small_icon_hash": "a49b33d26c45eb8f",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Overflow",
+  "name": "Overflow",
+  "rarity": "Gold",
+  "summary": "Your Mana costs are doubled.   Your Ability Heals, Shields, and damage are increased based on your max Mana.",
+  "tooltip": "Your Mana costs double. Your Ability Heals, Shields, and damage are {ManaCalc} more effective.",
+  "values": {
+   "InitialAmpPercent": 10.0
+  },
+  "icon_hash": "ef72dcccefa1b0eb",
+  "small_icon_hash": "e58a168ee7ba1482",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Perseverance",
+  "name": "Perseverance",
+  "rarity": "Gold",
+  "summary": "Gain hugely increased Health Regen, further increased at low Health.",
+  "tooltip": "Gain 1000% base Health Regen, increased to 2000% base Health Regen below 25% Health.  Total Healing Done: {f2}",
+  "values": {
+   "BaseRegen": 10.0,
+   "AmpedRegen": 20.0,
+   "AmpedHPThreshold": 0.25
+  },
+  "icon_hash": "77278988c1061495",
+  "small_icon_hash": "5768d27f99f2b55a",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_ProteinShake",
+  "name": "Protein Shake",
+  "rarity": "Prismatic",
+  "summary": "Gain %i:scaleHealShield%{BonusHSPower}% Heal and Shield Power based on bonus Armor and Magic Resist.",
+  "tooltip": "Gain %i:scaleHealShield%{BonusHSPower}% Heal and Shield Power based on bonus Armor and Magic Resist.",
+  "values": {
+   "ConversionRate": 0.3499999940395355,
+   "InitialHS": 25.0,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "8bc9017ad66826d0",
+  "small_icon_hash": "caf868520e0b743c",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Quest_UrfsChampion",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Quest_WoogletsWitchcap",
+  "missing": true
+ },
+ {
+  "id": "ARAM_RabbleRousing",
+  "name": "Rejuvenation",
+  "rarity": "Gold",
+  "summary": "Using {{SpellName}} restores Health.",
+  "tooltip": "Using {{SpellName}} restores {f1} Health  Total Healing Done: {f2} Heal amount equal to {HealAmount}, scale up to 50% more for longer cooldown abilities.",
+  "values": {
+   "MaxHealthPercentageHeal": 0.014999999664723873,
+   "BonusPercentMax": 0.5,
+   "BonusPercentMin": null,
+   "bAD": 0.25,
+   "AP": 0.15000000596046448,
+   "BonusHealthPercentageHeal": 0.05000000074505806
+  },
+  "icon_hash": "5fdc4f154ecf9caf",
+  "small_icon_hash": "2f5071b5ac146c45",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Recursion",
+  "missing": true
+ },
+ {
+  "id": "ARAM_ScopedWeapons",
+  "name": "Scoped Weapons",
+  "rarity": "Silver",
+  "summary": "Gain {RangeIncrease} Attack Range.",
+  "tooltip": "Gain {RangeIncrease} Attack Range.",
+  "values": {
+   "MeleeRangeIncrease": 75.0,
+   "RangedRangeIncrease": 50.0
+  },
+  "icon_hash": "0587d0a4e5e3661c",
+  "small_icon_hash": "a62b968e45eb40d9",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_ScopierWeapons",
+  "name": "Scopier Weapons",
+  "rarity": "Gold",
+  "summary": "Gain {RangeIncrease} Attack Range.",
+  "tooltip": "Gain {RangeIncrease} Attack Range.",
+  "values": {
+   "MeleeRangeIncrease": 150.0,
+   "RangedRangeIncrease": 100.0
+  },
+  "icon_hash": "a22fcb3363c10d70",
+  "small_icon_hash": "c687e4611a302ff5",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_ScopiestWeapons",
+  "name": "Scopiest Weapons",
+  "rarity": "Prismatic",
+  "summary": "Gain {RangeIncrease} Attack Range.",
+  "tooltip": "Gain {RangeIncrease} Attack Range.",
+  "values": {
+   "MeleeRangeIncrease": 250.0,
+   "RangedRangeIncrease": 150.0
+  },
+  "icon_hash": "d0495152f7eea3df",
+  "small_icon_hash": "a7bdc3ab88c9e20a",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_SkilledSniper",
+  "name": "Skilled Sniper",
+  "rarity": "Gold",
+  "summary": "Snipe an enemy with a non-Ultimate Ability refunds 80% Cooldown (65% for periodic Abilities).",
+  "tooltip": "Snipe an enemy with a non-Ultimate Ability refunds 80% Cooldown (65% for periodic Abilities).  Snipe - Damage enemies over 600 distance away  ",
+  "values": {
+   "SnipeDistance": 600.0,
+   "ReducedCooldownPercent": 0.800000011920929,
+   "PeriodicReductionAmount": 0.6499999761581421
+  },
+  "icon_hash": "4cceec82da9c65e5",
+  "small_icon_hash": "0147961673df4c25",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_SlapAround",
+  "name": "Slap Around",
+  "rarity": "Silver",
+  "summary": "Gain 10 Adaptive Force when you Immobilize or Ground an enemy. Lose 50% on death.",
+  "tooltip": "Each time you Immobilize or Ground an enemy, gain a stack granting 10 Adaptive Force. Lose 50% stacks on death. ",
+  "values": {
+   "AdaptiveForce": 10.0,
+   "SpellIDCD": 5.0,
+   "PercentOfStacksLost": 0.5
+  },
+  "icon_hash": "28188df0495b7a90",
+  "small_icon_hash": "945021d2eb5c60ee",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_SonicBoom",
+  "name": "Sonic Boom",
+  "rarity": "Silver",
+  "summary": "Buffing, Healing, or Shielding your ally deals damage and Slows enemies surrounding them.",
+  "tooltip": "Buffing, healing, or Shielding your ally deals {Damage} true damage and Slows enemies surrounding them by 30% for 2 seconds (2 seconds Cooldown).  Damage Dealt: {f2}",
+  "values": {
+   "Radius": 450.0,
+   "ProcCooldown": 2.0,
+   "SlowAmount": -0.30000001192092896
+  },
+  "icon_hash": "09f958d15b52c726",
+  "small_icon_hash": "1da8696acae65549",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_SoulSiphon",
+  "name": "Soul Siphon",
+  "rarity": "Gold",
+  "summary": "Heal for 12% of damage done by Critical Strikes.   Gain %i:scaleCrit% 25% Crit chance.",
+  "tooltip": "Gain 25% Crit Chance and 12% Lifesteal on Critical Strikes.  Total Healing Done: {f2}",
+  "values": {
+   "HealPercentage": 0.11999999731779099,
+   "CritChance": 0.25
+  },
+  "icon_hash": "f04b61206ad797c3",
+  "small_icon_hash": "cb419b54997f91b6",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_SpinToWin",
+  "missing": true
+ },
+ {
+  "id": "ARAM_TankEngine",
+  "name": "Tank Engine",
+  "rarity": "Gold",
+  "summary": "On takedown, gain a stack that increases your size and max Health. Lose stacks on death.",
+  "tooltip": "On takedown, gain a stack that grants 5% increased size and 5% max Health. Lose 65% of stacks on death.  Total Health Gained: {f1} ",
+  "values": {
+   "SizeIncrement": 0.05000000074505806,
+   "MaxHPIncrement": 0.05000000074505806,
+   "PercentOfStacksLost": 0.6499999761581421
+  },
+  "icon_hash": "97d69441430d06dd",
+  "small_icon_hash": "5dd2682292cabc11",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_TankItOrLeaveIt",
+  "name": "Tank It Or Leave It",
+  "rarity": "Silver",
+  "summary": "You can Critically Defend using your Crit Chance (max 50% chance), giving you a chance to reduce damage.   Gain %i:scaleCrit% 25% Crit Chance.",
+  "tooltip": "You can Critically Defend using your Crit Chance (max 50% chance), giving you a chance to reduce damage taken by 20%. Gain 25% Crit Chance.  Damage Reduced: {f2}",
+  "values": {
+   "DamageReduction": 0.20000000298023224,
+   "CritChance": 0.25,
+   "MaxChance": 0.5,
+   "SpellIDCD": 5.0
+  },
+  "icon_hash": "4702f3fa19412917",
+  "small_icon_hash": "6c41ea648fe06ff5",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_TapDancer",
+  "name": "Tap Dancer",
+  "rarity": "Prismatic",
+  "summary": "Your Attacks grant you Movement Speed. Gain Attack Speed based on your Movement Speed.",
+  "tooltip": "Your Attacks grant you 10 Movement Speed. Gain {MSToASConversionCalc} Attack Speed.  The buff stacks and refreshes infinitely but lasts 5 seconds.",
+  "values": {
+   "MSPerHit": 10.0,
+   "MSToASConversion": 0.0010000000474974513,
+   "MaxStack": 100.0,
+   "StackDuration": 5.0
+  },
+  "icon_hash": "11ec96ac01a52c13",
+  "small_icon_hash": "29c7a0653ab40862",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_ThreadtheNeedle",
+  "name": "Thread the Needle",
+  "rarity": "Gold",
+  "summary": "Gain 18% %i:scaleAPen% Armor Penetration and %i:scaleMPen% Magic Penetration.",
+  "tooltip": "Gain 18% %i:scaleAPen% Armor Penetration and %i:scaleMPen% Magic Penetration.",
+  "values": {
+   "PercentPen": 0.18000000715255737
+  },
+  "icon_hash": "1f013ff9c952e72e",
+  "small_icon_hash": "6d7ecd9a81dd24f6",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Upgrade_Collector",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Upgrade_IE",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Upgrade_Immolate",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Upgrade_ZH",
+  "missing": true
+ },
+ {
+  "id": "ARAM_Vulnerability",
+  "name": "Vulnerability",
+  "rarity": "Gold",
+  "summary": "Your Item and damage over time effects can Critically Strike.   Gain %i:scaleCrit% 25% Crit chance.",
+  "tooltip": "Your Item and damage over time effects can Critically Strike for 145% extra damage.   Gain %i:scaleCrit% 25% Crit chance.  Damage Dealt: {f2}",
+  "values": {
+   "CritDamage": 1.4500000476837158,
+   "CritChance": 0.25,
+   "SpellIDCD": 5.0
+  },
+  "icon_hash": "e994618ac901e713",
+  "small_icon_hash": "2188ac8386cf5ce0",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_WitchfulThinking",
+  "name": "Witchful Thinking",
+  "rarity": "Silver",
+  "summary": "Gain %i:scaleAP% {AP} Ability Power.",
+  "tooltip": "Gain %i:scaleAP% {AP} Ability Power.",
+  "values": {
+   "APFlat": 70.0
+  },
+  "icon_hash": "992c212db101a1bb",
+  "small_icon_hash": "2c8cbc76463bf98d",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_WithHaste",
+  "missing": true
+ },
+ {
+  "id": "Nightstalking",
+  "name": "Nightstalking",
+  "rarity": "Gold",
+  "summary": "Takedowns against enemy champions within 3 seconds of damaging them grants you Movement Speed and renders you invisible.",
+  "tooltip": "Takedowns against enemy champions within 3 seconds of damaging them grants you 40% Move Speed and renders you invisible for 1.5 seconds.",
+  "values": {
+   "StealthDuration": 1.5,
+   "TakedownWindow": 3.0,
+   "Cooldown": 10.0,
+   "StealthMoveSpeed": 0.4000000059604645
+  },
+  "icon_hash": "c8948e8bc8aa8b40",
+  "small_icon_hash": "d713bc677ffebd5a",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Erosion",
+  "name": "Erosion",
+  "rarity": "Silver",
+  "summary": "Damaging enemies adds a stacking Armor and Magic Resist shred for 4s. ",
+  "tooltip": "Damaging enemies shreds 1.5% Armor and Magic Resist for 4s, up to {MaxShredTooltipOnly}% at 20 stacks. ",
+  "values": {
+   "Shred": 0.014999999664723873,
+   "ShredDuration": 4.0,
+   "MaxStacks": 20.0
+  },
+  "icon_hash": "84396ca0d6d774bd",
+  "small_icon_hash": "f31186ed3d9293d4",
+  "spell_found": true
+ },
+ {
+  "id": "VeilOfWarding",
+  "name": "Veil of Warding",
+  "rarity": "Silver",
+  "summary": "Gain a Spell Shield every 30 seconds that blocks the next enemy Ability.",
+  "tooltip": "Gain a Spell Shield every 30 seconds that blocks the next enemy Ability.",
+  "values": {
+   "ShieldDuration": 2500.0,
+   "Cooldown": 30.0,
+   "MaxLevel": 2.0
+  },
+  "icon_hash": "14c6896d77ba6ff9",
+  "small_icon_hash": "2f67314864502e3d",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_ItsKillingTime",
+  "name": "It's Killing Time",
+  "rarity": "Gold",
+  "summary": "After casting your Ultimate, mark all enemies and store up damage you deal to them. When it ends, detonate the damage.",
+  "tooltip": "After casting your Ultimate, mark all enemies and store 40% of damage you deal to them. After 5 seconds, detonate the stored damage (8 second Cooldown).  Damage Dealt: {f2}",
+  "values": {
+   "MarkDuration": 5.0,
+   "Cooldown": 8.0,
+   "DamageStorePercentage": 0.4000000059604645,
+   "VFXHighDamageThreshold": 500.0
+  },
+  "icon_hash": "1cdabc95d5fcd1a7",
+  "small_icon_hash": "14dcd4fe40da952d",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Homeguard",
+  "missing": true
+ },
+ {
+  "id": "ARAM_LightemUp",
+  "name": "Light 'Em Up!",
+  "rarity": "Silver",
+  "summary": "Every 4th Attack shoots 4 missiles dealing magic damage {{ Item_Keyword_OnHit }}.",
+  "tooltip": "Every 4th Attack shoots 4 missiles dealing {TOOLTIPONLYDamage} magic damage.  Damage Dealt: {f2}",
+  "values": {},
+  "icon_hash": "ce00a823d38aa961",
+  "small_icon_hash": "c0a841547cd3c68a",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_SearingDawn",
+  "name": "Searing Dawn",
+  "rarity": "Gold",
+  "summary": "Your Abilities mark enemies, causing them to take additional magic damage from your ally's next Attack or Ability.",
+  "tooltip": "Your Abilities mark enemies, causing them to take an additional {Damage} magic damage from your ally's next Attack or Ability.  Damage Dealt Total: {f2}",
+  "values": {
+   "ProcCooldown": 0.75
+  },
+  "icon_hash": "8ed28b8edc37f853",
+  "small_icon_hash": "0879bafc5fe76652",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_ShadowRunner",
+  "name": "Shadow Runner",
+  "rarity": "Silver",
+  "summary": "After using a Dash, Blink, or Teleport Ability or exiting Stealth, gain Movement Speed.",
+  "tooltip": "After using a Dash, Blink, or Teleport Ability or exiting Stealth, gain 300 Movement Speed for 2 seconds.",
+  "values": {
+   "MSAmount": 300.0,
+   "BuffDuration": 2.0
+  },
+  "icon_hash": "8f95c2afd559df04",
+  "small_icon_hash": "67e916a23b6d24fd",
+  "spell_found": true
+ },
+ {
+  "id": "Adamant",
+  "name": "Adamant",
+  "rarity": "Silver",
+  "summary": "Each time you Immobilize or Ground an enemy, gain Armor and Magic Resist.",
+  "tooltip": "Each time you Immobilize or Ground an enemy, gain {ResistsPerLevel} Armor and Magic Resist for 10 seconds (up to 10 stacks).",
+  "values": {
+   "Resists": 10.0,
+   "SpellIDCD": 5.0,
+   "MaxStacks": 10.0,
+   "AugDuration": 10.0,
+   "MaxLevel": 2.0
+  },
+  "icon_hash": "1d58f9f4acb10d3b",
+  "small_icon_hash": "cd5660d0e0cd5329",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Typhoon",
+  "name": "Typhoon",
+  "rarity": "Silver",
+  "summary": "Your Attacks shoot a missile at an additional target, dealing reduced damage and applying {{ Item_Keyword_OnHit }} effects.",
+  "tooltip": "Your Attacks shoot a missile at an additional target, dealing 30% damage and applying {{ Item_Keyword_OnHit }} effects.",
+  "values": {
+   "ADRatio": 0.30000001192092896
+  },
+  "icon_hash": "49d6c9359f13b992",
+  "small_icon_hash": "1e35209da9a89727",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_WindspeakersBlessing",
+  "name": "Windspeaker's Blessing",
+  "rarity": "Prismatic",
+  "summary": "Your Healing and Shielding also increases the target's Armor and Magic Resist for 3 seconds.",
+  "tooltip": "Your Healing and Shielding also increases the target's Armor and Magic Resist by {Resists} for 3 seconds.",
+  "values": {},
+  "icon_hash": "8b5edff88de4e0dd",
+  "small_icon_hash": "1d92c6c965629a18",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_UltimateUnstoppable",
+  "name": "Ultimate Unstoppable",
+  "rarity": "Silver",
+  "summary": "After using your Ultimate, you become immune to crowd control for 3 seconds. (8 second Cooldown).",
+  "tooltip": "After using your Ultimate, you become immune to crowd control for 3 seconds. (8 second Cooldown).",
+  "values": {
+   "Cooldown": 8.0,
+   "UnstoppableDuration": 3.0
+  },
+  "icon_hash": "bc9afddd5f021bc1",
+  "small_icon_hash": "1adeade77b48372f",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_DivineIntervention",
+  "name": "Divine Intervention",
+  "rarity": "Gold",
+  "summary": "Every 35 seconds, Autocast a protective star. Upon its landing, you and nearby allies become Invulnerable for a few seconds. ",
+  "tooltip": "Every 35 seconds, Autocast a protective star that slowly descends upon you. When it lands, you and nearby allies become Invulnerable for 2.5 seconds. ",
+  "values": {
+   "BaseCD": 35.0,
+   "InvulnerabilityDuration": 2.5,
+   "Radius": 400.0,
+   "InitalDelay": 15.0,
+   "WarningDelay": 2.5
+  },
+  "icon_hash": "d0f182323309a807",
+  "small_icon_hash": "65604784068e6359",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_DrawYourSword",
+  "name": "Draw Your Sword",
+  "rarity": "Prismatic",
+  "summary": "Become melee and gain Attack Damage, Health, Attack Speed, Lifesteal, and Movement Speed (scaling with the range you give up).",
+  "tooltip": "You are now melee. Gain 24% Attack Damage, 24% Health, 20% Attack Speed, 20% Lifesteal, and 20% Move Speed (each further increased based on Attack Range lost).",
+  "values": {
+   "BonusAD": 0.23999999463558197,
+   "BonusHP": 0.23999999463558197,
+   "BonusAS": 0.20000000298023224,
+   "BonusMS": 0.20000000298023224,
+   "BonusLifesteal": 0.20000000298023224,
+   "MeleeAttackRange": 200.0,
+   "MaxStatMod": 1.0,
+   "ExtraStackAttackRangeFloor": 500.0,
+   "ExtraStackAttackRangeCeiling": 650.0
+  },
+  "icon_hash": "e7ec5ef7b527c280",
+  "small_icon_hash": "a6c4e6156ebe0bb1",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_DualWield",
+  "name": "Dual Wield",
+  "rarity": "Prismatic",
+  "summary": "Attacks fire a bolt that applies {{ Item_Keyword_OnHit }} effects at reduced strength. Gain 10% total Attack Speed.",
+  "tooltip": "When you Attack, fire a bolt that deals 40% damage and applies your {{ Item_Keyword_OnHit }} effects at 40% effectiveness.   Gain 10% total Attack Speed.",
+  "values": {
+   "AttackSpeed": 0.10000000149011612,
+   "AttackReduction": 0.4000000059604645,
+   "OnHitMod": 0.4000000059604645,
+   "SecondMissileDelay": 0.15000000596046448
+  },
+  "icon_hash": "e93ada55eba103da",
+  "small_icon_hash": "3c1c6cb421887fc4",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_FeyMagic",
+  "name": "Fey Magic",
+  "rarity": "Prismatic",
+  "summary": "Damaging with your Ultimate Polymorphs enemies for a few seconds.",
+  "tooltip": "Damaging with your Ultimate Polymorphs enemies for 2 seconds (15 second Cooldown).",
+  "values": {
+   "WEnemySlow": 60.0,
+   "PolyCooldown": 15.0,
+   "PolyDuration": 2.0
+  },
+  "icon_hash": "fa35aa1bfa5a2e56",
+  "small_icon_hash": "ac1b55048c8188ff",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Flashbang",
+  "name": "Flashbang",
+  "rarity": "Silver",
+  "summary": "Your Flash causes an explosion that damages and Slows (resets on death).",
+  "tooltip": "Your Flash causes an explosion that deals {ExplosiveDamage} damage and Slows (resets on death).  Damage Dealt: {f2}",
+  "values": {
+   "SlowAmount": 0.3499999940395355,
+   "SlowDuration": 1.25,
+   "Range": 300.0
+  },
+  "icon_hash": "f9fe8731ea03313c",
+  "small_icon_hash": "f233c8578ecb6938",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_UltimateRevolution",
+  "name": "Ultimate Revolution",
+  "rarity": "Prismatic",
+  "summary": "Refresh your Ultimate after casting it (75 seconds Cooldown or reset on death).",
+  "tooltip": "Refresh your Ultimate after casting it (75 seconds Cooldown or reset on death).",
+  "values": {
+   "Cooldown": 75.0
+  },
+  "icon_hash": "9e290923a989625f",
+  "small_icon_hash": "b2ecb84b9174f134",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_MagicMissile",
+  "name": "Magic Missile",
+  "rarity": "Gold",
+  "summary": "Dealing Ability damage fires 3 missiles, each dealing percent max Health true damage based on distance traveled.",
+  "tooltip": "Dealing Ability damage fires 3 missiles at each enemy hit, each dealing up to 1% max Health true damage based on distance traveled.  Damage Dealt: {f2}",
+  "values": {
+   "NumberOfMissiles": 3.0,
+   "MaxHealthDamagePerMissile": 0.0033400000538676977,
+   "Cooldown": 6.0,
+   "MaxRangeThreshold": 1000.0,
+   "MaxHealthDamageTooltip": 1.0
+  },
+  "icon_hash": "7a82290bc1e55f30",
+  "small_icon_hash": "41a1315274cb4e10",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_OkBoomerang",
+  "name": "Ok Boomerang",
+  "rarity": "Gold",
+  "summary": "Autocast throw a boomerang at a nearby enemy every {Cooldown}s.",
+  "tooltip": "Autocast a boomerang at a nearby enemy every 7 seconds, dealing {Damage} adaptive damage to enemies hit.  Damage Dealt: {f2}",
+  "values": {
+   "BaseCooldown": 7.0
+  },
+  "icon_hash": "b3bb40fe6ae2c713",
+  "small_icon_hash": "ffeafc38261a6b6d",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_QuantumComputing",
+  "name": "Quantum Computing",
+  "rarity": "Prismatic",
+  "summary": "Periodically Autocast a massive slash. Enemies hit are Slowed, take additional max Health damage, and heal you.",
+  "tooltip": "Every 30 seconds, Autocast a massive slash around you, dealing {BaseDamageTotal} physical damage. Enemies hit by the outer half are Slowed by 80% decaying over 2 seconds, and take an additional {OuterEdgeTooltip} max Health physical damage. You restore 80% champion damage dealt as Health.  Total Healing Done: {f2}",
+  "values": {
+   "AutoCastCooldown": 30.0,
+   "BaseDamage": 40.0,
+   "SlowDuration": 2.0,
+   "ChargeDuration": 0.75,
+   "SlowPercentage": 80.0,
+   "OuterConeMaxHPDamage": 0.10000000149011612,
+   "ADRequiredFor1PercentDamage": 35.0,
+   "ADRequiredTooltipOnly": 0.0002500000118743628,
+   "MonsterDamageReduction": 50.0,
+   "OuterConeHealingRatio": 80.0,
+   "MonsterHealingCap": 0.10000000149011612,
+   "BlastLength": 650.0,
+   "ConeAngle": 45.0,
+   "APRequiredFor1PercentDamage": 60.0,
+   "BonusHPRequiredFor1PercentDamag": 600.0,
+   "BADRatio": 0.6000000238418579,
+   "APRequiredTooltipOnly": 0.00015999999595806003,
+   "BonusHPRequiredTooltipOnly": 9.999999747378752e-06
+  },
+  "icon_hash": "07479a57cce8dab4",
+  "small_icon_hash": "d1457e342f3ec4a6",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_FromBeginningToEnd",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Impassable",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_SymphonyofWar",
+  "missing": true
+ },
+ {
+  "id": "OminousPact",
+  "name": "Ominous Pact",
+  "rarity": "Prismatic",
+  "summary": "Gain Ability Power, Movement Speed, and Omnivamp based on missing Health, taking damage each time you cast. ",
+  "tooltip": "Gain {APPerLevel} Ability Power, 50% Movement Speed, and 20% Omnivamp based on missing Health. Spell casts cost 5% of your current Health.  Max benefit at 30% Health. ",
+  "values": {
+   "MaxOmnivamp": 0.20000000298023224,
+   "MSMod": 0.5,
+   "SpellHealthCost": 0.05000000074505806,
+   "HealthThresholdTT": 0.30000001192092896,
+   "MaxLevel": 2.0
+  },
+  "icon_hash": "9640f773e1ee7a7f",
+  "small_icon_hash": "19082d3ba7684b72",
+  "spell_found": true
+ },
+ {
+  "id": "CriticalRhythm",
+  "name": "Critical Rhythm",
+  "rarity": "Gold",
+  "summary": "Your basic Attack stacks Attack Speed on Critical Strikes.  Gain %i:scaleCrit% 25% Crit chance.",
+  "tooltip": "Your basic Attack stacks 6% Attack Speed on Critical Strikes up to 10 stacks.  Gain %i:scaleCrit% 25% Crit chance.",
+  "values": {
+   "ASPerStack": 0.05999999865889549,
+   "CritChance": 0.25,
+   "MaxStack": 10.0,
+   "BuffDuration": 6.0,
+   "MaxLevel": 2.0,
+   "Cooldown": 4.0
+  },
+  "icon_hash": "6f2752ba20821824",
+  "small_icon_hash": "e025299fb8e5e8ae",
+  "spell_found": true
+ },
+ {
+  "id": "EscapePlan",
+  "name": "Escape Plan",
+  "rarity": "Silver",
+  "summary": "Gain a massive decaying Shield, decaying Movement Speed, and a decaying shrink effect upon reaching 35% Health.",
+  "tooltip": "Gain a massive {ShieldAmount} decaying Shield, decaying 150% Movement Speed, and a decaying shrink effect upon reaching 35% Health (75 seconds Cooldown).",
+  "values": {
+   "SizeMod": 0.20000000298023224,
+   "Duration": 5.0,
+   "MovespeedModEnhanced": 1.5,
+   "Cooldown": 75.0,
+   "HealthThreshold": 0.3499999940395355,
+   "ShieldRatio": 0.6499999761581421,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "9fb5352b544b37a1",
+  "small_icon_hash": "a55e4ce1cfd63f18",
+  "spell_found": true
+ },
+ {
+  "id": "GlassCannon",
+  "name": "Glass Cannon",
+  "rarity": "Prismatic",
+  "summary": "Reduce max Health by 30%. Deal an extra {TrueDamagePercSplit} damage as true damage. ",
+  "tooltip": "{{Kiwi_GlassCannon_Summary}}  Damage Dealt: {f1}",
+  "values": {
+   "TrueDamagePerc": 0.25,
+   "HPReductionPerc": 0.30000001192092896,
+   "MaxLevel": 3.0,
+   "RangedTrueDamagePercDisplay": 0.15000000596046448
+  },
+  "icon_hash": "0fb01ae860b399b7",
+  "small_icon_hash": "eaaa4ae51ecdba61",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Quest_SteelYourHeart",
+  "missing": true
+ },
+ {
+  "id": "SnowballUpgrade",
+  "name": "Snowball Upgrade",
+  "rarity": "Gold",
+  "summary": "Gain 50 Ability Haste on Snowball. Hitting an enemy creates a snowfall that deals AoE damage and Slows nearby enemies.  If you don't have one, gain a Snowball. ",
+  "tooltip": "Gain 50 Ability Haste on your Snowball.  Hitting a target creates an area that Slows enemies by {TotalSlowAmount} and deals {TotalDamagePerSecond} magic damage per second for 2 seconds (total {TotalDamage} magic damage).   ",
+  "values": {
+   "AbilityHaste": 50.0,
+   "BaseDamagePerSecond": 100.0,
+   "BaseDuration": 2.0,
+   "BaseSlowAmount": 0.5,
+   "APRatioPerSecond": 0.6000000238418579,
+   "TicksPerSecond": 4.0,
+   "CastDelay": 0.25,
+   "SlowPer100AP": 0.0006000000284984708,
+   "BonusADRatio": 1.0
+  },
+  "icon_hash": "cce3978696a5ab17",
+  "small_icon_hash": "3b3c670951723f6d",
+  "spell_found": true
+ },
+ {
+  "id": "BiggestSnowballEver",
+  "name": "Biggest Snowball Ever",
+  "rarity": "Prismatic",
+  "summary": "Gain 100 Ability Haste on Snowball.   Your snowball is BIG and will pass through minions. It Slows, Knocks Up champions, and deals additional damage.  If you don't have one, gain a Snowball.",
+  "tooltip": "Gain 100 Ability Haste on Snowball.   Your snowball is BIG and will pass through minions. It Slows enemies for 20% for 2 seconds, Knocks Up for 0.75 seconds, and deals an additional {SnowballDamage} damage.  If you don't have one, gain a Snowball.",
+  "values": {
+   "MoveSpeedMod": -0.20000000298023224,
+   "SlowDuration": 2.0,
+   "KnockUpDuration": 0.75,
+   "Haste": 100.0,
+   "MoveSpeedModTooltip": 0.20000000298023224,
+   "APRatio": 0.6000000238418579,
+   "bADRatio": 1.0
+  },
+  "icon_hash": "a22180422438386b",
+  "small_icon_hash": "200f0f8816120ab3",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/KingMe",
+  "missing": true
+ },
+ {
+  "id": "Goldrend",
+  "name": "Goldrend",
+  "rarity": "Prismatic",
+  "summary": "Damaging a champion with Attacks or Abilities deals additional magic damage, and grants you Gold and Movement Speed.",
+  "tooltip": "Damaging a champion with Attacks or Abilities deals an additional {ReaperDamage} magic damage, grants you {TotalGoldPerProcTooltip} Gold and 25% Movement Speed for 1.5 seconds (30 seconds Cooldown per champion).  Damage Dealt: {f1} Gold Earned: {f2}",
+  "values": {
+   "MovementSpeedDuration": 1.5,
+   "PercentMovespeedGain": 0.25,
+   "TimerDuration": 30.0,
+   "APRatio": 0.20000000298023224,
+   "GoldPerProc": 10.0,
+   "TotalLoops": 3.0,
+   "BonusADRatio": 0.4000000059604645
+  },
+  "icon_hash": "f0efd3409f08362a",
+  "small_icon_hash": "073e5f5d96e8afad",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_ADAPt",
+  "name": "ADAPt",
+  "rarity": "Silver",
+  "summary": "Convert Bonus Attack Damage to Ability Power. Gain 15% Ability Power.",
+  "tooltip": "Convert Bonus Attack Damage to Ability Power, and gain {APAmpCalcTooltip} Ability Power.  Current Conversion: {f1}  Converts at a rate of 1.67 Ability Power per point of Attack Damage.",
+  "values": {
+   "ConversionRate": 1.666659951210022,
+   "InverseRate": 0.6000000238418579,
+   "APAmp": 0.15000000596046448
+  },
+  "icon_hash": "481f48faccf40c71",
+  "small_icon_hash": "fcfa29f284caf98e",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_escAPADe",
+  "name": "escAPADe",
+  "rarity": "Silver",
+  "summary": "Convert Ability Power to Bonus Attack Damage. Gain 15% Attack Damage.",
+  "tooltip": "Convert Ability Power to Bonus Attack Damage and gain {ADAmpCalcTooltip} Attack Damage.  Current Conversion: {f1}  Converts at a rate of 0.6 Attack Damage per point of Ability Power.",
+  "values": {
+   "ConversionRate": 0.6000000238418579,
+   "InverseRate": 1.666659951210022,
+   "ADAmp": 0.15000000596046448
+  },
+  "icon_hash": "8c99ebacd9f1d236",
+  "small_icon_hash": "c6807240a8e31ffa",
+  "spell_found": true
+ },
+ {
+  "id": "EmpyreanPromise",
+  "name": "Empyrean Promise",
+  "rarity": "Prismatic",
+  "summary": "Gain  %i:scaleHealShield% 15% Heal and Shield power. Gain Empyrean Promise as a Summoner Spell.  Vigilance Teleport to an ally and grant {ShieldAmount} Shield for 3 seconds after landing.",
+  "tooltip": "Gain  %i:scaleHealShield% 15% Heal and Shield power. Gain Empyrean Promise as a Summoner Spell.  Vigilance Teleport to an ally and grant {ShieldAmount} Shield for 3 seconds after landing.",
+  "values": {
+   "ShieldDuration": 3.0,
+   "ShieldRatioAP": 1.0,
+   "ShieldRatioBHealth": 0.10000000149011612,
+   "DelayMovingTime": 0.25,
+   "HSAmp": 0.15000000596046448,
+   "MoveSpeed": 4000.0
+  },
+  "icon_hash": "66404d0bf6e2ce62",
+  "small_icon_hash": "5aed74cea8e16263",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_GiantSlayer",
+  "name": "Giant Slayer",
+  "rarity": "Prismatic",
+  "summary": "Become tiny, gain Movement Speed, and gain bonus damage to champions based on how much larger they are than you.",
+  "tooltip": "Become tiny, gain 20% Movement Speed, and deal between 10% and 30% bonus damage to champions based on how much larger they are than you.  Damage Dealt: {f2}",
+  "values": {
+   "SizeMod": 0.25,
+   "MovespeedMod": 0.20000000298023224,
+   "SmallBonusDamage": 0.10000000149011612,
+   "MedBonusDamage": 0.15000000596046448,
+   "LargeBonusDamage": 0.25,
+   "XLargeBonusDamage": 0.30000001192092896
+  },
+  "icon_hash": "bcd27576d66aa31d",
+  "small_icon_hash": "b68a4c44210d3880",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Cruelty",
+  "name": "Cruelty",
+  "rarity": "Prismatic",
+  "summary": "On Immobilizing or Grounding a champion, summon a comet that lands after a delay, dealing magic damage to nearby enemies.",
+  "tooltip": "On Immobilizing or Grounding an enemy champion, summon a comet above them. The comet lands after 1 second, dealing {TotalDamage} magic damage to nearby enemies.  This effect has a 6 seconds Cooldown per target per spell cast.  Damage Dealt: {f1}",
+  "values": {
+   "DelayTime": 1.0,
+   "PerSpellLockout": 6.0,
+   "Radius": 300.0
+  },
+  "icon_hash": "63b511c80a6b2c52",
+  "small_icon_hash": "d646cf22100856b2",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_SpiritualPurification",
+  "name": "Spiritual Purification",
+  "rarity": "Gold",
+  "summary": "On takedown, creates an explosion that slows other nearby enemies by 60%, and deals damage based on their current Health. ",
+  "tooltip": "Takedowns create an explosion that deals damage to nearby enemies equal to 15% of their current health and leave a slowing area. Enemies within are slowed by 60% for 1.5 seconds.",
+  "values": {
+   "SlowAmount": 0.6000000238418579,
+   "SlowDuration": 1.5,
+   "AoERadius": 500.0,
+   "PercentCurrentHealthDamage": 0.15000000596046448
+  },
+  "icon_hash": "47ef85f5ed3792e1",
+  "small_icon_hash": "f4d59d9cc4ee21d5",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/Quest_Sneakerhead",
+  "missing": true
+ },
+ {
+  "id": "ARAM_TransmutePrismatic",
+  "name": "Transmute: Prismatic",
+  "rarity": "Gold",
+  "summary": "Gain a random %i:Augment% Prismatic Augment.",
+  "tooltip": "Gain a random %i:Augment% Prismatic Augment.",
+  "values": {},
+  "icon_hash": "266fa9b01d2f802e",
+  "small_icon_hash": "4828f9d370754b7d",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_TransmuteChaos",
+  "name": "Transmute: Chaos",
+  "rarity": "Prismatic",
+  "summary": "Gain 2 random %i:Augment%Augments.",
+  "tooltip": "Gain 2 random %i:Augment%Augments.",
+  "values": {
+   "Augment1SilverChance": 30.0,
+   "Augment1GoldChance": 70.0,
+   "Augment2SilverChance": 30.0,
+   "Augment2GoldChance": 70.0,
+   "AugmentsToGrantToolTipOnly": 2.0
+  },
+  "icon_hash": "6f26224e0961053e",
+  "small_icon_hash": "4052634a89411fc6",
+  "spell_found": true
+ },
+ {
+  "id": "FinalForm",
+  "name": "Final Form",
+  "rarity": "Prismatic",
+  "summary": "After casting your Ultimate, gain a max Health Shield, Omnivamp and Movement Speed for 10 seconds.",
+  "tooltip": "After casting your Ultimate, gain a 50% max Health Shield, 20% Omnivamp and 30% bonus Movement Speed for 10 seconds. (20 seconds Cooldown).",
+  "values": {
+   "MaxHealthShield": 0.5,
+   "OmniVamp": 0.20000000298023224,
+   "MSBonus": 0.30000001192092896,
+   "AugDuration": 10.0,
+   "Cooldown": 20.0,
+   "MaxLevel": 2.0
+  },
+  "icon_hash": "d2d022ceea748cc7",
+  "small_icon_hash": "aaaf5dccd9b76064",
+  "spell_found": true
+ },
+ {
+  "id": "Poltergeist",
+  "name": "Poltergeist",
+  "rarity": "Silver",
+  "summary": "Gain Poltergeist as a Summoner Spell.  Poltergeist casts both Barrier and Ghost.",
+  "tooltip": "Gain Poltergeist as a Summoner Spell.  Poltergeist casts both Barrier and Ghost.",
+  "values": {
+   "Duration": 5.0,
+   "AllyRange": 835.0,
+   "MoveSpeed": 0.30000001192092896
+  },
+  "icon_hash": "14c6896d77ba6ff9",
+  "small_icon_hash": "2f67314864502e3d",
+  "spell_found": true
+ },
+ {
+  "id": "Flash2",
+  "name": "Flash 2",
+  "rarity": "Silver",
+  "summary": "Gain a second Flash Summoner Spell and 70 Summoner Haste.",
+  "tooltip": "Gain a second Flash Summoner Spell and 70 Summoner Haste.",
+  "values": {
+   "Cooldown": 60.0,
+   "SummonerHaste": 70.0
+  },
+  "icon_hash": "3fb9f2ddd08a852d",
+  "small_icon_hash": "e3a4eb626bc9ecbd",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Upgrade_Sheen",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/UltimateAwakening",
+  "missing": true
+ },
+ {
+  "id": "MightyShield",
+  "name": "Mighty Shield",
+  "rarity": "Silver",
+  "summary": "Gain %i:miniAdaptiveForce%{AdaptiveAmp} Adaptive Force for 3 seconds when you gain a Shield (5 seconds Cooldown).",
+  "tooltip": "Gain %i:miniAdaptiveForce%{AdaptiveAmp} Adaptive Force for 3 seconds when you gain a Shield (5 seconds Cooldown).",
+  "values": {
+   "ShieldDuration": 3.0,
+   "Cooldown": 5.0
+  },
+  "icon_hash": "3d94e6abd7a1c0d7",
+  "small_icon_hash": "7d89908e8c72d91f",
+  "spell_found": true
+ },
+ {
+  "id": "SwiftAndSafe",
+  "name": "Swift and Safe",
+  "rarity": "Silver",
+  "summary": "Gain a Shield after a Dash or Blink.",
+  "tooltip": "Gain a {ShieldAmount} Shield for 2 seconds after a Dash or Blink (5 seconds Cooldown). ",
+  "values": {
+   "Cooldown": 5.0,
+   "APPercent": 0.25999999046325684,
+   "ADPercent": 0.6499999761581421,
+   "ShieldDuration": 2.0
+  },
+  "icon_hash": "75fc308e1ac2556e",
+  "small_icon_hash": "bbc68acdcafcf516",
+  "spell_found": true
+ },
+ {
+  "id": "Vampirism",
+  "name": "Vampirism",
+  "rarity": "Gold",
+  "summary": "You cannot be healed by allies or gain Health Regen. Gain 25% Omnivamp.",
+  "tooltip": "You cannot be healed by allies or gain Health Regen. Gain 25% Omnivamp.",
+  "values": {
+   "OmniVamp": 0.25
+  },
+  "icon_hash": "20e9f26d4ceb7ca2",
+  "small_icon_hash": "58cab59f0674fe80",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Earthwake",
+  "name": "Earthwake",
+  "rarity": "Prismatic",
+  "summary": "Your dash, blink, or teleport Abilities leave behind a trail that detonates after 0.75 second.",
+  "tooltip": "Your dash, leap, blink, or teleport Abilities leave behind a trail that detonates after 1 second, dealing {Damage} physical damage.  Damage Dealt Total: {f2}",
+  "values": {
+   "ExplosionRadius": 300.0,
+   "ExplosionDelayTime": 0.75,
+   "APRatio": 0.6000000238418579,
+   "BonusADRatio": 1.25,
+   "PerwaveDamageCD": 1.0,
+   "MaxRange": 2000.0,
+   "MinionMod": 0.699999988079071
+  },
+  "icon_hash": "7a396ae038c70c2a",
+  "small_icon_hash": "21dc476aa1a0e091",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_ShrinkRay",
+  "name": "Shrink Ray",
+  "rarity": "Gold",
+  "summary": "Your Attacks reduce the target's damage and size by 15% {{ Item_Keyword_OnHit }}.",
+  "tooltip": "Your Attacks reduce an enemy's damage by 15% for 3 seconds.  Damage Reduced: {f2}",
+  "values": {
+   "DamageReduction": 0.15000000596046448
+  },
+  "icon_hash": "8f92fb7f17084f0b",
+  "small_icon_hash": "e150fbda0a0827fb",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_StatsOnStatsOnStats",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_PandorasBox",
+  "missing": true
+ },
+ {
+  "id": "PinballSnowball",
+  "name": "Pinball",
+  "rarity": "Gold",
+  "summary": "Your Snowball gains Ability Haste and deals extra True Damage.  When the Snowball bounces off walls, it increases in size and damage and has a reduced Cooldown.",
+  "tooltip": "Your Snowball gains 50 Ability Haste, deals extra {TrueDamage} true damage and bounces off walls. Each bounce increases its size by 25%, increases its damage dealt by 20% and reduces its Cooldown by 30%.  Number of Bounces: {f1}",
+  "values": {
+   "AbilityHaste": 50.0,
+   "CDRefundOnBounce": 0.30000001192092896,
+   "SizeAmp": 0.25,
+   "DamageAmp": 0.20000000298023224,
+   "CastRangeAmp": 0.10000000149011612,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "0b2d88ed8351fdf4",
+  "small_icon_hash": "c301760ba043b50f",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Quest_VoidImmolation",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_StatsOnStats",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/InfiniteRecursion",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Stats",
+  "missing": true
+ },
+ {
+  "id": "Donation",
+  "name": "Donation",
+  "rarity": "Gold",
+  "summary": "Get 1750 Gold. No questions asked.",
+  "tooltip": "Receive 1750 Gold. Thanks chat! :)",
+  "values": {
+   "GoldAmount": 1750.0,
+   "IncFrequency": 10.0,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "266f60333ee8f650",
+  "small_icon_hash": "a43fce577679eab4",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ShrinkEngine",
+  "missing": true
+ },
+ {
+  "id": "ARAM_BladeWaltz",
+  "name": "Blade Waltz",
+  "rarity": "Prismatic",
+  "summary": "Gain Blade Waltz as a Summoner Spell.",
+  "tooltip": "Makes you untargetable while you dash at and deal {Damage} damage to enemies 8 times (deals 50% On-Hit damage).",
+  "values": {
+   "TotalHits": 8.0
+  },
+  "icon_hash": "2a54e6db2a78640c",
+  "small_icon_hash": "b2ece2eec34de84e",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/YouSpinMeRightRound",
+  "missing": true
+ },
+ {
+  "id": "SoulEater",
+  "name": "Soul Eater",
+  "rarity": "Gold",
+  "summary": "Immobilizing an enemy champion grants 20 max Health.  If taken as your second Augment, starts with {StartingHPIfSecondAugmentTT} Health.",
+  "tooltip": "Immobilizing an enemy champion grants 20 max Health.  Total Health Gained: {HealthGained} If taken as your second Augment, starts with {StartingHPIfSecondAugmentTT} Health.",
+  "values": {
+   "HealthGainPerStack": 20.0,
+   "SpellIDCD": 5.0
+  },
+  "icon_hash": "7c134177d2e10dc0",
+  "small_icon_hash": "7653ebd51b5e021f",
+  "spell_found": true
+ },
+ {
+  "id": "GrowthSpurt",
+  "name": "Growth Spurt",
+  "rarity": "Gold",
+  "summary": "Gain Growth Spurt as a Summoner Spell.  Growth Spurt suddenly increases your size, Knocking Up nearby enemies and granting max Health.",
+  "tooltip": "Gain Growth Spurt as a Summoner Spell.  Growth Spurt suddenly increases your size, Knocking Up nearby enemies for 1 second and granting {TotalBonusHealth} max Health for 7 seconds.",
+  "values": {
+   "BonusHealth": 300.0,
+   "SlowPercent": 15.0,
+   "BuffDuration": 7.0,
+   "AoERadius": 400.0,
+   "KnockbackDuration": 1.0,
+   "KnockbackDistance": 275.0,
+   "ScaleIncrease": 0.5,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "fcb7d144813ee930",
+  "small_icon_hash": "68f33dfb7d6aa871",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_PhenomenalEvil",
+  "name": "Phenomenal Evil",
+  "rarity": "Gold",
+  "summary": "Permanently gain 1 Ability Power when you damage enemy champions with Abilities.  If taken as your second Augment, starts with 40 Ability Power.",
+  "tooltip": "Permanently gain 1 Ability Power when you damage enemy champions with Abilities.  If taken as your second Augment, starts with 40 Ability Power.  You have gained {f1} AP. Veigar would be proud!",
+  "values": {
+   "ProcCooldown": 1.0,
+   "StartingAPIfSecondAugment": 40.0,
+   "APPerProc": 1.0,
+   "SpellIDCD": 3.0
+  },
+  "icon_hash": "60a670560b61c3d6",
+  "small_icon_hash": "423d340f333c4857",
+  "spell_found": true
+ },
+ {
+  "id": "GoldenSnowball",
+  "name": "Holy Snowball",
+  "rarity": "Prismatic",
+  "summary": "Gain 100 Ability Haste on Snowball.  You are briefly Invulnerable when you dash with Snowball.  If you don't have one, gain a Snowball.  ",
+  "tooltip": "Gain 100 Ability Haste on Snowball.   You become Invulnerable for 1.5 seconds when you dash with Snowball.  If you don't have one, gain a Snowball.  ",
+  "values": {
+   "InvulnerabilityDuration": 1.5,
+   "Haste": 100.0
+  },
+  "icon_hash": "5a6593ffdc946f68",
+  "small_icon_hash": "e792d6875d0e9334",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_StuckInHereWithMe",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_EmpoweredByTheFaithful",
+  "missing": true
+ },
+ {
+  "id": "Twinfire",
+  "name": "Twin Fire",
+  "rarity": "Silver",
+  "summary": "On ability damage, fire 1 plus {AdditionalMis} missiles that deal {Damage} magic damage each.   Gain %i:scaleCrit% 25% Critical Strike Chance.",
+  "tooltip": "{{Kiwi_TwinFire_Summary}}",
+  "values": {
+   "ADRatio": 0.07000000029802322,
+   "CrtiChance": 0.25,
+   "AdditionalMisDivision": 3.0,
+   "APRatio": 0.07000000029802322,
+   "Cooldown": 5.0,
+   "MaxLevel": 3.0
+  },
+  "icon_hash": "74b5ddebc0040f6b",
+  "small_icon_hash": "c2ec1e3839aa90f5",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/HextechSoul",
+  "missing": true
+ },
+ {
+  "id": "ARAM_InfernoTriggered",
+  "name": "Triggered Inferno",
+  "rarity": "Prismatic",
+  "summary": "Gain Daredevil Impulse. When you reach S Style, automatically use Inferno Trigger.",
+  "tooltip": "Damaging enemy champions with Attacks or Abilities different from the previous one grants Style (from F to S).  Gain {Calc_Style_MS_Per_Stack} Movement Speed per Style rank.  At S Style consume your Style to unleash a torrent of gunshots at all nearby enemies 10 times over 2 seconds. Each shot deals {Calc_Damage_Per_Shot} physical damage. Enemies below {Calc_Crit_Threshold} Health are struck Critically for {Calc_Crit_Damage_Per_Shot} physical damage.This has a 5 second Cooldown.  Shots apply Lifesteal and deal 25% damage to minions.  Damage Dealt: {f1.0} Infernos Triggered: {f2.0}",
+  "values": {
+   "Style_Duration": 6.0,
+   "Cooldown": 5.0,
+   "Duration": 2.25,
+   "MinionDamageMod": 0.25
+  },
+  "icon_hash": "49b82067a118c66a",
+  "small_icon_hash": "7c6156106fc16f03",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Dropkick",
+  "name": "Dropkick",
+  "rarity": "Prismatic",
+  "summary": "Your Attacks and Abilities execute low Health enemy champions, Knocking Back and causing an explosion while healing you.",
+  "tooltip": "Your Attacks and Abilities execute enemy champions below {Calc_Execute_Threshold} max Health, restoring {Calc_Heal} Health and Knocking Back the target.  Upon colliding with an enemy or terrain or reaching their terminus, Knocked Back enemies will explode dealing {Calc_Damage} magic damage to nearby enemies.  These explosions can chain.  Enemies Dropkicked: {f3.0} Total Health Gained: {f2.0} Damage Dealt: {f1.0}",
+  "values": {},
+  "icon_hash": "3699ca0fbc6b3f9b",
+  "small_icon_hash": "6d101d31c19b4527",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_TransmuteGold",
+  "name": "Transmute: Gold",
+  "rarity": "Silver",
+  "summary": "Gain a random %i:Augment% Gold Augment.",
+  "tooltip": "Gain a random %i:Augment% Gold Augment.",
+  "values": {},
+  "icon_hash": "d55dd6a9574aee1f",
+  "small_icon_hash": "db94bb284ecc5ec0",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/HandOfBaron",
+  "missing": true
+ },
+ {
+  "id": "CriticalMissile",
+  "name": "Critical Missile",
+  "rarity": "Gold",
+  "summary": "When you Critically Strike, fire missiles dealing magic damage.  Gain %i:scaleCrit% 25% Crit chance.",
+  "tooltip": "When you Crit, fire 1 plus {AdditionalMis} missiles that deal {Damage} magic damage each.   Gain %i:scaleCrit% 25% Crit chance.",
+  "values": {
+   "ADRatio": 0.07000000029802322,
+   "CrtiChance": 0.25,
+   "AdditionalMisDivision": 2.0,
+   "APRatio": 0.10000000149011612,
+   "Cooldown": 4.0,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "0a02e6da18c51bc5",
+  "small_icon_hash": "1bd4d37c65fa6294",
+  "spell_found": true
+ },
+ {
+  "id": "Sonata",
+  "name": "Sonata",
+  "rarity": "Gold",
+  "summary": "Every 10 seconds, automatically cast the Aria of Perseverence and Song of Celerity in an alternating melody.  Aria of Perseverence heals nearby allies and grants a temporary shielding aura.  Song of Celerity grants a temporary aura that provides bonus Movement Speed.",
+  "tooltip": "Every 10 seconds, automatically cast the Aria of Perseverence and Song of Celerity in an alternating melody.  Aria of Perseverence heals nearby allies and grants a temporary shielding aura.  Song of Celerity grants a temporary aura that provides bonus Movement Speed.",
+  "values": {
+   "Cooldown": 10.0,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "c5e152ae129d32b8",
+  "small_icon_hash": "76462ed6bf707865",
+  "spell_found": true
+ },
+ {
+  "id": "PromQueen",
+  "name": "Prom Queen",
+  "rarity": "Prismatic",
+  "summary": "Every 35 seconds, Autocast a sparkly tiara descends upon you. When it lands, gain Rakan's Ultimate, charming enemies you touch.",
+  "tooltip": "Every 35 seconds, Autocast a sparkly tiara descends upon you. When it lands, gain Rakan's Ultimate, charming enemies you touch.",
+  "values": {
+   "BaseCD": 35.0,
+   "CharmDuration": 1.5,
+   "Radius": 300.0,
+   "WarningDelay": 2.5,
+   "MoveSpeedPercent": 0.5,
+   "PromQueenDuration": 6.0
+  },
+  "icon_hash": "1774fa47baa83267",
+  "small_icon_hash": "73e76241e982462f",
+  "spell_found": true
+ },
+ {
+  "id": "KillSecured",
+  "name": "Kill Secured",
+  "rarity": "Silver",
+  "summary": "Gain increased Movement Speed towards enemies at low Health.",
+  "tooltip": "Gain 60% Movement Speed towards enemies below 40% health.",
+  "values": {
+   "MovementSpeed": 0.6000000238418579,
+   "HealthThreshold": 0.4000000059604645,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "989dc1aa40c233fd",
+  "small_icon_hash": "7fa843cf94d0fd42",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Firefox",
+  "name": "FireFox",
+  "rarity": "Silver",
+  "summary": "Autocast Gain Movement Speed and conjure three flames that orbit you, targetting the closest visible enemy in range and dealing magic damage.",
+  "tooltip": "Autocast: Gain 25% movement speed and conjure three flames that orbit you every 7 seconds, targetting the closest visible enemy in range and dealing {SingleFireDamage} adaptive damage. Subsequent hits do 30% damage.  Damage Dealt Total: {f1}",
+  "values": {
+   "MovementSpeed": 0.25,
+   "MovementSpeedDuration": 2.0,
+   "MinionBonusDamageMultiplier": 2.0,
+   "MinionBonusDamageThreshold": 0.20000000298023224,
+   "BaseDamage": 20.0,
+   "RepeatDamageMod": 0.30000001192092896,
+   "AcquisitionRange": 550.0,
+   "BonusAcquisitionRange": 725.0,
+   "InitialDelay": 0.25,
+   "SecondaryDelay": 0.4000000059604645,
+   "FlameDuration": 2.5,
+   "OrbitRadius": 150.0,
+   "Cooldown": 7.0,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "aebb46dcd03065bb",
+  "small_icon_hash": "4e0b46593b48522f",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_LittleDevil",
+  "name": "Devil on Your Shoulder",
+  "rarity": "Prismatic",
+  "summary": "Forge a pact with The Little Devil himself.   He drains your life over time but rewards by applying bonus true damage against champions and creating healing remnants for you to acquire.",
+  "tooltip": "You've forged a pact with the Little Devil himself. He drains {Calc_Drain_Per_Second_Non_Combat} of your current Health per second, increased to {Calc_Drain_Per_Second} if there are nearby enemies.  In return, he amplifies your Attacks and Abilities to deal an additional {Calc_Damage_Amp} true damage, which cause a Life Remnant to appear nearby for 5 seconds.  Absorbing a Life Remnant heals you for {Calc_Remnant_Healing} and grants you {Calc_Move_Speed} Movement Speed for 1 second.  Health Drained: {f1.0} Damage Dealt: {f2.0} Remnants Acquired: {f4.0} Health Restored: {f5.0} Periodic damage has a 1.5 second cooldown",
+  "values": {
+   "Amp_Duration": 8.0,
+   "Amp": 2.0,
+   "Remnant_Duration": 5.0,
+   "Move_Speed_Duration": 1.0,
+   "Detection_Radius": 1000.0,
+   "Remnant_Spawn_Cooldown": 0.75,
+   "DotDamageCooldown": 1.5,
+   "BaseDamageAmp": 0.20000000298023224,
+   "BaseDamageReduction": 0.20000000298023224,
+   "MaxLevel": 3.0,
+   "MSAmp": 0.15000000596046448
+  },
+  "icon_hash": "ea551e0c36da793e",
+  "small_icon_hash": "b32b73deb18b9ee1",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Zealot",
+  "name": "Zealot",
+  "rarity": "Silver",
+  "summary": "Gain {Calc_Crit_Chance} Critical Strike Chance and {Calc_AS} Attack Speed.",
+  "tooltip": "Gain {Calc_Crit_Chance} Critical Strike Chance and {Calc_AS} Attack Speed.",
+  "values": {
+   "ASAPRatio": 0.0005000000237487257,
+   "CritAPRatio": 0.0005000000237487257,
+   "MaxLevel": 1.0,
+   "BaseAttackSpd": 0.3499999940395355,
+   "BaseCritChance": 0.25
+  },
+  "icon_hash": "4d40783d59fb9628",
+  "small_icon_hash": "3544afcf2936a315",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_Purist_Caster",
+  "missing": true
+ },
+ {
+  "id": "ARAM_DoubleTap",
+  "name": "Double Tap",
+  "rarity": "Prismatic",
+  "summary": "Your Critical Strikes apply %i:OnHit% On-Hit effects an additional time.  Gain %i:scaleCrit% {Calc_Crit_Chance} Crit chance.",
+  "tooltip": "Your Critical Strikes apply %i:OnHit% On-Hit effects an additional time.  Gain %i:scaleCrit% {Calc_Crit_Chance} Crit chance.",
+  "values": {
+   "MaxLevel": 2.0,
+   "AdditionalOnHitCount": 1.0,
+   "Cooldown": 5.0
+  },
+  "icon_hash": "e93ada55eba103da",
+  "small_icon_hash": "3c1c6cb421887fc4",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/CritNCast",
+  "missing": true
+ },
+ {
+  "id": "ARAM_Juiced",
+  "name": "Juiced",
+  "rarity": "Silver",
+  "summary": "%i:OnHit% On-Hit deal {Calc_Damage} magic damage, this damage can Critically Strike.",
+  "tooltip": " %i:OnHit% On-Hit deal {Calc_Damage} magic damage, this damage can Critically Strike.  Damage Dealt: {f1.0}",
+  "values": {
+   "ManaPercentDamagePercent": 0.07000000029802322,
+   "MaxLevel": 1.0,
+   "MaxLevelManaSpendThreshold": 300.0,
+   "MaxLevelPerTriggerDamageAmp": 0.10000000149011612
+  },
+  "icon_hash": "7cd84f3f8ce495d6",
+  "small_icon_hash": "cfc113d3d19c5815",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/Upgrade_SwordOfBlossom",
+  "missing": true
+ },
+ {
+  "id": "ARAM_FanTheHammer",
+  "name": "Fan The Hammer",
+  "rarity": "Prismatic",
+  "summary": "Attacks against enemy champions fire 5 missiles that deal more damage with distance. Each direction has its own Cooldown.",
+  "tooltip": "When you Attack enemy champions, fire 5 missiles that each deal {DamagePerBolt} physical damage, increased up to 50% with distance traveled. Each cardinal direction has a 8 second Cooldown.  Each bolt can Critically Strike and applies On-Hits at 20% effectiveness.  Damage Dealt: {f2}",
+  "values": {
+   "Cooldown": 8.0,
+   "AdditionalBolts": 5.0,
+   "OnHitRatio": 0.20000000298023224,
+   "MaxDamageAmp": 0.5,
+   "MaxDamageAmpDistance": 750.0
+  },
+  "icon_hash": "eabfcec646cb68fb",
+  "small_icon_hash": "6f94a2ffbaf608b5",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_DropBear",
+  "name": "DropBear",
+  "rarity": "Prismatic",
+  "summary": "On death, a giant Tibbers with all your augments falls from the sky and damages nearby enemies.",
+  "tooltip": "On Death, summon Tibbers, dealing {AOEDamage} Magic Damage to all enemies around you, Stunning them for 0.5 seconds. Tibbers then chases your Killer.  Tibbers also has all of your Augments.",
+  "values": {
+   "FlatPenConversion": 2.0,
+   "PercentPenConversion": 5.0,
+   "StunDuration": 0.5,
+   "MSModifier": -350.0
+  },
+  "icon_hash": "b3e32c4ff16dabe5",
+  "small_icon_hash": "ba1a1ab704f166d6",
+  "spell_found": true
+ },
+ {
+  "id": "FishBait",
+  "name": "Shark Bait",
+  "rarity": "Gold",
+  "summary": "A few seconds after death, a shark chomps all nearby enemies. You can move after death to aim the shark attack.",
+  "tooltip": "On death, become Shark Bait. You can take no actions other than moving, which slows nearby enemies by 40%. After a few seconds, a Shark emerges, knocking up all nearby Enemies and biting them for {BaseDamageToApply} + {MissingHealthPercentDamage} Missing Health Magic Damage.  Times the Shark consumed an Enemy Champion: {f2.0}",
+  "values": {
+   "AOESize": 400.0,
+   "Duration": 3.5,
+   "MoveSpeed": 400.0,
+   "Slow": 0.4000000059604645,
+   "MaxLevel": 2.0,
+   "MissingHealthPercent": 0.30000001192092896
+  },
+  "icon_hash": "1abf4dbccf951be2",
+  "small_icon_hash": "e62922058b7773ed",
+  "spell_found": true
+ },
+ {
+  "id": "SharkTempest",
+  "name": "Shark Tempest",
+  "rarity": "Gold",
+  "summary": "Sharks circle your Snowball, slowing and damaging nearby enemies. When your Snowball hits a Champion, they become trapped in a shark storm!",
+  "tooltip": "Sharks circle your Snowball, slowing and dealing {BaseDamageTotal} magic damage to enemies they pass through. If your Snowball hits a Champion, the Sharks attach to them and create a Shark Tempest, which deals {AttachedDamagePerSecond} magic damage per second and Slows nearby enemies by 40% for 3 seconds.",
+  "values": {
+   "Range": 300.0,
+   "AttachedAOESize": 425.0,
+   "SlowDuration": 1.5,
+   "AttachedSlowDuration": 3.0,
+   "SlowStrengthTT": 0.4000000059604645,
+   "SlowStrength": -0.4000000059604645,
+   "AttachDuration": 3.0
+  },
+  "icon_hash": "d08a2c97f2c13f1c",
+  "small_icon_hash": "37f5fcf1e1fe0eed",
+  "spell_found": true
+ },
+ {
+  "id": "BrushPower",
+  "name": "Hide on Bush",
+  "rarity": "Gold",
+  "summary": "After entering Brush, deal 20% more damage for 2 seconds. Remain in the Brush to refresh the effect.",
+  "tooltip": "Entering Brush grants Brush Power for 2 seconds. While Brush Power is active, you deal 20% more damage.  Damage done: {f1}  Staying in Brush refreshes Brush Power.",
+  "values": {
+   "DamageAmplification": 0.20000000298023224,
+   "BuffDuration": 2.0
+  },
+  "icon_hash": "e70c4e9524a40ad9",
+  "small_icon_hash": "dd213fe4ed42e2cb",
+  "spell_found": true
+ },
+ {
+  "id": "NatureIsHealing",
+  "name": "Nature is Healing",
+  "rarity": "Gold",
+  "summary": "Entering Brush regenerates a large amount of Health.",
+  "tooltip": "Entering Brush restores {FlatHeal} + {MissingHealthHeal} Missing Health, 20 second cooldown per brush.  Total Healing: {f1.0}",
+  "values": {
+   "BrushCooldown": 20.0,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "930d5aa4a0cd6b64",
+  "small_icon_hash": "23f980eed1242e39",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/PoroCharge_Active",
+  "missing": true
+ },
+ {
+  "id": "SpellVolley",
+  "name": "Tripleshot",
+  "rarity": "Prismatic",
+  "summary": "Your {{SpellName}} targets 2 additional enemies in front of you.",
+  "tooltip": "{{Kiwi_SpellVolley_Summary}}  Additional Targets Hit: {f1} Units take less damage from the same spell.",
+  "values": {
+   "FuzzyRange": 150.0,
+   "BonusRadiusAroundPrimaryTarget": 0.5,
+   "Bolt": 2.0,
+   "AHMin": 10.0,
+   "AHMax": 50.0,
+   "ReducedDamageIndex": 0.800000011920929
+  },
+  "icon_hash": "60a2bb04824bfbc9",
+  "small_icon_hash": "60a2bb04824bfbc9",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Multishot",
+  "name": "Multishot",
+  "rarity": "Prismatic",
+  "summary": "QUEST: Hit enemy Champions with {{SpellName}} {QuestRequirement} times.  REWARD: Fire additional missiles per Quest Level.",
+  "tooltip": "QUEST: Hit enemy Champions with {{SpellName}} {QuestRequirement} times.  REWARD: Fire additional missiles per Quest Level.",
+  "values": {
+   "DamageDeductionRatio": 0.30000001192092896
+  },
+  "icon_hash": "60a2bb04824bfbc9",
+  "small_icon_hash": "60a2bb04824bfbc9",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Terror",
+  "name": "Terror",
+  "rarity": "Gold",
+  "summary": "Whenever you cast {{SpellName}}, Fear enemies around you.",
+  "tooltip": "Whenever you cast {{SpellName}}, Fear enemies around you for 1.75 seconds.",
+  "values": {
+   "FearDurationCDDenominator": 20.0,
+   "FearRange": 450.0,
+   "MaximumFearDuration": 1.75
+  },
+  "icon_hash": "729d08dcae25f721",
+  "small_icon_hash": "729d08dcae25f721",
+  "spell_found": true
+ },
+ {
+  "id": "DimensionShift_Active",
+  "name": "Dimension Shift",
+  "rarity": "Prismatic",
+  "summary": "Gain the When the Darkness Comes Summoner Spell. Create a zone that transports everyone inside of it to another dimension.",
+  "tooltip": "Gain the Summoner Spell When the Darkness Comes.  When the Darkness Comes: Launch a brilliant light at a position. When it lands, every living unit within the area will be sent to a different Realm for 8 seconds.  While you are in this Realm, you gain: %i:scaleHealth% {HealthIncrease} Health %i:scaleAP% {APIncrease} Ability Power %i:scaleAD% {ADIncrease} Attack Damage %i:scaleSize% {SelfScaleIncrease} Size  All units can move and act freely in that Realm but cannot target objectives such as Turrets or Inhibitors.  \"Follow your Light...\" — A Lost Soul",
+  "values": {
+   "DimensionDuration": 8.0,
+   "AOESize": 500.0
+  },
+  "icon_hash": "6bbca9bf24677eaf",
+  "small_icon_hash": "1f4a18e5324c01ac",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Quickstep",
+  "name": "Quickstep",
+  "rarity": "Gold",
+  "summary": "When you use {{SpellName}}, dash towards your cursor.",
+  "tooltip": "{{Kiwi_Augment_Vanguard_Desc}}",
+  "values": {
+   "ChargeRange": 350.0
+  },
+  "icon_hash": "d0c257537442d4dc",
+  "small_icon_hash": "d0c257537442d4dc",
+  "spell_found": true
+ },
+ {
+  "id": "Missile_Split",
+  "name": "Spell Split",
+  "rarity": "Prismatic",
+  "summary": "Your {{SpellName}} missile splits into two on hit, at max Range, or when Recast. ",
+  "tooltip": "{{Kiwi_Missile_Split_Summary}}   Additional target hit: {f1} Enemies take less damage if hit by the same spell.",
+  "values": {
+   "DelayTime": 0.25,
+   "AHMin": 10.0,
+   "AHMax": 50.0,
+   "RecastDelay": 0.15000000596046448,
+   "DamageDeductionRatio": 0.30000001192092896
+  },
+  "icon_hash": "60a2bb04824bfbc9",
+  "small_icon_hash": "60a2bb04824bfbc9",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_SustainingStrike",
+  "name": "Siphon",
+  "rarity": "Silver",
+  "summary": "Damaging enemy champions with {{SpellName}} heals you.",
+  "tooltip": "Heal for 30% of the damage dealt to enemy champions by {{SpellName}}.",
+  "values": {
+   "Lifesteal": 0.30000001192092896
+  },
+  "icon_hash": "c9bfbf0bf886a7d1",
+  "small_icon_hash": "c9bfbf0bf886a7d1",
+  "spell_found": true
+ },
+ {
+  "id": "TitansPulse",
+  "name": "Stay Resolute",
+  "rarity": "Silver",
+  "summary": "When {{Spellname}} damages enemy champions, gain {ARMR_Inc} Armor and Magic Resistance.",
+  "tooltip": "Damaging enemy champions with {{SpellName}} grants you {ARMR_Inc} Armor or Magic Resistance based on their %i:miniAdaptiveForce% Damage Type.   Bonus Armor: {f1} Bonus Magic Resistance: {f2}   If this is not your first augment, gain 20 Armor and Magic Resistance.",
+  "values": {
+   "AdditionalARMR": 20.0,
+   "SpellIDCD": 5.0
+  },
+  "icon_hash": "c9bfbf0bf886a7d1",
+  "small_icon_hash": "c9bfbf0bf886a7d1",
+  "spell_found": true
+ },
+ {
+  "id": "ChainReaction",
+  "name": "Chain Reaction",
+  "rarity": "Gold",
+  "summary": "If a target Knocked Back by {{SpellName}} hits another champion, they are Knocked Up and dealt damage. When colliding with terrain, the Knock Up duration is extended and they are dealt bonus damage.",
+  "tooltip": "If a champion you Knock Back with {{SpellName}} hits another champion, they are Knocked Up for 0.5 seconds and are dealt {EnemyHitDamage} magic damage. If enemy champions collide with terrain, they are Knocked Up for 0.75 seconds and are dealt {WallCollisionDamage} magic damage.  Enemies Knocked Up: {f1} Walls Hit: {f2}  Knock Up Duration and Height scale with your spell's cooldown. Damage is increased to {Ult_DamageAmp} for Ultimate Abilities.",
+  "values": {
+   "WallStunDuration": 0.5,
+   "MinKnockUpHeight": 1.2300000190734863,
+   "MinKnockUpDuration": 0.75,
+   "MaxCooldown": 100.0,
+   "BuffDetectDuration": 1.0,
+   "CollisionRadius": 200.0,
+   "MaxKnockUpDuration": 1.100000023841858,
+   "WallCollisionDamage_Min": 150.0,
+   "WallCollisionDamage_Max": 800.0,
+   "EnemyHitDamage_Min": 100.0,
+   "EnemyHitDamage_Max": 400.0,
+   "ChampCollideKnockupDuration": 0.5
+  },
+  "icon_hash": "d0c257537442d4dc",
+  "small_icon_hash": "d0c257537442d4dc",
+  "spell_found": true
+ },
+ {
+  "id": "DarkWind",
+  "name": "Ravenous Bind",
+  "rarity": "Gold",
+  "summary": "Immobilizing or Grounding enemy champions with {{SpellName}} deals extra damage and heals you.",
+  "tooltip": "Immobilizing or Grounding enemy champions with {{SpellName}} deals an additional {Damage} magic damage and heals {f3} Health.  Total Damage: {f2} Minimum healing: {Heal} Total Healing: {f1}  Healing increases up to 50% based on spell cooldown.",
+  "values": {
+   "BounceRangeCheck": 500.0,
+   "Heal_APRatio": 0.05000000074505806,
+   "Heal_bHPRatio": 0.10000000149011612,
+   "Damage_APRatio": 0.10000000149011612,
+   "Damage_HPRatio": 0.004999999888241291,
+   "BonusHealingPercent_Min": 0.15000000596046448,
+   "BonusHealingPercent_Max": 0.5
+  },
+  "icon_hash": "753a9b6ffd114c78",
+  "small_icon_hash": "4136dcd5e3a5827f",
+  "spell_found": true
+ },
+ {
+  "id": "Equilibrium",
+  "name": "Our Healing",
+  "rarity": "Gold",
+  "summary": "Whenever someone heals around you, you heal 15% of their own healing. Doubled from Enemy healing.",
+  "tooltip": "{{Kiwi_Augment_Equilibrium_Summary}}",
+  "values": {
+   "AllyHealingRatio": 0.15000000596046448,
+   "EnemyHealingRatio": 0.30000001192092896
+  },
+  "icon_hash": "b0c12b7aa1607106",
+  "small_icon_hash": "8f214d1d629a79ca",
+  "spell_found": true
+ },
+ {
+  "id": "BurstingTeeth",
+  "name": "Tooth Fairy",
+  "rarity": "Gold",
+  "summary": "Bursting enemies drops Teeth. Picking up Teeth grants you permanent Lethality and Magic Penetration.",
+  "tooltip": "When you deal more than {BurstRequirement} of an enemy champion's Health in less than 2.5 seconds, they drop a Tooth.  Your {f1} Teeth collection currently gives you {LethalityPerTooth} Lethality and {MPenPerTooth} Magic Penetration.   4 seconds cooldown per target",
+  "values": {
+   "BurstDurationCheck": 2.5,
+   "PerTargetCooldown": 4.0
+  },
+  "icon_hash": "efff85d707e600db",
+  "small_icon_hash": "c94c62f418687d9a",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_ImTheJuggernaut",
+  "name": "Titan's Resolve",
+  "rarity": "Prismatic",
+  "summary": "Gain stacks when taking or dealing damage. For every 10 stacks, gain Adaptive Force, Armor, Magic Resist, Size, and Tenacity.",
+  "tooltip": "Dealing and receiving champion damage grants you 1 stack of Juggernauting for 6 seconds. For every 10 stacks of Juggernauting you gain {Calc_AF} Adaptive Force, {Calc_Defenses} Armor, {Calc_Defenses} Magic Resist, {Calc_Size} Size, and {Calc_Tenacity} Tenacity.  Stacks fall off faster the more you have. Maximum Juggernauting Level: {f1.0}",
+  "values": {
+   "Stacks_Max": 10.0,
+   "Stack_Duration": 6.0,
+   "StacksPerHit": 1.0,
+   "MaxLevel": 2.0
+  },
+  "icon_hash": "bfd2af9c6987224b",
+  "small_icon_hash": "d1b8b6538581281c",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Snowday",
+  "name": "Snowday",
+  "rarity": "Silver",
+  "summary": "Gain 100 Ability Haste on your Snowball. It deals additional magic damage when hitting an enemy. If you don't have one, gain a Snowball.",
+  "tooltip": "Snowball gains 100 Ability Haste and deals 100% increased damage.",
+  "values": {
+   "AH": 100.0,
+   "DamageAmp": 1.0
+  },
+  "icon_hash": "ee97e8eb60cc4d26",
+  "small_icon_hash": "957921d593fccc16",
+  "spell_found": true
+ },
+ {
+  "id": "Ability_SelfAOE_DoubleCast",
+  "name": "Echo Cast",
+  "rarity": "Prismatic",
+  "summary": "Casting your {{SpellName}} sends a clone toward your mouse position and recasts it.",
+  "tooltip": "Casting your {{SpellName}} sends a clone of the ability toward your mouse position and recasts it after 0.25 seconds.",
+  "values": {
+   "DelayTime": 0.25,
+   "CloneMissileSpeed": 1000.0,
+   "CloneMoveToDistance": 500.0,
+   "CloneDamageRatio": 1.0,
+   "CloneDuration": 7.0
+  },
+  "icon_hash": "60a2bb04824bfbc9",
+  "small_icon_hash": "60a2bb04824bfbc9",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_YowchMyCoins",
+  "name": "Yowch, My Coins!",
+  "rarity": "Gold",
+  "summary": "On takedown, enemy champions drop coins nearby, which you and your allies can collect. Each is worth 15 gold.",
+  "tooltip": "On takedown, enemy champions drop {Calc_Max_Coins_To_Drop} coins nearby, which you and your allies can collect. Each is worth 15 gold.  Out of {f5} total Coins dropped from {f6} voluntary donors, your team has gained {f3} Gold, with {f4} Gold picked by yourself.",
+  "values": {
+   "GoldPerCoin": 15.0,
+   "AmountOfCoins": 1.0,
+   "CoinDuration": 10.0,
+   "CoinMovementDistance": 500.0
+  },
+  "icon_hash": "8475588ec69efd72",
+  "small_icon_hash": "e4cd66392f5f6e46",
+  "spell_found": true
+ },
+ {
+  "id": "EndlessDecimation",
+  "name": "Endless Decimation",
+  "rarity": "Gold",
+  "summary": "While in combat, Autocast a circular axe that deals physical damage. Enemies on the outer edge take additional damage and heal you.",
+  "tooltip": "Autocast a circular axe swing that deals physical damage every 8 seconds in combat. Enemies along the outer edge take increased damage ({FullDamage}) and heal you 18% of your Missing Health. Each enemy hit along the outer edge reduces this ability's cooldown by 10% down to a minimum of 3 seconds.",
+  "values": {
+   "BaseHealPercent": 0.18000000715255737,
+   "InnerRadiusDamageMod": 0.5,
+   "Cooldown": 8.0,
+   "WindupLength": 1.25,
+   "PreWindupWarningLength": 1.5,
+   "BaseCDRPercent": 0.10000000149011612
+  },
+  "icon_hash": "906a60def43e03a8",
+  "small_icon_hash": "d76730cde660fb3e",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_WeeWooWeeWoo",
+  "name": "Wee Woo Wee Woo",
+  "rarity": "Gold",
+  "summary": "When moving towards allies with low Health, gain Movement Speed. Your Healing and Shielding are greater based on how low your target's Health is.",
+  "tooltip": "Gain up to {Calc_Move_Speed_Max} Move Speed toward nearby allies based on their missing Health. Your healing and shielding are also increased up to {Calc_HS_Amp_Max} based on the target's missing Health.  Bonus Healing: {f1.0} Bonus Shielding: {f2.0}",
+  "values": {
+   "VFX_Health_Threshold": 0.5,
+   "MS_Linger_Duration": 2.0,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "df47263433672d70",
+  "small_icon_hash": "70c2c3ace656d945",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Archmage",
+  "name": "Archmage",
+  "rarity": "Prismatic",
+  "summary": "Casting a spell refunds another random spell's cost by 30% of the original spell's Cooldown.",
+  "tooltip": "Casting a spell refunds another random spell's cost by 30% of the original spell's Cooldown.",
+  "values": {
+   "RefundPercent": 0.30000001192092896,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "d4c86711d860b7ef",
+  "small_icon_hash": "bfd2479a25e38205",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_StackosaurusRex",
+  "name": "Stackosaurus Rex",
+  "rarity": "Silver",
+  "summary": "When you gain permanent Stacks of an Ability, gain 100% more!",
+  "tooltip": "When you gain permanent Stacks of an Ability, gain 100% more!",
+  "values": {
+   "StackModifier": 1.0
+  },
+  "icon_hash": "55fa70e4e3e571bf",
+  "small_icon_hash": "cb8aab9ffc46d198",
+  "spell_found": true
+ },
+ {
+  "id": "LittleExtraHelp",
+  "name": "Lil' Extra Help",
+  "rarity": "Gold",
+  "summary": "Gain {RangeIncrease} Attack Range and {ExtraAttackSpeed} Attack Speed during your {{SpellName}} duration.",
+  "tooltip": "Gain {RangeIncrease} Attack Range and {ExtraAttackSpeed} Attack Speed during your {{SpellName}} duration.",
+  "values": {},
+  "icon_hash": "d0c257537442d4dc",
+  "small_icon_hash": "d0c257537442d4dc",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_HighRoller",
+  "missing": true
+ },
+ {
+  "id": "VoidDash",
+  "name": "Void Dash",
+  "rarity": "Gold",
+  "summary": "Dashing with {{Spellname}} spawns a Void Zone that Slows enemy champions and deals magic damage.",
+  "tooltip": "{{SpellName}} spawns a Void Zone at the targeted destination. It Slows enemy champions for 35% for 1 seconds, and deals {TotalDamage} magic damage.   Champions Slowed: {f1}",
+  "values": {
+   "BaseDamage": 25.0,
+   "DelayBeforeKnockUp": 0.30000001192092896,
+   "SlowAmount": 0.3499999940395355,
+   "SlowDuration": 1.0,
+   "KnockUpRadius": 250.0,
+   "Haste": 1.0
+  },
+  "icon_hash": "d0c257537442d4dc",
+  "small_icon_hash": "d0c257537442d4dc",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ARAM_SpecializedRecursion",
+  "missing": true
+ },
+ {
+  "id": "ARAM_DivineDomain",
+  "name": "Rite of Ascension",
+  "rarity": "Prismatic",
+  "summary": "On takedown, enemy champions leave behind their Essence. Attacking the Essence grants movement speed and resets basic ability cooldowns.",
+  "tooltip": "Champion takedowns within 3 seconds of damaging them causes them to leave behind their Essence for 8 seconds. Attacking an Essence consumes it.  Consuming an Essence blinks you to its location, makes you Untargetable and Unstoppable, grants {Calc_Move_Speed} Move Speed decaying over 2 seconds, heals you {Calc_Heal_Min} to {Calc_Heal_Max} based on your Missing Health, and resets your basic Ability cooldowns.   Healing: {f1.0} Cooldown Time Refunded: {f3.0}  Today, you will see the power of Ascension! — Azir, the Emperor of the Sands",
+  "values": {
+   "Soul_Duration": 8.0,
+   "Windup_Duration": 1.25,
+   "Radius": 375.0,
+   "Move_Speed_Duration": 2.0,
+   "Soul_Attack_Range": 400.0,
+   "Kill_Track_Duration": 3.0,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "0fb01ae860b399b7",
+  "small_icon_hash": "eaaa4ae51ecdba61",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_BangBang",
+  "name": "From Downtown",
+  "rarity": "Gold",
+  "summary": "QUEST: Snipe {QuestRequirement} enemy champions with abilities  REWARD: Send a meteor at Sniped enemy champions, dealing Magic damage in an area around them",
+  "tooltip": "{{Augment_BangBang_Tooltip{f3}}}  Bang! Bang! Oh, what a shot!",
+  "values": {
+   "SnipeDistance": 600.0,
+   "AOE": 150.0,
+   "MaxDistanceForScaling": 3000.0,
+   "MaxAOEDistanceScaling": 2.0,
+   "MaxDamageDistanceScaling": 2.299999952316284,
+   "PerTargetPerCastIDCooldown": 8.0
+  },
+  "icon_hash": "01e820f01a64bec2",
+  "small_icon_hash": "d81a1bef3aa25143",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_SpiritBomb",
+  "name": "Spirit Bomb",
+  "rarity": "Prismatic",
+  "summary": "Healing and Shielding allied champions builds up a Spirit Bomb. At max stacks, toss the bomb onto lowest Health ally to heal and shield them and nearby allies.",
+  "tooltip": "Healing and Shielding builds up a Spirit Bomb. At max stacks, toss the Spirit Bomb at your lowest Health ally. After reaching the target, it heals nearby allies for {Calc_Heal} of their missing Health and grants them a {Calc_Shield} current Health shield for 2 seconds.  Spirit Bombs Tossed: {f1.0} Healing: {f2.0} Shielding: {f3.0}",
+  "values": {
+   "Radius": 475.0,
+   "Shield_Duration": 2.0,
+   "VFX_Breakpoint_1": 0.25,
+   "VFX_Breakpoint_2": 0.5,
+   "VFX_Breakpoint_3": 0.75,
+   "Cast_Delay": 1.100000023841858
+  },
+  "icon_hash": "83b849499e0c7b1d",
+  "small_icon_hash": "b6a939939d66bbbf",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_Hellbent",
+  "name": "Hellbent",
+  "rarity": "Prismatic",
+  "summary": "Damaging enemy champions with Attacks or Abilities grants stacks. At max stacks, you revive empowered upon death. ",
+  "tooltip": "Striking enemy champions with Attacks or Abilities grants you a stack of Revivemaxxing for 6 seconds (max: 10). At max stacks become Hellbent.  Hellbent: Upon dying, revive over the course of 4 seconds at {Calc_Revive_Max_Health} max Health. Afterwards, you gain {Calc_AdaptiveForce} Adaptive Force, {Calc_MoveSpeed} Move Speed towards enemy champions, and {Calc_Omnivamp} Omnivamp for 15 seconds.  This has a 90 second cooldown.",
+  "values": {
+   "Revive_Duration": 4.0,
+   "Cooldown": 90.0,
+   "Buff_Duration": 15.0,
+   "Stacks_Duration": 6.0,
+   "Stacks_Max": 10.0,
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "563de75504486ab9",
+  "small_icon_hash": "2b3d1c0a2599fd50",
+  "spell_found": true
+ },
+ {
+  "id": "ARAM_EndlessHunt",
+  "name": "En Passant",
+  "rarity": "Prismatic",
+  "summary": "Periodically identify Vitals on enemy champions. Hitting them with Attacks or Abilities deals max Health true damage, restores Health, and grants Movement Speed. These effects can stack.",
+  "tooltip": "Periodically identify Vitals on enemy champions. Hitting Vitals with Attacks or Abilities deals an additional 6% + 1.5% per stack max Health true damage, restores {VitalHeal} + 5% Missing Health, and grants {MovementSpeed} + 5% per stack Bonus Movement Speed, decaying over 2 seconds.  Most Vitals hit in a row: {f1}",
+  "values": {
+   "BaseVitalDamage": 0.05999999865889549,
+   "StackDamage": 0.014999999664723873,
+   "MSDuration": 2.0,
+   "VitalMaxHealthDamage": 0.05999999865889549,
+   "MS": 0.5,
+   "MissingHealthHeal": 0.05000000074505806
+  },
+  "icon_hash": "dfd284e5b66eb320",
+  "small_icon_hash": "8b49bbbde75d2826",
+  "spell_found": true
+ },
+ {
+  "id": "Snowbomb",
+  "name": "Snowblast",
+  "rarity": "Gold",
+  "summary": "Recasting Snowball deals increased damage, Knocks Up the target, and Knocks Back nearby enemies.",
+  "tooltip": "Your Snowball gains 100 Ability Haste. The ability's recast deals {DamageAmp} increased damage, Knocks Up the target, and knocks back nearby enemies.  Units knocked back: {f1}",
+  "values": {
+   "AbilityHaste": 100.0
+  },
+  "icon_hash": "5dae03211fe468f2",
+  "small_icon_hash": "291bd1171af2837a",
+  "spell_found": true
+ },
+ {
+  "id": "PressureCooker",
+  "name": "Pressure Cooker",
+  "rarity": "Gold",
+  "summary": "Every second, apply a stacking Burn to nearby enemy champions, scaling with your max Health.  QUEST: Deal Burn damage to enemy Champions.  REWARD: Size and damage increase per Quest Level.",
+  "tooltip": "{{Kiwi_PressureCooker_Tooltip{f4}}}",
+  "values": {
+   "Range": 300.0,
+   "Range2": 500.0,
+   "BurnVamp": 0.05000000074505806,
+   "BleedDuration": 2.0,
+   "Range3": 600.0
+  },
+  "icon_hash": "2fab412eb0f51de4",
+  "small_icon_hash": "c51edb95573a8735",
+  "spell_found": true
+ },
+ {
+  "id": "SnapBack",
+  "name": "Snap Back",
+  "rarity": "Gold",
+  "summary": "Recast {{SpellName}} to explode and return to your original position.",
+  "tooltip": "Recast {{SpellName}} to explode for {SnapDamage} magic damage and return to your original position.",
+  "values": {},
+  "icon_hash": "d0c257537442d4dc",
+  "small_icon_hash": "d0c257537442d4dc",
+  "spell_found": true
+ },
+ {
+  "id": "BloodMoneyBurn",
+  "name": "Combusting Interest",
+  "rarity": "Gold",
+  "summary": "Burn and damage-over-time on champions generate gold.",
+  "tooltip": "Burn and damage-over-time on champions generate {GoldPerProc} + 0.75% of damage dealt as Gold.  Gold Generated: {f1}",
+  "values": {
+   "PercentGoldFromDamage": 0.007499999832361937
+  },
+  "icon_hash": "5549ff1716243761",
+  "small_icon_hash": "7e72cf42fe5e7903",
+  "spell_found": true
+ },
+ {
+  "id": "SpecializedEmpowerment",
+  "name": "Pursuit of Power",
+  "rarity": "Gold",
+  "summary": "QUEST: Hit enemy champions with {{SpellName}} {QuestRequirement} times.  REWARD: Permanently increase {{SpellName}} damage.",
+  "tooltip": "{{Augment_SpecializedEmpowerment_Tooltip{f6}}}",
+  "values": {
+   "DamageAmpReward": 30.0
+  },
+  "icon_hash": "8bce0225d1b9ef19",
+  "small_icon_hash": "1fe19b6ce7b8a1ab",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/SkipTheBasics",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/Overextender",
+  "missing": true
+ },
+ {
+  "id": "SquishySlappyGrab",
+  "name": "Squishy Slappy Grab",
+  "rarity": "Prismatic",
+  "summary": "Occasionally send out squishy, slappy hands towards all nearby enemy champions, tethering them. Your next attack will pull in all tethered enemies.",
+  "tooltip": "Occasionally send out Squishy Slappy Hands that latch on to all nearby enemy champions for 4 seconds. While you're latched onto enemies, your next attack will pull them to you, deal {Calc_Damage} magic damage, and stun them for 0.25 seconds. You gain {Calc_Shield} shield for 2.5 seconds per pulled enemy.  This has a 30 second cooldown.  Enemies Yoinked: {f1.0} Damage Dealt: {f2.0} Shield Gained: {f3.0}",
+  "values": {
+   "Cooldown": 30.0,
+   "Buff_Duration": 4.0,
+   "Cast_Radius": 450.0,
+   "Radius": 800.0,
+   "Shield_Duration": 2.5,
+   "Stun_Duration": 0.25,
+   "Cast_Delay": 1.5,
+   "Tether_Range": 950.0,
+   "Close_Pull_Range": 450.0,
+   "Long_Pull_Distance": 350.0
+  },
+  "icon_hash": "b81b9d69b2ac2f92",
+  "small_icon_hash": "94f8d4be4131a417",
+  "spell_found": true
+ },
+ {
+  "id": "Bonk",
+  "name": "BONK!",
+  "rarity": "Gold",
+  "summary": "Attacks and Abilities empowered by {{SpellName}} deal additional damage to the target and nearby enemies.",
+  "tooltip": "Attacks and Abilities empowered by {{SpellName}} deal an additional 30% damage to the target and nearby enemies.  Additional Champions Bonked: {f1}",
+  "values": {
+   "DamageMultiplier": 0.30000001192092896,
+   "AoERange": 300.0
+  },
+  "icon_hash": "9ee13879de96a404",
+  "small_icon_hash": "9ee13879de96a404",
+  "spell_found": true
+ },
+ {
+  "id": "Overloaded",
+  "name": "Overloaded",
+  "rarity": "Prismatic",
+  "summary": "Using another Ability resets the cooldown of {{SpellName}}.",
+  "tooltip": "{{Augment_Overloaded_Summary}}  Resets: {f1.0} Useful Resets: {f2.0} Reset Efficacy: {f3.0}%  \"They come for the scroll... Stick to the plan... EQEQEQ...\" — The Blue One",
+  "values": {},
+  "icon_hash": "60a2bb04824bfbc9",
+  "small_icon_hash": "60a2bb04824bfbc9",
+  "spell_found": true
+ },
+ {
+  "id": "ItsGoTime",
+  "name": "It's Go Time",
+  "rarity": "Silver",
+  "summary": "Activating {{SpellName}} grants you Movement Speed for its duration.",
+  "tooltip": "Activating {{SpellName}} grants you {Calc_Move_Speed} Movement Speed for its duration.",
+  "values": {},
+  "icon_hash": "c9bfbf0bf886a7d1",
+  "small_icon_hash": "c9bfbf0bf886a7d1",
+  "spell_found": true
+ },
+ {
+  "id": "KeepGoing",
+  "name": "Reload",
+  "rarity": "Gold",
+  "summary": "Basic Attacks {{ Item_Keyword_OnHit }} during {{SpellName}} reduce its cooldown.",
+  "tooltip": "Basic Attacks {{ Item_Keyword_OnHit }} during {{SpellName}} reduce its cooldown by {f2} seconds.  Seconds Saved: {f1}",
+  "values": {
+   "Buff_Duration": 6.0,
+   "Radius": 300.0
+  },
+  "icon_hash": "74494e5029e9eb4f",
+  "small_icon_hash": "2cfb8354ddf193af",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/Terraind",
+  "missing": true
+ },
+ {
+  "id": "DontChangeTheChannel",
+  "name": "Don't Change the Channel",
+  "rarity": "Silver",
+  "summary": "Gain a Shield for every second you spend Channeling.",
+  "tooltip": "While Channeling gain {Calc_Shield} Shield every second. It decays when you are not Channeling.  Total Shield: {f1.0}",
+  "values": {
+   "Shield_Interval": 1.0
+  },
+  "icon_hash": "ad23a27d4dfadb69",
+  "small_icon_hash": "cd1858531f694067",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/MercysStrike",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/ForgedByTheMaster",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/SurgeField",
+  "missing": true
+ },
+ {
+  "id": "TrustyWeapon",
+  "name": "Trusty Weapon",
+  "rarity": "Silver",
+  "summary": "Striking enemy champions with {{SpellName}} forges a bond of Friendship.  {{SpellName}} gains temporarily increased damage based on your level of Friendship.",
+  "tooltip": "When you strike an enemy champion with {{SpellName}}, forge a bond of Friendship that grants it {Calc_Damage_Amp} increased damage for 6 seconds. This effect can stack.  Bonus Damage: {f1.0} Maximum Friendship Level: {f2.0}  \"It's—it's not like I like you or anything!!\" — {{SpellNameOnly}}",
+  "values": {
+   "Buff_Duration": 6.0
+  },
+  "icon_hash": "c9bfbf0bf886a7d1",
+  "small_icon_hash": "c9bfbf0bf886a7d1",
+  "spell_found": true
+ },
+ {
+  "id": "WarlockJuicebox",
+  "name": "Warlock Juicebox",
+  "rarity": "Gold",
+  "summary": "Gain {Calc_Vamp} Omnivamp.",
+  "tooltip": "Gain {Calc_Vamp} Omnivamp.",
+  "values": {
+   "MaxLevel": 1.0
+  },
+  "icon_hash": "790f262fa0c8a0e8",
+  "small_icon_hash": "3eae526ad479f3b5",
+  "spell_found": true
+ },
+ {
+  "id": "Overkill",
+  "name": "Pin Cushion",
+  "rarity": "Prismatic",
+  "summary": "Attacks during {{SpellName}} gouge your target with Nails. Nails accumulate damage, execute, and grant Movement Speed upon expiration.",
+  "tooltip": "Attacks during {{SpellName}} gouge your target with Nails.  Nails explode once {{SpellName}} expires, dealing {DamagePerStack} Physical Damage and granting 10 Move Speed per stack for 3 seconds. Nails will explode early and execute if the accumulated damage would kill the enemy champion.  Most Nails Detonated: {f1}",
+  "values": {
+   "MSPerStack": 10.0,
+   "ASPerStack": 0.05000000074505806
+  },
+  "icon_hash": "7de09f8b02797114",
+  "small_icon_hash": "2892223d88ea5829",
+  "spell_found": true
+ },
+ {
+  "id": "PatOnTheBack",
+  "name": "Pat On The Back",
+  "rarity": "Gold",
+  "summary": "Allies encourage you when you walk past, granting you a Shield and Movement Speed.",
+  "tooltip": "Allies encourage you when you walk past them, granting you {Calc_Shield} Shield and {Calc_MS} Movement Speed for 3 seconds. This effect can stack.  Each ally has a {Calc_Per_Target_Cooldown} cooldown before they can pat you on the back again.  Encouragements Received: {f1.0}",
+  "values": {
+   "Trigger_Radius": 200.0,
+   "Buff_Duration": 3.0
+  },
+  "icon_hash": "6e3cc635881731d2",
+  "small_icon_hash": "4910e33983b3e0e8",
+  "spell_found": true
+ },
+ {
+  "id": "PinCushion",
+  "name": "Porcupine",
+  "rarity": "Gold",
+  "summary": "Taking damage from champions builds up a burst of needles that fly out of you, dealing damage and slowing nearby enemies.",
+  "tooltip": "Taking damage from champions builds up a burst of needles. At critical mass, the needles burst, dealing {Calc_Damage} physical damage and Slowing  nearby enemies by {Calc_Slow} for 2 seconds.  Bursts: {f1.0} Damage: {f2.0}",
+  "values": {
+   "Radius": 400.0,
+   "VFX_Breakpoint_1": 0.25,
+   "VFX_Breakpoint_2": 0.5,
+   "VFX_Breakpoint_3": 0.75,
+   "Cast_Windup": 1.5,
+   "Slow_Duration": 2.0
+  },
+  "icon_hash": "db5f23321a0b4035",
+  "small_icon_hash": "2acfaf50a1fe1ac2",
+  "spell_found": true
+ },
+ {
+  "id": "DoubleDefense",
+  "name": "Bolstered",
+  "rarity": "Silver",
+  "summary": "Shields granted from {{SpellName}} are stronger and scaling with target's missing Health.",
+  "tooltip": "Shields granted from {{SpellName}} are up to 60% stronger, scaling with target's missing Health.  Bonus Shield: {f1} Most effective at 30% max health.",
+  "values": {
+   "BonusRatioMax": 0.6000000238418579,
+   "MinHealthThreshold": 0.30000001192092896
+  },
+  "icon_hash": "c9bfbf0bf886a7d1",
+  "small_icon_hash": "c9bfbf0bf886a7d1",
+  "spell_found": true
+ },
+ {
+  "id": "WardingWeapon",
+  "name": "Adaptive Ward",
+  "rarity": "Silver",
+  "summary": "Striking an enemy champion with {{SpellName}} grants you {Calc_Resists} Armor or Magic Resist based on their damage type for 6 seconds. This effect can stack.",
+  "tooltip": " Striking an enemy champion with {{SpellName}} grants you {Calc_Resists} Armor or Magic Resist based on their damage type for 6 seconds. This effect can stack.  Maximum Ward Level: {f2.0}",
+  "values": {
+   "Buff_Duration": 6.0,
+   "Cooldown": 4.0
+  },
+  "icon_hash": "c9bfbf0bf886a7d1",
+  "small_icon_hash": "c9bfbf0bf886a7d1",
+  "spell_found": true
+ },
+ {
+  "id": "DoubleStrike",
+  "name": "Double Strike",
+  "rarity": "Silver",
+  "summary": "{{SpellName}} applies {{ Item_Keyword_OnHit }} effects an additional time.",
+  "tooltip": "{{SpellName}} applies {{ Item_Keyword_OnHit }} effects an additional time.",
+  "values": {},
+  "icon_hash": "1d58f9f4acb10d3b",
+  "small_icon_hash": "cd5660d0e0cd5329",
+  "spell_found": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/SupportMain",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/Upgrade_SunderedSky",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/Upgrade_Ravenous",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/Quest_UltraHydra",
+  "missing": true
+ },
+ {
+  "path": "Maps/ModeSpecificData/Augments/Upgrade_DeathDance",
+  "missing": true
+ },
+ {
+  "id": "ARAM_ClownCollege",
+  "name": "Clown College",
+  "rarity": "Prismatic",
+  "summary": "Gain Deceive Summoner Spell. Gain Backstab Passive.  When you die, deal a large amount of true damage and Fear nearby enemies.",
+  "tooltip": "Backstab: You deal {BasicAttackDamage} bonus physical damage when striking from behind.  Deceive: You teleport and become Invisible for 3 seconds. Your next Attack while Invisible deals an additional {TotalDamage} physical damage. If striking from behind, this Attack critically strikes for {QCritDamageMod} damage.  Hallucinate: Death: On death, deal 25% maximum Health true damage and fear for 1s around you.",
+  "values": {
+   "StealthDuration": 3.0,
+   "PseudoCastTime": 0.125,
+   "ExtraAATime": 1.0,
+   "CastRange": 400.0,
+   "FearDuration": 1.0,
+   "FearRadius": 350.0,
+   "FearDamage": 0.25,
+   "EDITDECEIVEFORREALVALUES": null,
+   "BaseDamage": 100.0
+  },
+  "icon_hash": "a346c602acb2e427",
+  "small_icon_hash": "8e72d3a50e1ef5e5",
+  "spell_found": true
+ }
+]
