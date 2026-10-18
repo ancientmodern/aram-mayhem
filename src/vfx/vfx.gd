@@ -398,6 +398,12 @@ static func indicator_mesh(shape: int, color: Color) -> MeshInstance3D:
 	mat.shader = IND_SHADER
 	mat.set_shader_parameter("shape", shape)
 	mat.set_shader_parameter("color", color)
+	# League targeter textures (tools/lol/extract_world_ui.py -> assets/ui/world/ind_*.png)
+	var main_tex: String = ["aoe", "locallinemissilebase", "conicrangeindicator", "circularrangeindicator", ""][clampi(shape, 0, 4)]
+	if main_tex != "":
+		mat.set_shader_parameter("tex_main", load("res://assets/ui/world/ind_%s.png" % main_tex))
+	if shape == 1:
+		mat.set_shader_parameter("tex_tip", load("res://assets/ui/world/ind_locallinemissiletarget.png"))
 	mi.material_override = mat
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mi
