@@ -17,6 +17,9 @@ static func deal(source, target, amount: float, type: int, opts: Dictionary = {}
 static func apply(info: DamageInfo) -> DamageInfo:
 	var target = info.target
 	var source = info.source
+	if G.debug_sites:
+		G.crumb("deal %s -> %s %s" % [source.display_name if source != null and is_instance_valid(source) else "?", target.display_name if target != null and is_instance_valid(target) else "?", info.tag])
+		G.ctx3 = "deal %s -> %s %s %.0f" % [source.display_name if source != null and is_instance_valid(source) else "?", target.display_name if target != null and is_instance_valid(target) else "?", info.tag, info.amount]
 	if target == null or not is_instance_valid(target) or target.dead:
 		info.cancelled = true
 		return info
@@ -31,8 +34,10 @@ static func apply(info: DamageInfo) -> DamageInfo:
 	if not info.no_hooks:
 		if source != null:
 			for e in source.effects:
+				if G.debug_sites: G.crumb("pre_dealt " + str(e.id))
 				e.on_pre_damage_dealt(info)
 		for e in target.effects:
+			if G.debug_sites: G.crumb("pre_taken " + str(e.id))
 			e.on_pre_damage_taken(info)
 	if info.cancelled:
 		return info
@@ -88,8 +93,10 @@ static func apply(info: DamageInfo) -> DamageInfo:
 	if not info.no_hooks:
 		if source != null:
 			for e in source.effects:
+				if G.debug_sites: G.crumb("dealt " + str(e.id))
 				e.on_damage_dealt(info)
 		for e in target.effects:
+			if G.debug_sites: G.crumb("taken " + str(e.id))
 			e.on_damage_taken(info)
 	if target.hp <= 0.0 and not target.dead:
 		var saved := false

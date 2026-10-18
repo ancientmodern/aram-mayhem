@@ -45,6 +45,12 @@ var is_attack := false
 var face_dir := true
 var custom: Dictionary = {}   ## free storage for kits
 var blockable := true         ## destroyed by enemy projectile walls
+var site := ""                ## debug: creation site (sims)
+
+
+func _init() -> void:
+	if G.debug_sites:
+		site = G.caller_site(3)
 
 
 func _ready() -> void:
@@ -134,6 +140,7 @@ func tick(dt: float, m) -> void:
 				if alive:
 					if on_hit.is_valid() and (not hit_units.has(target)):
 						hit_units[target] = true
+						if G.debug_sites: G.crumb("mis_hit " + site)
 						on_hit.call(self, target)
 					finish(global_position)
 				return
@@ -206,6 +213,7 @@ func _collide(m, a: Vector3, b: Vector3) -> void:
 		hit_units[u] = true
 		hit_count += 1
 		if on_hit.is_valid():
+			if G.debug_sites: G.crumb("mis_hit " + site)
 			on_hit.call(self, u)
 		if stop_on_champion and u.kind == G.Kind.CHAMPION:
 			finish(u.global_position)
@@ -233,6 +241,7 @@ func finish(pos: Vector3) -> void:
 		return
 	alive = false
 	if on_end.is_valid():
+		if G.debug_sites: G.crumb("mis_end " + site)
 		on_end.call(self, pos)
 	if visual != null and is_instance_valid(visual) and visual.has_method("detach_and_fade"):
 		visual.detach_and_fade()

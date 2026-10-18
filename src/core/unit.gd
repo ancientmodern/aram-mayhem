@@ -779,6 +779,7 @@ func _forced_move(dt: float) -> void:
 ## on_tick(Callable(unit, progress)), unstoppable(bool), forced(bool: displacement by enemy),
 ## can_cast(bool), stop_at_walls(bool), anim(String)
 func start_dash(to: Vector3, opts: Dictionary = {}) -> void:
+	if G.debug_sites: G.crumb("dash " + display_name)
 	if not to.is_finite():
 		G.bad_vector("start_dash", to)
 		return
@@ -895,6 +896,7 @@ func teleport(p: Vector3) -> void:
 func die(killer, info = null) -> void:
 	if dead:
 		return
+	if G.debug_sites: G.crumb("die " + display_name)
 	dead = true
 	hp = 0.0
 	cancel_windup()
@@ -982,6 +984,7 @@ func _raw_clip(n: String) -> String:
 func play_anim(logical: String, speed: float = 1.0, blend: float = 0.12, duration: float = 0.0) -> void:
 	if anim_player == null:
 		return
+	if G.debug_sites: G.crumb("anim %s %s" % [display_name, logical])
 	var names: Array = anim_map.get(logical, [])
 	if names.is_empty():
 		var raw := _raw_clip(logical)

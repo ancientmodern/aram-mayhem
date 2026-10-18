@@ -194,6 +194,7 @@ func gain_xp(amount: float) -> void:
 
 
 func level_up() -> void:
+	if G.debug_sites: G.crumb("level_up %s %d" % [display_name, level + 1])
 	level += 1
 	ability_points += 1
 	recompute_stats()
