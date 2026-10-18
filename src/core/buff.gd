@@ -97,5 +97,8 @@ func on_removed(_unit) -> void:
 	if on_expire.is_valid():
 		on_expire.call(self)
 	if vfx != null and is_instance_valid(vfx):
-		vfx.queue_free()
+		if vfx.has_method("stop"):
+			vfx.stop()
+		else:
+			vfx.queue_free()
 		vfx = null

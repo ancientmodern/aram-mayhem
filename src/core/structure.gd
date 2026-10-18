@@ -50,6 +50,12 @@ func setup(p_team: int, inhibitor: bool) -> void:
 		m = Assets.placeholder_model(team, 2.5 if inhibitor else 4.0, 2.0)
 	set_model(m)
 	anim_map = Assets.build_anim_map(anim_player, {})
+	LolVfx.load_set("shared")
+	_idle_fx = LolVfx.attach(self, "HA_%s_%s_Idle" % ["Order" if team == G.Team.ORDER else "Chaos", "Inhibitor" if inhibitor else "Nexus"], {"loop": true})
+
+
+var _idle_fx: LolVfx = null
+var _timer_fx: LolVfx = null
 
 
 func is_vulnerable() -> bool:
@@ -80,12 +86,19 @@ func on_died(_killer) -> void:
 	var m = match_ref
 	var p := global_position
 	var col := Color(1.0, 0.75, 0.4) if team == G.Team.CHAOS else Color(0.55, 0.8, 1.0)
+	if _idle_fx != null and is_instance_valid(_idle_fx):
+		_idle_fx.stop()
+	var tname := "Order" if team == G.Team.ORDER else "Chaos"
+	var boom := LolVfx.spawn(m, "HA_Order_Inhibitor_Explosion" if is_inhibitor else "HA_Order_Nexus_Explosion", p)
+	if is_inhibitor:
+		_timer_fx = LolVfx.attach(self, "HA_%s_Inhibitor_runeTimer" % tname, {"loop": true})
+		LolVfx.attach(self, "HA_%s_Inhibitor_Rubble_dust" % tname)
 	if has_anim("death"):
 		_play_once("death")
 	elif model != null:
 		create_tween().tween_property(model, "scale", model.scale * Vector3(1.0, 0.25, 1.0), 1.5)
 	# explosions: the nexus goes off in a rolling chain
-	var blasts := 1 if is_inhibitor else 6
+	var blasts := (1 if is_inhibitor else 6) if boom == null else (0 if is_inhibitor else 2)
 	for i in blasts:
 		m.after(i * 0.32, func():
 			var off := Vector3(G.rng.randf_range(-1.5, 1.5), G.rng.randf_range(0.5, 3.0), G.rng.randf_range(-1.5, 1.5)) * (0.4 if is_inhibitor else 1.0)
@@ -115,6 +128,9 @@ func tick_dead(_dt: float) -> void:
 		if model != null:
 			model.scale = Vector3.ONE * stats.size * display_scale
 		anim_lock = 0.0
+		if _timer_fx != null and is_instance_valid(_timer_fx):
+			_timer_fx.stop()
+		_idle_fx = LolVfx.attach(self, "HA_%s_Inhibitor_Idle" % ("Order" if team == G.Team.ORDER else "Chaos"), {"loop": true})
 		if has_anim("respawn_in"):
 			_play_once("respawn_in")
 			anim_lock = 1.5
