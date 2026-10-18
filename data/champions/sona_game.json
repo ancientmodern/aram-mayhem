@@ -1,0 +1,370 @@
+{
+ "alias": "Sona",
+ "name": "Sona",
+ "stats": {
+  "base_hp": 550.0,
+  "hp_per_level": 91.0,
+  "base_hp_regen": 1.1,
+  "hp_regen_per_level": 0.11,
+  "base_ad": 49.0,
+  "ad_per_level": 3.0,
+  "base_armor": 26.0,
+  "armor_per_level": 4.2,
+  "base_mr": 30.0,
+  "mr_per_level": 1.3,
+  "base_ms": 325.0,
+  "attack_range": 550.0,
+  "attack_speed": 0.644,
+  "attack_speed_ratio": 0.644,
+  "attack_speed_per_level": 2.3,
+  "resource_type": 0,
+  "mana_base": 340.0,
+  "mana_per_level": 45.0,
+  "mana_regen": 2.3,
+  "mana_regen_per_level": 0.08,
+  "critDamageMultiplier": 2.0,
+  "acquisitionRange": 800.0,
+  "selectionHeight": 145.0,
+  "selectionRadius": 110.0,
+  "pathfindingCollisionRadius": 35.0,
+  "healthBarHeight": 113.0,
+  "attack_cast_offset": -0.1281787008047104,
+  "attack_total_time": null,
+  "attack_cast_time": null
+ },
+ "spell_slots": {
+  "Q": "SonaQ",
+  "W": "SonaW",
+  "E": "SonaE",
+  "R": "SonaR"
+ },
+ "passive": "SonaPassive",
+ "passive_name": "Power Chord",
+ "passive_desc": "<passive>Accelerando</passive>: Sona gains Accelerando stacks from using her Basic Abilities well. She gains +%i:scaleAH% @AccelerandoAHPerStack@ Basic Ability Haste permanently per stack, up to %i:scaleAH% @AccelerandoCap@ Basic Ability Haste. When she reaches %i:scaleAH% @AccelerandoCap@ Basic Ability Haste, instead of gaining further stacks her current <keywordMajor>Ultimate Ability's</keywordMajor> cooldown is reduced by @Spell.SonaPassive:AccelerandoUltCDR@ seconds.<br><br><passive>Power Chord</passive>: After using @PowerChordPassiveCountMax@ basic Abilities, Sona's next Attack deals an additional <magicDamage>@PowerChordDamage@ magic damage</magicDamage> and may have an additional effect based on the song Sona last activated.<br><li><spellName>Hymn of Valor:</spellName> The Attack deals <magicDamage>@Spell.SonaQ:TotalStaccatoDamage@ magic damage</magicDamage> instead.<li><spellName>Aria of Perseverance:</spellName> The target deals @Spell.SonaW:TotalDiminuendoWeakenPercent@ less damage for @Spell.SonaW:DiminuendoDuration@ seconds.<li><spellName>Song of Celerity:</spellName> The target is <status>Slowed</status> by @Spell.SonaE:TotalTempoMoveSpeedSlow@ for @Spell.SonaE:TempoDuration@ seconds.",
+ "spells": {
+  "SonaWPassiveAttack": {
+   "script": "SonaWPassiveAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 550.0,
+   "missileSpeed": 1500.0,
+   "mAnimationName": "Crit"
+  },
+  "SonaWMissile": {
+   "script": "SonaWMissile",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 10000.0,
+   "castRadius": 710.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1300.0,
+   "mAnimationName": ""
+  },
+  "SonaW": {
+   "script": "SonaW",
+   "data_values": {
+    "BaseHeal": [
+     15.0,
+     30.0,
+     45.0,
+     60.0,
+     75.0,
+     90.0,
+     105.0
+    ],
+    "BaseShield": [
+     5.0,
+     25.0,
+     45.0,
+     65.0,
+     85.0,
+     105.0,
+     125.0
+    ],
+    "AuraDuration": 3.0,
+    "AuraRange": 400.0,
+    "BaseGlobalCD": 0.5,
+    "DiminuendoDuration": 3.0,
+    "HealRange": 1000.0,
+    "ShieldDuration": 1.5,
+    "AccelerandoShieldBreakpoint": [
+     5.0,
+     25.0,
+     45.0,
+     65.0,
+     85.0,
+     105.0,
+     125.0
+    ],
+    "HealRatio": 0.3,
+    "ShieldRatio": 0.25
+   },
+   "calcs": {
+    "#3d3d6f53": "BaseHeal + HealRatio*AP",
+    "#6594c758": "BaseShield + ShieldRatio*AP",
+    "#5930d0b5": "0.25 + 0.0004*AP  [as %]"
+   },
+   "mana": [
+    80.0,
+    85.0,
+    90.0,
+    95.0,
+    100.0,
+    105.0
+   ],
+   "castRange": 1000.0,
+   "castRadius": 1000.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1500.0,
+   "mAnimationName": "Spell1",
+   "name": "Aria of Perseverance",
+   "tooltip": "<spellPassive>Active:</spellPassive> Sona restores <healing>@TotalHeal@ Health</healing> to herself and a nearby allied champion, prioritizing the most wounded. She then begins a new <keywordMajor>Melody</keywordMajor>.<br><br><keywordMajor>Melody:</keywordMajor> Sona gains an aura for @AuraDuration@ seconds, granting allied champions <shield>@TotalShield@ Shield</shield> for @ShieldDuration@ seconds.<br><br>Gain a stack of <keywordMajor>Accelerando</keywordMajor> whenever you heal another injured ally and every time you protect another ally from at least @AccelerandoShieldBreakpoint@ damage with this shield.<br><br><keywordMajor>Power Chord - Diminuendo:</keywordMajor> Power Chord also reduces physical and magic damage dealt by the target by @TotalDiminuendoWeakenPercent@ for @DiminuendoDuration@ seconds.",
+   "summary": "Sona plays the Aria of Perseverance, sending out protective melodies, healing Sona and a nearby wounded ally. Sona gains a temporary aura that grants allies tagged by the zone a temporary shield."
+  },
+  "SonaE": {
+   "script": "SonaE",
+   "data_values": {
+    "SelfBaseMovementSpeed": 0.2,
+    "AllyBaseMovementSpeed": [
+     0.08,
+     0.1,
+     0.12,
+     0.14,
+     0.16,
+     0.18,
+     0.2
+    ],
+    "SelfMovementSpeedDurationMin": 3.0,
+    "SelfMovementSpeedDurationMax": 7.0,
+    "AllyMovementSpeedDuration": 3.0,
+    "AuraRange": 400.0,
+    "AuraDuration": 3.0,
+    "BaseGlobalCD": 0.5,
+    "TempoDuration": 2.0
+   },
+   "calcs": {
+    "#afca5689": "SelfBaseMovementSpeed + 0.0002*AP  [as %]",
+    "#0f605d99": "AllyBaseMovementSpeed + 0.0002*AP  [as %]",
+    "#0ae25fbd": "0.5 + 0.0004*AP  [as %]"
+   },
+   "cooldownTime": 14.0,
+   "mana": 65.0,
+   "castRange": 1000.0,
+   "castRangeDisplayOverride": 430.0,
+   "castRadius": 1000.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1500.0,
+   "mAnimationName": "Spell1",
+   "name": "Song of Celerity",
+   "tooltip": "<spellPassive>Active:</spellPassive> She begins a new <keywordMajor>Melody</keywordMajor> and grants herself <speed>@TotalSelfMovementSpeed@ Move Speed</speed> for @SelfMovementSpeedDurationMin@ seconds, extended to up to @SelfMovementSpeedDurationMax@ seconds if she doesn't take damage. <br><br><keywordMajor>Melody:</keywordMajor> Sona gains an aura for @AuraDuration@ seconds that grants allied champions <speed>@TotalAllyMovementSpeed@ Move Speed</speed> for @AllyMovementSpeedDuration@ seconds.<br><br><keywordMajor>Power Chord - Tempo:</keywordMajor> Power Chord also <status>Slows</status> the target by @TotalTempoMoveSpeedSlow@ for @TempoDuration@ seconds.",
+   "summary": "Sona plays the Song of Celerity, granting nearby allies bonus Move Speed. Sona gains a temporary aura that grants allied champions tagged by the zone bonus Move Speed."
+  },
+  "SonaEPassiveAttack": {
+   "script": "SonaEPassiveAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 550.0,
+   "missileSpeed": 1500.0,
+   "mAnimationName": "Crit"
+  },
+  "SonaBasicAttack": {
+   "script": "SonaBasicAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1500.0,
+   "mAlternateName": "SonaBasicAttack"
+  },
+  "SonaQPassiveAttack": {
+   "script": "SonaQPassiveAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 550.0,
+   "missileSpeed": 1500.0,
+   "mAnimationName": "Crit"
+  },
+  "SonaQ": {
+   "script": "SonaQ",
+   "data_values": {
+    "BaseDamage": [
+     15.0,
+     50.0,
+     85.0,
+     120.0,
+     155.0,
+     190.0,
+     225.0
+    ],
+    "BaseOnHitDamage": [
+     5.0,
+     10.0,
+     15.0,
+     20.0,
+     25.0,
+     30.0,
+     35.0
+    ],
+    "AuraRange": 400.0,
+    "OnHitDuration": 5.0,
+    "EnemiesToHit": 2.0,
+    "AuraDuration": 3.0,
+    "BaseGlobalCD": 0.5,
+    "OnHitProcs": 1.0,
+    "OnHitRatio": 0.1
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamage + 0.4*AP",
+    "#1e48db18": "BaseOnHitDamage + OnHitRatio*AP",
+    "#d55ca72e": "byLevelBreakpoints(L1=30) + 0.3*AP"
+   },
+   "cooldownTime": 8.0,
+   "mana": [
+    50.0,
+    55.0,
+    60.0,
+    65.0,
+    70.0,
+    75.0
+   ],
+   "castRange": 825.0,
+   "castRadius": 850.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1500.0,
+   "mAnimationName": "Spell1",
+   "name": "Hymn of Valor",
+   "tooltip": "Sona deals <magicDamage>@TotalDamage@ magic damage</magicDamage> to the nearest two enemies, prioritizing champions. She then begins a new <keywordMajor>Melody</keywordMajor>. Gain a stack of <keywordMajor>Accelerando</keywordMajor> for every champion you damage with this.<br><br><keywordMajor>Melody:</keywordMajor> Sona gains an aura for @AuraDuration@ seconds, granting allied champions an additional <magicDamage>@TotalOnHitDamage@ magic damage</magicDamage> %i:OnHit% on their next Attack within @OnHitDuration@ seconds.<br><br><keywordMajor>Power Chord - Staccato:</keywordMajor> Power Chord bonus damage (<magicDamage>@TotalStaccatoDamage@ total magic damage</magicDamage>).",
+   "summary": "Sona plays the Hymn of Valor, sends out bolts of sound, dealing magic damage to two nearby enemies, prioritizing champions and monsters. Sona gains a temporary aura that grants allies tagged by the zone bonus damage on their next attack against enemies."
+  },
+  "SonaQMissile": {
+   "script": "SonaQMissile",
+   "data_values": {},
+   "cooldownTime": 4.0,
+   "castRange": 10000.0,
+   "castRadius": 710.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1300.0,
+   "mAnimationName": ""
+  },
+  "SonaBasicAttack2": {
+   "script": "SonaBasicAttack2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1500.0,
+   "mAnimationName": "Attack2",
+   "mAlternateName": "SonaBasicAttack2"
+  },
+  "SonaPMissile2": {
+   "script": "SonaPMissile2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 25000.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1300.0
+  },
+  "SonaPMissile3": {
+   "script": "SonaPMissile3",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 25000.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1300.0
+  },
+  "SonaPMissile": {
+   "script": "SonaPMissile",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 25000.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1300.0
+  },
+  "SonaPassive": {
+   "script": "SonaPassive",
+   "data_values": {
+    "TempoDuration": 2.0,
+    "PowerChordPassiveCountMax": 3.0,
+    "AccelerandoAHPerStack": 0.5,
+    "AccelerandoCap": 60.0,
+    "AccelerandoUltCDR": 1.5
+   },
+   "calcs": {
+    "#4787a681": "byLevelBreakpoints(L1=20) + 0.2*AP",
+    "#6758f53c": "7af9aae9"
+   },
+   "castRange": 0.0,
+   "name": "Power Chord",
+   "tooltip": "<passive>Accelerando</passive>: Sona gains Accelerando stacks from using her Basic Abilities well. She gains +%i:scaleAH% @AccelerandoAHPerStack@ Basic Ability Haste permanently per stack, up to %i:scaleAH% @AccelerandoCap@ Basic Ability Haste. When she reaches %i:scaleAH% @AccelerandoCap@ Basic Ability Haste, instead of gaining further stacks her current <keywordMajor>Ultimate Ability's</keywordMajor> cooldown is reduced by @Spell.SonaPassive:AccelerandoUltCDR@ seconds.<br><br><passive>Power Chord</passive>: After using @PowerChordPassiveCountMax@ basic Abilities, Sona's next Attack deals an additional <magicDamage>@PowerChordDamage@ magic damage</magicDamage> and may have an additional effect based on the song Sona last activated.<br><li><spellName>Hymn of Valor:</spellName> The Attack deals <magicDamage>@Spell.SonaQ:TotalStaccatoDamage@ magic damage</magicDamage> instead.<li><spellName>Aria of Perseverance:</spellName> The target deals @Spell.SonaW:TotalDiminuendoWeakenPercent@ less damage for @Spell.SonaW:DiminuendoDuration@ seconds.<li><spellName>Song of Celerity:</spellName> The target is <status>Slowed</status> by @Spell.SonaE:TotalTempoMoveSpeedSlow@ for @Spell.SonaE:TempoDuration@ seconds.",
+   "summary": "<passive>Accelerando</passive>: Sona gains non-Ultimate ability haste permanently for her basic abilities as she uses her abilities well, up to a cap. Beyond that cap, further successful uses reduce her ultimate's remaining cooldown instead.<br><br><passive>Power Chord</passive>: Every few spell casts, Sona's next attack will deal bonus magic damage in addition to an additional effect based on what basic Ability Sona last activated."
+  },
+  "SonaPassiveAttack": {
+   "script": "SonaPassiveAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 550.0,
+   "missileSpeed": 1500.0,
+   "mAnimationName": "Crit"
+  },
+  "SonaDJTransition": {
+   "script": "SonaDJTransition",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRadius": 20.0,
+   "castConeDistance": 100.0,
+   "mCastTime": 0.5,
+   "mAnimationName": "",
+   "name": "Drop the Beat"
+  },
+  "SonaR": {
+   "script": "SonaR",
+   "data_values": {
+    "BaseDamage": [
+     50.0,
+     150.0,
+     250.0,
+     350.0,
+     450.0,
+     550.0,
+     650.0
+    ],
+    "StunDuration": 1.5
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamage + 0.5*AP"
+   },
+   "cooldownTime": [
+    140.0,
+    140.0,
+    120.0,
+    100.0,
+    100.0,
+    100.0,
+    100.0
+   ],
+   "mana": 100.0,
+   "castRange": 1000.0,
+   "castRangeDisplayOverride": 900.0,
+   "castRadius": 600.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2400.0,
+   "mLineWidth": 140.0,
+   "mAnimationName": "Spell4",
+   "name": "Crescendo",
+   "tooltip": "Sona strikes an irresistible chord, <status>Stunning</status> enemy for @StunDuration@ seconds and dealing <magicDamage>@TotalDamage@ magic damage</magicDamage>.",
+   "summary": "Sona plays her ultimate chord, stunning enemy champions and forcing them to dance and dealing magic damage to them."
+  },
+  "SonaCritAttack": {
+   "script": "SonaCritAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1500.0,
+   "mAnimationName": "Crit"
+  }
+ }
+}
