@@ -18,7 +18,9 @@ func draw(ci: CanvasItem, L: HudLayout) -> void:
 	var m = hud.match_ref
 	var f_num: Font = hud.f_num
 	var f_title: Font = hud.f_title
-	ci.draw_rect(Rect2(Vector2.ZERO, L.vs), Color(0, 0, 0, 0.25))
+	# [ui-fix] no full-screen dim: League never darkens the world behind the scoreboard; the 25% black rect that used
+	# to be here popped the whole frame (minimap, HUD, world) 25% darker on Tab down and brighter again on release,
+	# which read as a brightness flicker.
 	L.draw(ci, S + "SB_BG")
 	L.draw(ci, S + "SB_AllySide_Left", Color(1, 1, 1, 0.35))
 	L.draw(ci, S + "SB_EnemySide_Right", Color(1, 1, 1, 0.35))

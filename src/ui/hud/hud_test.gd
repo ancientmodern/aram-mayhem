@@ -185,6 +185,11 @@ func _run() -> void:
 			await _click((h[0] as Rect2).get_center())
 			break
 	# typing goes straight into the search box
+	# [ui-fix] typing only goes to the search box once it has focus (click it, like League)
+	for h in shop._hits:
+		if h[1] == "search":
+			await _click((h[0] as Rect2).get_center())
+			break
 	await _type("lud")
 	await _wait(0.3)
 	await _shot("06_shop_search")
