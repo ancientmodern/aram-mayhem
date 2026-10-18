@@ -1,0 +1,88 @@
+class_name SimMonitor
+extends Node
+## QA harness: logs match events/state and quits after a time limit.
+## Usage: godot --path . --fixed-fps 60 -- --sim [--time=600] [--shots=10,60] [--botplayer]
+
+var match_ref = null
+var limit := 600.0
+var report_every := 30.0
+var _next_report := 0.0
+var shots: Array = []
+var shot_dir := "user://shots"
+var bot_player := true
+
+
+func _ready() -> void:
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--time="):
+			limit = float(a.substr(7))
+		elif a.begins_with("--shots="):
+			for s in a.substr(8).split(","):
+				shots.append(float(s))
+		elif a == "--nobot":
+			bot_player = false
+		elif a.begins_with("--every="):
+			report_every = float(a.substr(8))
+	G.champion_killed.connect(func(v, k, ass): _log("KILL %s -> %s (+%d assists)" % [
+			k.display_name if k != null and is_instance_valid(k) else "?", v.display_name, ass.size()]))
+	G.structure_destroyed.connect(func(s, k): _log("STRUCTURE %s %s destroyed" % [G.TEAM_NAMES[s.team], s.display_name]))
+	G.augment_chosen.connect(func(c, a): _log("AUGMENT %s took %s [%s]" % [c.display_name, a.display_name, a.get("rarity")]))
+	G.match_over.connect(func(w): _log("GAME OVER winner=%s" % G.TEAM_NAMES[w]); _summary(); get_tree().quit())
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(shot_dir))
+
+
+func _log(s: String) -> void:
+	var t: float = match_ref.time if match_ref != null else 0.0
+	print("[%5.1f] %s" % [t, s])
+
+
+func _process(_delta: float) -> void:
+	if match_ref == null:
+		return
+	var t: float = match_ref.time
+	if bot_player and G.player != null and not (G.player.controller is BotBrain):
+		var b := BotBrain.new()
+		b.setup(G.player, match_ref)
+		G.player.controller = b
+		G.player.is_bot = true
+	if t >= _next_report:
+		_next_report += report_every
+		_report()
+	if not shots.is_empty() and t >= shots[0]:
+		shots.pop_front()
+		_screenshot(t)
+	if t >= limit:
+		_summary()
+		get_tree().quit()
+
+
+func _report() -> void:
+	var minions := [0, 0]
+	for u in match_ref.units:
+		if u.kind == G.Kind.MINION and not u.dead:
+			minions[u.team] += 1
+	var line := "STATE minions=%s kills=%s fps=%d |" % [str(minions), str(match_ref.kills), Engine.get_frames_per_second()]
+	for c in match_ref.champions:
+		line += " %s L%d %d/%d/%d hp%d%% %s%s;" % [c.alias.substr(0, 5), c.level, c.kills, c.deaths, c.assists,
+				int(c.hp_ratio() * 100), "DEAD" if c.dead else (c.controller.mode if c.controller is BotBrain else "pl"),
+				"" if c.augments.is_empty() else " A%d" % c.augments.size()]
+	_log(line)
+
+
+func _summary() -> void:
+	_log("SUMMARY time=%.0f kills=%s" % [match_ref.time, str(match_ref.kills)])
+	for s in match_ref.structures:
+		if s.kind != G.Kind.TURRET or s.tier != Turret.Tier.FOUNTAIN:
+			_log("  %s %-18s %s hp=%d" % [G.TEAM_NAMES[s.team], s.display_name, "DEAD" if s.dead else "alive", int(s.hp)])
+	for c in match_ref.champions:
+		_log("  %s %-12s L%d %d/%d/%d cs=%d gold=%d dmg=%d items=%d augs=%s" % [G.TEAM_NAMES[c.team], c.alias, c.level,
+				c.kills, c.deaths, c.assists, c.cs, int(c.total_gold), int(c.champion_damage_total), c.items.size(),
+				str(c.augments.map(func(a): return a.display_name))])
+
+
+func _screenshot(t: float) -> void:
+	await RenderingServer.frame_post_draw
+	var img := get_viewport().get_texture().get_image()
+	var path := "%s/shot_%04d.png" % [shot_dir, int(t)]
+	img.save_png(path)
+	_log("SHOT " + ProjectSettings.globalize_path(path))
