@@ -145,8 +145,9 @@ func _clip_len(logical: String) -> float:
 	return anim_player.get_animation(nm).length
 
 
-## Intact vs destroyed submeshes. The exporter split League's initialSubmeshToHide on spaces, so "Destroyed,"
-## stayed visible on the inhibitor; drive visibility here from the names instead.
+## Intact vs destroyed submeshes. The exporter now tags League's initialSubmeshToHide entries as HIDDEN__ (the list
+## is comma separated: "Destroyed, HA_Inhib_Destroyed_Cap" / "Khai_Destroyed"); the name match below stays as a
+## fallback for models exported before that fix, and drives the swap on death/respawn.
 func _set_destroyed_meshes(destroyed: bool) -> void:
 	if model == null:
 		return
