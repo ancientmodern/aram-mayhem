@@ -4,6 +4,7 @@ extends RefCounted
 
 const CHAMP_SHADER := preload("res://src/vfx/shaders/champion.gdshader")
 const INK_SHADER := preload("res://src/vfx/shaders/champion_ink.gdshader")
+const INK_OUTLINE := false   ## League has no character outline pass (docs/LEAGUE_SHADERS.md)
 
 static var _scene_cache := {}
 static var _mat_cache := {}
@@ -124,7 +125,11 @@ static func _champion_material(src: Material, self_illum: float) -> Material:
 		sm.set_shader_parameter("albedo_tex", tex)
 	sm.set_shader_parameter("use_alpha_scissor", masked)
 	sm.set_shader_parameter("self_illum", 0.6 if self_illum > 0.0 else 0.55)
-	# League "inking": thin dark silhouette on skinned meshes
+	# League has no character outline pass (decompiled shader cache: only the hover outline exists); silhouette
+	# darkness is painted into the textures. The inverted-hull ink stays available behind INK_OUTLINE.
+	if not INK_OUTLINE:
+		_mat_cache[key] = sm
+		return sm
 	var ink := ShaderMaterial.new()
 	ink.shader = INK_SHADER
 	if tex != null:

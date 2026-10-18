@@ -1,23 +1,31 @@
 shader_type spatial;
-// League-style skinned-mesh shading (champions, minions, structures).
-// League's skinned shader: hand-painted diffuse texture carrying most of the lighting, a soft
-// directional term from the map light, a Fresnel term, emissive, and fog-of-war modulation; the
-// characters cast blurred dynamic shadows onto the terrain but are not shadowed themselves
-// (static shadows are baked into the map). Silhouettes get "inking" (see champion_ink.gdshader).
-render_mode cull_back, depth_prepass_alpha, shadows_disabled, ambient_light_disabled;
+// League skinned-mesh shading (champions, minions, structures): a 1:1 port of League's legacy
+// hlsl/skinnedmesh/lit_uber (decompiled, docs/LEAGUE_SHADERS.md section 3):
+//   ambient = Valve-style ambient cube from the map light grid at the unit's position, per vertex
+//   L = saturate(LIGHTGRID_SCALE.y * SELF_ILLUMINATION + (1 - em) * ambient * LIGHTGRID_SCALE.x + em)
+//   c = saturate(diffuse * L)            (gamma values; no sun, no rim, no specular, no self-shadowing)
+// The characters still cast blurred shadows onto the terrain (the map shader receives them).
+render_mode unshaded, cull_back, depth_prepass_alpha, shadows_disabled;
 #include "res://src/render/gamma.gdshaderinc"
 
 uniform sampler2D albedo_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform bool use_alpha_scissor = false;
-uniform float alpha_scissor = 0.35;
-// share of the texture shown unlit (League textures have lighting painted in); the scene's bluish
-// ambient is ignored so the painted colours stay true, the rest is lit by the map's directional light
-uniform float self_illum = 0.6;
-// directional term: wrapped (half-lambert style) so the shadow side stays soft
-uniform float light_wrap = 0.55;
-uniform vec3 rim_color : source_color = vec3(0.78, 0.86, 1.0);
-uniform float rim_strength = 0.10;
-uniform float rim_power = 3.5;
+// League discards only fully transparent texels (clip(d.a == 0)); a small threshold avoids filtered fringes
+uniform float alpha_scissor = 0.02;
+// unused by League's shader (kept so existing material setup code still applies cleanly)
+uniform float self_illum = 0.0;
+// Map12 light grid (tools/lol/extract_lightgrid.py): 6 faces side by side, raw gamma BGRA -> RGB
+global uniform sampler2D lightgrid : filter_linear, repeat_disable;
+global uniform float lightgrid_on;
+// LIGHTGRID_SCALE.x: the grid is stored at half intensity (MapBakeProperties.lightGridCharacterFullBrightIntensity
+// = 0.5), so the CPU most likely passes 1 / 0.5 = 2 (docs/LEAGUE_SHADERS.md, open item)
+uniform float lightgrid_scale = 2.0;
+// League's raw grid x 2 leaves camera-facing sides at ~0.2 (far darker than live League), so part of L must come
+// from a constant term the CPU supplies (SELF_ILLUMINATION / MapLightingV2.MinimumEnvironmentColorContribution).
+// Fitted floor until a reference capture pins it down (docs/LEAGUE_SHADERS.md open items).
+uniform float ambient_floor = 0.55;
+uniform float grid_gain = 0.8;   // x lightgrid_scale
+const float GRID_EXTENT = 12877.525;   // League units covered by the 256 x 256 grid
 
 // explicit indices: the ink next_pass shares the instance uniform buffer
 instance uniform float flash : instance_index(0) = 0.0;
@@ -26,20 +34,30 @@ instance uniform float fade : instance_index(2) = 1.0;
 instance uniform vec4 glow : source_color, instance_index(3) = vec4(0.0, 0.0, 0.0, 0.0);
 instance uniform float stealth : instance_index(4) = 0.0;   // Unit applies it as GeometryInstance3D.transparency
 
-varying vec3 v_world_n;
-varying float v_hemi;
+varying vec3 v_amb;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 
+vec3 grid_face(vec2 uv, float face) {
+	vec2 c = clamp(uv, vec2(0.5 / 256.0), vec2(1.0 - 0.5 / 256.0));
+	return textureLod(lightgrid, vec2((face + c.x) / 6.0, c.y), 0.0).rgb;
+}
+
 void vertex() {
-	v_world_n = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
-	// sky/ground hemisphere: top of the model a touch brighter than the underside
-	v_hemi = mix(0.86, 1.04, clamp(v_world_n.y * 0.5 + 0.5, 0.0, 1.0));
+	// Godot (x, y, z) = League (x, y, -z) * 0.01
+	vec3 o = NODE_POSITION_WORLD;
+	vec2 uv = vec2(o.x, -o.z) * 100.0 / GRID_EXTENT;
+	vec3 n = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
+	n.z = -n.z;
+	vec3 n2 = n * n;
+	v_amb = n2.x * grid_face(uv, n.x < 0.0 ? 1.0 : 0.0)
+			+ n2.y * grid_face(uv, n.y < 0.0 ? 3.0 : 2.0)
+			+ n2.z * grid_face(uv, n.z < 0.0 ? 5.0 : 4.0);
 }
 
 void fragment() {
 	vec4 c = texture(albedo_tex, UV);
-	if (use_alpha_scissor && c.a < alpha_scissor) {
+	if (c.a < (use_alpha_scissor ? alpha_scissor : 0.004)) {
 		discard;
 	}
 	// dissolve when fading out (scripted fades)
@@ -47,34 +65,13 @@ void fragment() {
 	if (fade < 0.999 && n > fade) {
 		discard;
 	}
-	vec3 base = c.rgb * tint.rgb;
-	float ndv = clamp(dot(NORMAL, VIEW), 0.0, 1.0);
-	float rim = pow(1.0 - ndv, rim_power);
-	vec3 extra = rim_color * rim * rim_strength + vec3(1.0, 0.92, 0.85) * flash * 0.8
-			+ glow.rgb * glow.a * (0.35 + rim * 1.5);
-	if (gamma_out > 0.5) {
-		// gamma pipeline: final = enc(base) * enc(self_illum * hemi + (1 - self_illum) * light), split between
-		// emission and light() so it equals the linear result exactly (enc(a * b) = enc(a) * enc(b))
-		vec3 eb = gamma_enc(base);
-		ALBEDO = eb;
-		vec3 bk = base * (self_illum * v_hemi + (1.0 - self_illum) * 0.8);
-		EMISSION = eb * gamma_enc(vec3(self_illum * v_hemi)) + gamma_enc(bk + extra) - gamma_enc(bk);
-	} else {
-		ALBEDO = base * (1.0 - self_illum);
-		EMISSION = base * self_illum * v_hemi + extra;
-	}
-	ROUGHNESS = 1.0;
-	SPECULAR = 0.0;
-}
-
-void light() {
-	float ndl = dot(NORMAL, LIGHT);
-	float w = clamp((ndl + light_wrap) / (1.0 + light_wrap), 0.0, 1.0);
-	vec3 lw = LIGHT_COLOR * ATTENUATION * w;
-	if (gamma_out > 0.5) {
-		vec3 s0 = vec3(self_illum * v_hemi);
-		DIFFUSE_LIGHT += gamma_enc(s0 + (1.0 - self_illum) * lw) - gamma_enc(s0);
-	} else {
-		DIFFUSE_LIGHT += lw;
-	}
+	vec3 d = gamma_enc(c.rgb * tint.rgb);
+	// no grid (tests without a map): mid-lane grey ambient
+	vec3 amb = lightgrid_on > 0.5 ? v_amb : vec3(0.21);
+	// hit flash = League SELF_ILLUMINATION: raises L toward full-bright texture, never past it
+	vec3 L = clamp(vec3(flash + ambient_floor) + amb * lightgrid_scale * grid_gain, 0.0, 1.0);
+	vec3 col = clamp(d * L, 0.0, 1.0);
+	// our own highlight (player selection glow), not a League shader term
+	col += glow.rgb * glow.a * 0.35;
+	ALBEDO = gamma_out > 0.5 ? col : gamma_dec(col);
 }

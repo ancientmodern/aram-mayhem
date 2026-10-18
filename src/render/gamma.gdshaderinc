@@ -12,3 +12,8 @@ vec3 gamma_enc(vec3 l) {
 vec3 to_out(vec3 l) {
 	return gamma_out > 0.5 ? gamma_enc(l) : l;
 }
+
+vec3 gamma_dec(vec3 g) {
+	g = max(g, vec3(0.0));
+	return mix(g / 12.92, pow((g + 0.055) / 1.055, vec3(2.4)), step(vec3(0.04045), g));
+}

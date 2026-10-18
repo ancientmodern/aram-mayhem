@@ -73,3 +73,11 @@ gamma_out={
 "type": "float",
 "value": 0.0
 }
+lightgrid={
+"type": "sampler2D",
+"value": ""
+}
+lightgrid_on={
+"type": "float",
+"value": 0.0
+}

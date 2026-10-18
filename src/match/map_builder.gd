@@ -120,6 +120,21 @@ static func _make_material(info: Dictionary) -> Material:
 	return sm
 
 
+## Map12 light grid -> global shader texture: League's per-position character ambient cube (champion.gdshader).
+## Loaded raw (not through the importer) so the 8-bit values stay exact and uncompressed.
+static func _load_light_grid() -> void:
+	if DisplayServer.get_name() == "headless":
+		return   # no GPU textures in headless test runs
+	var path := ProjectSettings.globalize_path("res://assets/map/lightgrid.png")
+	var img := Image.load_from_file(path) if FileAccess.file_exists(path) else null
+	if img == null:
+		push_warning("lightgrid.png missing (run tools/lol/extract_lightgrid.py): characters use flat ambient")
+		RenderingServer.global_shader_parameter_set("lightgrid_on", 0.0)
+		return
+	RenderingServer.global_shader_parameter_set("lightgrid", ImageTexture.create_from_image(img))
+	RenderingServer.global_shader_parameter_set("lightgrid_on", 1.0)
+
+
 static func build_environment(parent: Node3D) -> void:
 	var we := WorldEnvironment.new()
 	var env := Environment.new()
@@ -159,6 +174,7 @@ static func build_environment(parent: Node3D) -> void:
 		# colour properties are decoded to linear by the renderer; pre-encode so the buffer holds gamma values
 		env.background_color = env.background_color.linear_to_srgb()
 		env.fog_light_color = env.fog_light_color.linear_to_srgb()
+	_load_light_grid()
 	we.environment = env
 	parent.add_child(we)
 	var sun := DirectionalLight3D.new()

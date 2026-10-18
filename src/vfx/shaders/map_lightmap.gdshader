@@ -22,23 +22,50 @@ uniform float point_light_share = 0.35;
 uniform float grade_gain = 1.2;
 uniform float grade_contrast = 1.14;
 uniform vec3 grade_tint = vec3(1.03, 1.0, 0.93);   // League frames are less blue (mean B/R 1.64 vs our 1.89)
+// League's exact DefaultEnv_Flat (decompiled, docs/LEAGUE_SHADERS.md section 4), gamma pipeline only:
+//   c = overlay(diffuse, TintColor) * (lightmap.rgb * 2 + sunColor * max(N.L, 0) * min(pcf5, lightmap.a))
+// lightmap alpha = baked sun-shadow mask; the live shadow only removes the sun term, never the baked light
+uniform bool league_exact = true;
+uniform vec3 sun_color = vec3(0.365, 0.384, 0.392);   // Map12 MapSunProperties.sunColor (gamma, raw)
+uniform float lightmap_color_scale = 2.0;             // Map12 MapSunProperties.lightMapColorScale
+varying vec3 v_bake;
+varying float v_sunmask;
+
+bool exact() {
+	return league_exact && use_lightmap && gamma_out > 0.5;
+}
+
+vec3 overlay(vec3 a, vec3 t) {
+	return mix(2.0 * a * t, 1.0 - 2.0 * (1.0 - a) * (1.0 - t), step(vec3(0.5), a));
+}
 
 void fragment() {
 	vec4 d = texture(diffuse_tex, UV);
 	if (d.a < alpha_test) {
 		discard;
 	}
-	vec3 lm = use_lightmap ? texture(lightmap_tex, UV2).rgb * lightmap_strength : vec3(1.0);
-	vec3 col = d.rgb * lm * tint.rgb * 4.59 * brightness;
-	float l = dot(col, vec3(0.299, 0.587, 0.114));
-	col = mix(vec3(l), col, saturation);
-	vec3 g = pow(max(col, vec3(0.0)), vec3(1.0 / 2.2));
-	g = max(mix(vec3(0.5), g * grade_gain * grade_tint, grade_contrast), vec3(0.0));
-	ALBEDO = to_out(pow(g, vec3(2.2)));
+	if (exact()) {
+		vec4 lmt = texture(lightmap_tex, UV2);
+		v_bake = gamma_enc(lmt.rgb) * lightmap_color_scale;
+		v_sunmask = lmt.a;
+		ALBEDO = overlay(gamma_enc(d.rgb), gamma_enc(tint.rgb)) * brightness;
+	} else {
+		vec3 lm = use_lightmap ? texture(lightmap_tex, UV2).rgb * lightmap_strength : vec3(1.0);
+		vec3 col = d.rgb * lm * tint.rgb * 4.59 * brightness;
+		float l = dot(col, vec3(0.299, 0.587, 0.114));
+		col = mix(vec3(l), col, saturation);
+		vec3 g = pow(max(col, vec3(0.0)), vec3(1.0 / 2.2));
+		g = max(mix(vec3(0.5), g * grade_gain * grade_tint, grade_contrast), vec3(0.0));
+		ALBEDO = to_out(pow(g, vec3(2.2)));
+	}
 }
 
 void light() {
-	if (LIGHT_IS_DIRECTIONAL) {
+	if (exact()) {
+		if (LIGHT_IS_DIRECTIONAL) {
+			DIFFUSE_LIGHT += v_bake + sun_color * max(dot(NORMAL, LIGHT), 0.0) * min(ATTENUATION, v_sunmask);
+		}
+	} else if (LIGHT_IS_DIRECTIONAL) {
 		// ATTENUATION carries the shadow term; the light's colour/angle are already baked into the lightmap
 		DIFFUSE_LIGHT += to_out(mix(shadow_color, vec3(1.0), ATTENUATION));
 	} else {
