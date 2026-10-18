@@ -10,6 +10,9 @@ extends Node3D
 
 const S := 0.01          ## League units -> meters
 const QUAD_SCALE := 2.0  ## League quad size is a half-extent
+const MAX_ONESHOT := 6.0 ## seconds a non-looping effect may live
+static var ROT_ORDER := 4   ## euler order yzx: verified on Yasuo W wall + Q streak geometry
+const MAX_FADE := 2.5    ## seconds particles may keep fading after stop()
 
 static var _db := {}             ## system name -> definition
 static var _loaded := {}         ## file -> true
@@ -28,6 +31,7 @@ var _stopped := false
 var _free_at := -1.0
 var _timers: Array = []          ## [time, callable]
 var follow: Node3D = null
+var _face_unit = null            ## attached to a Unit: keep facing its direction
 var follow_offset := Vector3.ZERO
 
 
@@ -90,6 +94,8 @@ static func attach(parent: Node3D, name: String, opts: Dictionary = {}) -> LolVf
 		return null
 	parent.add_child(n)
 	n.position = Vector3(0, float(opts.get("height", 0.0)), 0)
+	if parent is Unit and opts.get("face", true) and not opts.has("dir"):
+		n._face_unit = parent
 	n._apply_dir()
 	return n
 
@@ -179,7 +185,7 @@ static func on_attack_hit(src, t, crit: bool) -> void:
 				nm2 = "Turret_Skin24_BA_Tar"
 		if nm2 != "" and src.match_ref != null:
 			load_set("shared")
-			spawn(src.match_ref, nm2, t.global_position + Vector3(0, t.height * 0.5, 0))
+			spawn(src.match_ref, nm2, t.global_position, {"center": t.height * 0.5})
 		return
 	if not (src is Champion):
 		return
@@ -187,7 +193,7 @@ static func on_attack_hit(src, t, crit: bool) -> void:
 	if nm == "":
 		nm = champ_fx(src, "BA_tar")
 	if nm != "":
-		spawn(src.match_ref, nm, t.global_position + Vector3(0, t.height * 0.5, 0), {"dir": G.flat_dir(src.global_position, t.global_position)})
+		spawn(src.match_ref, nm, t.global_position, {"dir": G.flat_dir(src.global_position, t.global_position), "center": t.height * 0.5})
 
 
 ## Ability cast flash on the caster.
@@ -199,7 +205,7 @@ static func on_cast(ab, t: Dictionary) -> void:
 	var nm := champ_fx(o, k + "_cas")
 	if nm != "":
 		var dir: Vector3 = t.get("dir", o.facing)
-		attach(o, nm, {"dir": dir})
+		attach(o, nm, {"dir": dir, "center": o.height * 0.35})
 
 
 ## Spell damage landing on a target (rate limited per ability and target).
@@ -216,7 +222,7 @@ static func on_spell_hit(src, ab, t) -> void:
 		_hit_rl.clear()
 	var nm := champ_fx(src, k + "_tar")
 	if nm != "":
-		spawn(src.match_ref, nm, t.global_position + Vector3(0, t.height * 0.5, 0), {"dir": G.flat_dir(src.global_position, t.global_position)})
+		spawn(src.match_ref, nm, t.global_position, {"dir": G.flat_dir(src.global_position, t.global_position), "center": t.height * 0.5})
 
 
 ## Spell missile visual (replaces the kit's placeholder visual) or null.
@@ -255,7 +261,8 @@ func _setup(opts: Dictionary) -> void:
 	for e in def.get("emitters", []):
 		_build_emitter(e)
 	if not _loop:
-		_free_at = _dur + 0.2
+		# League durations include long, fully faded tails; cap so finished effects leave the tree
+		_free_at = minf(_dur, float(opts.get("max_life", MAX_ONESHOT))) + 0.2
 
 
 func _process(dt: float) -> void:
@@ -268,6 +275,13 @@ func _process(dt: float) -> void:
 			fn.call()
 		else:
 			i += 1
+	if _face_unit != null:
+		if is_instance_valid(_face_unit):
+			var f: Vector3 = _face_unit.facing
+			if f.length_squared() > 0.001:
+				global_basis = Basis.looking_at(Vector3(f.x, 0, f.z).normalized(), Vector3.UP) * Basis.from_scale(scale)
+		else:
+			_face_unit = null
 	if follow != null:
 		if is_instance_valid(follow):
 			global_position = follow.global_position + follow_offset
@@ -301,7 +315,7 @@ func stop() -> void:
 		elif c is LolTrail:
 			c.emitting = false
 			longest = maxf(longest, c.life)
-	_free_at = _t + longest + 0.1
+	_free_at = _t + minf(longest, MAX_FADE) + 0.1
 
 
 ## Missile visual protocol (Missile.finish calls this): keep the effect where it ended and fade out.
@@ -322,6 +336,9 @@ func _build_emitter(e: Dictionary) -> void:
 		return
 	if prim == "ctrail" or prim == "atrail":
 		_build_trail(e)
+		return
+	if prim == "beam":
+		_build_beam(e)
 		return
 	var p := GPUParticles3D.new()
 	var single: bool = e.get("single", false)
@@ -348,6 +365,8 @@ func _build_emitter(e: Dictionary) -> void:
 	p.local_coords = bool(e.get("local", false))
 	p.draw_order = GPUParticles3D.DRAW_ORDER_INDEX
 	p.position = _v3(e.get("pos", [0, 0, 0]))
+	if not e.get("ground", false):
+		p.position.y += float(_opts.get("center", 0.0))
 	p.visibility_aabb = AABB(Vector3(-15, -15, -15), Vector3(30, 30, 30))
 	p.process_material = _process_material(e)
 	p.draw_pass_1 = _mesh_for(e)
@@ -385,6 +404,30 @@ func _build_trail(e: Dictionary) -> void:
 				t.emitting = false)
 
 
+func _build_beam(e: Dictionary) -> void:
+	var length: float = float(_opts.get("length", 0.0))
+	if length <= 0.01:
+		return
+	var b := LolBeam.new()
+	var bs: Array = e.get("bscale", [10, 0, 0])
+	b.width = absf(float(bs[0])) * S * QUAD_SCALE
+	b.length = length
+	b.color = _col(e.get("bcolor", [1, 1, 1, 1]))
+	b.color_curve = e.get("color")
+	var plife: Array = e.get("plife", [1.0, 1.0])
+	var elife: float = float(e.get("life", -1.0))
+	b.life = float(plife[1]) if float(plife[1]) > 0.0 else (elife if elife > 0.0 else 1.0)
+	b.blend = int(e.get("blend", 0))
+	b.texture = _tex(e.get("tex"))
+	b.position = _v3(e.get("pos", [0, 0, 0]))
+	b.visible = false
+	add_child(b)
+	_after(float(e.get("delay", 0.0)), func():
+		if is_instance_valid(b) and not _stopped:
+			b.visible = true
+			b.start())
+
+
 static func _v3(a) -> Vector3:
 	if a is Array and a.size() >= 3:
 		return Vector3(float(a[0]), float(a[1]), float(a[2]))
@@ -407,10 +450,10 @@ static func _tex(path) -> Texture2D:
 ## 0 camera billboard, 1 free quad, 2 ground decal, 3 mesh, 4 velocity aligned billboard
 static func _orient(e: Dictionary) -> int:
 	var prim: String = e.get("prim", "quad")
-	if e.get("ground", false):
-		return 2
 	if prim == "mesh":
 		return 3
+	if e.get("ground", false):
+		return 2
 	if prim == "aquad":
 		return 1
 	if e.get("dir", false):
@@ -548,8 +591,7 @@ static func _shader(blend: int) -> Shader:
 	# 1 = alpha blend, 3 = multiply, 5 = premultiplied alpha
 	var mode := "blend_add"
 	match blend:
-		1: mode = "blend_mix"
-		3: mode = "blend_mul"
+		1, 3: mode = "blend_mix"
 		5: mode = "blend_premul_alpha"
 	if _shaders.has(mode):
 		return _shaders[mode]
@@ -579,6 +621,8 @@ static func _material(e: Dictionary) -> ShaderMaterial:
 	mat.shader = _shader(blend)
 	if blend == 1 or blend == 3 or blend == 5:
 		mat.set_shader_parameter("linear_color", true)
+	else:
+		mat.set_shader_parameter("intensity", 0.85)   # stacked gamma-emulated additive layers blow out otherwise
 	mat.set_shader_parameter("tex", _tex(e.get("tex")))
 	mat.set_shader_parameter("billboard", 1 if o == 0 else (2 if o == 4 else 0))
 	var div: Array = e.get("texdiv", [1, 1])
@@ -638,6 +682,7 @@ static func _process_material(e: Dictionary) -> ShaderMaterial:
 	var o := _orient(e)
 	var prim: String = e.get("prim", "quad")
 	pm.set_shader_parameter("orient", o)
+	pm.set_shader_parameter("rot_order", ROT_ORDER)
 	var plife: Array = e.get("plife", [1.0, 1.0])
 	pm.set_shader_parameter("life_lo", clampf(float(plife[0]) / maxf(float(plife[1]), 0.001), 0.0, 1.0))
 	# emission shape

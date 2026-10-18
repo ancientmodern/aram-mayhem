@@ -67,6 +67,8 @@ uint hash(uint x) {
 	return x;
 }
 
+uniform int rot_order = 0;             // euler order for free quads / meshes (calibration)
+
 mat3 rot_euler(vec3 d) {
 	vec3 r = radians(d);
 	float cx = cos(r.x); float sx = sin(r.x);
@@ -75,6 +77,11 @@ mat3 rot_euler(vec3 d) {
 	mat3 rx = mat3(vec3(1.0, 0.0, 0.0), vec3(0.0, cx, sx), vec3(0.0, -sx, cx));
 	mat3 ry = mat3(vec3(cy, 0.0, -sy), vec3(0.0, 1.0, 0.0), vec3(sy, 0.0, cy));
 	mat3 rz = mat3(vec3(cz, sz, 0.0), vec3(-sz, cz, 0.0), vec3(0.0, 0.0, 1.0));
+	if (rot_order == 1) { return rx * ry * rz; }
+	if (rot_order == 2) { return rz * ry * rx; }
+	if (rot_order == 3) { return rz * rx * ry; }
+	if (rot_order == 4) { return ry * rz * rx; }
+	if (rot_order == 5) { return rx * rz * ry; }
 	return ry * rx * rz;
 }
 
@@ -160,8 +167,8 @@ void process() {
 		rs[spin_axis] += spin;
 		b = rot_euler(rs) * mat3(vec3(s.x, 0.0, 0.0), vec3(0.0, s.y, 0.0), vec3(0.0, 0.0, max(s.z, 0.001)));
 	}
-	if (orient == 1 || orient == 3) {
-		b = mat3(EMISSION_TRANSFORM) * b;
+	if (orient == 1 || orient == 2 || orient == 3) {
+		b = mat3(EMISSION_TRANSFORM) * b;   // follow the effect's facing (cast direction)
 	}
 	TRANSFORM[0].xyz = b[0];
 	TRANSFORM[1].xyz = b[1];
