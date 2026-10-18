@@ -191,7 +191,18 @@ func remove_unit(u: Unit) -> void:
 		u.queue_free()
 
 
+func _lol_missile_visual(mi) -> void:
+	var lv := LolVfx.missile_visual(mi)
+	if lv == null:
+		return
+	if mi.visual != null and is_instance_valid(mi.visual) and mi.visual.get_parent() == null:
+		mi.visual.queue_free()
+	mi.visual = lv
+
+
 func add_missile(mi: Missile, pos: Vector3) -> Missile:
+	if not mi.is_attack:
+		_lol_missile_visual(mi)
 	missiles_root.add_child(mi)
 	mi.global_position = pos
 	missiles.append(mi)
@@ -418,7 +429,13 @@ func spawn_attack_missile(src: Unit, tgt: Unit, crit: bool) -> Missile:
 	mi.height = src.height * 0.55
 	mi.blockable = src.kind != G.Kind.TURRET
 	var vis = null
-	if src is Champion and src.kit != null and src.kit.has_method("attack_missile_visual"):
+	if src is Champion:
+		var nm := LolVfx.champ_fx(src, "BA_crit_mis") if crit else ""
+		if nm == "":
+			nm = LolVfx.champ_fx(src, "BA_mis")
+		if nm != "":
+			vis = LolVfx.make(nm, {"loop": true})
+	if vis == null and src is Champion and src.kit != null and src.kit.has_method("attack_missile_visual"):
 		vis = src.kit.attack_missile_visual(crit)
 	mi.visual = vis if vis != null else Vfx.attack_missile(src, crit)
 	# read the shooter from the missile at impact time (never capture a unit that may be freed)
@@ -903,6 +920,8 @@ func _bot_summoner(c: Champion) -> String:
 
 
 func _setup_view() -> void:
+	for c in champions:
+		LolVfx.load_set(c.alias)
 	audio = GameAudio.new()
 	audio.name = "Audio"
 	audio.setup(self)

@@ -170,6 +170,9 @@ func _exit_tree() -> void:
 	Assets._font_cache.clear()
 	AugmentDB._impl.clear()
 	AugmentDB._catalog.clear()
+	LolVfx.clear_cache()
+	LolVfx._shaders.clear()
+	LolTrail._mats.clear()
 
 
 func _process(delta: float) -> void:
