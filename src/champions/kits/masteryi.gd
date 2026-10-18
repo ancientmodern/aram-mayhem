@@ -242,7 +242,7 @@ class AlphaStrike extends YiAbility:
 			return best
 		if is_instance_valid(primary) and not primary.dead:
 			return primary
-		for e in hset:
+		for e in hset.keys():   # [lead] key snapshot: iterating a dict with freed-object keys can loop forever
 			if is_instance_valid(e) and not e.dead:
 				return e
 		return null
