@@ -87,6 +87,10 @@ var tint := Color(1, 1, 1, 1)
 var fade := 1.0
 
 
+var _stats_tick := 0.0
+var _has_slow := false
+
+
 func _init() -> void:
 	stats = Stats.new(self)
 
@@ -119,6 +123,7 @@ func _strongest_slow() -> float:
 	for b in buffs:
 		if b.slow_amount > 0.0:
 			s = maxf(s, b.current_slow())
+	_has_slow = s > 0.0
 	return s
 
 
@@ -382,7 +387,12 @@ func tick(dt: float) -> void:
 		return
 	var pt := Prof.t0()
 	_tick_buffs(dt)
-	recompute_stats()
+	# stats rebuild only when something changed (effects/buffs call stats.mark_dirty()), while a slow is
+	# decaying, or on a slow safety tick for effects whose modifiers drift over time
+	_stats_tick -= dt
+	if stats._dirty or _stats_tick <= 0.0 or _has_slow:
+		_stats_tick = 0.25
+		recompute_stats()
 	_regen(dt)
 	_tick_shields(dt)
 	for e in effects.duplicate():

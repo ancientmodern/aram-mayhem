@@ -93,8 +93,9 @@ func _process(delta: float) -> void:
 	pt = Prof.t0()
 	_rebuild_grid()
 	Prof.add("grid", pt)
+	var skip_units: bool = Prof.enabled and get_meta("perf_skip_units", false)   # perf ablation only
 	for u in units.duplicate():
-		if is_instance_valid(u):
+		if is_instance_valid(u) and not skip_units:
 			G.ctx_unit = u.display_name
 			pt = Prof.t0()
 			u.tick(dt)
