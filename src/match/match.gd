@@ -72,6 +72,9 @@ func _update_death_gray(delta: float) -> void:
 		(death_gray.material as ShaderMaterial).set_shader_parameter("amount", _gray)
 
 
+const _PROF_KIND := {G.Kind.CHAMPION: "tick.champ", G.Kind.MINION: "tick.minion", G.Kind.TURRET: "tick.turret"}
+
+
 func _process(delta: float) -> void:
 	if paused:
 		return
@@ -83,21 +86,33 @@ func _process(delta: float) -> void:
 	var dt := minf(delta, 0.05) * game_speed
 	time += dt
 	G.ctx = "timers"
+	var pt := Prof.t0()
 	_run_timers()
+	Prof.add("timers", pt)
 	G.ctx = "grid"
+	pt = Prof.t0()
 	_rebuild_grid()
+	Prof.add("grid", pt)
 	for u in units.duplicate():
 		if is_instance_valid(u):
 			G.ctx_unit = u.display_name
+			pt = Prof.t0()
 			u.tick(dt)
+			if Prof.enabled:
+				Prof.add(_PROF_KIND.get(u.kind, "tick.other"), pt)
 	G.ctx = "collide"
+	pt = Prof.t0()
 	_resolve_collisions(dt)
+	Prof.add("collide", pt)
+	pt = Prof.t0()
 	G.ctx = "missiles"
 	for mi in missiles.duplicate():
 		if is_instance_valid(mi) and mi.alive:
 			if G.debug_sites:
 				G.ctx2 = "%s %s %s" % [mi.source.display_name if is_instance_valid(mi.source) else "?", mi.ability.display_name if mi.ability != null and is_instance_valid(mi.ability) else "-", mi.site]
 			mi.tick(dt, self)
+	Prof.add("missiles", pt)
+	pt = Prof.t0()
 	G.ctx = "rest"
 	missiles = missiles.filter(func(x): return is_instance_valid(x) and x.alive)
 	if not tickers.is_empty():
@@ -120,10 +135,13 @@ func _process(delta: float) -> void:
 		spawner.tick(dt)
 	for r in relics:
 		r.tick(dt)
+	Prof.add("rest", pt)
 	vision_timer -= dt
 	if vision_timer <= 0.0:
 		vision_timer = 0.1
+		pt = Prof.t0()
 		_update_vision()
+		Prof.add("vision", pt)
 
 
 func after(seconds: float, fn: Callable) -> void:

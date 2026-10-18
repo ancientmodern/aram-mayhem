@@ -21,8 +21,16 @@ func _ready() -> void:
 		# test previews: never steal focus, stay off-screen (tools/preview.sh)
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_NO_FOCUS, true)
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		DisplayServer.window_set_size(Vector2i(1280, 720))
-		DisplayServer.window_set_position(Vector2i(-3000, -3000))
+		var res := Vector2i(1280, 720)
+		for a in args:
+			if a.begins_with("--res="):
+				var wh := a.substr(6).split("x")
+				res = Vector2i(int(wh[0]), int(wh[1]))
+		DisplayServer.window_set_size(res)
+		DisplayServer.window_set_position(Vector2i(-res.x - 200, -res.y - 200))
+		if "--novsync" in args:
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+			Engine.max_fps = 0
 		G.settings.edge_pan = false   # the real mouse is outside this hidden window
 	if not ("--uitest" in args or "--windowed" in args):
 		G.apply_window_mode()
