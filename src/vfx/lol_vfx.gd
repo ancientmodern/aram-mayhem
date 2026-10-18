@@ -1563,6 +1563,8 @@ static func _shader(blend: int, distort := false, bias := false, solid := false)
 	var hint := "" if mode == "blend_add" else "source_color,"
 	var modes := "unshaded, cull_disabled, depth_draw_always" if solid else "unshaded, cull_disabled, depth_draw_never"
 	var defs := ("#define DISTORT\n" if distort else "") + ("#define DEPTH_BIAS\n" if bias else "") + ("#define SOLID\n" if solid else "")
+	if hint == "":
+		defs += "#define RAW_TEX\n"   # [lead] colour pipeline: additive textures are sampled raw (gamma)
 	var code := FileAccess.get_file_as_string("res://src/vfx/lol_particle.gdshader.txt").replace("__BLEND__", mode).replace("__TEXHINT__", hint).replace("__DEFINES__", defs).replace("__MODES__", modes)
 	var sh := Shader.new()
 	sh.code = code

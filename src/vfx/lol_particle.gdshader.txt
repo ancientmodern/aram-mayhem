@@ -1,6 +1,7 @@
 shader_type spatial;
 __DEFINES__
 render_mode __MODES__, shadows_disabled, specular_disabled, __BLEND__;
+#include "res://src/render/gamma.gdshaderinc"
 // League particle material: texture x particle color, multiply texture, uv scroll / rotation / clamp, erosion
 // dissolve, soft depth fade, fresnel + falloff (meshes), depth bias, billboard modes, flipbooks, distortion.
 // additive materials sample raw (gamma) values to emulate League's gamma-space additive blending
@@ -200,10 +201,15 @@ void fragment() {
 	// League blendMode 3: solid meshes (rocks, rockets, relic icons). League draws them unlit with lighting
 	// painted into the texture; a gentle fixed key light keeps dark ones (Malphite's shard) readable as 3D shapes
 	float key = clamp(dot(normalize(NORMAL), normalize(vec3(-0.35, 0.8, 0.5))), 0.0, 1.0);
-	ALBEDO = c.rgb * (0.8 + 0.45 * key);
+	ALBEDO = to_out(c.rgb * (0.8 + 0.45 * key));
+	ALPHA = clamp(c.a, 0.0, 1.0);
+#elif defined(RAW_TEX)
+	// raw (gamma) texture x League gamma colour: already display-space; the 0.85 damping only compensates
+	// the linear-buffer emulation
+	ALBEDO = c.rgb * (gamma_out > 0.5 ? 1.0 : intensity);
 	ALPHA = clamp(c.a, 0.0, 1.0);
 #else
-	ALBEDO = c.rgb * intensity;
+	ALBEDO = to_out(c.rgb * intensity);
 	ALPHA = clamp(c.a, 0.0, 1.0);
 #endif
 }

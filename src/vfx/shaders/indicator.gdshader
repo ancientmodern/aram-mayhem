@@ -14,6 +14,7 @@ shader_type spatial;
 // GroundDecal.apply) are left untouched, so characters stand on top of the indicator; sloped ground is followed
 // exactly and nothing z-fights, because no geometry is placed at ground height.
 render_mode unshaded, blend_add, depth_draw_never, cull_disabled, depth_test_disabled, fog_disabled, shadows_disabled;
+#include "res://src/render/gamma.gdshaderinc"
 
 uniform vec4 color : source_color = vec4(1.0);
 uniform float energy = 1.0;
@@ -98,6 +99,6 @@ void fragment() {
 		float glow = ring_glow * smoothstep(1.0 - w * 6.0, 1.0 - w, r) * step(r, 1.0);
 		c = vec3(line + glow * 0.5);
 	}
-	ALBEDO = c * color.rgb * energy;
+	ALBEDO = to_out(c * color.rgb * energy);
 	ALPHA = color.a * m;
 }

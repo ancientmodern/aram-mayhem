@@ -3,6 +3,7 @@ shader_type spatial;
 // a scaled-depth buffer; an inverted hull gives the same look cheaply). Used as next_pass of the
 // character material. Thickness is kept roughly constant in screen space.
 render_mode cull_front, unshaded, shadows_disabled, depth_draw_opaque;
+#include "res://src/render/gamma.gdshaderinc"
 
 uniform sampler2D albedo_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform bool use_alpha_scissor = false;
@@ -28,5 +29,5 @@ void fragment() {
 	if (use_alpha_scissor && c.a < alpha_scissor) {
 		discard;
 	}
-	ALBEDO = mix(ink_color, c.rgb * 0.25, ink_tex_mix);
+	ALBEDO = to_out(mix(ink_color, c.rgb * 0.25, ink_tex_mix));
 }

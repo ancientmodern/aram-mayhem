@@ -4,6 +4,7 @@ shader_type spatial;
 // WaveAmplitude 8 units, units spread the blades within MinDistance 150 + DistControlFactor 200 units
 // (SpreadStrength 1.5), and brush around the local player turns see-through (SeeThroughAlphaMin 0.25).
 render_mode unshaded, cull_disabled, blend_mix, depth_draw_never;
+#include "res://src/render/gamma.gdshaderinc"
 
 uniform sampler2D diffuse_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D lightmap_tex : source_color, filter_linear, repeat_disable;
@@ -53,7 +54,7 @@ void vertex() {
 void fragment() {
 	vec4 d = texture(diffuse_tex, UV);
 	vec3 lm = use_lightmap ? texture(lightmap_tex, UV2).rgb * lightmap_strength : vec3(1.0);
-	ALBEDO = d.rgb * lm * tint.rgb * 4.59 * brightness;
+	ALBEDO = to_out(d.rgb * lm * tint.rgb * 4.59 * brightness);
 	float a = d.a * tint.a;
 	if (grass && see_through.w > 0.5) {
 		float dist = length(world_pos.xz - see_through.xz);

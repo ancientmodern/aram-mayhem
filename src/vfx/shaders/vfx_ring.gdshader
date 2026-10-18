@@ -1,6 +1,7 @@
 shader_type spatial;
 // Procedural ring / disc on a flat quad (shockwaves, AoE telegraphs, auras).
 render_mode unshaded, blend_add, depth_draw_never, cull_disabled, depth_test_disabled;
+#include "res://src/render/gamma.gdshaderinc"
 
 uniform vec4 color : source_color = vec4(1.0, 0.5, 0.1, 1.0);
 uniform float energy = 2.0;
@@ -23,6 +24,6 @@ void fragment() {
 	}
 	float disc = (1.0 - smoothstep(edge - soft, edge, r)) * fill * (0.5 + 0.5 * r / max(edge, 0.001));
 	float a = clamp(ring + disc, 0.0, 1.0) * fade * color.a;
-	ALBEDO = color.rgb * energy;
+	ALBEDO = to_out(color.rgb * energy);
 	ALPHA = a;
 }

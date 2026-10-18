@@ -1,6 +1,7 @@
 shader_type spatial;
 // Additive glowing sprite/mesh used for orbs, sparks and particles.
 render_mode unshaded, blend_add, depth_draw_never, cull_disabled;
+#include "res://src/render/gamma.gdshaderinc"
 
 uniform vec4 color : source_color = vec4(1.0, 0.6, 0.2, 1.0);
 uniform float energy = 2.0;
@@ -30,6 +31,6 @@ void fragment() {
 	vec4 vc = COLOR;
 	vec3 c = mix(color.rgb, vec3(1.0), smoothstep(1.0 - core, 1.0, a) * 0.8);
 	float alpha = a * color.a * vc.a;
-	ALBEDO = c * energy * vc.rgb * alpha;
+	ALBEDO = to_out(c * energy * vc.rgb * alpha);
 	ALPHA = alpha;
 }
