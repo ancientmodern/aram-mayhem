@@ -1,0 +1,172 @@
+[
+ {
+  "id": 86000,
+  "num": 0,
+  "name": "Garen",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86001,
+  "num": 1,
+  "name": "Sanguine Garen",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86002,
+  "num": 2,
+  "name": "Desert Trooper Garen",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86003,
+  "num": 3,
+  "name": "Commando Garen",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86004,
+  "num": 4,
+  "name": "Dreadknight Garen",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86005,
+  "num": 5,
+  "name": "Rugged Garen",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86006,
+  "num": 6,
+  "name": "Steel Legion Garen",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86010,
+  "num": 10,
+  "name": "Rogue Admiral Garen",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86011,
+  "num": 11,
+  "name": "Warring Kingdoms Garen",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86013,
+  "num": 13,
+  "name": "God-King Garen",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86014,
+  "num": 14,
+  "name": "Demacia Vice Garen",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86022,
+  "num": 22,
+  "name": "Mecha Kingdoms Garen",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86023,
+  "num": 23,
+  "name": "Prestige Mecha Kingdoms Garen",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86024,
+  "num": 24,
+  "name": "Battle Academia Garen",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86033,
+  "num": 33,
+  "name": "Mythmaker Garen",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86044,
+  "num": 44,
+  "name": "Fallen God-King Garen",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 86046,
+  "num": 46,
+  "name": "Visions of the Fallen Garen",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ }
+]

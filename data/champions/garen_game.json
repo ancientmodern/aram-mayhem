@@ -1,0 +1,309 @@
+{
+ "alias": "Garen",
+ "name": "Garen",
+ "stats": {
+  "base_hp": 690.0,
+  "hp_per_level": 98.0,
+  "base_hp_regen": 1.6,
+  "hp_regen_per_level": 0.1,
+  "base_ad": 69.0,
+  "ad_per_level": 4.5,
+  "base_armor": 38.0,
+  "armor_per_level": 4.2,
+  "base_mr": 32.0,
+  "mr_per_level": 1.55,
+  "base_ms": 340.0,
+  "attack_range": 175.0,
+  "attack_speed": 0.625,
+  "attack_speed_ratio": 0.625,
+  "attack_speed_per_level": 3.65,
+  "resource_type": 0,
+  "mana_base": 0.0,
+  "mana_regen": 0.0,
+  "critDamageMultiplier": 2.0,
+  "acquisitionRange": 400.0,
+  "selectionHeight": 188.88890075683594,
+  "selectionRadius": 120.0,
+  "pathfindingCollisionRadius": 35.0,
+  "attack_cast_offset": -0.11999999731779099,
+  "attack_total_time": null,
+  "attack_cast_time": null
+ },
+ "spell_slots": {
+  "Q": "GarenQ",
+  "W": "GarenW",
+  "E": "GarenE",
+  "R": "GarenR"
+ },
+ "passive": "GarenPassive",
+ "passive_name": null,
+ "passive_desc": null,
+ "spells": {
+  "GarenPassive": {
+   "script": "GarenPassive",
+   "data_values": {
+    "DamageTimer": 8.0
+   },
+   "calcs": {
+    "#c7f3cf1f": "(byLevelBreakpoints(L1=1.5)) * 0.01  [as %]"
+   },
+   "castRange": 0.0,
+   "name": "Perseverance",
+   "tooltip": "Garen regenerates <healing>@RegenCalc@ max Health</healing> every 5 seconds if he has not been damaged or hit with enemy Abilities in the last @DamageTimer@ seconds.",
+   "summary": "If Garen has not recently been struck by damage or enemy abilities, he regenerates a percentage of his total health each second."
+  },
+  "GarenW": {
+   "script": "GarenW",
+   "data_values": {
+    "BuffCounterPerKill": 1.0,
+    "ResistGainOnKill": 0.2,
+    "ResistGainOnKillTooltip": 0.2,
+    "ResistMax": 30.0,
+    "DRPercent": [
+     0.21,
+     0.25,
+     0.29,
+     0.33,
+     0.37,
+     0.41,
+     0.45
+    ],
+    "DRDuration": 4.0,
+    "UpfrontTenacity": 0.6,
+    "UpfrontDuration": 0.75,
+    "LargeMonsterStacks": 1.0,
+    "EpicMonsterStacks": 1.0,
+    "ShieldHealthRatio": 0.18,
+    "BaseShield": [
+     45.0,
+     65.0,
+     85.0,
+     105.0,
+     125.0,
+     145.0,
+     165.0
+    ],
+    "NormalResistKillValue": []
+   },
+   "calcs": {
+    "#6594c758": "BaseShield + ShieldHealthRatio*bonusCurrentHealth",
+    "#f847a0f2": "7af9aae9"
+   },
+   "cooldownTime": [
+    22.0,
+    22.0,
+    19.5,
+    17.0,
+    14.5,
+    12.0,
+    12.0
+   ],
+   "castRange": 0.0,
+   "castRadius": 20.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Spell2",
+   "name": "Courage",
+   "tooltip": "<spellPassive>Passive:</spellPassive> Garen has <scaleArmor>@ResistsForTooltip@ bonus Armor</scaleArmor> and <scaleMR>@ResistsForTooltip@ bonus Magic Resist</scaleMR>. Killing units permanently grants <attention>@ResistGainOnKillTooltip@ resists</attention>, up to a max of <attention>@ResistMax@</attention>.<br><br><spellActive>Active:</spellActive> Garen steels his courage for @DRDuration@ seconds, reducing incoming damage by @DRPercent*100@%. He also gains <shield>@TotalShield@ Shield</shield> and <slow>@UpfrontTenacity*100@% Tenacity</slow> for @UpfrontDuration@ seconds.",
+   "summary": "Garen passively increases his Armor and Magic Resist by killing enemies. He may also activate this ability to give him a shield and tenacity for a brief moment followed by a lesser amount of damage reduction for a longer duration."
+  },
+  "GarenQAttack": {
+   "script": "GarenQAttack",
+   "data_values": {},
+   "cooldownTime": 1.0,
+   "castRange": 1000.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 20.0,
+   "mAnimationName": "Spell1"
+  },
+  "GarenQ": {
+   "script": "GarenQ",
+   "data_values": {
+    "BaseDamage": [
+     0.0,
+     30.0,
+     60.0,
+     90.0,
+     120.0,
+     150.0,
+     180.0
+    ],
+    "SilenceDuration": 1.5,
+    "MovementSpeedDuration": [
+     0.85,
+     1.4,
+     1.95,
+     2.5,
+     3.05,
+     3.6,
+     4.15
+    ],
+    "MovementSpeedAmount": 0.35,
+    "AttackWindow": 4.5,
+    "tADRatio": 1.5
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamage + tADRatio*AD"
+   },
+   "cooldownTime": 8.0,
+   "castRange": 300.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Spell1",
+   "name": "Decisive Strike",
+   "tooltip": "Garen removes all <status>Slowing</status> effects on him and gains <speed>@MovementSpeedAmount*100@% Move Speed</speed> for @MovementSpeedDuration@ second(s).<br><br>His next Attack <status>Silences</status> for @SilenceDuration@ seconds and does <physicalDamage>@TotalDamage@ physical damage</physicalDamage>.",
+   "summary": "Garen gains a burst of Move Speed, breaking free of all slows affecting him. His next attack strikes a vital area of his foe, dealing bonus damage and silencing them."
+  },
+  "GarenECancel": {
+   "script": "GarenECancel",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 0.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Spell2",
+   "name": "Cancel Judgement",
+   "tooltip": "Garen stops performing this Ability."
+  },
+  "GarenE": {
+   "script": "GarenE",
+   "data_values": {
+    "NumTicks": 7.0,
+    "ASPerTick": 0.25,
+    "BaseDamagePerTick": [
+     1.0,
+     4.0,
+     7.0,
+     10.0,
+     13.0,
+     16.0,
+     19.0
+    ],
+    "ADRatioPerTick": [
+     0.37,
+     0.4,
+     0.43,
+     0.46,
+     0.49,
+     0.52,
+     0.55
+    ],
+    "ShredDuration": 6.0,
+    "StacksToShred": 6.0,
+    "Duration": 3.0,
+    "ShredAmount": 0.25,
+    "NearestEnemyBonus": 0.25,
+    "CritMod": 0.3
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamagePerTick + ADRatioPerTick*AD",
+    "#385e0169": "070e3593: () * (1 + (CritMod * (1*stat9 + -1)))",
+    "#fbb97428": "NumTicks"
+   },
+   "cooldownTime": [
+    9.0,
+    9.0,
+    8.25,
+    7.5,
+    6.75,
+    6.0,
+    6.0
+   ],
+   "castRange": 660.0,
+   "castRangeDisplayOverride": 325.0,
+   "castRadius": 35.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 700.0,
+   "mLineWidth": 160.0,
+   "mAnimationName": "",
+   "name": "Judgment",
+   "tooltip": "Garen rapidly spins his sword for @Duration@ seconds, dealing <physicalDamage>@TotalDamage@ physical damage</physicalDamage> @f1@ times over the duration. The nearest enemy takes <physicalDamage>@NearestEnemyBonus*100@% increased damage</physicalDamage>. Champions hit by @StacksToShred@ strikes lose <scaleArmor>@ShredAmount*100@% Armor</scaleArmor> for @ShredDuration@ seconds.<br><br><recast>Recast</recast>: Garen ends this Ability early.",
+   "summary": "Garen rapidly spins his sword around his body, dealing physical damage to nearby enemies."
+  },
+  "GarenCritAttack": {
+   "script": "GarenCritAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 200.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 347.79998779296875,
+   "mAnimationName": "Crit"
+  },
+  "GarenR": {
+   "script": "GarenR",
+   "data_values": {
+    "BaseDamage": [
+     50.0,
+     125.0,
+     200.0,
+     275.0,
+     350.0,
+     425.0,
+     500.0
+    ],
+    "ExecuteDamage": [
+     0.2,
+     0.25,
+     0.3,
+     0.35,
+     0.4,
+     0.45,
+     0.5
+    ],
+    "RevealDuration": 1.0
+   },
+   "cooldownTime": [
+    120.0,
+    120.0,
+    100.0,
+    80.0,
+    120.0,
+    120.0,
+    120.0
+   ],
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 900.0,
+   "mAnimationName": "Spell4",
+   "name": "Demacian Justice",
+   "tooltip": "Garen calls upon the might of Demacia to slay his enemy, dealing <trueDamage>@BaseDamage@ plus @ExecuteDamage*100@% missing Health true damage</trueDamage>.",
+   "summary": "Garen calls upon the might of Demacia to attempt to execute an enemy champion."
+  },
+  "GarenBasicAttack": {
+   "script": "GarenBasicAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 200.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 347.79998779296875,
+   "mAlternateName": "GarenBasicAttack"
+  },
+  "GarenBasicAttack3": {
+   "script": "GarenBasicAttack3",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 200.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 347.79998779296875,
+   "mAnimationName": "Attack3",
+   "mAlternateName": "GarenBasicAttack3"
+  },
+  "GarenBasicAttack2": {
+   "script": "GarenBasicAttack2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 200.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 347.79998779296875,
+   "mAnimationName": "Attack2",
+   "mAlternateName": "GarenBasicAttack2"
+  }
+ }
+}
