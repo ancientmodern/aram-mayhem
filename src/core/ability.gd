@@ -51,6 +51,7 @@ var no_cost_text := ""
 var resets_attack := false
 var cast_count := 0
 var self_cast_ok := true        ## UNIT abilities targeting allies may self cast
+var tooltip_raw := ""           ## League tooltip with @placeholders@
 
 
 func _init(p_owner = null) -> void:
@@ -377,4 +378,6 @@ func ai_consider(_ctx) -> Dictionary:
 
 
 func tooltip_text() -> String:
+	if tooltip_raw != "":
+		return K.resolve_tooltip(self, tooltip_raw)
 	return description

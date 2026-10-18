@@ -72,6 +72,7 @@ var casting := {}             ## {ability, target, t, total}
 var channel := {}             ## {ability, t, total}
 var pending_cast := {}        ## out-of-range cast waiting to approach
 var queued_cast := {}         ## cast buffered during another cast/windup
+var channel_disarm := false   ## can't attack while this channel runs
 
 # --- visuals
 var model: Node3D = null
@@ -254,7 +255,7 @@ func can_move() -> bool:
 
 
 func can_attack() -> bool:
-	return not dead and (cc & Buff.BLOCK_ATTACK) == 0 and dash.is_empty()
+	return not dead and (cc & Buff.BLOCK_ATTACK) == 0 and dash.is_empty() and not channel_disarm
 
 
 func can_cast() -> bool:
@@ -671,8 +672,10 @@ func is_busy() -> bool:
 	return not casting.is_empty() or not channel.is_empty() or not dash.is_empty() or windup_timer >= 0.0
 
 
-func interrupt_channel() -> void:
+func interrupt_channel(force: bool = false) -> void:
 	if channel.is_empty():
+		return
+	if not force and channel.ability.uninterruptible and not dead:
 		return
 	var ch := channel
 	channel = {}
@@ -863,7 +866,7 @@ func die(killer, info = null) -> void:
 	casting = {}
 	pending_cast = {}
 	if not channel.is_empty():
-		interrupt_channel()
+		interrupt_channel(true)
 	dash = {}
 	airborne_height = 0.0
 	stop_moving()
@@ -924,14 +927,32 @@ func _collect_materials(n: Node) -> void:
 
 
 func has_anim(logical: String) -> bool:
-	return anim_map.has(logical) and not anim_map[logical].is_empty()
+	return (anim_map.has(logical) and not anim_map[logical].is_empty()) or _raw_clip(logical) != ""
+
+
+var _raw_clips := {}
+
+
+## Case-insensitive lookup of a clip by its exported name (e.g. "spell3_north").
+func _raw_clip(n: String) -> String:
+	if anim_player == null:
+		return ""
+	if _raw_clips.is_empty():
+		for an in anim_player.get_animation_list():
+			_raw_clips[String(an).to_lower()] = String(an)
+	return _raw_clips.get(n.to_lower(), "")
 
 
 ## Play a logical animation. duration > 0 scales playback to fit that time.
 func play_anim(logical: String, speed: float = 1.0, blend: float = 0.12, duration: float = 0.0) -> void:
-	if anim_player == null or not anim_map.has(logical):
+	if anim_player == null:
 		return
-	var names: Array = anim_map[logical]
+	var names: Array = anim_map.get(logical, [])
+	if names.is_empty():
+		var raw := _raw_clip(logical)
+		if raw == "":
+			return
+		names = [raw]
 	if names.is_empty():
 		return
 	var n: String = names[0] if names.size() == 1 else names[G.rng.randi() % names.size()]

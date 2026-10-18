@@ -44,6 +44,7 @@ var end_fade := 0.12
 var is_attack := false
 var face_dir := true
 var custom: Dictionary = {}   ## free storage for kits
+var blockable := true         ## destroyed by enemy projectile walls
 
 
 func _ready() -> void:
@@ -148,6 +149,13 @@ func tick(dt: float, m) -> void:
 			_place(m, Vector3(p.x, 0.0, p.z), height + arc_height * 4.0 * k * (1.0 - k))
 			if k >= 1.0:
 				finish(Vector3(target_pos.x, global_position.y, target_pos.z))
+	if blockable and alive and m != null and not m.blockers.is_empty() and m.projectile_blocked(team, prev, global_position):
+		alive = true
+		if visual != null and is_instance_valid(visual):
+			Vfx.hit_spark(m, global_position, Color(0.8, 0.95, 1.0), 0.7)
+		on_end = Callable()
+		finish(global_position)
+		return
 	if on_move.is_valid() and alive:
 		on_move.call(self, dt)
 

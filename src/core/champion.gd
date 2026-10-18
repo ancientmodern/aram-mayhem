@@ -44,6 +44,7 @@ var in_fountain := false
 var last_combat_time := -100.0
 var dance_until := 0.0
 var augment_rarity_bias := 0.0
+var attack_color := Color(0.5, 0.75, 1.0)
 
 
 func _init() -> void:
@@ -297,6 +298,15 @@ func add_augment(a: Effect) -> void:
 	add_effect(a)
 	augments_changed.emit()
 	G.augment_chosen.emit(self, a)
+
+
+## Multiplier for permanent stacks gained from abilities (Stackosaurus Rex etc.).
+func permanent_stack_mult() -> float:
+	var k := 1.0
+	for e in effects:
+		if e.has_method("permanent_stack_mult"):
+			k *= e.permanent_stack_mult()
+	return k
 
 
 func has_augment(aid: String) -> bool:
