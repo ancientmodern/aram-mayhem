@@ -62,7 +62,24 @@ static func add_material(color: Color, energy: float = 2.0, billboard: bool = tr
 	return m
 
 
+## Immutable resources shared between spawns (building them per spawn uploaded new float textures and
+## stalled the frame ~20 ms on first draw). Nobody mutates these after creation.
+static var _pm_cache := {}
+static var _bb_cache := {}
+static var _ramp_cache := {}
+static var _curve_cache := {}
+
+
 static func particle_material_billboard(color: Color, energy: float, tex: Texture2D = null) -> StandardMaterial3D:
+	var key := [color, energy, tex]
+	if _bb_cache.has(key):
+		return _bb_cache[key]
+	var m := _new_billboard_material(color, energy, tex)
+	_bb_cache[key] = m
+	return m
+
+
+static func _new_billboard_material(color: Color, energy: float, tex: Texture2D) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
@@ -77,6 +94,14 @@ static func particle_material_billboard(color: Color, energy: float, tex: Textur
 
 
 static func _fade_ramp(c: Color) -> GradientTexture1D:
+	if _ramp_cache.has(c):
+		return _ramp_cache[c]
+	var t := _new_fade_ramp(c)
+	_ramp_cache[c] = t
+	return t
+
+
+static func _new_fade_ramp(c: Color) -> GradientTexture1D:
 	var g := Gradient.new()
 	g.set_color(0, Color(1, 1, 1, 1))
 	g.set_color(1, Color(c.r, c.g, c.b, 0))
@@ -106,6 +131,20 @@ static func emitter(color: Color, amount: int, lifetime: float, size: float, opt
 	p.one_shot = opts.get("one_shot", false)
 	p.explosiveness = opts.get("explosive", 0.0)
 	p.visibility_aabb = AABB(Vector3(-20, -20, -20), Vector3(40, 40, 40))
+	p.process_material = _process_material(color, opts)
+	var q := QuadMesh.new()
+	q.size = Vector2(size, size)
+	q.material = particle_material_billboard(color, opts.get("energy", 2.5), opts.get("tex", null))
+	p.draw_pass_1 = q
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return p
+
+
+static func _process_material(color: Color, opts: Dictionary) -> ParticleProcessMaterial:
+	var key := [color, opts.get("radius", 0.05), opts.get("dir", Vector3(0, 1, 0)), opts.get("spread", 180.0), opts.get("vmin", 0.2),
+			opts.get("vmax", 1.0), opts.get("gravity", Vector3.ZERO), opts.get("damping", 0.0), opts.get("end_scale", 0.0)]
+	if _pm_cache.has(key):
+		return _pm_cache[key]
 	var pm := ParticleProcessMaterial.new()
 	pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
 	pm.emission_sphere_radius = opts.get("radius", 0.05)
@@ -118,20 +157,40 @@ static func emitter(color: Color, amount: int, lifetime: float, size: float, opt
 	pm.damping_max = opts.get("damping", 0.0)
 	pm.scale_min = 0.6
 	pm.scale_max = 1.2
-	var sc := Curve.new()
-	sc.add_point(Vector2(0, 1))
-	sc.add_point(Vector2(1, opts.get("end_scale", 0.0)))
-	var sct := CurveTexture.new()
-	sct.curve = sc
-	pm.scale_curve = sct
+	var es: float = opts.get("end_scale", 0.0)
+	if not _curve_cache.has(es):
+		var sc := Curve.new()
+		sc.add_point(Vector2(0, 1))
+		sc.add_point(Vector2(1, es))
+		var sct := CurveTexture.new()
+		sct.curve = sc
+		_curve_cache[es] = sct
+	pm.scale_curve = _curve_cache[es]
 	pm.color_ramp = _fade_ramp(color)
-	p.process_material = pm
-	var q := QuadMesh.new()
-	q.size = Vector2(size, size)
-	q.material = particle_material_billboard(color, opts.get("energy", 2.5), opts.get("tex", null))
-	p.draw_pass_1 = q
-	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	return p
+	_pm_cache[key] = pm
+	return pm
+
+
+## Spawn one of each procedural building block far below the map for a couple of frames so their shaders and
+## pipelines are compiled during loading instead of on the first cast.
+static func prewarm(parent: Node, at: Vector3 = Vector3.ZERO) -> void:
+	# inside the camera frustum (culled objects never compile) but under the terrain, so nobody sees it
+	var holder := Node3D.new()
+	parent.add_child(holder)
+	holder.global_position = at + Vector3(0, -4.0, 0)
+	holder.add_child(orb(Color(1, 0.6, 0.2), 0.35, false, true))
+	holder.add_child(sprite(Color(0.4, 0.7, 1.0), 1.0))
+	var e := emitter(Color(1, 1, 1), 8, 0.3, 0.3, {"one_shot": true, "explosive": 1.0})
+	e.emitting = true
+	holder.add_child(e)
+	parent.get_tree().create_timer(0.3).timeout.connect(holder.queue_free)
+
+
+static func clear_cache() -> void:
+	_pm_cache.clear()
+	_bb_cache.clear()
+	_ramp_cache.clear()
+	_curve_cache.clear()
 
 
 static func light(color: Color, energy: float, rng: float) -> OmniLight3D:
