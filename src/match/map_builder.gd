@@ -44,7 +44,26 @@ static func build_terrain(parent: Node3D) -> Node3D:
 ## Render layer of the baked map geometry: the sun reaches it (for unit shadows), the champion fill light
 ## does not (its lighting is already baked into the lightmaps).
 const MAP_LAYER := 2
-const SUN_DIR := Vector3(0.38, -1.0, 0.42)
+const ENV_JSON := "res://data/map/map12_env.json"
+static var _env_cache: Dictionary = {}
+
+
+## data/map/map12_env.json (tools/lol/extract_map_layout.py): Map12 Base MapSunProperties + LevelProp placements.
+static func env_data() -> Dictionary:
+	if _env_cache.is_empty() and FileAccess.file_exists(ENV_JSON):
+		var d = JSON.parse_string(FileAccess.get_file_as_string(ENV_JSON))
+		if d is Dictionary:
+			_env_cache = d
+	return _env_cache
+
+
+## Direction the sunlight travels (Godot space). League's MapSunProperties.sunDirection points *toward* the sun
+## (-0.38, 0.707, 0.05 on the Abyss: high, from the Order/left side); negate it and flip z into Godot space.
+static func sun_dir() -> Vector3:
+	var sd = env_data().get("sun", {}).get("sunDirection")
+	if sd is Array and sd.size() == 3:
+		return Vector3(-float(sd[0]), -float(sd[1]), float(sd[2])).normalized()
+	return Vector3(0.38, -0.707, 0.05).normalized()
 static var grass_material: ShaderMaterial = null   ## shared League "Wall_of_Grass" material (brush)
 
 
@@ -132,8 +151,8 @@ static func build_environment(parent: Node3D) -> void:
 	sun.name = "Sun"
 	sun.light_color = Color(1.0, 0.95, 0.88)
 	sun.light_energy = 1.1
-	# light from the upper left, behind the camera: unit shadows fall short toward the lower right like League
-	sun.transform = Transform3D(Basis.looking_at(SUN_DIR, Vector3.UP), Vector3.ZERO)
+	# League's sun (Map12 MapSunProperties.sunDirection): high and from the left, unit shadows fall to the right
+	sun.transform = Transform3D(Basis.looking_at(sun_dir(), Vector3.UP), Vector3.ZERO)
 	sun.shadow_enabled = true
 	sun.shadow_opacity = 0.85
 	sun.shadow_blur = 2.0
@@ -186,6 +205,9 @@ static func build_snow(parent: Node3D) -> GPUParticles3D:
 	quad.material = mat
 	p.draw_pass_1 = quad
 	parent.add_child(p)
+	if OS.get_cmdline_user_args().has("--nosnowstandin"):
+		p.emitting = false   # debug: judge League's own snow systems (MapAmbient) alone
+		p.visible = false
 	return p
 
 
