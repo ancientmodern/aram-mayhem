@@ -812,6 +812,20 @@ func _track_missile() -> void:
 	var ground := 0.0
 	if m != null and m.nav != null:
 		ground = m.nav.height_at(mi.global_position)
+	if not _mis.has("start_h"):
+		# no League height on the spell (Jinx R): keep the launch height (start bone / kit spawn point),
+		# not a default 100 units that buries the rocket mesh authored ~100 units below the system origin
+		var sy: float = mi.start.y
+		var src = mi.get("source")
+		if _mis.has("start_bone") and src != null and is_instance_valid(src) and src.has_method("socket"):
+			var so: Node3D = src.socket(String(_mis.start_bone))
+			if so != null and so.is_inside_tree():
+				sy = maxf(sy, so.global_position.y)
+		var g0 := 0.0
+		if m != null and m.nav != null:
+			g0 = m.nav.height_at(mi.start)
+		_mis = _mis.duplicate()
+		_mis["start_h"] = maxf(sy - g0, 1.0)
 	var h0: float = float(_mis.get("start_h", 1.0))
 	var y := ground + h0
 	if int(mi.mode) == Missile.Mode.HOMING and mi.target != null and is_instance_valid(mi.target):
@@ -1516,7 +1530,8 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 	mat.set_shader_parameter("uv_rot", float(e.get("uvrot", 0.0)))
 	mat.set_shader_parameter("uv_rot_rate", float(e.get("uvrotrate", 0.0)))
 	mat.set_shader_parameter("uv_clamp", bool(e.get("uvclamp", false)))
-	mat.set_shader_parameter("alpha_lock", int(e.get("uvmode", 0)) == 2)
+	# uvMode 2 is not an alpha lock: locking alpha froze Annie Q's scrolling flame mesh into a flat oval
+	mat.set_shader_parameter("alpha_lock", false)
 	var uo2 = e.get("uvoff")
 	if uo2 is Array and uo2.size() == 2 and frames <= 1 and (_v2(uo2[0], Vector2.ZERO) != Vector2.ZERO or _v2(uo2[1], Vector2.ZERO) != Vector2.ZERO):
 		mat.set_shader_parameter("uv_off_pack", true)
@@ -1569,6 +1584,8 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 		mat.set_shader_parameter("has_falloff", true)
 	if amesh:
 		mat.set_shader_parameter("normal_push", 0.012)
+		if not (blend == 1 or blend == 3 or blend == 5):
+			mat.set_shader_parameter("tex_mask", true)
 	mat.set_shader_parameter("depth_bias", bias)
 	mat.render_priority = clampi(int(e.get("pass", 0)) / 2, -60, 60)
 	_mats[key] = mat

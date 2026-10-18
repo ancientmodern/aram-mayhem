@@ -8,6 +8,7 @@ uniform sampler2D tex : __TEXHINT__ filter_linear_mipmap, repeat_enable;
 uniform sampler2D tex2 : __TEXHINT__ filter_linear_mipmap, repeat_enable;
 uniform bool linear_color = false;   // alpha-blended materials: convert League's gamma colors to linear
 uniform bool has_tex2 = false;
+uniform bool tex_mask = false;      // additive avatar shells: channel-packed masks (red channel = intensity)
 uniform sampler2D palette_tex : __TEXHINT__ filter_linear, repeat_disable;
 uniform bool has_palette = false;   // League paletteDefinition: texture red channel picks a colour along a gradient row
 uniform float palette_v = 0.5;
@@ -135,6 +136,9 @@ void vertex() {
 void fragment() {
 	vec2 uv = uv_clamp ? clamp(UV, vec2(0.002), vec2(0.998)) : UV;
 	vec4 tx = texture(tex, uv);
+	if (tex_mask) {
+		tx = vec4(vec3(tx.r), max(tx.a, tx.r));
+	}
 	if (has_palette) {
 		vec4 pc = texture(palette_tex, vec2(clamp(tx.r, 0.002, 0.998), palette_v));
 		tx = vec4(pc.rgb, tx.a * pc.a);
