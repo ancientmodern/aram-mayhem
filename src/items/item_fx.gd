@@ -3,11 +3,54 @@ extends RefCounted
 ## Item passives and actives.
 
 static var _makers := {}
+static var _rl := {}
+
+
+## League item particle systems (data/vfx/items.json, tools/lol/extract_item_vfx.py). Every helper is an invisible
+## no-op when the system is missing: there is no procedural fallback.
+static func on(u, name: String, opts: Dictionary = {}) -> LolVfx:
+	if u == null or not is_instance_valid(u) or not LolVfx.has(name):
+		return null
+	return LolVfx.attach(u, name, opts)
+
+
+static func at(m, name: String, pos: Vector3, opts: Dictionary = {}) -> LolVfx:
+	if m == null or not LolVfx.has(name):
+		return null
+	return LolVfx.spawn(m, name, pos, opts)
+
+
+## Hit effect on a target (non-ground emitters at its chest, ground emitters at its feet, facing away from `src`).
+static func on_hit_fx(src, t, name: String) -> void:
+	if src == null or t == null or not is_instance_valid(t) or src.match_ref == null:
+		return
+	at(src.match_ref, name, t.global_position, {"dir": G.flat_dir(src.global_position, t.global_position),
+			"center": float(t.height) * 0.5})
+
+
+## True at most once per `interval` seconds for `key` (hit effects of rapid procs).
+static func limited(key: String, interval: float) -> bool:
+	var now := Time.get_ticks_msec() * 0.001
+	if now - float(_rl.get(key, -100.0)) < interval:
+		return false
+	_rl[key] = now
+	if _rl.size() > 256:
+		_rl.clear()
+	return true
+
+
+## Effect attached for a fixed time (weakref-safe timer, killed rather than left to fade).
+static func timed(u, name: String, dur: float, opts: Dictionary = {}) -> LolVfx:
+	var fx := on(u, name, opts)
+	if fx != null and u.match_ref != null:
+		K.stop_later(u.match_ref, dur, fx, true, 0.15)
+	return fx
 
 
 static func _reg() -> void:
 	if not _makers.is_empty():
 		return
+	LolVfx.load_set("items")
 	_makers = {
 		"GuardianHorn": func(): return GuardianHorn.new(), "Spellblade": func(): return Spellblade.new(),
 		"Cleave": func(): return Cleave.new(), "Immolate": func(): return Immolate.new(), "Steelcaps": func(): return Steelcaps.new(),
@@ -56,6 +99,25 @@ class Spellblade extends Item:
 	## Sheen family. Damage depends on which item this is.
 	var ready := false
 	var cd := 0.0
+	var glow: LolVfx = null     ## League hand glow while the next attack is empowered
+
+	## League systems per item: [hand glow, hit effect]; Sheen and Lich Bane have none in the game files.
+	func _fx_names() -> Array:
+		match item_id:
+			3078: return ["Item_3078_TrinityForce_Hand_Glow", ""]
+			3508: return ["3508_Buff_Active", "3508_Hit_Tar"]
+			6662: return ["6662_Iceborn_Hand_Glow", "6662_Slow_Field"]
+			6632: return ["6632_BuffOn", ""]
+		return ["", ""]
+
+	func _set_glow(on_: bool) -> void:
+		if on_ and (glow == null or not is_instance_valid(glow)):
+			var nm: String = _fx_names()[0]
+			if nm != "":
+				glow = ItemFx.on(owner, nm, {"loop": true, "bone": "R_Buffbone_Glb_Hand_Loc"})
+		elif not on_ and glow != null:
+			K.kill_fx(glow, 0.1)
+			glow = null
 
 	func on_tick(u, dt: float) -> void:
 		super.on_tick(u, dt)
@@ -72,12 +134,14 @@ class Spellblade extends Item:
 	func on_ability_cast(ab, _t) -> void:
 		if not ab.is_summoner and cd <= 0.0 and _best():
 			ready = true
+			_set_glow(true)
 
 	func on_attack_hit(t, info) -> void:
 		if not ready or info == null or not info.is_attack:
 			return
 		ready = false
 		cd = 1.5
+		_set_glow(false)
 		var o = owner
 		match item_id:
 			3078:
@@ -89,11 +153,12 @@ class Spellblade extends Item:
 				proc(t, 0.75 * o.stats.base_ad + 0.45 * o.stats.ap, G.DmgType.MAGIC, "spellblade")
 			_:
 				proc(t, o.stats.base_ad, G.DmgType.PHYSICAL, "spellblade")
-		Vfx.hit_spark(o.match_ref, t.global_position + Vector3(0, 1.1, 0), Color(0.6, 0.8, 1.0) if item_id != 3100 else Color(0.7, 0.4, 1.0), 0.8)
+		ItemFx.on_hit_fx(o, t, _fx_names()[1])
 
 	func on_attack_launch(_t) -> void:
 		if item_id == 3078:
 			K.haste(owner, 0.2, 2.0, owner, false, "triforce_ms")
+			ItemFx.timed(owner, "Item_TrinityForce_3078_Haste", 2.0)
 
 
 class Cleave extends Item:
@@ -107,7 +172,8 @@ class Cleave extends Item:
 		for e in o.match_ref.enemies_in_radius(o.team, t.global_position, 3.5):
 			if e != t:
 				Combat.deal(o, e, dmg, G.DmgType.PHYSICAL, {"is_proc": true, "is_aoe": true, "tag": "cleave"})
-		Vfx.ring(o.match_ref, t.global_position, Color(0.9, 0.7, 0.4), 2.0, 0.25, 0.25, 0.0)
+		ItemFx.at(o.match_ref, "3074_AoE" if item_id == 3074 else "3077_AoE", o.global_position,
+				{"dir": G.flat_dir(o.global_position, t.global_position)})
 
 
 class TitanicCleave extends Item:
@@ -120,6 +186,7 @@ class TitanicCleave extends Item:
 		for e in o.match_ref.units_in_cone(o.team, t.global_position, G.flat_dir(o.global_position, t.global_position), 4.5, 70.0):
 			if e != t:
 				Combat.deal(o, e, dmg * 2.0, G.DmgType.PHYSICAL, {"is_proc": true, "is_aoe": true, "tag": "titanic"})
+		ItemFx.at(o.match_ref, "3748_Arc", o.global_position, {"dir": G.flat_dir(o.global_position, t.global_position)})
 
 
 class Immolate extends Item:
@@ -160,7 +227,6 @@ class Kraken extends Item:
 		count = 0
 		var dmg: float = lvl_lerp(150.0, 200.0) * (1.0 + 0.75 * (1.0 - t.hp_ratio()))
 		proc(t, dmg, G.DmgType.PHYSICAL, "kraken")
-		Vfx.burst(owner.match_ref, t.global_position + Vector3(0, 1.0, 0), Color(0.3, 0.8, 0.9), 0.9, {"ring": false, "sparks": 14, "light": false})
 
 
 class Botrk extends Item:
@@ -178,6 +244,7 @@ class Botrk extends Item:
 			hits[t] = n
 			if n % 3 == 0:
 				K.slow(t, 0.3, 1.0, owner)
+				ItemFx.on_hit_fx(owner, t, "3153_Max_Stacks")
 
 
 class Guinsoo extends Item:
@@ -199,6 +266,7 @@ class Guinsoo extends Item:
 				count += 1
 				if count >= 3:
 					count = 0
+					ItemFx.on_hit_fx(owner, t, "3124_tar")
 					owner.trigger_on_hit(t, info, 0.999, self)
 
 
@@ -234,7 +302,6 @@ class Steraks extends Item:
 			return
 		cd = 60.0
 		Combat.shield(owner, owner, ItemFx.bonus_hp(owner) * 0.6, 4.0, {"decay": true, "id": "steraks"})
-		Vfx.shield_bubble(owner, Color(1.0, 0.7, 0.3), 1.5, 1.1)
 
 
 class Bloodthirster extends Item:
@@ -304,7 +371,11 @@ class Statikk extends Item:
 			if cur == null:
 				break
 			hit[cur] = true
-			Vfx.beam(m, prev, cur.global_position + Vector3(0, 1.0, 0), Color(0.6, 0.85, 1.0), 0.07, 0.2)
+			var to_p: Vector3 = cur.global_position + Vector3(0, 1.0, 0)
+			var seg: Vector3 = to_p - prev
+			if seg.length() > 0.2:
+				ItemFx.at(m, "3087_Statikk_Shiv_Beam", prev, {"dir": seg.normalized(), "length": seg.length(), "max_life": 0.6})
+			ItemFx.on_hit_fx(o, cur, "3087_Statikk_Shiv_Impact")
 			proc(cur, dmg * (2.0 if cur.kind == G.Kind.MINION else 1.0), G.DmgType.MAGIC, "statikk")
 			prev = cur.global_position + Vector3(0, 1.0, 0)
 			var nxt = null
@@ -331,7 +402,7 @@ class Runaans extends Item:
 			var from: Vector3 = o.global_position + Vector3(0, 1.2, 0)
 			var mi := Missile.new()
 			mi.setup_homing(o, from, e, 20.0)
-			mi.visual = Vfx.orb(Color(0.8, 0.95, 0.8), 0.25, false)
+			mi.visual = LolVfx.make("ItemHurricane_mis", {"loop": true, "mis": {"start_h": 1.2, "end_h": 1.0}})
 			var self_ref := self
 			var crit: bool = info.is_crit
 			mi.on_hit = func(_m, u):
@@ -374,7 +445,8 @@ class Youmuu extends Item:
 
 	func use_active(_p: Vector3, _h) -> bool:
 		K.buff(owner, "youmuu", 6.0, {"ms%": 0.2}, owner, {"name": "Wraith Step", "cc": Buff.CC.GHOSTED})
-		Vfx.rising(owner, Color(0.6, 0.3, 0.9), 1.0, 30)
+		ItemFx.on(owner, "3142_Activate")
+		ItemFx.timed(owner, "3142_SpeedTrail", 6.0, {"loop": true})
 		return true
 
 	func ai_should_activate(ctx) -> bool:
@@ -400,7 +472,8 @@ class Eclipse extends Item:
 			hits.erase(t)
 			proc(t, t.stats.max_hp * 0.06, G.DmgType.PHYSICAL, "eclipse")
 			Combat.shield(owner, owner, 160.0 + 0.4 * owner.stats.bonus_ad, 2.0)
-			Vfx.burst(owner.match_ref, t.global_position + Vector3(0, 1, 0), Color(0.95, 0.85, 0.6), 1.0, {"ring": false})
+			ItemFx.on_hit_fx(owner, t, "6692_tar")
+			ItemFx.timed(owner, "6692_Shield", 2.0)
 		else:
 			hits[t] = now_t
 
@@ -429,7 +502,8 @@ class Stridebreaker extends Item:
 
 	func use_active(_p: Vector3, _h) -> bool:
 		var o = owner
-		Vfx.ring(o.match_ref, o.global_position, Color(1.0, 0.6, 0.3), 4.5, 0.35, 0.2, 0.15)
+		ItemFx.at(o.match_ref, "6631_Shockwave", o.global_position, {"dir": o.facing})
+		ItemFx.timed(o, "Item_Stridebreaker_6631_Haste", 3.0)
 		for e in o.match_ref.enemies_in_radius(o.team, o.global_position, 4.5):
 			proc(e, o.stats.ad * 0.8, G.DmgType.PHYSICAL, "stridebreaker")
 			K.slow(e, 0.35, 2.0, o, true)
@@ -451,7 +525,8 @@ class Maw extends Item:
 			return
 		cd = 90.0
 		Combat.shield(owner, owner, 200.0 + 2.25 * owner.stats.bonus_ad, 2.5, {"type": G.DmgType.MAGIC})
-		Vfx.shield_bubble(owner, Color(0.6, 0.5, 1.0), 2.5, 1.1)
+		ItemFx.on(owner, "3156_Shield_Burst")
+		ItemFx.timed(owner, "3156_Shield_Duration", 2.5)
 
 
 class Shieldbow extends Item:
@@ -466,7 +541,7 @@ class Shieldbow extends Item:
 			return
 		cd = 90.0
 		Combat.shield(owner, owner, lvl_lerp(320.0, 720.0), 3.0)
-		Vfx.shield_bubble(owner, Color(1.0, 0.8, 0.4), 3.0, 1.1)
+		ItemFx.timed(owner, "SRI_6673_Shield", 3.0)
 
 
 class WitsEnd extends Item:
@@ -497,9 +572,11 @@ class Luden extends Item:
 			var from: Vector3 = o.global_position + Vector3(0, 1.5, 0)
 			var mi := Missile.new()
 			mi.setup_homing(o, from, tgt, 14.0 + i)
-			mi.visual = Vfx.orb(Color(0.45, 0.6, 1.0), 0.28, false)
+			mi.visual = LolVfx.make("6655_Hit_Missile", {"loop": true, "mis": {"start_h": 1.5, "end_h": 1.0}})
 			var self_ref := self
-			mi.on_hit = func(_m, u): self_ref.proc(u, per, G.DmgType.MAGIC, "luden")
+			mi.on_hit = func(_m, u):
+				self_ref.proc(u, per, G.DmgType.MAGIC, "luden")
+				ItemFx.on_hit_fx(o, u, "6655_Hit_Missile_Tar")
 			o.match_ref.add_missile(mi, from)
 
 
@@ -511,9 +588,7 @@ class Zhonya extends Item:
 		var o = owner
 		var b := K.buff(o, "zhonya", 2.5, {}, o, {"name": "Stasis", "cc": Buff.CC.STASIS})
 		o.cancel_windup()
-		var fx := Vfx.shield_bubble(o, Color(1.0, 0.85, 0.35), 2.5, 1.2)
-		for mat in o.materials:
-			pass
+		ItemFx.timed(o, "3157_Zhonya_Buf", 2.5, {"loop": true})
 		return true
 
 	func ai_should_activate(ctx) -> bool:
@@ -570,7 +645,7 @@ class Banshee extends Item:
 			return
 		cd = 40.0
 		info.cancelled = true
-		Vfx.shield_bubble(owner, Color(0.7, 0.5, 1.0), 0.5, 1.1)
+		ItemFx.on(owner, "BansheeVeilVFX")
 
 
 class Riftmaker extends Item:
@@ -600,15 +675,18 @@ class Rocketbelt extends Item:
 	func use_active(p: Vector3, _h) -> bool:
 		var o = owner
 		var dir := G.flat_dir(o.global_position, p)
+		ItemFx.on(o, "3152_Dash_Cast", {"dir": dir})
 		o.start_dash(o.global_position + dir * 2.75, {"speed": 18.0})
 		for i in 7:
 			var ang := deg_to_rad(-30.0 + i * 10.0)
 			var d := dir.rotated(Vector3.UP, ang)
 			var mi := Missile.new()
 			mi.setup_linear(o, o.global_position + Vector3(0, 1, 0), d, 16.0, 6.0, 0.4)
-			mi.visual = Vfx.orb(Color(0.4, 0.7, 1.0), 0.3, false)
+			mi.visual = LolVfx.make("3152_Missile_Projectile", {"loop": true, "mis": {"start_h": 1.0, "end_h": 1.0}})
 			var self_ref := self
-			mi.on_hit = func(_m, u): self_ref.proc(u, 100.0 + 0.1 * o.stats.ap, G.DmgType.MAGIC, "rocketbelt")
+			mi.on_hit = func(_m, u):
+				self_ref.proc(u, 100.0 + 0.1 * o.stats.ap, G.DmgType.MAGIC, "rocketbelt")
+				ItemFx.on_hit_fx(o, u, "3152_Missile_Impact_Tar")
 			o.match_ref.add_missile(mi, o.global_position + Vector3(0, 1, 0))
 		return true
 
@@ -641,7 +719,7 @@ class Heartsteel extends Item:
 				mult *= e.heartsteel_mult()
 		gained += dmg * 0.1 * mult
 		refresh_stats()
-		Vfx.burst(owner.match_ref, t.global_position + Vector3(0, 1, 0), Color(0.9, 0.2, 0.3), 1.4, {"sparks": 20})
+		ItemFx.on_hit_fx(owner, t, "3084_Goliath_Impact")
 
 
 class Thornmail extends Item:
@@ -679,7 +757,7 @@ class Randuin extends Item:
 			info.mult *= 0.7
 
 	func use_active(_p: Vector3, _h) -> bool:
-		Vfx.ring(owner.match_ref, owner.global_position, Color(0.8, 0.8, 0.9), 5.0, 0.4)
+		ItemFx.at(owner.match_ref, "3143_Active_Cas", owner.global_position, {"dir": owner.facing, "center": owner.height * 0.5})
 		for e in owner.match_ref.enemies_in_radius(owner.team, owner.global_position, 5.0):
 			K.slow(e, 0.7, 2.0, owner)
 		return true
@@ -713,8 +791,9 @@ class Locket extends Item:
 
 	func use_active(_p: Vector3, _h) -> bool:
 		var amt: float = 200.0 + 20.0 * owner.level
+		ItemFx.on(owner, "3190_Buff_Activate")
 		for a in owner.match_ref.allies_in_radius(owner.team, owner.global_position, 8.5):
-			K.shield(owner, a, amt, 2.5, Color(1.0, 0.85, 0.5))
+			K.shield(owner, a, amt, 2.5, {"lol": "3190_Locket_Shield_Buff", "center": a.height * 0.5})
 		return true
 
 	func ai_should_activate(ctx) -> bool:
@@ -729,13 +808,19 @@ class Redemption extends Item:
 		var o = owner
 		var m = o.match_ref
 		var pos: Vector3 = p if G.flat_dist(p, o.global_position) < 55.0 else o.global_position
-		Vfx.ground_circle(m, pos, 5.5, Color(1.0, 0.95, 0.6, 0.8), 2.05, 0.2)
+		# League: the targeting indicator is team-coloured; the cast flash / heal burst fire when it lands
+		ItemFx.at(m, "Redemption_Ally_Indicator", pos, {"max_life": 2.2})
+		ItemFx.at(m, "Item_Redemption_Cast", pos)
 		m.after(2.0, func():
-			Vfx.beam(m, pos + Vector3(0, 14, 0), pos, Color(1.0, 0.95, 0.6), 3.0, 0.6)
+			if not is_instance_valid(o):
+				return
+			ItemFx.at(m, "Item_Redemption_Heal_AOE", pos)
 			for a in m.allies_in_radius(o.team, pos, 5.5):
 				Combat.heal(o, a, 200.0 + 15.0 * o.level)
+				ItemFx.on_hit_fx(o, a, "Item_Redemption_Hit_Heal")
 			for e in m.enemies_in_radius(o.team, pos, 5.5, true):
-				Combat.deal(o, e, e.stats.max_hp * 0.1, G.DmgType.TRUE, {"is_proc": true, "tag": "redemption"}))
+				Combat.deal(o, e, e.stats.max_hp * 0.1, G.DmgType.TRUE, {"is_proc": true, "tag": "redemption"})
+				ItemFx.on_hit_fx(o, e, "Item_Redemption_Hit_Enemy"))
 		return true
 
 	func ai_should_activate(ctx) -> bool:

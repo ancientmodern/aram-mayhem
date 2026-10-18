@@ -1,123 +1,72 @@
 class_name ItemDB
 extends RefCounted
-## Howling Abyss item shop catalogue (ids match League's, used for icons).
-## Entry: [name, cost, stats, components, unique_group, effect_class_name, tags, description]
+## Item database + shop rules for ARAM / ARAM Mayhem (map 12, mode ARAM + Kiwi).
+##
+## All numbers (cost, combine cost, recipe incl. duplicate components, sell value, purchase limits via item groups,
+## stats, tooltips, nicknames, class / stat filters, quick-buy panels, recommendation overrides) are League's own,
+## extracted from the client install by tools/lol/extract_items.py into data/items/items.json.
+## Item behaviour: ItemFxExtra (src/items/item_fx_extra*.gd, new items and data-driven rewrites) takes priority, then the
+## legacy ItemFx classes (EFFECT_OF) and finally a plain stat stick.
+##
+## Legacy accessor layout kept for older callers: CAT[id] = [name, total cost, stats, components, unique group, effect class,
+## tags, description].
 
-const STARTERS := [3112, 2051, 3177, 3184]
-const BOOTS := [1001, 3006, 3020, 3047, 3111, 3158, 3009]
+const DATA_PATH := "res://data/items/items.json"
+const MAX_SLOTS := 6
+const SELL_FRACTION := 0.7
+## League's ItemShopGameModeData for ARAM: the all-items grid sections in display order (epicness -> group).
+const GROUP_ORDER := ["unique", "anvil", "starter", "basic", "epic", "legendary"]
+const GROUP_TITLES := {"unique": "UNIQUE", "anvil": "ANVIL", "starter": "STARTER", "basic": "BASIC", "epic": "EPIC", "legendary": "LEGENDARY"}
+## Items that live outside the grid but are bought through the quick panels / auto purchase.
+const LEGACY_ALIAS := {9999: 6032, 4011: 124011}
 
-const CAT := {
-	# ---- starters (ARAM Guardian items)
-	3112: ["Guardian's Orb", 950, {"ap": 50.0, "hp": 150.0, "mana_regen": 2.0}, [], "guardian", "", ["mage", "starter"], "Restores mana over time."],
-	2051: ["Guardian's Horn", 950, {"hp": 150.0, "hp_regen": 4.0}, [], "guardian", "GuardianHorn", ["tank", "starter"], "Reduces damage from champion attacks by 12."],
-	3177: ["Guardian's Blade", 950, {"ad": 30.0, "hp": 150.0, "ah": 15.0}, [], "guardian", "", ["fighter", "starter"], ""],
-	3184: ["Guardian's Hammer", 950, {"ad": 25.0, "hp": 150.0, "lifesteal": 0.1}, [], "guardian", "", ["marksman", "fighter", "starter"], ""],
-	# ---- components
-	1036: ["Long Sword", 350, {"ad": 10.0}, [], "", "", ["basic"], ""],
-	1037: ["Pickaxe", 875, {"ad": 25.0}, [], "", "", ["basic"], ""],
-	1038: ["B. F. Sword", 1300, {"ad": 40.0}, [], "", "", ["basic"], ""],
-	1042: ["Dagger", 250, {"as": 0.1}, [], "", "", ["basic"], ""],
-	1043: ["Recurve Bow", 700, {"as": 0.15}, [], "", "", ["basic"], ""],
-	1018: ["Cloak of Agility", 600, {"crit": 0.15}, [], "", "", ["basic"], ""],
-	1052: ["Amplifying Tome", 400, {"ap": 20.0}, [], "", "", ["basic"], ""],
-	1026: ["Blasting Wand", 850, {"ap": 45.0}, [], "", "", ["basic"], ""],
-	1058: ["Needlessly Large Rod", 1200, {"ap": 65.0}, [], "", "", ["basic"], ""],
-	1028: ["Ruby Crystal", 400, {"hp": 150.0}, [], "", "", ["basic"], ""],
-	1011: ["Giant's Belt", 900, {"hp": 350.0}, [1028], "", "", ["basic"], ""],
-	1027: ["Sapphire Crystal", 300, {"mana": 300.0}, [], "", "", ["basic"], ""],
-	1029: ["Cloth Armor", 300, {"armor": 15.0}, [], "", "", ["basic"], ""],
-	1031: ["Chain Vest", 800, {"armor": 40.0}, [1029], "", "", ["basic"], ""],
-	1033: ["Null-Magic Mantle", 400, {"mr": 20.0}, [], "", "", ["basic"], ""],
-	1057: ["Negatron Cloak", 850, {"mr": 45.0}, [1033], "", "", ["basic"], ""],
-	1053: ["Vampiric Scepter", 900, {"ad": 15.0, "lifesteal": 0.07}, [1036], "", "", ["basic"], ""],
-	3133: ["Caulfield's Warhammer", 1050, {"ad": 20.0, "ah": 10.0}, [1036, 1036], "", "", ["basic"], ""],
-	3067: ["Kindlegem", 800, {"hp": 200.0, "ah": 10.0}, [1028], "", "", ["basic"], ""],
-	3044: ["Phage", 1100, {"hp": 200.0, "ad": 15.0}, [1028, 1036], "", "", ["basic"], ""],
-	3057: ["Sheen", 700, {}, [], "", "Spellblade", ["basic"], "Spellblade: after using an ability, your next attack deals 100% base AD bonus physical damage (1.5s cooldown)."],
-	3086: ["Zeal", 1050, {"as": 0.15, "crit": 0.15, "ms%": 0.07}, [1042, 1018], "", "", ["basic"], ""],
-	3108: ["Fiendish Codex", 900, {"ap": 35.0, "ah": 10.0}, [1052], "", "", ["basic"], ""],
-	3113: ["Aether Wisp", 900, {"ap": 30.0, "ms%": 0.04}, [1052], "", "", ["basic"], ""],
-	3802: ["Lost Chapter", 1200, {"ap": 40.0, "mana": 300.0, "ah": 10.0}, [1052, 1027], "", "", ["basic"], ""],
-	3035: ["Last Whisper", 1450, {"ad": 20.0, "armor_pen%": 0.18}, [1036, 1036], "", "", ["basic"], ""],
-	3134: ["Serrated Dirk", 1000, {"ad": 20.0, "lethality": 10.0}, [1036, 1036], "", "", ["basic"], ""],
-	3077: ["Tiamat", 1200, {"ad": 20.0}, [1036, 1036], "", "Cleave", ["basic"], "Cleave: attacks deal 40% AD physical damage to enemies around the target."],
-	3801: ["Crystalline Bracer", 650, {"hp": 200.0, "hp_regen": 2.0}, [1028], "", "", ["basic"], ""],
-	3145: ["Hextech Alternator", 1100, {"ap": 45.0}, [1052, 1052], "", "", ["basic"], ""],
-	3211: ["Spectre's Cowl", 1250, {"hp": 250.0, "mr": 25.0}, [1028, 1033], "", "", ["basic"], ""],
-	3082: ["Warden's Mail", 1000, {"armor": 40.0}, [1029, 1029], "", "", ["basic"], ""],
-	6660: ["Bami's Cinder", 900, {"hp": 200.0, "ah": 5.0}, [1028], "immolate", "Immolate", ["basic"], "Immolate: in combat, deal 12 (+1% bonus health) magic damage per second to nearby enemies."],
-	# ---- boots
-	1001: ["Boots", 300, {"ms": 25.0}, [], "boots", "", ["boots"], ""],
-	3006: ["Berserker's Greaves", 1100, {"as": 0.3, "ms": 45.0}, [1001, 1042, 1042], "boots", "", ["boots", "marksman"], ""],
-	3020: ["Sorcerer's Shoes", 1100, {"magic_pen": 12.0, "ms": 45.0}, [1001], "boots", "", ["boots", "mage"], ""],
-	3047: ["Plated Steelcaps", 1200, {"armor": 25.0, "ms": 45.0}, [1001, 1029], "boots", "Steelcaps", ["boots", "tank"], "Reduces damage taken from attacks by 10%."],
-	3111: ["Mercury's Treads", 1250, {"mr": 20.0, "tenacity": 0.3, "ms": 45.0}, [1001, 1033], "boots", "", ["boots", "tank"], ""],
-	3158: ["Ionian Boots of Lucidity", 900, {"ah": 10.0, "summoner_haste": 10.0, "ms": 45.0}, [1001], "boots", "", ["boots", "mage", "support"], ""],
-	3009: ["Boots of Swiftness", 1000, {"ms": 55.0, "slow_resist": 0.25}, [1001], "boots", "", ["boots"], ""],
-	# ---- marksman / fighter
-	3031: ["Infinity Edge", 3500, {"ad": 75.0, "crit": 0.25, "crit_dmg": 0.3}, [1038, 1037, 1018], "", "", ["marksman", "crit"], "Critical strikes deal 30% more damage."],
-	6672: ["Kraken Slayer", 3000, {"ad": 45.0, "as": 0.4, "ms%": 0.04}, [1037, 1043, 1042], "", "Kraken", ["marksman", "onhit"], "Bring It Down: every third attack deals 150-200 bonus physical damage, increased by up to 75% against low-health targets."],
-	3153: ["Blade of the Ruined King", 3200, {"ad": 40.0, "as": 0.25, "lifesteal": 0.1}, [1053, 1043, 1037], "", "Botrk", ["marksman", "fighter", "onhit"], "Mist's Edge: attacks deal 9% (melee) / 6% (ranged) of the target's current health as bonus physical damage."],
-	3124: ["Guinsoo's Rageblade", 3000, {"ad": 30.0, "ap": 30.0, "as": 0.25}, [1052, 1043, 1037], "", "Guinsoo", ["marksman", "onhit"], "Attacks deal 30 bonus magic damage on-hit and grant 8% attack speed (max 4 stacks). At max stacks every third attack applies on-hit effects twice."],
-	3078: ["Trinity Force", 3333, {"ad": 36.0, "as": 0.3, "hp": 333.0, "ah": 15.0}, [3057, 3044, 1042], "spellblade", "Spellblade", ["fighter", "onhit"], "Spellblade: after using an ability, your next attack deals 200% base AD bonus physical damage (1.5s cooldown)."],
-	3071: ["Black Cleaver", 3000, {"ad": 45.0, "hp": 400.0, "ah": 20.0}, [3044, 3067, 1037], "", "Cleaver", ["fighter"], "Carve: dealing physical damage to a champion shreds 6% armor for 6s (stacks 5 times)."],
-	3053: ["Sterak's Gage", 3200, {"hp": 400.0, "tenacity": 0.2, "base_ad%": 0.45}, [1037, 1028, 1028], "", "Steraks", ["fighter", "tank"], "Lifeline: taking damage below 30% health grants a decaying shield for 60% of bonus health (60s cooldown)."],
-	3072: ["Bloodthirster", 3400, {"ad": 80.0, "lifesteal": 0.15}, [1038, 1037, 1053], "", "Bloodthirster", ["marksman"], "Ichorshield: life steal beyond full health becomes a shield (up to 165-315)."],
-	3074: ["Ravenous Hydra", 3300, {"ad": 65.0, "ah": 15.0, "lifesteal": 0.12}, [3077, 1053, 3133], "hydra", "Cleave", ["fighter"], "Cleave: attacks deal 40% AD physical damage to enemies around the target."],
-	3748: ["Titanic Hydra", 3300, {"ad": 40.0, "hp": 600.0}, [3077, 1011, 1028], "hydra", "TitanicCleave", ["fighter", "tank"], "Colossus: attacks deal 1% (melee) / 0.75% (ranged) max health bonus physical damage to the target and enemies behind it."],
-	6333: ["Death's Dance", 3300, {"ad": 60.0, "armor": 50.0, "ah": 15.0}, [1037, 1031, 3133], "", "DeathsDance", ["fighter"], "Ignore Pain: 30% (melee) / 15% (ranged) of damage taken is dealt over 3 seconds instead. Champion takedowns cleanse it and heal you."],
-	3087: ["Statikk Shiv", 3000, {"ad": 45.0, "as": 0.3, "ms%": 0.04}, [3086, 1037], "", "Statikk", ["marksman", "onhit"], "Electroshock: every 100 energy (gained by moving and attacking), your next attack chains lightning to 6 enemies for 60-150 magic damage."],
-	3085: ["Runaan's Hurricane", 2650, {"as": 0.4, "crit": 0.25, "ms%": 0.04}, [3086, 1043], "", "Runaans", ["marksman", "onhit"], "Wind's Fury: attacks fire bolts at up to 2 nearby enemies for 55% AD, applying on-hit effects."],
-	3046: ["Phantom Dancer", 2650, {"as": 0.65, "crit": 0.25, "ms%": 0.1}, [3086, 1042, 1042], "", "", ["marksman", "crit"], "You are Ghosted."],
-	6676: ["The Collector", 3000, {"ad": 50.0, "lethality": 10.0, "crit": 0.25}, [3134, 1037, 1018], "", "Collector", ["marksman"], "Death: damaging champions below 5% health executes them. Taxes: kills grant 25 extra gold."],
-	3036: ["Lord Dominik's Regards", 3300, {"ad": 35.0, "crit": 0.25, "armor_pen%": 0.35}, [3035, 1018, 1036], "lastwhisper", "", ["marksman"], ""],
-	3033: ["Mortal Reminder", 3000, {"ad": 35.0, "crit": 0.25, "armor_pen%": 0.3}, [3035, 1018], "lastwhisper", "Reminder", ["marksman"], "Physical damage applies 40% Grievous Wounds for 3 seconds."],
-	6675: ["Navori Flickerblade", 2650, {"as": 0.4, "crit": 0.25, "ms%": 0.07}, [3086, 1042], "", "Navori", ["marksman"], "Transcendence: attacks reduce your basic abilities' remaining cooldowns by 15%."],
-	3508: ["Essence Reaver", 3050, {"ad": 60.0, "crit": 0.25, "ah": 15.0}, [3057, 3133, 1018], "spellblade", "Spellblade", ["marksman"], "Spellblade: after using an ability, your next attack deals 100% base AD + 40% bonus AD bonus physical damage and restores mana."],
-	3004: ["Manamune", 2900, {"ad": 35.0, "mana": 500.0, "ah": 15.0}, [1036, 1027, 3133], "", "", ["marksman"], "Awe: gain bonus AD equal to 2% maximum mana."],
-	3142: ["Youmuu's Ghostblade", 2800, {"ad": 60.0, "lethality": 18.0, "ms%": 0.04}, [3134, 1036], "", "Youmuu", ["assassin"], "Active - Wraith Step: gain 20% movement speed and Ghosting for 6 seconds (45s cooldown)."],
-	6692: ["Eclipse", 2900, {"ad": 60.0, "ah": 15.0}, [3133, 1037], "", "Eclipse", ["fighter"], "Ever Rising Moon: hitting a champion with 2 separate attacks or abilities deals 6% max health physical damage and grants a shield (6s cooldown)."],
-	3161: ["Spear of Shojin", 3100, {"ad": 45.0, "hp": 450.0, "ah": 20.0}, [1037, 1028, 3067], "", "Shojin", ["fighter"], "Focused Will: ability hits grant a stack (6s, max 4) increasing ability damage by 3% each."],
-	6631: ["Stridebreaker", 3300, {"ad": 50.0, "as": 0.2, "hp": 400.0}, [3077, 3044, 1042], "hydra", "Stridebreaker", ["fighter"], "Active - Halting Slash: deal 80% AD physical damage around you and slow enemies by 35% (15s cooldown)."],
-	3156: ["Maw of Malmortius", 3200, {"ad": 60.0, "mr": 40.0, "ah": 15.0}, [1037, 1057, 1036], "lifeline", "Maw", ["fighter"], "Lifeline: taking magic damage below 30% health grants a 200 (+225% bonus AD) magic shield (90s cooldown)."],
-	6673: ["Immortal Shieldbow", 3000, {"ad": 55.0, "crit": 0.25}, [1037, 1018, 1053], "lifeline", "Shieldbow", ["marksman"], "Lifeline: taking damage below 30% health grants a 320-720 shield for 3 seconds (90s cooldown)."],
-	3091: ["Wit's End", 2800, {"as": 0.5, "mr": 45.0, "tenacity": 0.2}, [1043, 1057, 1042], "", "WitsEnd", ["fighter", "onhit"], "Fray: attacks deal 15-80 bonus magic damage on-hit."],
-	# ---- mage
-	3089: ["Rabadon's Deathcap", 3500, {"ap": 130.0, "ap%": 0.3}, [1058, 1058], "", "", ["mage"], "Increases your total ability power by 30%."],
-	6655: ["Luden's Companion", 2750, {"ap": 100.0, "mana": 600.0, "ah": 10.0}, [3802, 1052, 1052], "", "Luden", ["mage"], "Fire: damaging an enemy with an ability fires 6 shots at nearby enemies for 50 (+10% AP) magic damage each, split between targets (12s cooldown)."],
-	3157: ["Zhonya's Hourglass", 3250, {"ap": 105.0, "armor": 50.0}, [1058, 3082], "stasis", "Zhonya", ["mage"], "Active - Time Stop: become invulnerable and untargetable but unable to act for 2.5 seconds (120s cooldown)."],
-	6653: ["Liandry's Torment", 3000, {"ap": 60.0, "hp": 300.0}, [1026, 1028, 1028], "", "Liandry", ["mage"], "Torment: abilities burn enemies for 2% max health magic damage per second for 3 seconds. Suffering: in combat with champions, deal up to 6% increased damage."],
-	3100: ["Lich Bane", 2900, {"ap": 100.0, "ms%": 0.06, "ah": 10.0}, [3057, 1026], "spellblade", "LichBane", ["mage"], "Spellblade: after using an ability, your next attack deals 75% base AD + 45% AP bonus magic damage (1.5s cooldown)."],
-	3115: ["Nashor's Tooth", 2900, {"ap": 80.0, "as": 0.5, "ah": 15.0}, [1043, 1026, 3108], "", "Nashor", ["mage", "onhit"], "Icathian Bite: attacks deal 15 (+15% AP) bonus magic damage on-hit."],
-	3135: ["Void Staff", 3000, {"ap": 95.0, "magic_pen%": 0.4}, [1026, 1052], "", "", ["mage"], ""],
-	3116: ["Rylai's Crystal Scepter", 2600, {"ap": 65.0, "hp": 400.0}, [1026, 1052, 1028], "", "Rylai", ["mage"], "Rimefrost: damaging abilities slow enemies by 30% for 1 second."],
-	4645: ["Shadowflame", 3200, {"ap": 110.0, "magic_pen": 15.0}, [3145, 1058], "", "Shadowflame", ["mage"], "Cinderbloom: magic and true damage to champions below 40% health is increased by 20%."],
-	3102: ["Banshee's Veil", 3000, {"ap": 105.0, "mr": 40.0}, [1058, 1033], "", "Banshee", ["mage"], "Annul: grants a spell shield that blocks the next enemy ability (40s cooldown)."],
-	3118: ["Malignance", 2700, {"ap": 80.0, "mana": 600.0, "ult_ah": 20.0}, [3802, 1026], "", "", ["mage"], ""],
-	4633: ["Riftmaker", 3100, {"ap": 70.0, "hp": 350.0, "ah": 15.0, "omnivamp": 0.08}, [1026, 3067], "", "Riftmaker", ["mage", "fighter"], "Void Corruption: in combat with champions, deal up to 8% increased damage."],
-	4629: ["Cosmic Drive", 3000, {"ap": 70.0, "hp": 350.0, "ah": 25.0, "ms%": 0.04}, [3067, 3113, 3108], "", "", ["mage"], ""],
-	3003: ["Archangel's Staff", 2900, {"ap": 70.0, "mana": 600.0, "ah": 25.0}, [3802, 3108], "", "Archangel", ["mage"], "Awe: gain ability power equal to 1% maximum mana."],
-	3152: ["Hextech Rocketbelt", 2650, {"ap": 60.0, "hp": 350.0, "ah": 10.0}, [3145, 3067], "", "Rocketbelt", ["mage"], "Active - Supersonic: dash toward the cursor and fire a cone of missiles for 100 (+10% AP) magic damage (40s cooldown)."],
-	# ---- tank / support
-	3084: ["Heartsteel", 2500, {"hp": 700.0}, [1011, 3801], "", "Heartsteel", ["tank"], "Colossal Consumption: every 30s per champion, your next attack against them deals 70 (+6% bonus health) bonus physical damage and permanently grants 10% of that as maximum health."],
-	3068: ["Sunfire Aegis", 2800, {"hp": 350.0, "armor": 50.0, "ah": 10.0}, [6660, 1031], "immolate", "Immolate", ["tank"], "Immolate: in combat, deal 20 (+1% bonus health) magic damage per second to nearby enemies."],
-	3075: ["Thornmail", 2450, {"hp": 150.0, "armor": 75.0}, [3082, 1028], "", "Thornmail", ["tank"], "Thorns: when hit by an attack, deal 10 (+10% bonus armor) magic damage to the attacker and apply 40% Grievous Wounds."],
-	3083: ["Warmog's Armor", 3100, {"hp": 1000.0, "hp_regen": 5.0}, [1011, 1011, 3801], "", "Warmogs", ["tank"], "Warmog's Heart: with at least 1500 bonus health, regenerate 3% max health per second after not taking damage for 6 seconds."],
-	3065: ["Spirit Visage", 2700, {"hp": 400.0, "mr": 50.0, "ah": 10.0}, [3211, 3067], "", "Visage", ["tank"], "Boundless Vitality: heals and shields you receive are 25% stronger."],
-	3143: ["Randuin's Omen", 2700, {"hp": 350.0, "armor": 75.0}, [3082, 1011], "", "Randuin", ["tank"], "Critical strikes deal 30% less damage to you. Active: slow nearby enemies by 70% for 2 seconds (60s cooldown)."],
-	3110: ["Frozen Heart", 2900, {"armor": 65.0, "mana": 400.0, "ah": 20.0}, [3082, 1027], "", "", ["tank"], ""],
-	4401: ["Force of Nature", 2800, {"hp": 350.0, "mr": 55.0, "ms%": 0.04}, [1057, 1028, 1028], "", "", ["tank"], ""],
-	6665: ["Jak'Sho, The Protean", 3200, {"hp": 350.0, "armor": 50.0, "mr": 50.0}, [1011, 1029, 1033], "", "", ["tank"], ""],
-	3742: ["Dead Man's Plate", 2900, {"hp": 350.0, "armor": 55.0, "ms%": 0.04}, [1031, 1028], "", "", ["tank"], ""],
-	3039: ["Atma's Reckoning", 2900, {"hp": 700.0, "crit": 0.2, "ah": 10.0}, [1011, 1018], "", "Atma", ["tank", "fighter"], "Gain up to 30% critical strike chance based on bonus health."],
-	4011: ["Sword of Blossoming Dawn", 2350, {"ap": 45.0, "hp": 200.0, "heal_power": 0.12, "ah": 15.0}, [1052, 1028], "", "Blossom", ["support"], "Attacks heal the lowest-health nearby ally for 15 (+15% AP)."],
-	6617: ["Moonstone Renewer", 2200, {"ap": 25.0, "hp": 200.0, "ah": 20.0, "heal_power": 0.08}, [3067, 1052], "", "", ["support"], ""],
-	3190: ["Locket of the Iron Solari", 2600, {"hp": 200.0, "armor": 30.0, "mr": 30.0, "ah": 10.0}, [3067, 1029, 1033], "", "Locket", ["support", "tank"], "Active - Devotion: shield nearby allies for 200 (+20 per level) for 2.5 seconds (90s cooldown)."],
-	3107: ["Redemption", 2800, {"ap": 40.0, "hp": 200.0, "heal_power": 0.15, "ah": 15.0}, [3067, 1052], "", "Redemption", ["support"], "Active - Intervention: after 2 seconds, heal allies in a large area for 200 (+15 per level) and damage enemies (90s cooldown)."],
-	# ---- Mayhem
-	9999: ["Stat Bonus", 750, {}, [], "", "Anvil", ["consumable"], "Requires level 16. Grants a random stat shard suited to your champion (consumed instantly)."],
-}
+## Legacy effect classes (ItemFx) that already implement an item's passive.
+const EFFECT_OF := {2051: "GuardianHorn", 3057: "Spellblade", 3077: "Cleave", 6660: "Immolate", 3047: "Steelcaps", 6672: "Kraken",
+	3153: "Botrk", 3124: "Guinsoo", 3078: "Spellblade", 3071: "Cleaver", 3053: "Steraks", 3072: "Bloodthirster", 3074: "Cleave",
+	3748: "TitanicCleave", 6333: "DeathsDance", 3087: "Statikk", 3085: "Runaans", 6676: "Collector", 3033: "Reminder",
+	6675: "Navori", 3508: "Spellblade", 3142: "Youmuu", 6692: "Eclipse", 3161: "Shojin", 6631: "Stridebreaker", 3156: "Maw",
+	6673: "Shieldbow", 3091: "WitsEnd", 6655: "Luden", 3157: "Zhonya", 6653: "Liandry", 3100: "LichBane", 3115: "Nashor",
+	3116: "Rylai", 4645: "Shadowflame", 3102: "Banshee", 4633: "Riftmaker", 3003: "Archangel", 3152: "Rocketbelt",
+	3084: "Heartsteel", 3068: "Immolate", 3075: "Thornmail", 3083: "Warmogs", 3065: "Visage", 3143: "Randuin", 3039: "Atma",
+	124011: "Blossom", 3190: "Locket", 3107: "Redemption", 6032: "Anvil"}
 
+## League's search keywords for stats / categories (the shop search matches these as well as names and nicknames).
+const STAT_ALIASES := {"ad": "attack damage ad", "ap": "ability power ap", "hp": "health hp", "mana": "mana", "armor": "armor ar",
+	"mr": "magic resist mr", "as": "attack speed as", "crit": "critical strike crit", "crit_dmg": "critical strike damage",
+	"ms": "move speed movement ms", "ms%": "move speed movement ms", "ah": "ability haste ah cdr", "lifesteal": "life steal lifesteal ls",
+	"omnivamp": "omnivamp vamp", "lethality": "lethality armor penetration", "armor_pen%": "armor penetration pen",
+	"magic_pen": "magic penetration pen", "magic_pen%": "magic penetration pen", "tenacity": "tenacity", "heal_power": "heal shield power",
+	"hp_regen": "health regen", "hp_regen%": "health regen", "mana_regen": "mana regen", "mana_regen%": "mana regen",
+	"slow_resist": "slow resist", "range": "attack range"}
+
+const STAT_NAMES := {"ad": "Attack Damage", "ap": "Ability Power", "hp": "Health", "mana": "Mana", "armor": "Armor", "mr": "Magic Resist",
+	"as": "Attack Speed", "crit": "Critical Strike Chance", "crit_dmg": "Critical Strike Damage", "ms": "Move Speed", "ms%": "Move Speed",
+	"ah": "Ability Haste", "lifesteal": "Life Steal", "omnivamp": "Omnivamp", "lethality": "Lethality", "armor_pen%": "Armor Penetration",
+	"magic_pen": "Magic Penetration", "magic_pen%": "Magic Penetration", "tenacity": "Tenacity", "heal_power": "Heal and Shield Power",
+	"hp_regen": "Health Regen", "mana_regen": "Mana Regen", "ap%": "Ability Power", "base_ad%": "Base Attack Damage",
+	"summoner_haste": "Summoner Spell Haste", "slow_resist": "Slow Resist", "ult_ah": "Ultimate Haste", "range": "Attack Range",
+	"hp_regen%": "Base Health Regen", "mana_regen%": "Base Mana Regen"}
+
+## League's shop stat filter column (top to bottom): [layout key, label, League mCategories that match].
+const STAT_FILTERS := [
+	["PhysicalDamage", "Attack Damage", ["Damage"]],
+	["CriticalStrike", "Critical Strike", ["CriticalStrike"]],
+	["AttackSpeed", "Attack Speed", ["AttackSpeed"]],
+	["OnHit", "On-Hit Effects", ["OnHit"]],
+	["ArmorPen", "Armor Penetration", ["ArmorPenetration"]],
+	["AbilityPower", "Ability Power", ["SpellDamage"]],
+	["Mana", "Mana & Regeneration", ["Mana", "ManaRegen"]],
+	["MagicPen", "Magic Penetration", ["MagicPenetration"]],
+	["Health", "Health & Regeneration", ["Health", "HealthRegen"]],
+	["Armor", "Armor", ["Armor"]],
+	["MagicResist", "Magic Resist", ["SpellBlock", "MagicResist"]],
+	["AbilityHaste", "Ability Haste", ["AbilityHaste", "CooldownReduction"]],
+	["Movespeed", "Movement", ["NonbootsMovement", "Boots"]],
+	["Vamp", "Life Steal & Vamp", ["LifeSteal", "SpellVamp", "Omnivamp"]],
+]
+
+## Hand-curated finished builds (Mayhem roster). Bots follow these; the player's Recommended tab uses them when the
+## champion has an entry, otherwise League's own recommendation overrides (RECS).
 const BUILDS := {
 	"Ahri": [3112, 6655, 3020, 4645, 3089, 3135, 3157],
 	"Garen": [3177, 6631, 3047, 3071, 3053, 3742, 6333],
@@ -131,146 +80,520 @@ const BUILDS := {
 	"Ezreal": [3177, 3078, 3158, 3004, 3071, 3036, 6333],
 	"MissFortune": [3184, 6676, 3006, 3031, 3036, 3072, 6673],
 	"Annie": [3112, 6655, 3020, 4645, 3089, 3157, 3135],
-	"Sona": [3112, 6617, 3158, 3107, 4011, 3065, 3089],
+	"Sona": [3112, 6617, 3158, 3107, 124011, 3065, 3089],
 	"Veigar": [3112, 6655, 3020, 3089, 4645, 3135, 3157],
 }
+const DEFAULT_BUILD := [3177, 3047, 3071, 3053, 6333, 3742]
 
-const STAT_NAMES := {"ad": "Attack Damage", "ap": "Ability Power", "hp": "Health", "mana": "Mana", "armor": "Armor", "mr": "Magic Resist",
-	"as": "Attack Speed", "crit": "Critical Strike Chance", "crit_dmg": "Critical Strike Damage", "ms": "Move Speed", "ms%": "Move Speed",
-	"ah": "Ability Haste", "lifesteal": "Life Steal", "omnivamp": "Omnivamp", "lethality": "Lethality", "armor_pen%": "Armor Penetration",
-	"magic_pen": "Magic Penetration", "magic_pen%": "Magic Penetration", "tenacity": "Tenacity", "heal_power": "Heal and Shield Power",
-	"hp_regen": "Health Regen", "mana_regen": "Mana Regen", "ap%": "Ability Power", "base_ad%": "Base Attack Damage",
-	"summoner_haste": "Summoner Spell Haste", "slow_resist": "Slow Resist", "ult_ah": "Ultimate Haste"}
+## Stats granted by a passive that the flat stat fields do not carry: item id -> {engine stat key: item data value name}.
+const PASSIVE_STATS := {3089: {"ap%": "APAmp"}, 3158: {"summoner_haste": "SummonerHaste"}}
+
+# --- loaded data (declared before CAT so CAT's initialiser can fill them)
+static var META: Dictionary = {}          ## int id -> data/items/items.json entry
+static var SHOP: Dictionary = {}          ## quick panels, starters, store ids
+static var RECS: Dictionary = {}          ## champion alias -> recommendation override data
+static var VERSION := ""
+static var CAT: Dictionary = _load_db()
 
 
-# ------------------------------------------------------------------ UI-facing data (shop)
-## League's shop stat filters (ItemShop statfilters, top to bottom) -> stat keys / tags that match.
-const STAT_FILTERS := [
-	["PhysicalDamage", "Attack Damage", ["ad", "base_ad%"]],
-	["CriticalStrike", "Critical Strike", ["crit", "crit_dmg"]],
-	["AttackSpeed", "Attack Speed", ["as"]],
-	["OnHit", "On-Hit Effects", ["#onhit"]],
-	["ArmorPen", "Armor Penetration", ["lethality", "armor_pen%"]],
-	["AbilityPower", "Ability Power", ["ap", "ap%"]],
-	["Mana", "Mana & Regeneration", ["mana", "mana_regen"]],
-	["MagicPen", "Magic Penetration", ["magic_pen", "magic_pen%"]],
-	["Health", "Health & Regeneration", ["hp", "hp_regen"]],
-	["Armor", "Armor", ["armor"]],
-	["MagicResist", "Magic Resist", ["mr"]],
-	["AbilityHaste", "Ability Haste", ["ah", "ult_ah", "summoner_haste"]],
-	["Movespeed", "Movement", ["ms", "ms%"]],
-	["Vamp", "Life Steal & Vamp", ["lifesteal", "omnivamp"]],
-]
+static func _load_db() -> Dictionary:
+	var cat := {}
+	if not FileAccess.file_exists(DATA_PATH):
+		push_error("ItemDB: missing %s (run tools/lol/extract_items.py)" % DATA_PATH)
+		return cat
+	var d = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+	if not (d is Dictionary):
+		push_error("ItemDB: cannot parse " + DATA_PATH)
+		return cat
+	VERSION = String(d.get("version", ""))
+	SHOP = d.get("shop", {})
+	RECS = d.get("recs", {})
+	for k in d.items:
+		var e: Dictionary = d.items[k]
+		var id := int(k)
+		META[id] = e
+		var tags := _tags(id, e)
+		var grp := ""
+		for g in e.groups:
+			if String(g.id) != str(id):
+				grp = String(g.id)
+				break
+		var plain := []
+		for i in range(2, (e.text as Array).size()):
+			var s := ItemText.plain(String(e.text[i]))
+			if s != "":
+				plain.append(s)
+		cat[id] = [e.name, int(e.total), (e.stats as Dictionary).duplicate(), (e["from"] as Array).map(func(x): return int(x)),
+			grp, EFFECT_OF.get(id, ""), tags, "\n\n".join(plain)]
+	for al in LEGACY_ALIAS:                       # old ids keep working for callers that index CAT directly
+		if cat.has(LEGACY_ALIAS[al]):
+			cat[al] = cat[LEGACY_ALIAS[al]]
+	return cat
 
-## Short League-style blurbs for the recommended-item cards, by primary tag.
-const ROLE_BLURB := {"mage": "Ability power and burst", "marksman": "Attack damage and crits", "fighter": "Damage and durability",
-	"tank": "Durability and crowd control", "support": "Utility for allies", "assassin": "Lethality and burst",
-	"onhit": "On-hit damage", "crit": "Critical strike damage", "boots": "Movement speed", "starter": "Starting item"}
+
+static func _tags(id: int, e: Dictionary) -> Array:
+	var t: Array = (e.classes as Array).duplicate()
+	if tier_group(id, e) == "starter" and not e.consumed:
+		t.append("starter")
+	if _in_group(e, "Boots"):
+		t.append("boots")
+	if e.consumed or e.max_stack > 1:
+		t.append("consumable")
+	if (e["from"] as Array).is_empty() and not (e.groups as Array).is_empty() and not t.has("starter") and not t.has("consumable"):
+		t.append("basic")
+	elif (e["from"] as Array).is_empty() and e.tier == null and not t.has("consumable"):
+		t.append("basic")
+	if "OnHit" in e.categories:
+		t.append("onhit")
+	return t
+
+
+static func _in_group(e: Dictionary, gid: String) -> bool:
+	for g in e.groups:
+		if String(g.id) == gid:
+			return true
+	return false
+
+
+# ===================================================================== lookups
+static func canon(item_id: int) -> int:
+	return LEGACY_ALIAS.get(item_id, item_id)
 
 
 static func has(item_id: int) -> bool:
-	return CAT.has(item_id)
+	return META.has(canon(item_id))
 
 
-## League shop tier: "Starter", "Boots", "Basic", "Epic" or "Legendary".
+static func meta(item_id: int) -> Dictionary:
+	return META.get(canon(item_id), {})
+
+
+static func name_of(item_id: int) -> String:
+	var e := meta(item_id)
+	return e.get("name", str(item_id))
+
+
+## Total gold cost (what League calls "total cost").
+static func cost_of(item_id: int) -> int:
+	return int(meta(item_id).get("total", 0))
+
+
+## Combine cost (League's "recipe cost").
+static func combine_cost(item_id: int) -> int:
+	return int(meta(item_id).get("price", 0))
+
+
+static func sell_value_of(item_id: int) -> int:
+	return int(meta(item_id).get("sell", 0))
+
+
+static func components_of(item_id: int) -> Array:
+	var f: Array = meta(item_id).get("from", [])
+	return f.map(func(x): return int(x))
+
+
+static func group_of(item_id: int) -> String:
+	return CAT[canon(item_id)][4] if CAT.has(canon(item_id)) else ""
+
+
+static func tags_of(item_id: int) -> Array:
+	return CAT[canon(item_id)][6] if CAT.has(canon(item_id)) else []
+
+
+static func brief(item_id: int) -> String:
+	return String(meta(item_id).get("brief", ""))
+
+
+static func blurb(item_id: int) -> String:
+	return brief(item_id)
+
+
+static func data(item_id: int, key: String, default = 0.0):
+	var d: Dictionary = meta(item_id).get("data", {})
+	return d.get(key, default)
+
+
+static func cooldown_of(item_id: int) -> float:
+	var c = meta(item_id).get("cooldown")
+	return float(c) if c != null else 0.0
+
+
+## League shop section ("unique" ... "legendary") by epicness; "" = not listed in the grid.
+static func tier_group(item_id: int, e: Dictionary = {}) -> String:
+	if e.is_empty():
+		e = meta(item_id)
+	if e.is_empty():
+		return ""
+	var t = e.get("tier")
+	if t == null:
+		return "basic"
+	match int(t):
+		1:
+			return "starter"
+		2:
+			return "basic"
+		3, 4:
+			return "epic"
+		5, 6:
+			return "legendary"
+		7:
+			return "unique"
+		8:
+			return "anvil"
+	return ""
+
+
+## Shop tier label used by the HUD ("Starter", "Basic", "Epic", "Legendary", "Unique", "Anvil").
 static func tier_of(item_id: int) -> String:
-	var tags := tags_of(item_id)
-	if "starter" in tags:
-		return "Starter"
-	if "boots" in tags:
-		return "Boots"
-	if "consumable" in tags:
-		return "Consumable"
-	if "basic" in tags:
-		return "Basic" if components_of(item_id).is_empty() else "Epic"
-	return "Legendary"
+	var g := tier_group(item_id)
+	return g.capitalize() if g != "" else "Basic"
 
 
-## Items in the catalogue that use `item_id` as a direct component (League's "Builds Into").
-static func builds_into(item_id: int) -> Array:
+static func is_boots(item_id: int) -> bool:
+	return _in_group(meta(item_id), "Boots")
+
+
+static func is_consumable(item_id: int) -> bool:
+	var e := meta(item_id)
+	return bool(e.get("consumed", false))
+
+
+static func max_stack(item_id: int) -> int:
+	return maxi(1, int(meta(item_id).get("max_stack", 1)))
+
+
+## True when the champion's attack range class is "ranged" (for melee/ranged split tooltips).
+static func champ_ranged(c) -> bool:
+	return c != null and float(c.stats.base.get("attack_range", 550.0)) >= 300.0
+
+
+## Tooltip sections (markup strings, League's own text) for the champion's range class.
+static func sections(item_id: int, ranged := false) -> Array:
+	var e := meta(item_id)
+	if e.is_empty():
+		return []
+	if ranged and e.has("text_ranged"):
+		return e.text_ranged
+	return e.text
+
+
+## Is the item visible in the shop for this champion?
+static func visible_in_shop(item_id: int, c = null) -> bool:
+	var e := meta(item_id)
+	if e.is_empty() or not e.in_store:
+		return false
+	if e.req_spell != "" or e.req_currency != "":
+		return false
+	if e.req_champion != "" and (c == null or String(c.alias).to_lower() != String(e.req_champion).to_lower()):
+		return false
+	return true
+
+
+## All items listed in the all-items grid for the champion (unsorted).
+static func grid_items(c = null) -> Array:
 	var out := []
-	for id in CAT:
-		if item_id in components_of(id):
-			out.append(id)
-	out.sort_custom(func(a, b): return cost_of(a) < cost_of(b))
+	for id in META:
+		if not visible_in_shop(id, c):
+			continue
+		if tier_group(id) == "":
+			continue
+		if int(META[id].tier if META[id].tier != null else 2) == 0:
+			continue
+		if META[id].req_champion != "":
+			continue
+		out.append(id)
 	return out
+
+
+## Items that build directly out of `item_id` and are sold in the shop (League's "Builds Into"), by price.
+static func builds_into(item_id: int) -> Array:
+	var into: Array = meta(item_id).get("into", [])
+	return into.map(func(x): return int(x))
+
+
+# ===================================================================== filters / search
+static func matches_class(item_id: int, cls: String) -> bool:
+	return cls == "" or cls in meta(item_id).get("classes", [])
 
 
 static func matches_stat_filter(item_id: int, filter_idx: int) -> bool:
 	if filter_idx < 0 or filter_idx >= STAT_FILTERS.size():
 		return true
-	var st: Dictionary = CAT[item_id][2] if CAT.has(item_id) else {}
+	var cats: Array = meta(item_id).get("categories", [])
 	for k in STAT_FILTERS[filter_idx][2]:
-		if k.begins_with("#"):
-			if k.substr(1) in tags_of(item_id):
-				return true
-		elif st.has(k):
+		if k in cats:
 			return true
 	return false
 
 
-## Case-insensitive name / stat search used by the shop search box.
-static func matches_search(item_id: int, q: String) -> bool:
-	if q == "":
-		return true
-	q = q.to_lower()
-	if name_of(item_id).to_lower().contains(q):
-		return true
-	# initials ("ie" -> Infinity Edge) like League's search
+static func _passive_names(e: Dictionary) -> String:
+	var out := ""
+	var re := RegEx.create_from_string("<(?:passive|active)>([^<]+)</")
+	for s in e.text:
+		for m in re.search_all(String(s)):
+			out += " " + m.get_string(1).to_lower()
+	return out
+
+
+static func _haystack(item_id: int) -> Dictionary:
+	var e := meta(item_id)
+	var name: String = String(e.get("name", "")).to_lower()
 	var initials := ""
-	for w in name_of(item_id).split(" "):
+	for w in name.replace("'", "").replace("-", " ").split(" "):
 		if w != "":
-			initials += w[0].to_lower()
-	if initials.begins_with(q):
+			initials += w[0]
+	var stats := ""
+	for k in e.get("stats", {}):
+		stats += " " + String(STAT_ALIASES.get(k, STAT_NAMES.get(k, k))).to_lower()
+	var cats := " ".join(PackedStringArray((e.get("categories", []) as Array).map(func(x): return String(x).to_lower())))
+	return {"name": name, "nick": e.get("nick", []), "initials": initials, "stats": stats,
+		"extra": _passive_names(e) + " " + cats + " " + String(e.get("brief", "")).to_lower()}
+
+
+## League's shop search: item name, nicknames (colloquialisms such as "ie", "bc", "dcap"), initials, stat names and passive names.
+## Every whitespace separated term must match somewhere.
+static func matches_search(item_id: int, q: String) -> bool:
+	return search_score(item_id, q) > 0
+
+
+## 0 = no match; larger = better (exact nickname > name prefix > word prefix > contains > stat / passive match).
+static func search_score(item_id: int, q: String) -> int:
+	q = q.strip_edges().to_lower()
+	if q == "":
+		return 1
+	var h := _haystack(item_id)
+	var total := 0
+	for term in q.split(" ", false):
+		var s := 0
+		if term in h.nick:
+			s = 100
+		elif h.name == term:
+			s = 95
+		elif String(h.name).begins_with(term):
+			s = 80
+		elif h.initials == term or String(h.initials).begins_with(term) and term.length() >= 2:
+			s = 70
+		elif (" " + String(h.name)).contains(" " + term):
+			s = 60
+		elif String(h.name).contains(term):
+			s = 50
+		else:
+			for nk in h.nick:
+				if String(nk).begins_with(term):
+					s = 55
+					break
+			if s == 0:
+				if (" " + String(h.stats)).contains(" " + term):
+					s = 30
+				elif (" " + String(h.extra)).contains(" " + term):
+					s = 20
+				elif String(h.extra).contains(term) and term.length() >= 3:
+					s = 10
+		if s == 0:
+			return 0
+		total += s
+	return total
+
+
+# ===================================================================== recommendations
+static func _champ_alias(c) -> String:
+	return String(c.alias) if c != null else ""
+
+
+## Build order [starting items bundles, steps] for the champion's Recommended tab.
+## -> {"starting": [[ids]...], "steps": [{"items": [ids], "max": n}...], "full": [ids]}
+static var _plan_cache: Dictionary = {}
+
+
+static func rec_plan(c) -> Dictionary:
+	var alias := _champ_alias(c)
+	if not _plan_cache.has(alias):
+		_plan_cache[alias] = _build_rec_plan(c, alias)
+	return _plan_cache[alias]
+
+
+static func _build_rec_plan(c, alias: String) -> Dictionary:
+	var plan := {"starting": [], "steps": [], "full": []}
+	if BUILDS.has(alias):
+		var build: Array = BUILDS[alias]
+		var boots_done := false
+		for id in build:
+			var t := tier_group(id)
+			if t == "starter" and not is_consumable(id):
+				plan.starting.append([id])
+			else:
+				plan.steps.append({"items": [id], "max": 1})
+		plan.full = build.duplicate()
+		return plan
+	var r: Dictionary = RECS.get(alias, {})
+	var pick: Dictionary = r.get("aram", {})
+	var roles := _roles(alias)
+	if pick.is_empty() or not _rec_sane(pick, roles):
+		pick = r.get("classic", pick)
+	if pick.is_empty():
+		for id in DEFAULT_BUILD:
+			plan.steps.append({"items": [id], "max": 1})
+		plan.starting = [[3177], [3184]]
+		plan.full = DEFAULT_BUILD.duplicate()
+		return plan
+	for b in pick.starting:
+		var ids := []
+		for x in b:
+			if x != null and visible_in_shop(int(x), c):
+				ids.append(int(x))
+		if not ids.is_empty():
+			plan.starting.append(ids)
+	for st in pick.ranges:
+		var items := []
+		for x in st["items"]:
+			if x != null and visible_in_shop(int(x), c):
+				items.append(int(x))
+		if not items.is_empty():
+			plan.steps.append({"items": items, "max": maxi(1, int(st["max"]))})
+	for st in plan.steps:
+		if not (st.items[0] in plan.full):
+			plan.full.append(st.items[0])
+	return plan
+
+
+static func _roles(alias: String) -> Array:
+	if alias == "" or not ClassDB.class_exists("Node"):
+		return []
+	var cd = ChampionDB.client_data(alias)
+	return cd.get("roles", []) if cd is Dictionary else []
+
+
+## ARAM override sets are shared between whole champion groups; accept it only when its legendary picks fit the champion.
+static func _rec_sane(pick: Dictionary, roles: Array) -> bool:
+	if roles.is_empty():
 		return true
-	for k in (CAT[item_id][2] as Dictionary):
-		if String(STAT_NAMES.get(k, k)).to_lower().contains(q):
+	var want := []
+	for r in roles:
+		match String(r):
+			"mage": want.append("mage")
+			"marksman": want.append("marksman")
+			"assassin": want.append("assassin")
+			"fighter": want.append("fighter")
+			"tank": want.append("tank")
+			"support": want.append("support")
+	var ok := 0
+	var n := 0
+	for st in pick.ranges:
+		for x in st["items"]:
+			if x == null or not has(int(x)):
+				continue
+			n += 1
+			for w in want:
+				if w in meta(int(x)).classes:
+					ok += 1
+					break
+	return n > 0 and float(ok) / float(n) >= 0.5
+
+
+static func _owned_ids(c) -> Array:
+	var out := []
+	for it in c.items:
+		out.append(it.item_id)
+	return out
+
+
+## Up to `n` suggested items for the Recommended tab, given what the champion owns (League's "Suggested items").
+static func suggested(c, n := 3) -> Array:
+	var plan := rec_plan(c)
+	var owned := _owned_ids(c)
+	var out := []
+	if c.items.is_empty():
+		for b in plan.starting:
+			if not (b[0] in out):
+				out.append(b[0])
+			if out.size() >= n:
+				return out
+	for st in plan.steps:
+		var done := 0
+		for id in st.items:
+			if _owned_or_upgraded(owned, id):
+				done += 1
+		if done >= int(st["max"]):
+			continue
+		for id in st.items:
+			if _owned_or_upgraded(owned, id) or id in out:
+				continue
+			if is_boots(id) and _owns_boots(owned) and not _owns_exact(owned, id):
+				continue
+			out.append(id)
+			if out.size() >= n:
+				return out
+			if int(st["max"]) <= 1 and st.items.size() > 1 and out.size() >= 1 and false:
+				break
+	for id in plan.full:
+		if out.size() >= n:
+			break
+		if not _owned_or_upgraded(owned, id) and not (id in out):
+			out.append(id)
+	return out
+
+
+static func _owns_exact(owned: Array, id: int) -> bool:
+	return id in owned
+
+
+static func _owns_boots(owned: Array) -> bool:
+	for id in owned:
+		if is_boots(id):
 			return true
 	return false
 
 
-## League's recommended page for a champion: {"starter": [...], "boots": [...], "core": [...]}.
+## Owned, or owned something that was built out of it (e.g. a completed item).
+static func _owned_or_upgraded(owned: Array, id: int) -> bool:
+	if id in owned:
+		return true
+	for o in owned:
+		if _builds_from(o, id):
+			return true
+	return false
+
+
+static func _builds_from(top: int, part: int, depth := 0) -> bool:
+	if depth > 4:
+		return false
+	for c in components_of(top):
+		if c == part or _builds_from(c, part, depth + 1):
+			return true
+	return false
+
+
+## League's "commonly built" row: the full finished build (starter, boots, legendaries), max 9.
+static func commonly_built(c) -> Array:
+	var full: Array = rec_plan(c).full
+	return full.slice(0, 9)
+
+
+## Legacy API (older callers): {"starter": [...], "boots": [...], "core": [...]}.
 static func recommended(alias: String) -> Dictionary:
-	var build: Array = BUILDS.get(alias, [3177, 3047, 3071, 3053, 6333, 3742])
+	var build: Array = BUILDS.get(alias, DEFAULT_BUILD)
 	var out := {"starter": [], "boots": [], "core": []}
 	for id in build:
 		var t := tier_of(id)
 		if t == "Starter":
 			out.starter.append(id)
-		elif t == "Boots":
+		elif is_boots(id):
 			out.boots.append(id)
 		else:
 			out.core.append(id)
 	return out
 
 
-static func blurb(item_id: int) -> String:
-	for t in tags_of(item_id):
-		if ROLE_BLURB.has(t) and t != "basic":
-			return ROLE_BLURB[t]
-	return ""
+## Quick-buy panels of the ARAM shop (League: ConsumablesQuickBuyData / BootsQuickBuyData).
+static func quick_consumables() -> Array:
+	return (SHOP.get("quick_consumables", []) as Array).map(func(x): return int(x))
 
 
-static func name_of(item_id: int) -> String:
-	return CAT[item_id][0] if CAT.has(item_id) else str(item_id)
+static func quick_boots() -> Array:
+	return (SHOP.get("quick_boots", []) as Array).map(func(x): return int(x))
 
 
-static func cost_of(item_id: int) -> int:
-	return int(CAT[item_id][1]) if CAT.has(item_id) else 0
-
-
-static func components_of(item_id: int) -> Array:
-	return CAT[item_id][3] if CAT.has(item_id) else []
-
-
-static func group_of(item_id: int) -> String:
-	return CAT[item_id][4] if CAT.has(item_id) else ""
-
-
-static func tags_of(item_id: int) -> Array:
-	return CAT[item_id][6] if CAT.has(item_id) else []
-
-
+# ===================================================================== stats / items
 static func stat_line(k: String, v: float) -> String:
 	var nm: String = STAT_NAMES.get(k, k)
 	var pct := k.ends_with("%") or k in ["as", "crit", "crit_dmg", "lifesteal", "omnivamp", "tenacity", "heal_power", "slow_resist"]
@@ -280,41 +603,59 @@ static func stat_line(k: String, v: float) -> String:
 
 
 static func create(item_id: int) -> Item:
-	if not CAT.has(item_id):
+	var id := canon(item_id)
+	if not META.has(id):
 		return null
-	var e: Array = CAT[item_id]
-	var it: Item
-	var cls: String = e[5]
-	if cls != "" and ItemFx.has_class(cls):
-		it = ItemFx.make(cls)
+	var e: Dictionary = META[id]
+	var it: Item = null
+	if ItemFxExtra.has(id):
+		it = ItemFxExtra.make(id)
 	else:
+		var cls: String = EFFECT_OF.get(id, "")
+		if cls != "" and ItemFx.has_class(cls):
+			it = ItemFx.make(cls)
+	if it == null:
 		it = Item.new()
-	it.item_id = item_id
-	it.id = "item_%d" % item_id
-	it.display_name = e[0]
-	it.cost = int(e[1])
-	it.stats = (e[2] as Dictionary).duplicate()
-	it.components = e[3]
-	it.unique_group = e[4]
-	it.item_tags = e[6]
-	it.description = e[7]
-	it.icon = Assets.item_icon(item_id)
+	it.item_id = id
+	it.id = "item_%d" % id
+	it.display_name = e.name
+	it.cost = int(e.total)
+	it.stats = (e.stats as Dictionary).duplicate()
+	if PASSIVE_STATS.has(id):
+		for k in PASSIVE_STATS[id]:
+			it.stats[k] = float(e.data.get(PASSIVE_STATS[id][k], 0.0))
+	it.components = components_of(id)
+	var cat: Array = CAT[id]
+	it.unique_group = cat[4]
+	it.item_tags = cat[6]
+	it.description = cat[7]
+	it.icon = Assets.item_icon(id)
+	if it.active_cd <= 0.0 and bool(e.get("clickable", false)) and not bool(e.get("consumed", false)):
+		pass
+	ItemFxExtra.configure(it, id, e)
 	return it
 
 
+# ===================================================================== purchasing
 ## Price to buy `item_id` for champion c after owned components are consumed. Returns [price, consumed_items].
 static func price_for(c, item_id: int) -> Array:
+	var id := canon(item_id)
 	var owned: Array = c.items.duplicate()
 	var consumed := []
-	var price := cost_of(item_id)
-	_discount(item_id, owned, consumed)
+	var price := cost_of(id)
+	_discount(id, owned, consumed)
 	for it in consumed:
 		price -= it.cost
-	return [price, consumed]
+	return [maxi(0, price), consumed]
 
 
+## League's auto-combine: every recipe slot is satisfied by an owned copy of that exact component if there is one, else by
+## recursively consuming owned parts of that component's own recipe. Duplicate components consume one owned item each.
 static func _discount(item_id: int, owned: Array, consumed: Array) -> void:
-	for comp in components_of(item_id):
+	var comps := components_of(item_id)
+	# first pass: slots satisfied by an exact owned component
+	var open := []
+	for comp in comps:
 		var found = null
 		for it in owned:
 			if it.item_id == comp:
@@ -324,82 +665,339 @@ static func _discount(item_id: int, owned: Array, consumed: Array) -> void:
 			owned.erase(found)
 			consumed.append(found)
 		else:
-			_discount(comp, owned, consumed)
+			open.append(comp)
+	# second pass: partially built slots
+	for comp in open:
+		_discount(comp, owned, consumed)
 
 
-## Can the champion buy this now? Returns "" or a reason.
+## "" when the champion can buy `item_id` right now, else a reason code:
+## far (not at the shop), unavailable, level, gold, full, unique.
 static func buy_block_reason(c, item_id: int) -> String:
-	if not CAT.has(item_id):
-		return "unknown"
+	var id := canon(item_id)
+	if not META.has(id) or not visible_in_shop(id, c) and not (id in quick_consumables() or id in quick_boots()):
+		return "unavailable"
 	if not c.can_shop():
-		return "You can only shop while dead or in base"
-	if item_id == 9999:
-		if c.level < 16:
-			return "Requires level 16"
-		var p0 := price_for(c, item_id)
-		return "" if c.gold >= p0[0] else "Not enough gold"
-	var p := price_for(c, item_id)
+		return "far"
+	var e: Dictionary = META[id]
+	if int(e.req_level) > int(c.level):
+		return "level"
+	var p := price_for(c, id)
 	if c.gold < p[0]:
-		return "Not enough gold"
-	var slots_after: int = c.items.size() - p[1].size() + 1
-	if slots_after > 6:
-		return "Inventory full"
-	var grp := group_of(item_id)
-	if grp != "":
-		for it in c.items:
-			if it.unique_group == grp and not (it in p[1]):
-				return "Only one %s item allowed" % grp
+		return "gold"
+	var stack_target = _stack_target(c, id)
+	var instant := bool(e.get("consume_on_acquire", false))   # Stat Bonus / Cappa Juice never take an inventory slot
+	if instant and id != 6032 and ItemFxExtra.acquire_count(c, id) >= max_stack(id):
+		return "full"
+	if stack_target == null and not instant:
+		var slots_after: int = c.items.size() - p[1].size() + 1
+		if slots_after > MAX_SLOTS:
+			return "full"
+	elif stack_target != null and _stack_count(stack_target) >= max_stack(id):
+		return "full"
+	if stack_target == null:
+		var conflict = group_conflict(c, id, p[1])
+		if conflict != null:
+			return "unique"
 	return ""
 
 
+## The owned item that blocks `id` through a purchase-limited item group (excluding items consumed by the purchase), or null.
+static func group_conflict(c, item_id: int, consumed: Array = []):
+	var e := meta(item_id)
+	for g in e.get("groups", []):
+		var cnt := 0
+		var other = null
+		for it in c.items:
+			if it in consumed:
+				continue
+			if _in_group(meta(it.item_id), String(g.id)):
+				cnt += 1
+				other = it
+		if cnt >= int(g.max):
+			return other
+	return null
+
+
+static func reason_text(reason: String, c = null, item_id := -1) -> String:
+	match reason:
+		"far":
+			return "You can only shop while dead or on the spawn platform"
+		"unavailable":
+			return "Item unavailable"
+		"level":
+			return "Requires level %d" % int(meta(item_id).get("req_level", 0))
+		"gold":
+			return "Not enough gold"
+		"full":
+			return "Inventory full"
+		"unique":
+			var other = group_conflict(c, item_id) if c != null else null
+			if other != null:
+				return "You already own %s" % name_of(other.item_id)
+			return "You already own a conflicting item"
+	return ""
+
+
+static func _stack_target(c, id: int):
+	if not is_consumable(id) or max_stack(id) <= 1:
+		return null
+	for it in c.items:
+		if it.item_id == id:
+			return it
+	return null
+
+
+static func _stack_count(it) -> int:
+	return int(it.get("stacks")) if it.get("stacks") != null else 1
+
+
+## Buy one `item_id` exactly (consumes owned components). Returns true on success.
 static func buy(c, item_id: int) -> bool:
-	if buy_block_reason(c, item_id) != "":
+	var id := canon(item_id)
+	if buy_block_reason(c, id) != "":
 		return false
-	var p := price_for(c, item_id)
+	var p := price_for(c, id)
 	c.gold -= p[0]
 	for it in p[1]:
 		c.remove_item(it)
-	if item_id == 9999:
-		var anvil := create(9999)
+	if id != 6032 and bool(meta(id).get("consume_on_acquire", false)):
+		if ItemFxExtra.acquire(c, id):
+			return true
+	var tgt = _stack_target(c, id)
+	if tgt != null:
+		if tgt.has_method("add_stack"):
+			tgt.add_stack(1)
+		c.items_changed.emit()
+		return true
+	if id == 6032:
+		# ARAM Mayhem "Stat Bonus" anvil: consumed at once, grants a random stat shard
+		var anvil := create(6032)
 		anvil.stats = AnvilShard.roll(c)
 		anvil.hidden = true
 		c.add_effect(anvil)
 		c.anvils.append(anvil)
 		c.items_changed.emit()
 		return true
-	c.add_item(create(item_id))
+	var it := create(id)
+	if it == null:
+		c.gold += p[0]
+		return false
+	c.add_item(it)
 	return true
 
 
-static func sell(c, it: Item) -> void:
-	c.gold += int(it.cost * 0.7)
+## What the shop's Purchase button does for the player. Returns {"ok": bool, "kind": "basic"|"upgrade"|"legendary"|"components"|"stack"|"none",
+## "bought": [ids], "reason": code}. When the complete item is out of reach but components can be bought, buys the
+## components (most expensive affordable first), exactly like League's "PURCHASE COMPONENTS".
+static func purchase(c, item_id: int) -> Dictionary:
+	var id := canon(item_id)
+	var reason := buy_block_reason(c, id)
+	if reason == "":
+		var consumed: Array = price_for(c, id)[1]
+		var stacked := _stack_target(c, id) != null
+		var ok := buy(c, id)
+		var kind := "basic"
+		if stacked:
+			kind = "stack"
+		elif not consumed.is_empty():
+			kind = "upgrade"
+		elif tier_group(id) == "legendary":
+			kind = "legendary"
+		return {"ok": ok, "kind": kind, "bought": [id] if ok else [], "reason": "" if ok else "unavailable"}
+	if reason != "gold":
+		return {"ok": false, "kind": "none", "bought": [], "reason": reason}
+	var plan := components_to_buy(c, id)
+	if plan.is_empty():
+		return {"ok": false, "kind": "none", "bought": [], "reason": "gold"}
+	var bought := []
+	for cid in plan:
+		if buy(c, cid):
+			bought.append(cid)
+	return {"ok": not bought.is_empty(), "kind": "components", "bought": bought, "reason": "" if not bought.is_empty() else "gold"}
+
+
+## The component purchases that League's PURCHASE COMPONENTS would make now (simulated against the champion's gold / slots).
+static func components_to_buy(c, item_id: int) -> Array:
+	var id := canon(item_id)
+	if not META.has(id) or not c.can_shop():
+		return []
+	var sim_gold: float = c.gold
+	var sim_items: Array = c.items.duplicate()
+	var plan := []
+	_plan_parts(c, id, sim_items, plan, [sim_gold])
+	return plan
+
+
+static func _plan_parts(c, id: int, owned: Array, plan: Array, gold: Array) -> void:
+	# owned components are free; walk the open slots, expensive first
+	var open := []
+	var tmp_owned := owned.duplicate()
+	for comp in components_of(id):
+		var found = null
+		for it in tmp_owned:
+			if it.item_id == comp:
+				found = it
+				break
+		if found != null:
+			tmp_owned.erase(found)
+		else:
+			open.append(comp)
+	open.sort_custom(func(a, b): return cost_of(a) > cost_of(b))
+	for comp in open:
+		var price := _sim_price(comp, owned)
+		if gold[0] >= price and (owned.size() + 1) <= MAX_SLOTS and not _sim_conflict(comp, owned):
+			plan.append(comp)
+			gold[0] -= price
+			# the consumed owned parts disappear, the new component takes a slot
+			var cons := []
+			var o2 := owned.duplicate()
+			_discount_sim(comp, o2, cons)
+			for x in cons:
+				owned.erase(x)
+			owned.append(_FakeItem.new(comp))
+		elif not components_of(comp).is_empty():
+			_plan_parts(c, comp, owned, plan, gold)
+
+
+class _FakeItem extends RefCounted:
+	var item_id := 0
+	var cost := 0
+
+	func _init(i: int) -> void:
+		item_id = i
+		cost = ItemDB.cost_of(i)
+
+
+static func _discount_sim(item_id: int, owned: Array, consumed: Array) -> void:
+	_discount(item_id, owned, consumed)
+
+
+static func _sim_price(id: int, owned: Array) -> int:
+	var o := owned.duplicate()
+	var cons := []
+	_discount(id, o, cons)
+	var price := cost_of(id)
+	for it in cons:
+		price -= it.cost
+	return maxi(0, price)
+
+
+static func _sim_conflict(id: int, owned: Array) -> bool:
+	var e := meta(id)
+	for g in e.get("groups", []):
+		var cnt := 0
+		for it in owned:
+			if _in_group(meta(it.item_id), String(g.id)):
+				cnt += 1
+		if cnt >= int(g.max):
+			return true
+	return false
+
+
+## Gold League gives back for selling `it` (whole stack for consumables).
+static func sell_price(it) -> int:
+	var e := meta(it.item_id)
+	var each := int(e.get("sell", int(it.cost * SELL_FRACTION)))
+	return each * _stack_count(it)
+
+
+static func can_sell(it) -> bool:
+	return bool(meta(it.item_id).get("can_sell", true))
+
+
+static func sell(c, it) -> void:
+	if not c.can_shop() or not can_sell(it):
+		return
+	c.gold += sell_price(it)
 	c.remove_item(it)
 
 
-## Next purchase for a bot following its build. Returns item id or -1.
+# ---- undo support: items + stack counts + gold + consumed anvils
+static func snapshot(c) -> Dictionary:
+	var stacks := {}
+	for it in c.items:
+		if it.get("stacks") != null:
+			stacks[it] = int(it.get("stacks"))
+	return {"gold": c.gold, "items": c.items.duplicate(), "stacks": stacks, "anvils": c.anvils.size()}
+
+
+static func restore(c, snap: Dictionary) -> void:
+	for it in c.items.duplicate():
+		if not (it in snap.items):
+			c.remove_item(it)
+	for it in snap.items:
+		if not (it in c.items):
+			it.removed = false
+			c.add_item(it)
+	c.items = snap.items.duplicate()
+	for it in snap.stacks:
+		it.set("stacks", snap.stacks[it])
+	while c.anvils.size() > snap.anvils:
+		var a = c.anvils.pop_back()
+		c.remove_effect(a)
+	c.gold = snap.gold
+	c.items_changed.emit()
+	c.stats.mark_dirty()
+
+
+# ===================================================================== bots
+## Next purchase for a bot following its build. Returns item id or -1. (Sells the starter item when a slot is needed.)
 static func bot_next_purchase(c) -> int:
-	var build: Array = BUILDS.get(c.alias, [3177, 3047, 3071, 3053, 6333, 3742])
+	var build: Array = BUILDS.get(c.alias, DEFAULT_BUILD)
 	for target in build:
-		if _owns(c, target):
+		if _owns(c, target) or _owns_upgrade(c, target):
 			continue
-		if target in STARTERS and c.items.size() > 0:
+		if tier_group(target) == "starter" and (c.items.size() > 0 or c.level > 3):
 			continue
-		if buy_block_reason(c, target) == "":
-			return target
+		if _bot_free_slot(c, target):
+			if buy_block_reason(c, target) == "":
+				return target
 		# buy the most expensive affordable component on the path
 		var comp := _best_component(c, target)
 		if comp > 0:
 			return comp
 		return -1
-	if c.level >= 16 and c.gold >= 750 and c.items.size() >= 6:
-		return 9999
+	if c.level >= int(meta(6032).get("req_level", 9)) and c.gold >= cost_of(6032) and c.anvils.size() < 20:
+		return 6032
 	return -1
+
+
+## Make room for `target` by selling a starter item that has not been built into anything (bots only).
+static func _bot_free_slot(c, target: int) -> bool:
+	if c.items.size() < MAX_SLOTS:
+		return true
+	if not c.can_shop():
+		return false
+	var p := price_for(c, target)
+	if c.items.size() - p[1].size() + 1 <= MAX_SLOTS:
+		return true
+	for it in c.items:
+		if tier_group(it.item_id) == "starter" and not (it.item_id in build_ids(c)):
+			sell(c, it)
+			return c.items.size() < MAX_SLOTS
+	for it in c.items:
+		if tier_group(it.item_id) == "starter":
+			sell(c, it)
+			return c.items.size() < MAX_SLOTS
+	return false
+
+
+static func build_ids(c) -> Array:
+	return BUILDS.get(c.alias, DEFAULT_BUILD)
 
 
 static func _owns(c, item_id: int) -> bool:
 	for it in c.items:
 		if it.item_id == item_id:
 			return true
+	return false
+
+
+static func _owns_upgrade(c, item_id: int) -> bool:
+	for it in c.items:
+		if _builds_from(it.item_id, item_id):
+			return tier_group(item_id) == "legendary" and false
 	return false
 
 
@@ -411,7 +1009,7 @@ static func _best_component(c, target: int) -> int:
 		var comp: int = stack.pop_back()
 		if _owns(c, comp):
 			continue
-		if buy_block_reason(c, comp) == "" and cost_of(comp) > best_cost:
+		if buy_block_reason(c, comp) == "" and cost_of(comp) > best_cost and c.items.size() < MAX_SLOTS + 1:
 			best = comp
 			best_cost = cost_of(comp)
 		stack += components_of(comp)
