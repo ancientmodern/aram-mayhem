@@ -1,0 +1,152 @@
+[
+ {
+  "id": 54000,
+  "num": 0,
+  "name": "Malphite",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54001,
+  "num": 1,
+  "name": "Shamrock Malphite",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54002,
+  "num": 2,
+  "name": "Coral Reef Malphite",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54003,
+  "num": 3,
+  "name": "Marble Malphite",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54004,
+  "num": 4,
+  "name": "Obsidian Malphite",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54005,
+  "num": 5,
+  "name": "Glacial Malphite",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54006,
+  "num": 6,
+  "name": "Mecha Malphite",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54007,
+  "num": 7,
+  "name": "Ironside Malphite",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54016,
+  "num": 16,
+  "name": "Odyssey Malphite",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54023,
+  "num": 23,
+  "name": "Dark Star Malphite",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54024,
+  "num": 24,
+  "name": "Prestige Dark Star Malphite",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54025,
+  "num": 25,
+  "name": "FPX Malphite",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54027,
+  "num": 27,
+  "name": "Old God Malphite",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54037,
+  "num": 37,
+  "name": "Lunar Guardian Malphite",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 54048,
+  "num": 48,
+  "name": "Pool Party Malphite",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ }
+]

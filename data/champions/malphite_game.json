@@ -1,0 +1,364 @@
+{
+ "alias": "Malphite",
+ "name": "Malphite",
+ "stats": {
+  "base_hp": 665.0,
+  "hp_per_level": 104.0,
+  "base_hp_regen": 1.4,
+  "hp_regen_per_level": 0.11,
+  "base_ad": 62.0,
+  "ad_per_level": 4.0,
+  "base_armor": 40.0,
+  "armor_per_level": 4.95,
+  "base_mr": 28.0,
+  "mr_per_level": 2.05,
+  "base_ms": 335.0,
+  "attack_range": 125.0,
+  "attack_speed": 0.736,
+  "attack_speed_ratio": 0.638,
+  "attack_speed_per_level": 3.4,
+  "resource_type": 0,
+  "mana_base": 280.0,
+  "mana_per_level": 60.0,
+  "mana_regen": 1.46,
+  "mana_regen_per_level": 0.11,
+  "critDamageMultiplier": 2.0,
+  "acquisitionRange": 400.0,
+  "selectionHeight": 180.0,
+  "selectionRadius": 125.0,
+  "pathfindingCollisionRadius": 50.0,
+  "overrideGameplayCollisionRadius": 80.0,
+  "healthBarHeight": 115.0,
+  "attack_cast_offset": -0.0503188781440258,
+  "attack_total_time": null,
+  "attack_cast_time": null
+ },
+ "spell_slots": {
+  "Q": "SeismicShard",
+  "W": "Obduracy",
+  "E": "Landslide",
+  "R": "UFSlash"
+ },
+ "passive": "MalphiteShield",
+ "passive_name": "Granite Shield",
+ "passive_desc": "Malphite is shielded by a layer of rock which absorbs damage up to 10% of his maximum Health. If Malphite has not been hit for a few seconds, this effect recharges.",
+ "spells": {
+  "MalphiteShield": {
+   "script": "MalphiteShield",
+   "data_values": {},
+   "calcs": {
+    "#250242d7": "byLevelBreakpoints(L1=8)",
+    "#6594c758": "0.1*CurrentHealth"
+   },
+   "castRange": 0.0,
+   "name": "Granite Shield",
+   "tooltip": "Malphite grants himself <shield>@TotalShield@ Shield</shield> after not taking damage for @PassiveCooldown@ seconds.",
+   "summary": "Malphite is shielded by a layer of rock which absorbs damage up to 10% of his maximum Health. If Malphite has not been hit for a few seconds, this effect recharges."
+  },
+  "MalphiteCleave": {
+   "script": "MalphiteCleave",
+   "data_values": {},
+   "cooldownTime": 16.0,
+   "mana": [
+    50.0,
+    55.0,
+    60.0,
+    65.0,
+    70.0,
+    75.0
+   ],
+   "castRadius": 350.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "Obduracy"
+  },
+  "ObduracyAttack": {
+   "script": "ObduracyAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1000.0,
+   "mAnimationName": "Spell1_Attack",
+   "mAlternateName": "Obduracy"
+  },
+  "MalphiteThunderclap": {
+   "script": "MalphiteThunderclap",
+   "data_values": {},
+   "cooldownTime": 16.0,
+   "mana": [
+    50.0,
+    55.0,
+    60.0,
+    65.0,
+    70.0,
+    75.0
+   ],
+   "castRadius": 350.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "Obduracy"
+  },
+  "Obduracy": {
+   "script": "Obduracy",
+   "data_values": {
+    "ThunderclapBuffDuration": 5.0,
+    "ThunderclapBaseDamage": [
+     20.0,
+     30.0,
+     40.0,
+     50.0,
+     60.0,
+     70.0,
+     80.0
+    ],
+    "ThunderclapSlowDamage": 2.0,
+    "ThunderclapSplashAP": 0.3,
+    "ThunderclapSplashArmor": 0.15,
+    "ThunderclapBaseDamageAPRatio": 0.2,
+    "ThunderclapBaseDamageArmorRatio": 0.15,
+    "ThunderclapSplashDamage": [
+     5.0,
+     15.0,
+     25.0,
+     35.0,
+     45.0,
+     55.0,
+     65.0
+    ],
+    "BonusArmorPassive": [
+     0.05,
+     0.1,
+     0.15,
+     0.2,
+     0.25,
+     0.3,
+     0.35
+    ],
+    "BonusArmorPassiveMultiplier": 3.0,
+    "ThunderClapSplashRange": 400.0,
+    "MonsterDamageMod": 1.8
+   },
+   "calcs": {
+    "#f943352d": "ThunderclapBaseDamage + ThunderclapBaseDamageAPRatio*AP + ThunderclapBaseDamageArmorRatio*Armor",
+    "#185669f9": "070e3593: () * ThunderclapSlowDamage",
+    "#1dbb5920": "ThunderclapSplashDamage + ThunderclapSplashAP*AP + ThunderclapSplashArmor*Armor",
+    "#71941255": "(BonusArmorPassive * BonusArmorPassiveMultiplier)"
+   },
+   "cooldownTime": [
+    10.0,
+    10.0,
+    9.5,
+    9.0,
+    8.5,
+    8.0,
+    8.0
+   ],
+   "mana": [
+    30.0,
+    35.0,
+    40.0,
+    45.0,
+    50.0,
+    55.0
+   ],
+   "castRadius": 350.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Spell1",
+   "name": "Thunderclap",
+   "tooltip": "<spellPassive>Passive: </spellPassive>Malphite gains <scaleArmor>@BonusArmorPassive*100@% Armor (%i:scaleArmor%@f1@)</scaleArmor>. This effect is increased to <scaleArmor>@BonusArmorPassive*300@% (%i:scaleArmor%@f2@)</scaleArmor> while <spellName>Granite Shield</spellName> is active.<br><br><spellPassive>Active: </spellPassive>Malphite's next Attack deals an additional <physicalDamage>@TotalBonusDamage@ physical damage</physicalDamage> and creates an aftershock which deals <physicalDamage>@ThunderclapSplash@ physical damage</physicalDamage> %i:OnHit% <OnHit>On-Hit</OnHit> in their direction. His Attacks continue to create aftershocks %i:OnHit% <OnHit>On-Hit</OnHit> for the next @ThunderclapBuffDuration@ seconds.",
+   "summary": "Malphite attacks with such force that it creates a sonic boom. For the next few seconds, his attacks create aftershocks in front of him."
+  },
+  "UnstoppableForceStun": {
+   "script": "UnstoppableForceStun",
+   "data_values": {},
+   "cooldownTime": 75.0,
+   "mana": [
+    100.0,
+    100.0,
+    100.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "castRange": 1200.0,
+   "castRadius": 20.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 700.0,
+   "mLineWidth": 160.0,
+   "mAnimationName": "Spell4"
+  },
+  "UFSlash": {
+   "script": "UFSlash",
+   "data_values": {
+    "BaseDamage": [
+     100.0,
+     200.0,
+     300.0,
+     400.0,
+     500.0,
+     600.0,
+     700.0
+    ],
+    "KnockupDuration": 1.5
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamage + 0.9*AP"
+   },
+   "cooldownTime": [
+    130.0,
+    130.0,
+    115.0,
+    100.0,
+    100.0,
+    100.0,
+    100.0
+   ],
+   "mana": [
+    100.0,
+    100.0,
+    100.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "castRange": 1000.0,
+   "castRadius": 270.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 700.0,
+   "mLineWidth": 160.0,
+   "mAnimationName": "Spell4",
+   "name": "Unstoppable Force",
+   "tooltip": "Malphite charges with the force of a landslide, dashing Unstoppably. At the end of the dash, Malphite <status>Knocks Up</status> for @KnockupDuration@ seconds and deals <magicDamage>@TotalDamage@ magic damage</magicDamage>.",
+   "summary": "Malphite launches himself to a location at high speed, damaging enemies and knocking them into the air."
+  },
+  "SeismicShardBuff": {
+   "script": "SeismicShardBuff",
+   "data_values": {}
+  },
+  "SeismicShard": {
+   "script": "SeismicShard",
+   "data_values": {
+    "SpeedSteal": [
+     20.0,
+     20.0,
+     25.0,
+     30.0,
+     35.0,
+     40.0,
+     45.0
+    ],
+    "SlowDuration": 3.0,
+    "BaseDamage": [
+     20.0,
+     70.0,
+     120.0,
+     170.0,
+     220.0,
+     270.0,
+     320.0
+    ]
+   },
+   "calcs": {
+    "#7819cf9c": "BaseDamage + 0.6*AP"
+   },
+   "cooldownTime": 8.0,
+   "mana": [
+    70.0,
+    75.0,
+    80.0,
+    85.0,
+    90.0,
+    95.0
+   ],
+   "castRange": 625.0,
+   "castRadius": 780.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mAnimationName": "Spell2",
+   "name": "Seismic Shard",
+   "tooltip": "Malphite launches a shard of earth at an enemy, dealing <magicDamage>@QDamageCalc@ magic damage</magicDamage> and <status>Slowing</status> them by @SpeedSteal@% for @SlowDuration@ seconds. Malphite also steals the amount <status>Slowed</status>, gaining it as <speed>Move Speed</speed> for @SlowDuration@ seconds.",
+   "summary": "Malphite sends a shard of the earth through the ground at his foe, dealing damage upon impact and stealing Move Speed for 3 seconds."
+  },
+  "Landslide": {
+   "script": "Landslide",
+   "data_values": {
+    "BaseDamage": [
+     25.0,
+     60.0,
+     95.0,
+     130.0,
+     165.0,
+     200.0,
+     235.0
+    ],
+    "ASReduction": [
+     25.0,
+     30.0,
+     35.0,
+     40.0,
+     45.0,
+     50.0,
+     55.0
+    ],
+    "Duration": 3.0
+   },
+   "calcs": {
+    "#3c18a928": "BaseDamage + 0.4*Armor + 0.6*AP"
+   },
+   "cooldownTime": 7.0,
+   "mana": [
+    50.0,
+    55.0,
+    60.0,
+    65.0,
+    70.0,
+    75.0
+   ],
+   "castRadius": 400.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mCastTime": 0.2418999969959259,
+   "mAnimationName": "Spell3",
+   "mAlternateName": "Landslide",
+   "name": "Ground Slam",
+   "tooltip": "Malphite slams the ground, dealing <magicDamage>@EDamageCalc@ magic damage</magicDamage> and reducing <attackSpeed>Attack Speed by @ASReduction@%</attackSpeed> for @Duration@ seconds.",
+   "summary": "Malphite slams the ground, sending out a shockwave that deals magic damage based on his Armor and reduces the Attack Speed of enemies for a short duration."
+  },
+  "MalphiteBasicAttack2": {
+   "script": "MalphiteBasicAttack2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1000.0,
+   "mAnimationName": "Attack2",
+   "mAlternateName": "MalphiteBasicAttack2"
+  },
+  "MalphiteBasicAttack": {
+   "script": "MalphiteBasicAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1000.0,
+   "mAlternateName": "MalphiteBasicAttack"
+  },
+  "MalphiteCritAttack": {
+   "script": "MalphiteCritAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 600.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1000.0,
+   "mAnimationName": "Crit"
+  }
+ }
+}
