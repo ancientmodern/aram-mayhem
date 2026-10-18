@@ -890,6 +890,9 @@ func handle_settings_action(id: String) -> bool:
 			G.settings.edge_pan = parts[2] == "0"
 		"lock":
 			G.settings.camera_locked = parts[2] == "0"
+			var rig = G.match.get("camera_rig") if G.match != null else null
+			if rig != null:
+				rig.locked = G.settings.camera_locked   # applies immediately from the pause menu
 		"dmg":
 			G.settings.show_all_damage_numbers = parts[2] == "0"
 		"fs":

@@ -994,6 +994,8 @@ func _setup_view() -> void:
 	camera_rig = CameraRig.new()
 	add_child(camera_rig)
 	camera_rig.target = G.player
+	# the rig defaults to locked; honour the player's setting (League default: free camera, Y toggles the lock)
+	camera_rig.locked = G.test_mode or bool(G.settings.get("camera_locked", false))   # test runs follow the player
 	camera_rig.snap_to(G.player.global_position)
 	player_controller = PlayerController.new()
 	player_controller.match_ref = self
