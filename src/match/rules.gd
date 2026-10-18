@@ -4,7 +4,9 @@ extends RefCounted
 
 const START_LEVEL := 3
 const START_GOLD := 1400.0
-const PASSIVE_GOLD_PER_SEC := 8.5          ## 42.5 per 5 s (Mayhem)
+## Classic ARAM (wiki ARAM page): Mayhem-only values are kept behind MAYHEM_MODE for reference.
+const MAYHEM_MODE := false
+const PASSIVE_GOLD_PER_SEC := 8.5 if MAYHEM_MODE else 6.0   ## Mayhem 42.5 / 5 s; classic ARAM 60 / 10 s
 const PASSIVE_GOLD_START := 60.0
 const PASSIVE_XP_PER_SEC := 5.0
 const MAX_LEVEL := 18
@@ -22,8 +24,10 @@ const AUGMENT_CHOICES := 3
 ## Tier weights per augment screen index [silver, gold, prismatic]
 const TIER_WEIGHTS := [[0.15, 0.55, 0.30], [0.30, 0.45, 0.25], [0.30, 0.40, 0.30], [0.25, 0.40, 0.35]]
 const GOLDEN_REROLL_CHANCE := 0.2
-const FIRST_WAVE_TIME := 40.0
+const FIRST_WAVE_TIME := 40.0 if MAYHEM_MODE else 50.0   ## classic ARAM: minions from 0:50
 const WAVE_INTERVAL := 25.0
+## ARAM: 25 s waves early, tightening to 13 s late by game minute (exact curve not published; linear 10:00 -> 22:00).
+const WAVE_INTERVAL_LATE := 13.0
 const WAVE_SPAWN_GAP := 0.8
 const MINION_UPGRADE_INTERVAL := 45.0
 const MINION_MS_START := 360.0             ## +10 MS every 60 s after this
@@ -39,6 +43,7 @@ const SHOP_RADIUS := 14.0                  ## meters from the spawn point (platf
 const AS_CAP := 5.0
 const CRIT_DAMAGE := 2.0
 const SUMMONER_HASTE := 70.0               ## Howling Abyss aura
+const ARAM_OUTGOING_HEAL := 0.5            ## ARAM: healing on other units -50%
 const BASE_GATE_TIME := 15.0
 const LONG_RANGE_DR_START := 1000.0
 const LONG_RANGE_DR_END := 2000.0

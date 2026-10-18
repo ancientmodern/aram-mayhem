@@ -34,7 +34,7 @@ func tick(_dt: float) -> void:
 	var t: float = m.time
 	if t >= next_wave:
 		_spawn_wave()
-		next_wave += Rules.WAVE_INTERVAL
+		next_wave += wave_interval(next_wave)
 	while not queue.is_empty() and queue[0][0] <= t:
 		var q = queue.pop_front()
 		_spawn_minion(q[1], q[2])
@@ -75,3 +75,11 @@ func _spawn_minion(team: int, type: int) -> void:
 	var jitter := Vector3(G.rng.randf_range(-0.6, 0.6), 0, G.rng.randf_range(-0.6, 0.6))
 	m.add_unit(mn, barracks[team] + jitter)
 	mn.facing = G.flat_dir(barracks[team], lanes[team][0] if not lanes[team].is_empty() else barracks[team])
+
+
+## League ARAM wave cadence: 25 s early, shortening with game time to 13 s late.
+static func wave_interval(t: float) -> float:
+	if Rules.MAYHEM_MODE:
+		return Rules.WAVE_INTERVAL
+	var k := clampf((t - 600.0) / 720.0, 0.0, 1.0)
+	return lerpf(Rules.WAVE_INTERVAL, Rules.WAVE_INTERVAL_LATE, k)
