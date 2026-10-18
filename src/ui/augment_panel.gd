@@ -67,6 +67,7 @@ func _process(delta: float) -> void:
 		_anim = 0.0
 		_card_anim = [0.0, 0.0, 0.0]
 		c.match_ref.get_offer(c)
+		Sfx.ui("card_appear")
 	elif not want and open:
 		open = false
 	if open:
@@ -84,11 +85,14 @@ func _input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseMotion:
 		var mp: Vector2 = get_local_mouse_position()
+		var prev_hover := _hover
 		_hover = -1
 		_hover_reroll = -1
 		for i in _card_rects.size():
 			if _card_rects[i].has_point(mp):
 				_hover = i
+		if _hover >= 0 and _hover != prev_hover:
+			Sfx.ui("card_hover")
 		for i in _reroll_rects.size():
 			if _reroll_rects[i].has_point(mp):
 				_hover_reroll = i
@@ -98,6 +102,7 @@ func _input(event: InputEvent) -> void:
 		for i in _reroll_rects.size():
 			if _reroll_rects[i].has_point(mp2):
 				c.match_ref.reroll_offer(c, i)
+				Sfx.ui("reroll")
 				Vfx.ring(c.match_ref, c.global_position, Color(0.8, 0.7, 1.0), 1.5, 0.4)
 				get_viewport().set_input_as_handled()
 				return
@@ -105,6 +110,7 @@ func _input(event: InputEvent) -> void:
 			if _card_rects[i].has_point(mp2):
 				_picked = i
 				_pick_t = 0.0
+				Sfx.ui("card_select")
 				get_viewport().set_input_as_handled()
 				return
 		if _hide_rect.has_point(mp2):

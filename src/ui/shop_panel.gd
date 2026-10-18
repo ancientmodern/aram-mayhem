@@ -115,6 +115,7 @@ func _input(event: InputEvent) -> void:
 	elif _btn_sell.has_point(mp) and selected_owned != null:
 		if champ().can_shop():
 			ItemDB.sell(champ(), selected_owned)
+			Sfx.ui("gold_click")
 			selected_owned = null
 		else:
 			_msg("You can only sell while dead or in base")
@@ -125,8 +126,10 @@ func _buy(id: int) -> void:
 	var r := ItemDB.buy_block_reason(c, id)
 	if r != "":
 		_msg(r)
+		Sfx.ui("locked")
 		return
 	ItemDB.buy(c, id)
+	Sfx.ui("buy")
 	Vfx.rising(c, G.COLOR_GOLD, 0.4, 20)
 
 
