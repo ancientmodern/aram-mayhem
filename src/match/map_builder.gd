@@ -174,6 +174,9 @@ static func build_environment(parent: Node3D) -> void:
 		# colour properties are decoded to linear by the renderer; pre-encode so the buffer holds gamma values
 		env.background_color = env.background_color.linear_to_srgb()
 		env.fog_light_color = env.fog_light_color.linear_to_srgb()
+		# League's environment shader has height fog, but Map12's fog band sits far below the playfield (no visible
+		# effect, docs/LEAGUE_SHADERS.md section 4): no Godot fog haze over the lane
+		env.fog_enabled = false
 	_load_light_grid()
 	we.environment = env
 	parent.add_child(we)
