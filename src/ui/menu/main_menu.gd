@@ -55,7 +55,7 @@ func draw_screen(vs: Vector2) -> void:
 	var lines := [
 		"Right-click  move / attack      A + click  attack-move      S  stop",
 		"Q W E R  abilities (Ctrl+key to level)      D F  summoner spells      1-6  item actives",
-		"P  shop      G  augments      Tab  scoreboard      Space  center camera      Y  lock camera      Esc  menu",
+		"P  shop      Tab  scoreboard      Space  center camera      Y  lock camera      Esc  menu",
 	]
 	for i in lines.size():
 		text(lines[i], Vector2(x, hy + 26 + i * 22), 15, C_TEXT.darkened(0.15), f_body)

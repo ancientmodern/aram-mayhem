@@ -104,6 +104,8 @@ func _draw_stats(vs: Vector2) -> void:
 		draw_rect(Rect2(x, hy, 4, 34), tcol)
 		text(("YOUR TEAM" if team == G.player.team else "ENEMY TEAM") + ("  —  VICTORY" if won else "  —  DEFEAT"), Vector2(x + 14, hy + 23), 16, C_TEXT, f_bold)
 		var cols := [["KDA", 0.30], ["CS", 0.38], ["DAMAGE TO CHAMPIONS", 0.43], ["TAKEN", 0.58], ["GOLD", 0.64], ["ITEMS", 0.70], ["AUGMENTS", 0.86]]
+		if not Rules.AUGMENTS_ENABLED:
+			cols.pop_back()
 		for cc in cols:
 			text(cc[0], Vector2(x + w * cc[1], hy + 23), 12, C_DIM, f_bold)
 		var ry := hy + 40

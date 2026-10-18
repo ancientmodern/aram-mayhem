@@ -15,14 +15,14 @@ var _cards: Array = []           ## [{alias, team, is_player, summoners}]
 
 const TIPS := [
 	"Health relics heal on pickup, then pulse a second, larger heal around them shortly after.",
-	"You can only shop and choose augments while dead or standing on your spawn platform.",
+	"You can only shop while dead or standing on your spawn platform.",
 	"Mark throws a snowball — recast it to dash to whatever it hit.",
-	"Augments arrive at levels 3, 7, 11 and 15. Each card can be rerolled once.",
+	"Poro snax are for poros. Everything else is for the enemy Nexus.",
 	"Turrets hit harder with every consecutive shot on a champion. Let your minions tank.",
 	"Ctrl + Q/W/E/R levels up an ability. Your ultimate unlocks at level 6.",
-	"Tab shows the scoreboard. G reopens pending augment choices.",
+	"Hold Tab for the scoreboard.",
 	"Hold A and left-click to attack-move: you'll attack the closest enemy on the way.",
-	"Champions take reduced damage from long-range pokes in ARAM: Mayhem. Commit to fights!",
+	"Long-range pokes deal reduced damage on the Howling Abyss. Commit to fights!",
 ]
 
 
