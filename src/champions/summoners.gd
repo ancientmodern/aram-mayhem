@@ -132,6 +132,9 @@ class MarkSpell extends Ability:
 			for e in owner.effects:
 				if e.has_method("on_snowball_hit"):
 					e.on_snowball_hit(u)
+		for e in owner.effects:
+			if e.has_method("modify_snowball"):
+				e.modify_snowball(mi)
 		m.add_missile(mi, from)
 		for e in owner.effects:
 			e.on_summoner_cast(self)

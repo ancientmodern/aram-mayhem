@@ -353,12 +353,15 @@ func _seen_by(u: Unit, t: int) -> bool:
 	if u.has_method("is_revealed") and u.is_revealed():
 		return true
 	var ub := u.in_brush
+	var stealthed := (u.cc & Buff.CC.CAMOUFLAGE) != 0
 	for v in units_in_radius(u.global_position, 13.5, t):
 		if v.dead:
 			continue
 		var sight: float = v.sight_range() if v.has_method("sight_range") else 12.0
 		var d := G.flat_dist(v.global_position, u.global_position)
 		if d > sight:
+			continue
+		if stealthed and d > 2.0:
 			continue
 		if ub > 0 and v.in_brush != ub and d > 1.5:
 			continue
@@ -751,6 +754,7 @@ func _spawn_champion(alias: String, team: int, skin: int, is_player: bool, idx: 
 		c.auto_level_abilities()
 	c.add_effect(MayhemAura.new())
 	c.play_anim("idle", 1.0, 0.0)
+	c.augments_pending = 1   # game-start augment screen (level 3)
 	return c
 
 
@@ -806,3 +810,87 @@ func _roll_augment_tiers() -> void:
 func offer_augment(c: Champion) -> void:
 	c.augments_pending += 1
 	G.augment_offer_ready.emit(c)
+
+
+# ===================================================================== augment screens
+var offers := {}                   ## Champion -> {ids, rerolled, tier, round}
+var seen_augments := {}            ## Champion -> {id: true}
+
+
+func augment_tier_for(c: Champion) -> String:
+	var r: int = clampi(c.augment_round, 0, augment_tiers.size() - 1)
+	return augment_tiers[r]
+
+
+func get_offer(c: Champion) -> Dictionary:
+	if offers.has(c):
+		return offers[c]
+	var tier := augment_tier_for(c)
+	var seen: Dictionary = seen_augments.get(c, {})
+	seen_augments[c] = seen
+	var ids := AugmentDB.roll(c, tier, Rules.AUGMENT_CHOICES, seen)
+	if ids.size() < Rules.AUGMENT_CHOICES:
+		# pool ran dry: allow already-seen augments
+		ids = AugmentDB.roll(c, tier, Rules.AUGMENT_CHOICES, {})
+	for aid in ids:
+		seen[aid] = true
+	var off := {"ids": ids, "rerolled": [false, false, false], "tier": tier, "round": c.augment_round}
+	offers[c] = off
+	return off
+
+
+func reroll_offer(c: Champion, i: int) -> void:
+	var off := get_offer(c)
+	if i >= off.ids.size() or off.rerolled[i]:
+		return
+	var excl: Dictionary = seen_augments.get(c, {}).duplicate()
+	for aid in off.ids:
+		excl[aid] = true
+	var pick := AugmentDB.roll(c, off.tier, 1, excl)
+	if pick.is_empty():
+		return
+	off.ids[i] = pick[0]
+	seen_augments[c][pick[0]] = true
+	off.rerolled[i] = true
+
+
+func choose_augment(c: Champion, i: int) -> void:
+	var off := get_offer(c)
+	if off.ids.is_empty():
+		c.augments_pending = maxi(0, c.augments_pending - 1)
+		offers.erase(c)
+		return
+	var aid: String = off.ids[clampi(i, 0, off.ids.size() - 1)]
+	offers.erase(c)
+	grant_augment(c, aid)
+	c.augments_pending = maxi(0, c.augments_pending - 1)
+	c.augment_round += 1
+
+
+## Give an augment to a champion (also used by Transmute & co).
+func grant_augment(c: Champion, aid: String) -> Augment:
+	var a := AugmentDB.create(aid)
+	if a == null:
+		return null
+	c.add_augment(a)
+	a.on_acquire(c)
+	if c == G.player:
+		Vfx.rising(c, G.RARITY_COLORS.get(a.rarity, Color.WHITE), 0.8, 40, 0.8)
+		Vfx.ring(self, c.global_position, G.RARITY_COLORS.get(a.rarity, Color.WHITE), 2.2, 0.6, 0.1, 0.2)
+	return a
+
+
+func bot_choose_augment(c: Champion) -> void:
+	if c.augments_pending <= 0:
+		return
+	if not (c.dead or c.in_fountain):
+		return
+	var off := get_offer(c)
+	# bots reroll offers that are a poor fit
+	for i in off.ids.size():
+		var probe := AugmentDB.create(off.ids[i])
+		if probe != null:
+			probe.owner = c
+			if probe.power + probe.synergy(c) < 1.0 and G.rng.randf() < 0.7:
+				reroll_offer(c, i)
+	choose_augment(c, AugmentDB.bot_pick(c, off.ids))

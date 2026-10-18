@@ -72,6 +72,16 @@ func _ready() -> void:
 	_setup_input()
 
 
+func _exit_tree() -> void:
+	# release static caches before the engine shuts down (avoids a crash on exit)
+	Assets._scene_cache.clear()
+	Assets._mat_cache.clear()
+	Assets._tex_cache.clear()
+	Assets._font_cache.clear()
+	AugmentDB._impl.clear()
+	AugmentDB._catalog.clear()
+
+
 func _process(delta: float) -> void:
 	# smooth time-scale transitions (slow motion on game end etc.)
 	if absf(Engine.time_scale - time_scale_target) > 0.001:
