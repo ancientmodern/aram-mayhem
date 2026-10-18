@@ -83,10 +83,11 @@ func champ():
 
 
 func _process(delta: float) -> void:
+	if not visible:
+		return
 	msg_t = maxf(0.0, msg_t - delta)
 	_caret_t += delta
-	if visible:
-		queue_redraw()
+	queue_redraw()
 
 
 # ===================================================================== data
@@ -194,6 +195,13 @@ func _undo_last() -> void:
 	Sfx.ui("click")
 
 
+## Sell a specific owned item (HUD drag-and-drop onto the shop).
+func sell_item(it) -> void:
+	selected_owned = it
+	selected = it.item_id
+	_sell()
+
+
 func _msg(s: String) -> void:
 	msg = s
 	msg_t = 2.5
@@ -221,7 +229,8 @@ func _input(event: InputEvent) -> void:
 			selected = selected_owned.item_id
 			if mb.button_index == MOUSE_BUTTON_RIGHT:
 				_sell()
-			get_viewport().set_input_as_handled()
+				get_viewport().set_input_as_handled()
+			# left click is left to the HUD so the item can be dragged (swap slots / drop on the shop to sell)
 			return
 	if not panel.has_point(mp):
 		return
@@ -407,7 +416,7 @@ func _draw_recommended() -> void:
 		var cx := slot.get_center().x - (comps.size() * 40.0 * L.s()) * 0.5
 		for ci in comps.size():
 			var comp: int = comps[ci]
-			var r := Rect2(cx + ci * 40.0 * L.s(), slot.position.y + 250.0 * L.s(), 34.0 * L.s(), 34.0 * L.s())
+			var r := Rect2(cx + ci * 40.0 * L.s(), slot.position.y + 395.0 * L.s(), 34.0 * L.s(), 34.0 * L.s())   # below the info diamond, clear of the blurb
 			_item_cell_small(r, comp)
 		_hits.append([slot, "item", id])
 		if hov:

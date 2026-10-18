@@ -1,10 +1,16 @@
 class_name Hud
 extends Control
-## In-game HUD rebuilt from League's own HUD (UI.wad.client): textures, atlas UVs, positions and anchors come
-## from assets/ui/hud/layout.json (tools/lol/extract_hud.py). Everything is drawn in _draw() through HudLayout.
-## Pieces: player frame (portrait/XP/level, abilities, summoners, resource bars), inventory + gold/shop button,
-## stats panel, buffs, top-right header, team frames, kill callouts, announcement banners, minimap,
-## Tab scoreboard (hud/hud_scoreboard.gd) and League tooltips (hud/hud_tooltip.gd).
+## In-game HUD rebuilt from League's own HUD (UI.wad.client): textures, atlas UVs, positions, anchors, font styles
+## and flipbook effects come from assets/ui/hud/layout.json + fonts.json (tools/lol/extract_hud.py).
+##
+## Performance: the HUD is split into retained canvas layers (child Controls). Godot keeps each layer's draw
+## commands until it is redrawn, so a layer is only re-recorded when the data it shows changes:
+##   minimap (24 Hz) < static frame art (resize only) < info (header, team frames, stats; on change)
+##   < player (portrait, bars, inventory, gold; on change, <=30 Hz) < one layer per spell slot (<=30 Hz while its
+##   cooldown sweeps) < level-up buttons < buffs (<=15 Hz)
+##   < target frame < feed (kill callouts + chat) < fx (flipbooks, banners, pings; only while something animates)
+##   < top (tooltip, scoreboard, ping wheel, drag ghost).
+## Each layer's draw function records its own hit regions; input walks them top-down.
 
 signal open_shop
 signal open_augments
@@ -14,14 +20,42 @@ const INV := "Inventory:"
 const C_TEXT := Color(0.941, 0.902, 0.824)
 const C_DIM := Color(0.647, 0.627, 0.588)
 const C_GOLD := Color(0.784, 0.667, 0.431)
-const C_GOLD_TXT := Color(0.98, 0.84, 0.42)
 const C_CD := Color(1, 1, 1)
-const C_MANA_TXT := Color(0.62, 0.8, 1.0)
+const C_ALLY := Color(0.42, 0.72, 1.0)
+const C_ENEMY := Color(0.95, 0.35, 0.32)
 const ITEM_KEYS := ["1", "2", "3", "4", "5", "6"]
 ## League minimap world bounds for Map12 (League units, x / z)
 const MM_MIN := Vector2(-28.0, -19.0)
 const MM_MAX := Vector2(12849.0, 12858.0)
 const ANN_TIME := 3.2
+const SLOT_KEYS := ["Q", "W", "E", "R", "D", "F"]
+
+
+## One retained draw layer.
+class Canvas extends Control:
+	var fn: Callable
+	var hits: Array = []        ## [Rect2, key]
+	var solid: Array = []       ## Rect2 regions that swallow world clicks
+	var last_t := -100.0        ## time of the last redraw request
+	var check_t := -100.0       ## time of the last signature check (staggered so layers don't all check on one frame)
+	var sig = null              ## last data signature
+	var _prof_key := ""
+
+	func _init(p_fn: Callable, p_name: String) -> void:
+		fn = p_fn
+		name = p_name
+		_prof_key = "hud." + p_name
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		set_anchors_preset(Control.PRESET_FULL_RECT)
+
+	func _draw() -> void:
+		var pt := Prof.t0()
+		hits.clear()
+		solid.clear()
+		fn.call(self)
+		Prof.add("draw.hud", pt)
+		Prof.add(_prof_key, pt)
+
 
 var match_ref = null
 var champ: Champion = null
@@ -33,6 +67,9 @@ var f_bold: Font
 var augment_panel = null
 var shop_panel = null
 var scoreboard: HudScoreboard = null
+var chat: HudChat = null
+var pings: HudPings = null
+var target_frame: HudTarget = null
 var scoreboard_visible := false
 var fps_visible := true
 var advanced_stats := false
@@ -43,25 +80,52 @@ var ann_queue: Array = []            ## pending announcements
 var ann: Dictionary = {}             ## current announcement {text, sub, col, t, kill?}
 var _pending_kill := {}
 var _pending_kill_frame := -10
-var _hits: Array = []                ## [Rect2, key] hover / click regions built while drawing
-var _solid: Array = []               ## Rect2 regions that swallow world clicks
 var _mouse := Vector2(-1, -1)
 var _hover_key := ""
 var _tip: Dictionary = {}
 var _tip_rect := Rect2()
-var _tip_t := 0.0
+var _tip_refresh := 0.0
+var _tip_gen := 0
 var _mm_drag := false
 var _mm_rect := Rect2()
 var minimap_tex: Texture2D = null
 var _last_level := 0
 var _level_flash := 0.0
+var _now := 0.0
+var _fps_shown := 0
+var _fps_t := 0.0
+var _size_seen := Vector2.ZERO
+var _fx: Array = []                  ## running one-shot flipbooks {key, t0, off}
+var _was_ready := [true, true, true, true, true, true]
+var _could_level := [false, false, false, false]
+var _ab_levels := [0, 0, 0, 0]
+var _glow_t0 := [0.0, 0.0, 0.0, 0.0]
+var _drag := {}                      ## inventory drag {slot, start, active}
+var _fx_was_active := false
+var _vis_buffs: Array = []
+var _vis_buffs_frame := -1
+
+var cv_mm: Canvas
+var cv_base: Canvas
+var cv_info: Canvas
+var cv_player: Canvas
+var cv_bars: Canvas
+var cv_slots: Array = []           ## 3 canvases per spell slot (icon / cooldown / frame), see _draw_spell_slot
+var cv_levelup: Canvas
+var cv_buffs: Canvas
+var cv_target: Canvas
+var cv_feed: Canvas
+var cv_fx: Canvas
+var cv_fxadd: Canvas               ## additive flipbooks (League UI effects are additive)
+var cv_top: Canvas
+var _layers: Array = []
 
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	f_title = Assets.font("beaufort", "Bold")
-	f_num = Assets.font("spiegel", "Bold")
+	f_num = Assets.font("beaufort", "Bold")
 	f_body = Assets.font("spiegel", "Regular")
 	f_bold = Assets.font("spiegel", "Bold")
 	champ = G.player
@@ -70,6 +134,33 @@ func _ready() -> void:
 	G.champion_killed.connect(_on_kill)
 	champ.cast_failed.connect(_on_cast_failed)
 	minimap_tex = Assets.tex("res://assets/ui/hud/minimap_map12.png")
+	scoreboard = HudScoreboard.new()
+	scoreboard.hud = self
+	chat = HudChat.new()
+	chat.hud = self
+	pings = HudPings.new()
+	pings.hud = self
+	target_frame = HudTarget.new()
+	target_frame.hud = self
+	cv_mm = _layer(_draw_minimap, "Minimap")
+	cv_base = _layer(_draw_base, "Base")
+	cv_info = _layer(_draw_info, "Info")
+	cv_player = _layer(_draw_player, "Player")
+	cv_bars = _layer(_draw_bars, "Bars")
+	for part in 3:
+		for si in 7:
+			cv_slots.append(_layer(_draw_slot.bind(si - 1, part), "Slot%d_%s" % [si, ["Icon", "Cd", "Frame"][part]]))
+	cv_levelup = _layer(_draw_levelup, "LevelUp")
+	cv_buffs = _layer(_draw_buffs, "Buffs")
+	cv_target = _layer(target_frame.draw, "Target")
+	cv_feed = _layer(_draw_feed, "Feed")
+	cv_fxadd = _layer(_draw_fx_add, "FxAdd")
+	var add_mat := CanvasItemMaterial.new()
+	add_mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	cv_fxadd.material = add_mat
+	cv_fx = _layer(_draw_fx, "Fx")
+	cv_top = _layer(_draw_top, "Top")
+	chat.setup(self)
 	# augments are disabled (Rules.AUGMENTS_ENABLED); the panel is kept dormant for when they return
 	if Rules.AUGMENTS_ENABLED:
 		augment_panel = AugmentPanel.new()
@@ -79,8 +170,33 @@ func _ready() -> void:
 	shop_panel.hud = self
 	add_child(shop_panel)
 	shop_panel.visible = false
-	scoreboard = HudScoreboard.new()
-	scoreboard.hud = self
+	for i in 4:
+		var ab: Ability = champ.abilities[i]
+		_ab_levels[i] = ab.level if ab != null else 0
+	_warm_up()
+
+
+## Load every texture the HUD can draw up front so the first kill / glint / ping doesn't hitch.
+func _warm_up() -> void:
+	var seen := {}
+	for k in HudLayout.data():
+		var t = HudLayout.data()[k].get("t")
+		if t != null and not seen.has(t) and not (k as String).begins_with("Shop:") and not (k as String).begins_with("Scoreboard:"):
+			seen[t] = true
+			HudLayout.tex(t)
+	for c in match_ref.champions:
+		Assets.champion_square(c.alias)
+	for n in HudPings.KINDS:
+		HudPings._tex(HudPings.KINDS[n].icon)
+		HudPings._tex(HudPings.KINDS[n].ring)
+
+
+func _layer(fn: Callable, nm: String) -> Canvas:
+	var c := Canvas.new(fn, nm)
+	c.check_t = -0.0071 * _layers.size()
+	add_child(c)
+	_layers.append(c)
+	return c
 
 
 func _process(delta: float) -> void:
@@ -90,23 +206,78 @@ func _process(delta: float) -> void:
 
 
 func _process_frame(delta: float) -> void:
+	_now += delta
+	L.begin(size)
+	if size != _size_seen:
+		_size_seen = size
+		for c in _layers:
+			c.sig = null
+			c.queue_redraw()
 	fail_t = maxf(0.0, fail_t - delta)
-	_tip_t -= delta
 	_level_flash = maxf(0.0, _level_flash - delta)
 	if champ.level != _last_level:
 		_last_level = champ.level
 		_level_flash = 1.0
 	for f in feed:
 		f.t -= delta
-	feed = feed.filter(func(f): return f.t > 0.0)
+	if not feed.is_empty() and feed[feed.size() - 1].t <= 0.0:
+		feed = feed.filter(func(f): return f.t > 0.0)
 	if not ann.is_empty():
 		ann.t -= delta
 		if ann.t <= 0.0:
 			ann = {}
 	if ann.is_empty() and not ann_queue.is_empty():
 		ann = ann_queue.pop_front()
-	scoreboard_visible = Input.is_action_pressed("scoreboard") and not shop_panel.visible
-	queue_redraw()
+	var sb: bool = Input.is_action_pressed("scoreboard") and not shop_panel.visible and not chat.typing
+	if sb != scoreboard_visible:
+		scoreboard_visible = sb
+		cv_top.sig = null
+	_fps_t -= delta
+	if _fps_t <= 0.0:
+		_fps_t = 1.0
+		_fps_shown = int(Engine.get_frames_per_second())
+	_track_fx()
+	pings.process(delta)
+	chat.process(delta)
+	target_frame.process()
+	_schedule()
+
+
+## Request redraws for layers whose data changed (throttled per layer).
+func _schedule() -> void:
+	if _now - cv_mm.last_t >= 1.0 / 24.0:
+		_redraw(cv_mm)
+	_maybe(cv_info, 0.1, _sig_info)
+	_maybe(cv_player, 1.0 / 30.0, _sig_player)
+	_maybe(cv_bars, 1.0 / 30.0, _sig_bars)
+	for part in 3:
+		for si in 7:
+			_maybe(cv_slots[part * 7 + si], 1.0 / 30.0, _sig_slot.bind(si - 1, part))
+	_maybe(cv_levelup, 1.0 / 30.0, _sig_levelup)
+	_maybe(cv_buffs, 1.0 / 15.0, _sig_buffs)
+	_maybe(cv_target, 1.0 / 15.0, target_frame.sig)
+	_maybe(cv_feed, 1.0 / 30.0, _sig_feed)
+	var fx_active := _fx_active()
+	if fx_active or _fx_was_active:
+		_redraw(cv_fx)
+		_redraw(cv_fxadd)
+	_fx_was_active = fx_active
+	_maybe(cv_top, 0.0, _sig_top)
+
+
+func _redraw(c: Canvas) -> void:
+	c.last_t = _now
+	c.queue_redraw()
+
+
+func _maybe(c: Canvas, min_dt: float, sig_fn: Callable) -> void:
+	if _now - c.check_t < min_dt:
+		return
+	c.check_t = maxf(c.check_t + min_dt, _now - min_dt)
+	var s = sig_fn.call()
+	if s != c.sig:
+		c.sig = s
+		_redraw(c)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -118,8 +289,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("toggle_fps"):
 		fps_visible = not fps_visible
-	elif event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_C and not event.ctrl_pressed:
-		advanced_stats = not advanced_stats
+		cv_info.sig = null
+	elif event is InputEventKey and event.pressed and not event.echo:
+		var k := event as InputEventKey
+		if (k.keycode == KEY_ENTER or k.keycode == KEY_KP_ENTER) and not shop_panel.visible:
+			chat.open()
+			get_viewport().set_input_as_handled()
+		elif k.keycode == KEY_C and not k.ctrl_pressed:
+			advanced_stats = not advanced_stats
+			cv_base.queue_redraw()
+			cv_info.sig = null
 
 
 func toggle_shop() -> void:
@@ -150,15 +329,16 @@ func _on_cast_failed(_ab, reason: String) -> void:
 
 
 func _on_kill(victim, killer, assisters) -> void:
-	var ally: bool = killer != null and is_instance_valid(killer) and killer.team == champ.team
-	if killer == null or not is_instance_valid(killer):
+	var kv = killer if killer != null and is_instance_valid(killer) else null
+	var ally: bool = kv != null and kv.team == champ.team
+	if kv == null:
 		ally = victim.team != champ.team
-	feed.push_front({"killer": killer if killer != null and is_instance_valid(killer) else null, "victim": victim,
-		"assists": assisters.duplicate(), "ally": ally, "t": 10.0})
+	feed.push_front({"killer": kv, "victim": victim, "assists": assisters.duplicate(), "ally": ally, "t": 10.0})
 	if feed.size() > 5:
 		feed.pop_back()
-	_pending_kill = {"killer": killer if killer != null and is_instance_valid(killer) else null, "victim": victim, "ally": ally}
+	_pending_kill = {"killer": kv, "victim": victim, "ally": ally}
 	_pending_kill_frame = Engine.get_process_frames()
+	chat.kill(victim, kv)
 
 
 func _on_announce(text: String, sub: String, col: Color) -> void:
@@ -167,26 +347,50 @@ func _on_announce(text: String, sub: String, col: Color) -> void:
 		a["kill"] = _pending_kill
 		a.sub = ""
 		_pending_kill = {}
+	else:
+		chat.announcement(text, col)
 	if ann_queue.size() > 3:
 		ann_queue.pop_front()
 	ann_queue.append(a)
 
 
 # ===================================================================== input
+func _input(event: InputEvent) -> void:
+	# pings and target selection see world clicks before the player controller (which only uses LMB for casts)
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not chat.typing:
+		var mb := event as InputEventMouseButton
+		if pings.handle_button(mb):
+			get_viewport().set_input_as_handled()
+			return
+		if mb.pressed and not _over_ui(mb.position) and not shop_panel.visible:
+			target_frame.on_world_click()
+	elif event is InputEventMouseMotion:
+		pings.handle_motion(event.position)
+
+
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		_mouse = event.position
 		if _mm_drag and _mm_rect.has_point(_mouse):
 			_minimap_camera(_mouse)
+		if not _drag.is_empty() and not _drag.active and _mouse.distance_to(_drag.start) > 6.0:
+			_drag.active = true
+		_update_hover()
 		return
 	if not (event is InputEventMouseButton):
 		return
 	var mb := event as InputEventMouseButton
+	var mp := mb.position
 	if not mb.pressed:
 		if mb.button_index == MOUSE_BUTTON_LEFT:
 			_mm_drag = false
+			if not _drag.is_empty():
+				_end_drag(mp)
 		return
-	var mp := mb.position
+	if mb.button_index == MOUSE_BUTTON_WHEEL_UP or mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		if chat.handle_wheel(mp, mb.button_index == MOUSE_BUTTON_WHEEL_UP):
+			accept_event()
+		return
 	if _mm_rect.has_point(mp):
 		var wp := minimap_to_world(mp)
 		if mb.button_index == MOUSE_BUTTON_LEFT:
@@ -196,23 +400,53 @@ func _gui_input(event: InputEvent) -> void:
 			champ.issue_move(match_ref.nav.nearest_walkable(wp))
 		accept_event()
 		return
-	for h in _hits:
-		if not (h[0] as Rect2).has_point(mp):
-			continue
-		var k: String = h[1]
+	var hk := _hit_at(mp)
+	if hk != "":
 		if mb.button_index == MOUSE_BUTTON_LEFT:
-			if k.begins_with("lvl"):
-				champ.level_ability(int(k.substr(3)))
+			if hk.begins_with("lvl"):
+				champ.level_ability(int(hk.substr(3)))
 				Sfx.ui("gold_click")
-			elif k == "shop":
+			elif hk == "shop":
 				toggle_shop()
-			elif k == "stats_btn":
+			elif hk == "stats_btn":
 				advanced_stats = not advanced_stats
+				cv_base.queue_redraw()
+				cv_info.sig = null
+			elif hk.begins_with("item") and not hk.begins_with("item_t"):
+				_drag = {"slot": int(hk.substr(4)), "start": mp, "active": false}
 		accept_event()
 		return
-	for r in _solid:
-		if (r as Rect2).has_point(mp):
-			accept_event()
+	if _over_ui(mp):
+		accept_event()
+
+
+func _end_drag(mp: Vector2) -> void:
+	var d := _drag
+	_drag = {}
+	cv_top.sig = null
+	if not d.active:
+		return
+	var from: int = d.slot
+	if from >= champ.items.size():
+		return
+	# drop on the shop -> sell (League: drag an item onto the shop to sell it)
+	if shop_panel.visible and shop_panel.panel.has_point(mp):
+		shop_panel.sell_item(champ.items[from])
+		return
+	for i in 6:
+		if L.r(INV + "InventoryItem%d_Backdrop" % i).has_point(mp):
+			if i == from:
+				return
+			# items are stored packed: swapping with an empty slot moves the item to the end
+			var it = champ.items[from]
+			if i < champ.items.size():
+				champ.items[from] = champ.items[i]
+				champ.items[i] = it
+			else:
+				champ.items.remove_at(from)
+				champ.items.append(it)
+			champ.items_changed.emit()
+			Sfx.ui("click")
 			return
 
 
@@ -222,29 +456,45 @@ func _minimap_camera(mp: Vector2) -> void:
 	match_ref.camera_rig.focus = Vector3(wp.x, match_ref.nav.height_at(wp), wp.z)
 
 
-func _has_point_ui(mp: Vector2) -> bool:
-	if _mm_rect.has_point(mp):
+func _over_ui(mp: Vector2) -> bool:
+	if _mm_rect.has_point(mp) or chat.has_point(mp):
 		return true
-	for r in _solid:
-		if (r as Rect2).has_point(mp):
-			return true
+	for c in _layers:
+		for r in c.solid:
+			if (r as Rect2).has_point(mp):
+				return true
 	return false
 
 
+func _has_point_ui(mp: Vector2) -> bool:
+	return _over_ui(mp)
+
+
+func _hit_at(mp: Vector2) -> String:
+	for li in range(_layers.size() - 1, -1, -1):
+		var hits: Array = _layers[li].hits
+		for i in range(hits.size() - 1, -1, -1):
+			if (hits[i][0] as Rect2).has_point(mp):
+				return hits[i][1]
+	return ""
+
+
+func _hit_rect(key: String) -> Rect2:
+	for c in _layers:
+		for h in c.hits:
+			if h[1] == key:
+				return h[0]
+	return Rect2()
+
+
 func _update_hover() -> void:
-	var key := ""
-	var rect := Rect2()
-	for i in range(_hits.size() - 1, -1, -1):
-		var h = _hits[i]
-		if (h[0] as Rect2).has_point(_mouse):
-			key = h[1]
-			rect = h[0]
-			break
-	if key != _hover_key or _tip_t <= 0.0:
+	var key := _hit_at(_mouse) if not shop_panel.visible or not shop_panel.panel.has_point(_mouse) else ""
+	if key != _hover_key:
 		_hover_key = key
-		_tip_rect = rect
+		_tip_rect = _hit_rect(key)
 		_tip = _build_tip(key)
-		_tip_t = 0.4
+		_tip_refresh = 0.5
+		cv_top.sig = null
 
 
 func _build_tip(k: String) -> Dictionary:
@@ -252,13 +502,17 @@ func _build_tip(k: String) -> Dictionary:
 		return {}
 	if k in ["P", "Q", "W", "E", "R", "D", "F"]:
 		return HudTooltip.ability(champ, k)
+	if k.begins_with("item_t"):
+		return target_frame.item_tip(int(k.substr(6)))
 	if k.begins_with("item"):
 		var i := int(k.substr(4))
 		if i < champ.items.size():
 			return HudTooltip.item(champ.items[i].item_id, champ, champ.items[i])
 		return {}
+	if k.begins_with("tbuff"):
+		return target_frame.buff_tip(int(k.substr(5)))
 	if k.begins_with("buff"):
-		var vis := _visible_buffs()
+		var vis := visible_buffs()
 		var bi := int(k.substr(4))
 		return HudTooltip.buff(vis[bi]) if bi < vis.size() else {}
 	if k.begins_with("lvl"):
@@ -282,67 +536,171 @@ func _ally_by_uid(uid: int):
 	return null
 
 
-# ===================================================================== drawing
-func _draw() -> void:
-	var pt := Prof.t0()
-	_draw_frame()
-	Prof.add("draw.hud", pt)
+# ===================================================================== signatures (what each layer shows)
+func _cd_q(ab) -> int:
+	## cooldown state quantised to what the slot visibly shows (sweep at 30 steps/s, text per second / 0.1 s)
+	if ab == null or ab.is_ready() or ab.cd <= 0.0:
+		return -1
+	return int(ab.cd * 30.0)
 
 
-func _draw_frame() -> void:
-	if champ == null:
-		return
-	L.begin(size)
-	_hits.clear()
-	_solid.clear()
-	_draw_header()
-	_draw_team_frames()
-	_draw_minimap()
-	_draw_kill_feed()
-	_draw_stats()
-	_draw_player_frame()
-	_draw_inventory()
-	_draw_buffs()
-	_draw_announcement()
-	if fail_t > 0.0:
-		var a := minf(1.0, fail_t * 2.5)
-		L.text(self, PF + "StatusMessageToolTip", fail_msg, f_bold, 18, Color(1.0, 0.42, 0.36, a), 1)
+func _sig_info() -> Array:
+	var st := champ.stats
+	var k: Array = match_ref.kills
+	var s := [k[0], k[1], champ.kills, champ.deaths, champ.assists, champ.cs, int(match_ref.time), _fps_shown if fps_visible else -1,
+		int(st.ad), int(st.ap), int(st.armor), int(st.mr), int(st.attack_speed * 100.0), int(st.ability_haste),
+		int(st.crit_chance * 100.0), int(st.move_speed), advanced_stats]
+	if advanced_stats:
+		s.append_array([int(st.hp_regen * 50.0), int(st.heal_power * 100.0), int(st.lethality), int(st.armor_pen_pct * 100.0),
+			int(st.magic_pen), int(st.magic_pen_pct * 100.0), int(st.lifesteal * 100.0), int(st.omnivamp * 100.0),
+			int(st.attack_range), int(st.tenacity * 100.0)])
+	for c in match_ref.champions:
+		if c.team != champ.team or c == champ:
+			continue
+		var ult: Ability = c.abilities[3]
+		s.append_array([c.dead, int(ceil(c.respawn_timer)) if c.dead else 0, c.level, int(c.hp_ratio() * 60.0),
+			int(c.mana / maxf(1.0, c.stats.max_mana) * 60.0), -2 if ult == null or ult.level <= 0 else _cd_q(ult) / 3])
+	return s
+
+
+func _sig_player() -> Array:
+	var s := [int(champ.xp_ratio() * 120.0), champ.level, champ.dead, int(ceil(champ.respawn_timer)), int(champ.gold),
+		champ.can_shop(), shop_panel.visible,
+		_hover_key if _hover_key.begins_with("item") or _hover_key == "shop" else "", _drag.get("slot", -1) if _drag.get("active", false) else -1,
+		int(_level_flash * 10.0)]
+	for it in champ.items:
+		s.append(it.item_id)
+		s.append(int(it.active_left * 10.0) if it.active_left > 0.0 else -1)
+	return s
+
+
+func _sig_bars() -> Array:
+	return [int(champ.hp), int(champ.stats.max_hp), int(champ.total_shield()), int(champ.mana), int(champ.stats.max_mana),
+		champ.dead, int(champ.stats.hp_regen * 50.0), int(champ.stats.mana_regen * 50.0)]
+
+
+func _sig_slot(slot: int, part: int) -> Array:
+	var ab := _ability_for(slot)
+	if part == 1:
+		return [_cd_q(ab), int(ab.recast_window * 30.0) if ab != null else 0]
+	var key: String = "P" if slot < 0 else SLOT_KEYS[slot]
+	var learned := slot < 0 or (ab != null and (ab.is_summoner or ab.level > 0))
+	var on_cd := ab != null and learned and not ab.is_ready() and ab.cd > 0.0
+	var oom := ab != null and learned and not on_cd and not ab.can_afford()
+	if part == 0:
+		return [learned, oom, ab.icon if ab != null else (champ.passive.get("icon") if champ.passive != null else null)]
+	var s := [learned, on_cd, oom, _hover_key == key]
+	if slot < 0:
+		if champ.passive != null and champ.passive.has_method("hud_counter"):
+			s.append(champ.passive.hud_counter())
+	elif ab != null:
+		s.append_array([ab.level, ab.charges, ab.toggled, int(ab.cost()), ab.max_charges])
+	return s
+
+
+func _sig_levelup() -> Array:
+	return [champ.can_level_ability(0), champ.can_level_ability(1), champ.can_level_ability(2), champ.can_level_ability(3),
+		_hover_key if _hover_key.begins_with("lvl") else ""]
+
+
+func _sig_buffs() -> Array:
+	var s := [_hover_key if _hover_key.begins_with("buff") else ""]
+	for b in visible_buffs():
+		s.append_array([b.get_instance_id(), b.stacks, int(b.remaining * 15.0) if not b.permanent else -1])
+	return s
+
+
+func _sig_feed() -> Array:
+	var s := [feed.size(), chat.sig()]
+	for f in feed:
+		s.append(int(clampf(f.t / 0.6, 0.0, 1.0) * clampf((10.0 - f.t) / 0.15, 0.0, 1.0) * 20.0))
+	return s
+
+
+func _sig_top() -> Array:
 	if scoreboard_visible:
-		scoreboard.draw(self, L)
-	elif not shop_panel.visible:
-		_update_hover()
-		if not _tip.is_empty():
-			HudTooltip.draw(self, _tip, _tip_rect, size, size.y / 1080.0)
+		return [true, int(_now * 4.0)]
+	if not _tip.is_empty():
+		# tooltips show live numbers (cooldowns, buff timers): rebuild a few times per second
+		_tip_refresh -= get_process_delta_time()
+		if _tip_refresh <= 0.0:
+			_tip_refresh = 0.25
+			_tip = _build_tip(_hover_key)
+			_tip_gen += 1
+	return [false, _hover_key, _tip_gen, pings.wheel_sig(), _drag_sig(), shop_panel.visible]
 
 
-# --------------------------------------------------------------------- header (top right)
-func _draw_header() -> void:
+func _drag_sig():
+	if _drag.is_empty() or not _drag.active:
+		return null
+	return [_drag.slot, int(_mouse.x), int(_mouse.y)]
+
+
+func _fx_active() -> bool:
+	return not _fx.is_empty() or fail_t > 0.0 or not ann.is_empty() or pings.active() or champ.ability_points > 0 \
+		or (champ.can_shop() and not champ.dead)
+
+
+# ===================================================================== drawing: static frame art
+func _draw_base(ci: Canvas) -> void:
+	L.begin(size)
+	L.draw(ci, "Header:TB_Frame")
+	ci.solid.append(L.draw(ci, "Stats:StatsBg"))
+	if advanced_stats:
+		ci.solid.append(L.draw(ci, "Stats:AdvancedStatsBg"))
+	ci.solid.append(L.draw(ci, PF + "HUDCenterFrame"))
+	L.draw(ci, PF + "PortraitFrameUnderlay")
+	ci.solid.append(L.draw(ci, INV + "InventoryFrame"))
+	for i in 7:
+		L.draw(ci, INV + "InventoryItem%d_Backdrop" % i)
+	L.draw(ci, INV + "Recall_Disabled")
+	L.ltext(ci, INV + "Recall_HotKey", "B")
+	for i in 6:
+		L.ltext(ci, INV + "InventoryItem%d_HotKey" % i, ITEM_KEYS[i])
+	L.ltext(ci, INV + "Shop_HotKey", "P")
+	# minimap frame sits above the minimap layer
+	L.draw(ci, "Minimap:MinimapFrame")
+	ci.solid.append(L.r("Minimap:MinimapFrame"))
+	var fr := L.r("Minimap:MinimapFrame")
+	_mm_rect = L.r("Minimap:MinimapContent")
+	if fr.size.x <= 0.0:
+		_mm_rect = Rect2()
+	chat.layout()
+
+
+# ===================================================================== drawing: header, team frames, stats
+func _draw_info(ci: Canvas) -> void:
+	L.begin(size)
+	_draw_header(ci)
+	_draw_team_frames(ci)
+	_draw_stats(ci)
+
+
+func _draw_header(ci: Canvas) -> void:
 	var H := "Header:"
-	L.draw(self, H + "TB_Frame")
 	var my := champ.team
 	var k: Array = match_ref.kills
-	L.text(self, H + "TB_TeamKills_T1Score", str(k[my]), f_num, 15, Color(0.42, 0.72, 1.0), 2)
-	L.draw(self, H + "TB_TeamKills_Icon1")
-	L.text(self, H + "TB_TeamKills_T2Score", str(k[1 - my]), f_num, 15, Color(0.95, 0.35, 0.32), 0)
-	L.draw(self, H + "TB_Player_KDA_Icon")
-	L.text(self, H + "TB_Player_KDA_Text", "%d/%d/%d" % [champ.kills, champ.deaths, champ.assists], f_num, 15, C_TEXT, 0)
-	L.draw(self, H + "TB_Player_CS_Icon")
-	L.text(self, H + "TB_Player_CS_Text", str(champ.cs), f_num, 15, C_TEXT, 0)
-	L.draw(self, H + "GameTimeIcon")
+	L.ltext(ci, H + "TB_TeamKills_T1Score", str(k[my]), C_ALLY, 2)
+	L.draw(ci, H + "TB_TeamKills_Icon1")
+	L.ltext(ci, H + "TB_TeamKills_T2Score", str(k[1 - my]), C_ENEMY, 0)
+	L.draw(ci, H + "TB_Player_KDA_Icon")
+	L.ltext(ci, H + "TB_Player_KDA_Text", "%d/%d/%d" % [champ.kills, champ.deaths, champ.assists], Color(0, 0, 0, 0), 0)
+	L.draw(ci, H + "TB_Player_CS_Icon")
+	L.ltext(ci, H + "TB_Player_CS_Text", str(champ.cs), Color(0, 0, 0, 0), 0)
+	L.draw(ci, H + "GameTimeIcon")
 	var t: float = match_ref.time
-	L.text(self, H + "GameTime", "%02d:%02d" % [int(t / 60.0), int(t) % 60], f_num, 15, C_TEXT, 0)
+	L.ltext(ci, H + "GameTime", "%02d:%02d" % [int(t / 60.0), int(t) % 60], Color(0, 0, 0, 0), 0)
 	if fps_visible:
-		# League's FPS / latency readout under the header
+		# League's FPS / latency readout under the header (HUD_Metrics style), refreshed once per second
 		var fr := L.r(H + "GameTime")
-		var y := fr.end.y + fr.size.y * 0.9
-		var s := "FPS: %d     %d ms" % [Engine.get_frames_per_second(), 0]
-		var px := maxi(10, int(13 * L.scale_of(L.e(H + "GameTime"))))
-		var w := f_num.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
-		HudLayout.text_in(self, Rect2(size.x - w - 10.0, y - px * 0.5, w, px), s, f_num, px, Color(0.75, 0.9, 0.6), 0)
+		var st := L.style("HUD_Metrics")
+		var s := "FPS: %d     %d ms" % [_fps_shown, 0]
+		var px: int = st.px
+		var w: float = (st.font as Font).get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
+		HudLayout.styled_in(ci, Rect2(size.x - w - 10.0, fr.end.y + fr.size.y * 0.4, w, px), s, st, px, Color(0.8, 0.8, 0.8), 0)
 
 
-# --------------------------------------------------------------------- team frames (right, above minimap)
-func _draw_team_frames() -> void:
+func _draw_team_frames(ci: Canvas) -> void:
 	var T := "TeamFrames:"
 	var i := 0
 	for c in match_ref.champions:
@@ -350,150 +708,156 @@ func _draw_team_frames() -> void:
 			continue
 		var off := Vector2(0, -82.0 * i)
 		var dead: bool = c.dead
-		L.draw(self, T + ("TeamFrame0_FrameDeadUnderlay" if dead else "TeamFrame0_FrameUnderlay"), Color.WHITE, off)
+		L.draw(ci, T + ("TeamFrame0_FrameDeadUnderlay" if dead else "TeamFrame0_FrameUnderlay"), Color.WHITE, off)
 		var ir := L.r(T + "TeamFrame0_Icon_Data", off)
-		HudLayout.square_icon(self, Assets.champion_square(c.alias), ir, Color(0.4, 0.4, 0.4) if dead else Color.WHITE)
-		L.draw(self, T + "TeamFrame0_HPBackdrop", Color.WHITE, off)
-		_fill_h_off(T + "TeamFrame0_HPBarTextureGreen", c.hp_ratio(), off)
+		HudLayout.square_icon(ci, Assets.champion_square(c.alias), ir, Color(0.4, 0.4, 0.4) if dead else Color.WHITE)
+		L.draw(ci, T + "TeamFrame0_HPBackdrop", Color.WHITE, off)
+		_fill_h_off(ci, T + "TeamFrame0_HPBarTextureGreen", c.hp_ratio(), off)
 		if c.stats.max_mana > 0.0:
-			_fill_h_off(T + "TeamFrame0_PARBarTextureBlue", c.mana / maxf(1.0, c.stats.max_mana), off)
-		L.draw(self, T + "TeamFrame0_HPFrame", Color.WHITE, off)
-		var fr := L.draw(self, T + ("TeamFrame0_FrameDead" if dead else "TeamFrame0_Frame"), Color.WHITE, off)
+			_fill_h_off(ci, T + "TeamFrame0_PARBarTextureBlue", c.mana / maxf(1.0, c.stats.max_mana), off)
+		L.draw(ci, T + "TeamFrame0_HPFrame", Color.WHITE, off)
+		var fr := L.draw(ci, T + ("TeamFrame0_FrameDead" if dead else "TeamFrame0_Frame"), Color.WHITE, off)
 		var ult: Ability = c.abilities[3]
 		if ult != null and ult.level > 0:
-			L.draw(self, T + "TeamFrame0_UltBg", Color.WHITE, off)
+			L.draw(ci, T + "TeamFrame0_UltBg", Color.WHITE, off)
 			if ult.is_ready():
-				L.draw(self, T + "TeamFrame0_Ult", Color.WHITE, off)
+				L.draw(ci, T + "TeamFrame0_Ult", Color.WHITE, off)
 			else:
 				var ur := L.r(T + "TeamFrame0_UltCooldownFX", off)
-				HudLayout.radial(self, ur, ult.cd / maxf(ult.cd_total, 0.01), Color(0, 0, 0, 0.75))
-		L.text(self, T + "TeamFrame0_Level", str(c.level), f_num, 11, C_TEXT, 1, off)
+				HudLayout.radial(ci, ur, ult.cd / maxf(ult.cd_total, 0.01), Color(0, 0, 0, 0.75))
+		L.ltext(ci, T + "TeamFrame0_Level", str(c.level), Color(0, 0, 0, 0), 1, off)
 		if dead:
-			L.text(self, T + "TeamFrame0_Timer", str(int(ceil(c.respawn_timer))), f_num, 20, Color(1, 1, 1), 1, off + Vector2(0, -30))
-		_hits.append([fr, "ally:%d" % c.uid])
+			L.ltext(ci, T + "TeamFrame0_Timer", str(int(ceil(c.respawn_timer))), Color.WHITE, 1, off + Vector2(0, -30))
+		ci.hits.append([fr, "ally:%d" % c.uid])
 		i += 1
 
 
-func _fill_h_off(key: String, frac: float, off: Vector2) -> void:
-	var el := L.e(key)
-	if el.is_empty():
-		return
-	var rc := L.rect_of(el, off)
-	var uv: Array = el.uv
-	frac = clampf(frac, 0.0, 1.0)
-	HudLayout.region(self, el.t, Rect2(uv[0], uv[1], (uv[2] - uv[0]) * frac, uv[3] - uv[1]),
-		Rect2(rc.position, Vector2(rc.size.x * frac, rc.size.y)))
+func _fill_h_off(ci: CanvasItem, key: String, frac: float, off: Vector2) -> void:
+	L.fill_h(ci, key, frac, Color.WHITE, 0.0, off)
 
 
-# --------------------------------------------------------------------- kill callouts (right side)
-func _draw_kill_feed() -> void:
-	var K := "Kill:KillCallout0_"
-	var i := 0
-	for f in feed:
-		var off := Vector2(0, 70.0 * i)
-		var a := clampf(f.t / 0.6, 0.0, 1.0) * clampf((10.0 - f.t) / 0.15, 0.0, 1.0)
-		var tint: Color = Color(0.12, 0.38, 0.78, 0.9 * a) if f.ally else Color(0.72, 0.14, 0.14, 0.9 * a)
-		L.draw(self, K + "Background", tint, off)
-		var w := Color(1, 1, 1, a)
-		var killer = f.killer
-		var kr := L.r(K + "KillerPortrait", off)
-		if killer != null and killer.kind == G.Kind.CHAMPION:
-			HudLayout.square_icon(self, Assets.champion_square(killer.alias), kr, w)
-		else:
-			_draw_unit_glyph(kr, killer, a)
-		L.draw(self, K + "KillerFrame", w, off)
-		L.draw(self, K + "KillIconNormal", w, off)
-		HudLayout.square_icon(self, Assets.champion_square(f.victim.alias), L.r(K + "TargetPortrait", off), w)
-		L.draw(self, K + "TargetFrame", w, off)
-		var ai := 0
-		for asst in f.assists:
-			if ai > 3 or not is_instance_valid(asst):
-				break
-			HudLayout.square_icon(self, Assets.champion_square(asst.alias), L.r(K + "Assister%dPortrait" % ai, off), w)
-			L.draw(self, K + "Assister%dFrame" % ai, w, off)
-			ai += 1
-		i += 1
-
-
-func _draw_unit_glyph(r: Rect2, u, a: float) -> void:
-	draw_rect(r, Color(0.05, 0.07, 0.09, a))
-	var icon := "icon_ui_tower_minimap"
-	if u != null and is_instance_valid(u) and u.kind == G.Kind.MINION:
-		icon = "minionmapcircle"
-	var t := Assets.tex("res://assets/ui/hud/icons/%s.png" % icon)
-	if t != null:
-		draw_texture_rect(t, r.grow(-r.size.x * 0.18), false, Color(0.9, 0.9, 0.9, a))
-
-
-# --------------------------------------------------------------------- stats panel (left of portrait)
-func _draw_stats() -> void:
+func _draw_stats(ci: Canvas) -> void:
 	var st := champ.stats
 	var S := "Stats:"
-	var pr := L.draw(self, S + "StatsBg")
-	_solid.append(pr)
 	var rows := [
 		["AD", str(int(st.ad)), "Attack Damage"], ["AP", str(int(st.ap)), "Ability Power"],
 		["Armor", str(int(st.armor)), "Armor"], ["MR", str(int(st.mr)), "Magic Resist"],
 		["AS", "%.2f" % st.attack_speed, "Attack Speed"], ["AH", str(int(st.ability_haste)), "Ability Haste"],
 		["Crit", "%d%%" % int(round(st.crit_chance * 100.0)), "Critical Strike Chance"], ["MS", str(int(st.move_speed)), "Move Speed"],
 	]
-	for row in rows:
-		L.draw(self, S + "Stats_%s_Icon" % row[0])
-		L.text(self, S + "Stats_%s_Text" % row[0], row[1], f_num, 14, C_TEXT, 0)
-		_hits.append([L.r(S + "Stats_%s_HitArea" % row[0]), "stat:%s: %s" % [row[2], row[1]]])
-	var br := L.draw(self, PF + ("Stats_ButtonSelected" if advanced_stats else "Stats_ButtonDefault"))
-	_hits.append([br, "stats_btn"])
 	if advanced_stats:
-		_solid.append(L.draw(self, S + "AdvancedStatsBg"))
-		var adv := [
+		rows.append_array([
 			["HPR", "%.1f" % (st.hp_regen * 5.0), "Health Regen (per 5s)"], ["HSP", "%d%%" % int(st.heal_power * 100.0), "Heal and Shield Power"],
 			["APen", "%d | %d%%" % [int(st.lethality), int(st.armor_pen_pct * 100.0)], "Lethality | Armor Pen"],
 			["MPen", "%d | %d%%" % [int(st.magic_pen), int(st.magic_pen_pct * 100.0)], "Magic Pen"],
 			["LS", "%d%%" % int(st.lifesteal * 100.0), "Life Steal"], ["SV", "%d%%" % int(st.omnivamp * 100.0), "Omnivamp"],
 			["AR", str(int(st.attack_range)), "Attack Range"], ["Ten", "%d%%" % int(st.tenacity * 100.0), "Tenacity"],
-		]
-		for row in adv:
-			L.draw(self, S + "Stats_%s_Icon" % row[0])
-			L.text(self, S + "Stats_%s_Text" % row[0], row[1], f_num, 14, C_TEXT, 0)
-			_hits.append([L.r(S + "Stats_%s_HitArea" % row[0]), "stat:%s: %s" % [row[2], row[1]]])
+		])
+	for row in rows:
+		L.draw(ci, S + "Stats_%s_Icon" % row[0])
+		L.ltext(ci, S + "Stats_%s_Text" % row[0], row[1], Color(0, 0, 0, 0), 0)
+		ci.hits.append([L.r(S + "Stats_%s_HitArea" % row[0]), "stat:%s: %s" % [row[2], row[1]]])
+	var br := L.draw(ci, PF + ("Stats_ButtonSelected" if advanced_stats else "Stats_ButtonDefault"))
+	ci.hits.append([br, "stats_btn"])
 
 
-# --------------------------------------------------------------------- player frame (portrait, spells, bars)
-func _draw_player_frame() -> void:
-	var cf := L.draw(self, PF + "HUDCenterFrame")
-	_solid.append(cf)
-	# portrait + XP
-	L.draw(self, PF + "PortraitFrameUnderlay")
+# ===================================================================== drawing: portrait, bars, inventory, gold
+func _draw_player(ci: Canvas) -> void:
+	L.begin(size)
 	var pr := L.r(PF + "PlayerIcon_Base")
 	var sq := Assets.champion_square(champ.alias)
-	HudLayout.circle_tex(self, sq, pr.get_center(), pr.size.x * 0.5, Color(0.38, 0.38, 0.38) if champ.dead else Color.WHITE, 1.08)
-	L.draw(self, PF + "PlayerExp_Backdrop")
-	L.fill_v(self, PF + "PlayerExp_BarTexture", champ.xp_ratio() if champ.level < 18 else 1.0)
-	var frame := L.draw(self, PF + "PortraitFrame_Default")
-	_solid.append(frame)
-	var lvl_col := C_TEXT.lerp(Color(1.0, 0.9, 0.45), _level_flash)
-	L.text(self, PF + "PlayerLevel", str(champ.level), f_num, 13, lvl_col, 1, Vector2.ZERO, 2.0)
+	HudLayout.circle_tex(ci, sq, pr.get_center(), pr.size.x * 0.5, Color(0.38, 0.38, 0.38) if champ.dead else Color.WHITE, 1.08)
+	L.draw(ci, PF + "PlayerExp_Backdrop")
+	L.fill_v(ci, PF + "PlayerExp_BarTexture", champ.xp_ratio() if champ.level < 18 else 1.0)
+	var frame := L.draw(ci, PF + "PortraitFrame_Default")
+	ci.solid.append(frame)
+	var lvl_col := Color.WHITE.lerp(Color(1.0, 0.9, 0.45), _level_flash)
+	L.ltext(ci, PF + "PlayerLevel", str(champ.level), lvl_col, 1)
 	if champ.dead:
-		L.text(self, PF + "PlayerRespawnTimer", str(int(ceil(champ.respawn_timer))), f_title, 40, Color(1, 1, 1), 1, Vector2(-13, 0))
-	# abilities
-	_draw_spell_slot("Passive", -1)
-	for i in 4:
-		_draw_spell_slot("Ability%d" % i, i)
-	for i in 2:
-		_draw_spell_slot("Summoner%d" % i, 4 + i)
-	# level-up buttons
-	for i in 4:
-		if champ.can_level_ability(i):
-			var key := PF + "LevelUp%d_Button" % i
-			var r := L.r(key + "Default")
-			var hov := r.has_point(_mouse)
-			L.draw(self, key + ("Hover" if hov else "Default"))
-			var pulse := 0.35 + 0.35 * sin(Time.get_ticks_msec() * 0.006)
-			L.draw(self, PF + "LevelUp%d_IdleGlow" % i, Color(1, 1, 1, pulse))
-			_hits.append([r, "lvl%d" % i])
-	_draw_resource_bars()
+		L.ltext(ci, PF + "PlayerRespawnTimer", str(int(ceil(champ.respawn_timer))), Color.WHITE, 1, Vector2(-13, 0))
+	_draw_inventory(ci)
 
 
+func _draw_bars(ci: Canvas) -> void:
+	L.begin(size)
+	_draw_resource_bars(ci)
+
+
+func _draw_resource_bars(ci: Canvas) -> void:
+	var H := PF + "PlayerHP_"
+	L.draw(ci, H + "Backdrop")
+	var mx := champ.stats.max_hp
+	var shield := champ.total_shield()
+	var total := maxf(mx, champ.hp + shield)
+	var hp_frac := champ.hp / maxf(total, 1.0)
+	var hr := L.fill_h(ci, H + "BarTextureGreen", hp_frac)
+	if shield > 0.0:
+		var el := L.e(PF + "PlayerPar_BarTextureWhite")
+		var full := L.r(H + "BarTextureGreen")
+		var sw := shield / maxf(total, 1.0)
+		var u := L.uv_of(PF + "PlayerPar_BarTextureWhite")
+		HudLayout.region(ci, el.t, Rect2(u.position, Vector2(u.size.x * sw, u.size.y)),
+			Rect2(Vector2(hr.end.x if hr.size.x > 0 else full.position.x, full.position.y), Vector2(full.size.x * sw, full.size.y)))
+	L.draw(ci, H + "BookendLeft")
+	L.draw(ci, H + "BookendRight")
+	L.ltext(ci, H + "ValueText", "%d / %d" % [mini(int(ceil(champ.hp)), int(mx)), int(mx)], Color(0, 0, 0, 0), 1)
+	if champ.stats.hp_regen > 0.0 and champ.hp < mx and not champ.dead:
+		L.ltext(ci, H + "RegenText", "+%.1f" % (champ.stats.hp_regen * 5.0), Color(0.8, 0.95, 0.8), 2)
+	var M := PF + "PlayerPar_"
+	L.draw(ci, M + "Backdrop")
+	if champ.stats.max_mana > 0.0:
+		var bar := "BarTextureBlue"
+		match champ.resource_name:
+			"Energy": bar = "BarTextureYellow"
+			"Fury", "Rage", "Heat", "Bloodthirst": bar = "BarTextureRed"
+			"Flow", "Courage": bar = "BarTextureWhite"
+		L.fill_h(ci, M + bar, champ.mana / champ.stats.max_mana)
+		L.ltext(ci, M + "ValueText", "%d / %d" % [int(champ.mana), int(champ.stats.max_mana)], Color(0, 0, 0, 0), 1)
+		if champ.stats.mana_regen > 0.0 and champ.mana < champ.stats.max_mana and not champ.dead:
+			L.ltext(ci, M + "RegenText", "+%.1f" % (champ.stats.mana_regen * 5.0), Color(0.8, 0.88, 1.0), 2)
+	L.draw(ci, M + "BookendLeft")
+	L.draw(ci, M + "BookendRight")
+
+
+func _draw_inventory(ci: Canvas) -> void:
+	var dslot: int = _drag.slot if _drag.get("active", false) else -1
+	for i in 6:
+		var P := INV + "InventoryItem%d_" % i
+		var r := L.r(P + "Backdrop")
+		var it = champ.items[i] if i < champ.items.size() else null
+		if it == null:
+			continue
+		var ir := L.r(P + "Border").grow(-L.s() * 2.0)
+		if it.icon != null:
+			ci.draw_texture_rect(it.icon, ir, false, Color(1, 1, 1, 0.35) if i == dslot else Color.WHITE)
+		if it.active_left > 0.0 and it.cooldown_ratio() > 0.0:
+			var el := L.e(P + "CooldownFX")
+			HudLayout.radial(ci, ir, it.cooldown_ratio(), Color(1, 1, 1, 0.92), el.get("t", ""), L.uv_of(P + "CooldownFX"))
+			L.ltext(ci, P + "Cooldown", str(int(ceil(it.active_left))), C_CD, 1)
+		if _hover_key == "item%d" % i:
+			L.draw(ci, P + "Mouseover", Color(1, 1, 1, 0.3))
+		L.draw(ci, P + ("Enabled" if it.has_active() else "Border"))
+		ci.hits.append([r, "item%d" % i])
+	for i in 6:
+		if i >= champ.items.size():
+			ci.hits.append([L.r(INV + "InventoryItem%d_Backdrop" % i), "item%d" % i])
+	# gold / shop button: League's real goldframe art (default / hover / click / glow from the inventory auto atlas)
+	var hr := L.r(INV + "Shop_HitArea")
+	var can := champ.can_shop()
+	var hov := _hover_key == "shop"
+	var key := "Shop_ButtonDisabled"
+	if shop_panel.visible:
+		key = "Shop_ButtonClicked"
+	elif hov:
+		key = "Shop_ButtonHover"
+	elif can:
+		key = "Shop_ButtonDefault"
+	L.draw(ci, INV + key)
+	L.ltext(ci, INV + "Shop_GoldText", str(int(champ.gold)), Color(0, 0, 0, 0), 1)
+	ci.hits.append([hr, "shop"])
+
+
+# ===================================================================== drawing: abilities, summoners, buffs
 func _ability_for(slot: int) -> Ability:
 	if slot < 0:
 		return null
@@ -502,73 +866,106 @@ func _ability_for(slot: int) -> Ability:
 	return champ.summoners[slot - 4]
 
 
-func _draw_spell_slot(base: String, slot: int) -> void:
+func _draw_slot(ci: Canvas, slot: int, part: int) -> void:
+	L.begin(size)
+	if slot < 0:
+		_draw_spell_slot(ci, "Passive", -1, part)
+	elif slot < 4:
+		_draw_spell_slot(ci, "Ability%d" % slot, slot, part)
+	else:
+		_draw_spell_slot(ci, "Summoner%d" % (slot - 4), slot, part)
+
+
+func _draw_levelup(ci: Canvas) -> void:
+	L.begin(size)
+	for i in 4:
+		if champ.can_level_ability(i):
+			var key := PF + "LevelUp%d_Button" % i
+			var r := L.r(key + "Default")
+			L.draw(ci, key + ("Hover" if _hover_key == "lvl%d" % i else "Default"))
+			ci.hits.append([r, "lvl%d" % i])
+
+
+## A spell slot is drawn in three retained parts so a ticking cooldown only re-records the sweep:
+## part 0 = icon + unavailable / out-of-mana overlays, 1 = cooldown sweep, cooldown number, recast timer bar,
+## 2 = toggle, mouse-over, border, ammo gem, cost, hotkey, rank pips (and the slot's hit region).
+func _draw_spell_slot(ci: Canvas, base: String, slot: int, part: int) -> void:
 	var P := PF + base
 	var ab := _ability_for(slot)
 	var icon_r := L.r(P + "_")
-	var key: String = "P" if slot < 0 else ("QWER"[slot] if slot < 4 else ("D" if slot == 4 else "F"))
-	var icon: Texture2D = null
-	if slot < 0:
-		icon = champ.passive.icon if champ.passive != null and champ.passive.get("icon") != null else Assets.ability_icon(champ.alias, "p")
-	elif ab != null:
-		icon = ab.icon
+	var key: String = "P" if slot < 0 else SLOT_KEYS[slot]
 	var learned := slot < 0 or (ab != null and (ab.is_summoner or ab.level > 0))
 	var on_cd := ab != null and learned and not ab.is_ready() and ab.cd > 0.0
 	var oom := ab != null and learned and not on_cd and not ab.can_afford()
-	if icon != null:
-		var mod := Color.WHITE
+	if part == 0:
+		var icon: Texture2D = null
+		if slot < 0:
+			icon = champ.passive.icon if champ.passive != null and champ.passive.get("icon") != null else Assets.ability_icon(champ.alias, "p")
+		elif ab != null:
+			icon = ab.icon
+		if icon != null:
+			var mod := Color.WHITE
+			if not learned:
+				mod = Color(0.35, 0.35, 0.35)
+			elif oom:
+				mod = Color(0.5, 0.62, 1.0)
+			ci.draw_texture_rect(icon, icon_r, false, mod)
 		if not learned:
-			mod = Color(0.35, 0.35, 0.35)
-		elif oom:
-			mod = Color(0.5, 0.62, 1.0)
-		draw_texture_rect(icon, icon_r, false, mod)
-	if not learned:
-		L.draw(self, P + "_OverlayUnavailable")
-	if oom:
-		L.draw(self, P + "_IconOom", Color(1, 1, 1, 0.45))   # League's blue out-of-mana overlay
-	if on_cd:
-		var el := L.e(P + "_CooldownFX")
-		var uv: Array = el.get("uv", [884, 955, 948, 1019])
-		HudLayout.radial(self, L.rect_of(el), ab.cd / maxf(ab.cd_total, 0.01), Color(1, 1, 1, 0.92), el.get("t", ""),
-			Rect2(uv[0], uv[1], uv[2] - uv[0], uv[3] - uv[1]))
+			L.draw(ci, P + "_OverlayUnavailable")
+		if oom:
+			L.draw(ci, P + "_IconOom", Color(1, 1, 1, 0.45))   # League's blue out-of-mana overlay
+		return
+	if part == 1:
+		if on_cd:
+			var el := L.e(P + "_CooldownFX")
+			var uv := L.uv_of(P + "_CooldownFX")
+			if uv.size.x <= 0.0:
+				uv = Rect2(884, 955, 64, 64)
+			HudLayout.radial(ci, L.r(P + "_CooldownFX"), ab.cd / maxf(ab.cd_total, 0.01), Color(1, 1, 1, 0.92), el.get("t", ""), uv)
+			var cds := ("%.1f" % ab.cd) if ab.cd < 1.0 else str(int(ceil(ab.cd)))
+			L.ltext(ci, P + "_Cooldown", cds, C_CD, 1)
+		# recast window: League shows a timer bar above the slot
+		if ab != null and ab.recast_window > 0.0:
+			var tb := L.r(P + "_TimerBar_BarTexture")
+			if tb.size.x > 0.0:
+				L.draw(ci, P + "_TimerBar_Backdrop")
+				var frac := clampf(ab.recast_window / maxf(ab.get("recast_total") if ab.get("recast_total") != null else 3.0, 0.1), 0.0, 1.0)
+				L.fill_h(ci, P + "_TimerBar_BarTexture", frac)
+		return
 	if ab != null and ab.toggled:
-		draw_rect(icon_r.grow(-1.0), Color(0.45, 0.85, 1.0, 0.85), false, maxf(2.0, icon_r.size.x * 0.05))
-	var hov := icon_r.has_point(_mouse) and not scoreboard_visible
-	if hov:
-		L.draw(self, P + "_Mouseover", Color(1, 1, 1, 0.35))
-	L.draw(self, P + ("_BorderAvailable" if learned and not on_cd else "_BorderUnavailable"))
-	# recast window: League shows a timer bar above the slot and a gold sweep on the border
-	if ab != null and ab.recast_window > 0.0:
-		var tb := L.r(P + "_TimerBar_BarTexture")
-		if tb.size.x > 0.0:
-			L.draw(self, P + "_TimerBar_Backdrop")
-			var frac := clampf(ab.recast_window / maxf(ab.get("recast_total") if ab.get("recast_total") != null else 3.0, 0.1), 0.0, 1.0)
-			L.fill_h(self, P + "_TimerBar_BarTexture", frac)
-		var pulse := 0.5 + 0.3 * sin(Time.get_ticks_msec() * 0.012)
-		draw_rect(icon_r.grow(1.0), Color(1.0, 0.85, 0.35, pulse), false, 2.0)
-	if on_cd:
-		var cds := ("%.1f" % ab.cd) if ab.cd < 1.0 else str(int(ceil(ab.cd)))
-		L.text(self, P + "_Cooldown", cds, f_num, 22 if slot >= 0 and slot < 4 else 17, C_CD, 1)
+		draw_toggle(ci, P, icon_r)
+	if _hover_key == key:
+		L.draw(ci, P + "_Mouseover", Color(1, 1, 1, 0.35))
+	L.draw(ci, P + ("_BorderAvailable" if learned and not on_cd else "_BorderUnavailable"))
 	if ab != null and ab.max_charges > 0 and learned:
-		L.draw(self, P + ("_CooldownGemAvailable" if ab.charges > 0 else "_CooldownGemUnavailable"))
-		L.text(self, P + "_CooldownGem", str(ab.charges), f_num, 12, Color(1, 1, 0.85), 1)
-	# mana cost (top right chip) and hotkey (bottom left)
+		L.draw(ci, P + ("_CooldownGemAvailable" if ab.charges > 0 else "_CooldownGemUnavailable"))
+		L.ltext(ci, P + "_CooldownGem", str(ab.charges), Color(1, 1, 0.85), 1)
+	# mana cost chip and hotkey
 	if ab != null and slot >= 0 and slot < 4 and learned and ab.cost() > 0.0 and champ.stats.uses_mana:
-		L.draw(self, P + "_CostBg")
-		L.text(self, P + "_Cost", str(int(ab.cost())), f_num, 13, C_MANA_TXT if not oom else Color(0.55, 0.6, 1.0), 2, Vector2.ZERO, 2.0)
+		L.draw(ci, P + "_CostBg")
+		L.ltext(ci, P + "_Cost", str(int(ab.cost())), Color(0, 0, 0, 0) if not oom else Color(0.55, 0.6, 1.0), 1)
 	if slot >= 0:
-		L.text(self, P + "_HotKey", key, f_num, 12, C_TEXT, 1, Vector2.ZERO, 2.0)
+		L.ltext(ci, P + "_HotKey", key, Color(0, 0, 0, 0), 1)
 	if slot >= 0 and slot < 4 and ab != null:
-		_draw_pips(slot, ab)
+		_draw_pips(ci, slot, ab)
 	if slot < 0 and champ.passive != null and champ.passive.has_method("hud_counter"):
 		var cnt: String = champ.passive.hud_counter()
 		if cnt != "":
-			HudLayout.text_in(self, Rect2(icon_r.position + Vector2(0, icon_r.size.y * 0.55), Vector2(icon_r.size.x, icon_r.size.y * 0.45)),
-				cnt, f_num, maxi(10, int(icon_r.size.y * 0.32)), Color.WHITE, 1, 3.0)
-	_hits.append([L.r(P + "_BorderAvailable"), key])
+			var st := L.style("HUD_CounterMedium", L.hud_scale)
+			HudLayout.styled_in(ci, Rect2(icon_r.position + Vector2(0, icon_r.size.y * 0.55), Vector2(icon_r.size.x, icon_r.size.y * 0.45)),
+				cnt, st, st.px, Color.WHITE, 1)
+	ci.hits.append([L.r(P + "_BorderAvailable"), key])
 
 
-func _draw_pips(slot: int, ab: Ability) -> void:
+## Toggle border (League ToggleFX: a looping gold flipbook; static frame here, the fx layer animates nothing for it).
+func draw_toggle(ci: CanvasItem, P: String, icon_r: Rect2) -> void:
+	if L.has(P + "_ToggleFX"):
+		L.draw_fx(ci, P + "_ToggleFX", 0)
+	else:
+		ci.draw_rect(icon_r.grow(-1.0), Color(0.45, 0.85, 1.0, 0.85), false, maxf(2.0, icon_r.size.x * 0.05))
+
+
+func _draw_pips(ci: CanvasItem, slot: int, ab: Ability) -> void:
 	var pr := L.r(PF + "Ability%d_PipRect" % slot)
 	var n := ab.max_level
 	if n <= 0 or pr.size.x <= 0.0:
@@ -581,113 +978,20 @@ func _draw_pips(slot: int, ab: Ability) -> void:
 	var x := pr.get_center().x - total * 0.5
 	for p in n:
 		var rc := Rect2(Vector2(x + p * (pip.x + gap), pr.position.y), pip)
-		L.draw_in(self, PF + ("Ability%d_FullPip0" % slot if p < ab.level else "Ability%d_EmptyPip0" % slot), rc)
+		L.draw_in(ci, PF + ("Ability%d_FullPip0" % slot if p < ab.level else "Ability%d_EmptyPip0" % slot), rc)
 
 
-func _draw_resource_bars() -> void:
-	var H := PF + "PlayerHP_"
-	L.draw(self, H + "Backdrop")
-	var mx := champ.stats.max_hp
-	var shield := champ.total_shield()
-	var total := maxf(mx, champ.hp + shield)
-	var hp_frac := champ.hp / maxf(total, 1.0)
-	var hr := L.fill_h(self, H + "BarTextureGreen", hp_frac)
-	if shield > 0.0:
-		var el := L.e(PF + "PlayerPar_BarTextureWhite")
-		var full := L.r(H + "BarTextureGreen")
-		var sw := shield / maxf(total, 1.0)
-		var uv: Array = el.uv
-		HudLayout.region(self, el.t, Rect2(uv[0], uv[1], (uv[2] - uv[0]) * sw, uv[3] - uv[1]),
-			Rect2(Vector2(hr.end.x if hr.size.x > 0 else full.position.x, full.position.y), Vector2(full.size.x * sw, full.size.y)))
-	L.draw(self, H + "BookendLeft")
-	L.draw(self, H + "BookendRight")
-	L.text(self, H + "ValueText", "%d / %d" % [mini(int(ceil(champ.hp)), int(mx)), int(mx)], f_num, 13, C_TEXT, 1, Vector2.ZERO, 2.0)
-	if champ.stats.hp_regen > 0.0 and champ.hp < mx and not champ.dead:
-		L.text(self, H + "RegenText", "+%.1f" % (champ.stats.hp_regen * 5.0), f_body, 12, Color(0.8, 0.95, 0.8), 2, Vector2.ZERO, 2.0)
-	var M := PF + "PlayerPar_"
-	L.draw(self, M + "Backdrop")
-	if champ.stats.max_mana > 0.0:
-		var bar := "BarTextureBlue"
-		match champ.resource_name:
-			"Energy": bar = "BarTextureYellow"
-			"Fury", "Rage", "Heat", "Bloodthirst": bar = "BarTextureRed"
-			"Flow", "Courage": bar = "BarTextureWhite"
-		L.fill_h(self, M + bar, champ.mana / champ.stats.max_mana)
-		L.text(self, M + "ValueText", "%d / %d" % [int(champ.mana), int(champ.stats.max_mana)], f_num, 13, C_TEXT, 1, Vector2.ZERO, 2.0)
-		if champ.stats.mana_regen > 0.0 and champ.mana < champ.stats.max_mana and not champ.dead:
-			L.text(self, M + "RegenText", "+%.1f" % (champ.stats.mana_regen * 5.0), f_body, 12, Color(0.8, 0.88, 1.0), 2, Vector2.ZERO, 2.0)
-	L.draw(self, M + "BookendLeft")
-	L.draw(self, M + "BookendRight")
+func visible_buffs() -> Array:
+	var fr := Engine.get_process_frames()
+	if fr != _vis_buffs_frame:
+		_vis_buffs_frame = fr
+		_vis_buffs = champ.buffs.filter(func(b): return not b.hidden and b.display_name != "" and b.show_timer)
+	return _vis_buffs
 
 
-# --------------------------------------------------------------------- inventory + gold
-func _draw_inventory() -> void:
-	_solid.append(L.draw(self, INV + "InventoryFrame"))
-	for i in 7:
-		var P := INV + "InventoryItem%d_" % i
-		L.draw(self, P + "Backdrop")
-		var r := L.r(P + "Backdrop")
-		var it = champ.items[i] if i < 6 and i < champ.items.size() else null
-		if it != null:
-			var ir := L.r(P + "Border").grow(-L.s() * 2.0)
-			if it.icon != null:
-				draw_texture_rect(it.icon, ir, false)
-			if it.has_method("cooldown_ratio") and it.cooldown_ratio() > 0.0:
-				var el := L.e(P + "CooldownFX")
-				var uv: Array = el.uv
-				HudLayout.radial(self, ir, it.cooldown_ratio(), Color(1, 1, 1, 0.92), el.t, Rect2(uv[0], uv[1], uv[2] - uv[0], uv[3] - uv[1]))
-				L.text(self, P + "Cooldown", str(int(ceil(it.active_left))), f_num, 15, C_CD, 1)
-			if r.has_point(_mouse):
-				L.draw(self, P + "Mouseover", Color(1, 1, 1, 0.3))
-			L.draw(self, P + ("Enabled" if it.has_method("has_active") and it.has_active() else "Border"))
-			_hits.append([r, "item%d" % i])
-		if i < 6:
-			L.text(self, P + "HotKey", ITEM_KEYS[i], f_num, 11, C_DIM, 1, Vector2.ZERO, 2.0)
-	# recall slot: no recall in ARAM, shown disabled like League's HUD frame
-	L.draw(self, INV + "Recall_Disabled")
-	L.text(self, INV + "Recall_HotKey", "B", f_num, 11, C_DIM, 1, Vector2.ZERO, 2.0)
-	# shop / gold button (League's gold bar from the HUD atlas)
-	var hr := L.r(INV + "Shop_HitArea")
-	var can := champ.can_shop()
-	var hov := hr.has_point(_mouse)
-	var uv := Rect2(209, 603, 198, 33) if hov or shop_panel.visible else Rect2(6, 603, 198, 33)
-	HudLayout.region(self, "clarity_hudatlas", uv, hr, Color.WHITE if can or hov else Color(0.85, 0.85, 0.85))
-	if can:
-		var pulse := 0.25 + 0.2 * sin(Time.get_ticks_msec() * 0.005)
-		draw_rect(hr.grow(-1.0), Color(1.0, 0.85, 0.4, pulse), false, 1.5)
-	L.text(self, INV + "Shop_GoldText", str(int(champ.gold)), f_num, 16, C_GOLD_TXT, 1, Vector2.ZERO, 2.0)
-	L.text(self, INV + "Shop_HotKey", "P", f_num, 11, C_DIM, 1, Vector2.ZERO, 2.0)
-	_hits.append([hr, "shop"])
-
-
-# --------------------------------------------------------------------- buffs
-func _visible_buffs() -> Array:
-	return champ.buffs.filter(func(b): return not b.hidden and b.display_name != "" and b.show_timer)
-
-
-## League shows the icon of the spell that applied a buff. Buffs created without an icon fall back to the
-## source champion's matching ability (by id / name), then to the source champion's portrait.
-func _buff_icon(b: Buff) -> Texture2D:
-	if b.icon != null:
-		return b.icon
-	if b.has_meta("_hud_icon"):
-		return b.get_meta("_hud_icon")
-	var t: Texture2D = null
-	var src = b.source
-	if src != null and is_instance_valid(src) and src is Champion:
-		var bid := (b.id + " " + b.display_name).to_lower()
-		for ab in src.abilities:
-			if ab != null and ab.icon != null and ((ab.id != "" and bid.contains(ab.id.to_lower())) or (ab.display_name != "" and bid.contains(ab.display_name.to_lower()))):
-				t = ab.icon
-				break
-		if t == null:
-			t = Assets.champion_square(src.alias)
-	b.set_meta("_hud_icon", t)
-	return t
-
-
-func _draw_buffs() -> void:
-	var vis := _visible_buffs()
+func _draw_buffs(ci: Canvas) -> void:
+	L.begin(size)
+	var vis := visible_buffs()
 	var pos_i := 0
 	var neg_i := 0
 	var B := PF + "PlayerBuff"
@@ -701,22 +1005,128 @@ func _draw_buffs() -> void:
 			off = Vector2(44.0 * pos_i, 0)
 			pos_i += 1
 		var ir := L.r(B + "Icon", off)
-		draw_rect(ir, Color(0.02, 0.04, 0.06, 0.95))
-		var bic := _buff_icon(b)
-		if bic != null:
-			draw_texture_rect(bic, ir, false)
+		draw_buff(ci, b, ir, B, off)
+		ci.hits.append([ir, "buff%d" % idx])
+
+
+## One buff icon with League's border, cooldown sweep and stack count (shared with the target frame).
+func draw_buff(ci: CanvasItem, b: Buff, ir: Rect2, B: String, off: Vector2) -> void:
+	ci.draw_rect(ir, Color(0.02, 0.04, 0.06, 0.95))
+	var bic := HudBuffIcons.icon_for(b)
+	if bic != null:
+		ci.draw_texture_rect(bic, ir, false)
+	else:
+		HudLayout.text_in(ci, ir, b.display_name.substr(0, 2), f_bold, maxi(9, int(ir.size.y * 0.4)), C_TEXT, 1, 2.0)
+	if not b.permanent and b.duration > 0.0:
+		HudLayout.radial(ci, ir, 1.0 - b.remaining / b.duration, Color(0, 0, 0, 0.6))
+	L.draw(ci, B + ("BorderNegative" if b.is_debuff else "BorderPositive"), Color.WHITE, off)
+	if b.stacks > 1:
+		L.ltext(ci, B + "Stacks", str(b.stacks), Color.WHITE, 2, off)
+
+
+# ===================================================================== drawing: kill callouts + chat
+func _draw_feed(ci: Canvas) -> void:
+	L.begin(size)
+	_draw_kill_feed(ci)
+	chat.draw(ci)
+
+
+func _draw_kill_feed(ci: CanvasItem) -> void:
+	var K := "Kill:KillCallout0_"
+	var i := 0
+	for f in feed:
+		var off := Vector2(0, 70.0 * i)
+		var a := clampf(f.t / 0.6, 0.0, 1.0) * clampf((10.0 - f.t) / 0.15, 0.0, 1.0)
+		var tint: Color = Color(0.12, 0.38, 0.78, 0.9 * a) if f.ally else Color(0.72, 0.14, 0.14, 0.9 * a)
+		L.draw(ci, K + "Background", tint, off)
+		var w := Color(1, 1, 1, a)
+		var killer = f.killer
+		var kr := L.r(K + "KillerPortrait", off)
+		if killer != null and is_instance_valid(killer) and killer.kind == G.Kind.CHAMPION:
+			HudLayout.square_icon(ci, Assets.champion_square(killer.alias), kr, w)
 		else:
-			HudLayout.text_in(self, ir, b.display_name.substr(0, 2), f_bold, maxi(9, int(ir.size.y * 0.4)), C_TEXT, 1, 2.0)
-		if not b.permanent and b.duration > 0.0:
-			HudLayout.radial(self, ir, 1.0 - b.remaining / b.duration, Color(0, 0, 0, 0.6))
-		L.draw(self, B + ("BorderNegative" if b.is_debuff else "BorderPositive"), Color.WHITE, off)
-		if b.stacks > 1:
-			L.text(self, B + "Stacks", str(b.stacks), f_num, 13, Color.WHITE, 2, off, 2.0)
-		_hits.append([ir, "buff%d" % idx])
+			draw_unit_glyph(ci, kr, killer, a)
+		L.draw(ci, K + "KillerFrame", w, off)
+		L.draw(ci, K + "KillIconNormal", w, off)
+		HudLayout.square_icon(ci, Assets.champion_square(f.victim.alias), L.r(K + "TargetPortrait", off), w)
+		L.draw(ci, K + "TargetFrame", w, off)
+		var ai := 0
+		for asst in f.assists:
+			if ai > 3 or not is_instance_valid(asst):
+				break
+			HudLayout.square_icon(ci, Assets.champion_square(asst.alias), L.r(K + "Assister%dPortrait" % ai, off), w)
+			L.draw(ci, K + "Assister%dFrame" % ai, w, off)
+			ai += 1
+		i += 1
 
 
-# --------------------------------------------------------------------- announcement banners (top center)
-func _draw_announcement() -> void:
+func draw_unit_glyph(ci: CanvasItem, r: Rect2, u, a: float) -> void:
+	ci.draw_rect(r, Color(0.05, 0.07, 0.09, a))
+	var icon := "icon_ui_tower_minimap"
+	if u != null and is_instance_valid(u) and u.kind == G.Kind.MINION:
+		icon = "minionmapcircle"
+	var t := Assets.tex("res://assets/ui/hud/icons/%s.png" % icon)
+	if t != null:
+		ci.draw_texture_rect(t, r.grow(-r.size.x * 0.18), false, Color(0.9, 0.9, 0.9, a))
+
+
+# ===================================================================== drawing: animated effects
+## Detect HUD events that start League's flipbook effects.
+func _track_fx() -> void:
+	for i in 6:
+		var ab := _ability_for(i)
+		var ready := ab == null or ab.is_ready() or (i < 4 and ab.level <= 0)
+		if ready and not _was_ready[i] and ab != null:
+			# cooldown finished: League's GlintFX + SheenFX flash over the slot
+			var P := PF + ("Ability%d" % i if i < 4 else "Summoner%d" % (i - 4))
+			_fx.append({"key": P + "_SheenFX", "t0": _now})
+			_fx.append({"key": P + "_GlintFX", "t0": _now})
+		_was_ready[i] = ready
+	for i in 4:
+		var can := champ.can_level_ability(i)
+		if can and not _could_level[i]:
+			_fx.append({"key": PF + "LevelUp%d_ButtonIn" % i, "t0": _now})
+			_glow_t0[i] = _now
+		_could_level[i] = can
+		var ab: Ability = champ.abilities[i]
+		var lv := ab.level if ab != null else 0
+		if lv > _ab_levels[i]:
+			_fx.append({"key": PF + "LevelUp%d_AbilityIn" % i, "t0": _now})
+		_ab_levels[i] = lv
+	for j in range(_fx.size() - 1, -1, -1):
+		var f: Dictionary = _fx[j]
+		if L.fx_frame(f.key, _now - f.t0) < 0:
+			_fx.remove_at(j)
+
+
+func _draw_fx_add(ci: Canvas) -> void:
+	L.begin(size)
+	for f in _fx:
+		var fr := L.fx_frame(f.key, _now - f.t0)
+		if fr >= 0:
+			L.draw_fx(ci, f.key, fr)
+	# skill point available: League's looping idle glow + sheen on the level-up buttons
+	for i in 4:
+		if _could_level[i]:
+			var age: float = _now - _glow_t0[i]
+			if L.fx_frame(PF + "LevelUp%d_ButtonIn" % i, age) < 0:
+				L.draw_fx(ci, PF + "LevelUp%d_IdleGlow" % i, L.fx_frame(PF + "LevelUp%d_IdleGlow" % i, age, true))
+
+
+func _draw_fx(ci: Canvas) -> void:
+	L.begin(size)
+	# gold button: in base League lights the frame (gold-glow); a soft breathing glow on top
+	if champ.can_shop() and not champ.dead and not shop_panel.visible:
+		var a := 0.25 + 0.25 * sin(_now * 3.2)
+		L.draw(ci, INV + "Shop_ButtonDefault", Color(1, 1, 1, a))
+	_draw_announcement(ci)
+	if fail_t > 0.0:
+		var a2 := minf(1.0, fail_t * 2.5)
+		L.ltext(ci, PF + "StatusMessageToolTip", fail_msg, Color(1.0, 0.42, 0.36, a2), 1, Vector2.ZERO, 18.0)
+	pings.draw_world(ci)
+
+
+func _draw_announcement(ci: CanvasItem) -> void:
 	if ann.is_empty():
 		return
 	var t: float = ann.t
@@ -740,43 +1150,57 @@ func _draw_announcement() -> void:
 		elif up.begins_with("PENTA"):
 			bg = "Pentakill"
 		if bg != "":
-			L.draw(self, B + bg + ("BlueBG" if ally else "RedBG"), w)
-		L.draw(self, B + ("AnnBannerBlue_Underline" if ally else "AnnBannerRed_Underline"), w)
+			L.draw(ci, B + bg + ("BlueBG" if ally else "RedBG"), w)
+		L.draw(ci, B + ("AnnBannerBlue_Underline" if ally else "AnnBannerRed_Underline"), w)
 		var killer = k.killer
 		var victim = k.victim
 		var lr := L.r(B + "AnnBannerLeftIcon_content")
 		if killer != null and is_instance_valid(killer) and killer.kind == G.Kind.CHAMPION:
-			HudLayout.circle_tex(self, Assets.champion_square(killer.alias), lr.get_center(), lr.size.x * 0.5 * pop, w, 1.1)
+			HudLayout.circle_tex(ci, Assets.champion_square(killer.alias), lr.get_center(), lr.size.x * 0.5 * pop, w, 1.1)
 		else:
-			draw_circle(lr.get_center(), lr.size.x * 0.5, Color(0.05, 0.07, 0.1, a))
-			_draw_unit_glyph(lr.grow(-lr.size.x * 0.12), killer, a)
+			ci.draw_circle(lr.get_center(), lr.size.x * 0.5, Color(0.05, 0.07, 0.1, a))
+			draw_unit_glyph(ci, lr.grow(-lr.size.x * 0.12), killer, a)
 		var rr := L.r(B + "AnnBannerRightIcon_content")
 		if victim != null and is_instance_valid(victim):
-			HudLayout.circle_tex(self, Assets.champion_square(victim.alias), rr.get_center(), rr.size.x * 0.5 * pop, Color(0.85, 0.85, 0.85, a), 1.1)
-		L.draw(self, B + ("AnnBannerLeftGlowBlue" if ally else "AnnBannerLeftGlowRed"), w)
-		L.draw(self, B + ("RightIconGlowRed" if ally else "RightIconGlowBlue"), w)
-		L.draw(self, B + "AnnBannerLeftIcon_gold_ring", w)
-		L.draw(self, B + "AnnBannerRightIcon_gold_ring", w)
-		_banner_text(up, 222.0, 30.0 * pop, a)
+			HudLayout.circle_tex(ci, Assets.champion_square(victim.alias), rr.get_center(), rr.size.x * 0.5 * pop, Color(0.85, 0.85, 0.85, a), 1.1)
+		L.draw(ci, B + ("AnnBannerLeftGlowBlue" if ally else "AnnBannerLeftGlowRed"), w)
+		L.draw(ci, B + ("RightIconGlowRed" if ally else "RightIconGlowBlue"), w)
+		L.draw(ci, B + "AnnBannerLeftIcon_gold_ring", w)
+		L.draw(ci, B + "AnnBannerRightIcon_gold_ring", w)
+		_banner_text(ci, up, 222.0, "AnnouncementMajor", pop, a)
 	else:
-		L.draw(self, B + "AnnBannerGold_Underline", w)
-		_banner_text(up, 176.0, 28.0 * pop, a)
+		L.draw(ci, B + "AnnBannerGold_Underline", w)
+		_banner_text(ci, up, 176.0, "AnnouncementMajor", pop, a)
 		if ann.sub != "":
-			_banner_text(String(ann.sub), 214.0, 16.0, a, f_bold, C_DIM)
+			_banner_text(ci, String(ann.sub), 214.0, "AnnouncementMinor", 0.75, a, C_DIM)
 
 
-func _banner_text(s_txt: String, y_src: float, size_src: float, a: float, font: Font = null, col := Color(0.97, 0.93, 0.84)) -> void:
-	var sc := L.s()
-	var px := maxi(12, int(size_src * sc))
-	var f := font if font != null else f_title
+## Banner text in League's Announcement* font style (Beaufort Bold, size / shadow from fonts.json).
+func _banner_text(ci: CanvasItem, s_txt: String, y_src: float, style: String, k: float, a: float, col := Color(0.97, 0.93, 0.84)) -> void:
+	var st := L.style(style, L.hud_scale * k)
+	var px: int = st.px
 	var c := Vector2(size.x * 0.5, L.pt("Banner:AnnBannerGold_Underline", Vector2(800, y_src)).y)
-	var wdt := f.get_string_size(s_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
-	var pos := Vector2(c.x - wdt * 0.5, c.y + px * 0.35)
-	draw_string_outline(f, pos, s_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, px, maxi(3, int(px * 0.16)), Color(0, 0, 0, 0.75 * a))
-	draw_string(f, pos, s_txt, HORIZONTAL_ALIGNMENT_LEFT, -1, px, Color(col.r, col.g, col.b, a))
+	HudLayout.styled_in(ci, Rect2(c.x - 400.0, c.y - px, 800.0, px * 2.0), s_txt, st, px, Color(col.r, col.g, col.b, a), 1)
 
 
-# --------------------------------------------------------------------- minimap
+# ===================================================================== drawing: tooltip, scoreboard, wheel, drag
+func _draw_top(ci: Canvas) -> void:
+	L.begin(size)
+	if scoreboard_visible:
+		scoreboard.draw(ci, L)
+		return
+	pings.draw_wheel(ci)
+	if not _drag.is_empty() and _drag.active and _drag.slot < champ.items.size():
+		var it = champ.items[_drag.slot]
+		var sz := L.r(INV + "InventoryItem0_Border").size
+		if it.icon != null:
+			ci.draw_texture_rect(it.icon, Rect2(_mouse - sz * 0.5, sz), false, Color(1, 1, 1, 0.85))
+		return
+	if not _tip.is_empty() and not shop_panel.visible:
+		HudTooltip.draw(ci, _tip, _tip_rect, size, size.y / 1080.0)
+
+
+# ===================================================================== minimap
 func world_to_minimap(p: Vector3) -> Vector2:
 	var lx := p.x / G.U
 	var lz := -p.z / G.U
@@ -796,12 +1220,13 @@ func _icon(name: String) -> Texture2D:
 	return Assets.tex("res://assets/ui/hud/icons/%s.png" % name)
 
 
-func _draw_minimap() -> void:
-	var M := "Minimap:"
-	_mm_rect = L.r(M + "MinimapContent")
+func _draw_minimap(ci: Canvas) -> void:
+	L.begin(size)
+	_mm_rect = L.r("Minimap:MinimapContent")
 	if minimap_tex != null:
-		draw_texture_rect(minimap_tex, _mm_rect, false)
+		ci.draw_texture_rect(minimap_tex, _mm_rect, false)
 	var u_scale := _mm_rect.size.x / 283.0
+	var my_team := champ.team
 	# structures
 	for s in match_ref.structures:
 		if s.dead:
@@ -809,12 +1234,11 @@ func _draw_minimap() -> void:
 		if s.get("tier") != null and s.tier == Turret.Tier.FOUNTAIN:
 			continue
 		var p := world_to_minimap(s.global_position)
-		var col := Color(0.35, 0.68, 1.0) if s.team == champ.team else Color(1.0, 0.33, 0.3)
+		var col := Color(0.35, 0.68, 1.0) if s.team == my_team else Color(1.0, 0.33, 0.3)
 		var ic := "icon_ui_tower_minimap"
 		var sz := 22.0
 		if s.kind == G.Kind.INHIBITOR:
 			ic = "icon_ui_inhibitor_minimap_v2"
-			sz = 22.0
 		elif s.kind == G.Kind.NEXUS:
 			ic = "icon_ui_nexus_minimap_v2"
 			sz = 26.0
@@ -824,48 +1248,51 @@ func _draw_minimap() -> void:
 		var t := _icon(ic)
 		var d := sz * u_scale
 		if t != null:
-			draw_texture_rect(t, Rect2(p - Vector2(d, d) * 0.5, Vector2(d, d)), false, col)
+			ci.draw_texture_rect(t, Rect2(p - Vector2(d, d) * 0.5, Vector2(d, d)), false, col)
 	# relics (health packs)
 	var hp_icon := _icon("healthpack")
 	for r in match_ref.relics:
 		if r.active and hp_icon != null:
 			var d2 := 16.0 * u_scale
-			draw_texture_rect(hp_icon, Rect2(world_to_minimap(r.global_position) - Vector2(d2, d2) * 0.5, Vector2(d2, d2)), false)
+			ci.draw_texture_rect(hp_icon, Rect2(world_to_minimap(r.global_position) - Vector2(d2, d2) * 0.5, Vector2(d2, d2)), false)
 	# minions
 	var dot := _icon("minionmapcircle")
+	var d3 := 5.0 * u_scale
+	var ally_c := Color(0.35, 0.65, 1.0)
+	var enemy_c := Color(1.0, 0.3, 0.28)
 	for u in match_ref.units:
 		if u.dead or u.kind != G.Kind.MINION:
 			continue
-		if u.team != champ.team and not u.visible_to[champ.team]:
+		if u.team != my_team and not u.visible_to[my_team]:
 			continue
 		var p2 := world_to_minimap(u.global_position)
-		var d3 := 5.0 * u_scale
-		var mc := Color(0.35, 0.65, 1.0) if u.team == champ.team else Color(1.0, 0.3, 0.28)
+		var mc := ally_c if u.team == my_team else enemy_c
 		if dot != null:
-			draw_texture_rect(dot, Rect2(p2 - Vector2(d3, d3) * 0.5, Vector2(d3, d3)), false, mc)
+			ci.draw_texture_rect(dot, Rect2(p2 - Vector2(d3, d3) * 0.5, Vector2(d3, d3)), false, mc)
 		else:
-			draw_circle(p2, d3 * 0.5, mc)
-	# champions (enemies first, self last on top)
-	var order: Array = match_ref.champions.duplicate()
-	order.sort_custom(func(a, b): return (0 if a.team != champ.team else (2 if a == champ else 1)) < (0 if b.team != champ.team else (2 if b == champ else 1)))
-	for c in order:
-		if c.dead:
-			continue
-		if c.team != champ.team and not c.visible_to[champ.team]:
-			continue
-		var p3 := world_to_minimap(c.global_position)
-		var rad := 12.0 * u_scale
-		HudLayout.circle_tex(self, Assets.champion_square(c.alias), p3, rad, Color.WHITE, 1.12)
-		var ring := Color(0.25, 0.62, 1.0) if c.team == champ.team else Color(0.95, 0.22, 0.2)
-		if c == champ:
-			ring = Color(1.0, 0.86, 0.3)
-		draw_arc(p3, rad, 0.0, TAU, 32, ring, maxf(1.5, 2.2 * u_scale), true)
-	_draw_camera_box()
-	L.draw(self, M + "MinimapFrame")
-	_solid.append(L.r(M + "MinimapFrame"))
+			ci.draw_circle(p2, d3 * 0.5, mc)
+	# champions (enemies first, allies, self last on top)
+	var rad := 12.0 * u_scale
+	for pass_i in 3:
+		for c in match_ref.champions:
+			if c.dead:
+				continue
+			var grp := 0 if c.team != my_team else (2 if c == champ else 1)
+			if grp != pass_i:
+				continue
+			if c.team != my_team and not c.visible_to[my_team]:
+				continue
+			var p3 := world_to_minimap(c.global_position)
+			HudLayout.circle_tex(ci, Assets.champion_square(c.alias), p3, rad, Color.WHITE, 1.12)
+			var ring := Color(0.25, 0.62, 1.0) if c.team == my_team else Color(0.95, 0.22, 0.2)
+			if c == champ:
+				ring = Color(1.0, 0.86, 0.3)
+			ci.draw_arc(p3, rad, 0.0, TAU, 20, ring, maxf(1.5, 2.2 * u_scale), false)
+	pings.draw_minimap(ci)
+	_draw_camera_box(ci)
 
 
-func _draw_camera_box() -> void:
+func _draw_camera_box(ci: CanvasItem) -> void:
 	var cam := get_viewport().get_camera_3d()
 	if cam == null:
 		return
@@ -881,8 +1308,8 @@ func _draw_camera_box() -> void:
 			return
 		pts.append(world_to_minimap(o + d * tt))
 	pts.append(pts[0])
-	# clip to the minimap by drawing segments clamped into the rect
+	# clip to the minimap by clamping into the rect
 	var cl := PackedVector2Array()
 	for p in pts:
 		cl.append(Vector2(clampf(p.x, _mm_rect.position.x, _mm_rect.end.x), clampf(p.y, _mm_rect.position.y, _mm_rect.end.y)))
-	draw_polyline(cl, Color(1, 1, 1, 0.85), 1.2, true)
+	ci.draw_polyline(cl, Color(1, 1, 1, 0.85), 1.2, true)
