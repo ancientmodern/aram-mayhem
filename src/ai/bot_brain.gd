@@ -1,12 +1,14 @@
 class_name BotBrain
 extends RefCounted
-## Champion AI: laning, teamfighting, retreating, sieging, ability usage.
-## Also serves as the `ctx` object passed to Ability.ai_consider().
+## Champion AI: laning, teamfighting, kiting, retreating, sieging, dodging and ability usage.
+## Team-level decisions (engage / hold / retreat, focus target) come from a shared TeamAI.
+## Also serves as the `ctx` object passed to Ability.ai_consider() (see docs/KIT_GUIDE.md).
 
 var c: Champion
 var m = null
+var team_ai: TeamAI = null
 var think_timer := 0.0
-var mode := "lane"
+var mode := "lane"               ## "lane", "fight", "retreat" (read by kits)
 var focus: Unit = null
 var enemies: Array = []          ## visible enemy champions nearby
 var allies: Array = []           ## allied champions nearby (not self)
@@ -14,31 +16,42 @@ var enemy_minions: Array = []
 var ally_minions: Array = []
 var enemy_turret: Unit = null    ## enemy turret whose range we are near
 var is_ranged := true
+var frontline := false           ## tanks / melee: lead the engage, stand in front
 var aggression := 0.5
 var reaction := 0.22
 var aim_error := 0.35
 var retreat_hp := 0.28
+var dodge_chance := 0.3
+var personal_offset := 0.0
+var shop_timer := 0.0
 var _move_goal := Vector3.INF
 var _move_timer := 0.0
 var _ability_timer := 0.0
-var _last_think_time := 0.0
-var shop_timer := 0.0
-var personal_offset := 0.0
+var _dodge_until := -1.0
+var _dodge_check := 0.0
+var _dodged := {}                ## missile -> true (decided once per missile)
+var _chase_since := -1.0
+var _strafe_dir := 1.0
+var _strafe_t := 0.0
 
 
 func setup(champ: Champion, p_match) -> void:
 	c = champ
 	m = p_match
 	is_ranged = c.stats.attack_range > 300.0
-	aggression = clampf(0.45 + G.rng.randf_range(-0.15, 0.2) + (0.15 if not is_ranged else 0.0), 0.2, 0.9)
+	var roles := ChampionDB.roles(c.alias)
+	frontline = not is_ranged or "tank" in roles
+	aggression = clampf(0.45 + G.rng.randf_range(-0.15, 0.2) + (0.15 if frontline else 0.0), 0.2, 0.9)
 	personal_offset = G.rng.randf_range(-2.5, 2.5)
 	var diff: int = G.settings.get("difficulty", 1)
 	reaction = [0.4, 0.25, 0.16, 0.1][diff]
 	aim_error = [1.0, 0.5, 0.25, 0.1][diff]
-	retreat_hp = [0.2, 0.28, 0.3, 0.3][diff]
+	retreat_hp = [0.2, 0.26, 0.3, 0.3][diff]
+	dodge_chance = [0.0, 0.3, 0.6, 0.85][diff]
 	if c.kit != null and c.kit.has_method("ai_tuning"):
 		var t: Dictionary = c.kit.ai_tuning()
 		aggression = t.get("aggression", aggression)
+	team_ai = p_match.team_ai(c.team)
 
 
 # ===================================================================== main loop
@@ -46,9 +59,17 @@ func think(dt: float) -> void:
 	think_timer -= dt
 	_move_timer -= dt
 	_ability_timer -= dt
+	_dodge_check -= dt
+	if _dodge_check <= 0.0:
+		_dodge_check = 0.05
+		if _try_dodge():
+			return
+	if m.time < _dodge_until:
+		return
 	if think_timer > 0.0:
 		return
 	think_timer = reaction * G.rng.randf_range(0.8, 1.2)
+	team_ai.refresh()
 	_gather()
 	if c.in_fountain:
 		_shop_and_augments()
@@ -56,11 +77,16 @@ func think(dt: float) -> void:
 		return
 	if not c.channel.is_empty() and not c.channel.ability.can_move_while_channeling:
 		return
+	# focus fire: adopt the team's target when it's within reach
+	var tf := team_ai.focus
+	if tf != null and is_instance_valid(tf) and not tf.dead and G.flat_dist(tf.global_position, c.global_position) < c.attack_range_m() + 6.0:
+		focus = tf
+	elif focus != null and (not is_instance_valid(focus) or focus.dead):
+		focus = null
 	if _ability_timer <= 0.0:
 		if _try_abilities():
 			_ability_timer = 0.25
-	if _try_summoners():
-		pass
+	_try_summoners()
 	for it in c.items:
 		if it.has_active() and it.active_left <= 0.0 and it.ai_should_activate(self):
 			var tp: Vector3 = focus.global_position if focus != null and is_instance_valid(focus) else c.global_position + c.facing * 3.0
@@ -71,11 +97,12 @@ func think(dt: float) -> void:
 		return
 	var t := _pick_fight_target()
 	if t != null:
+		if mode != "fight" or t != focus:
+			_chase_since = m.time
 		mode = "fight"
 		focus = t
 		_fight(t)
 		return
-	focus = null
 	mode = "lane"
 	_lane()
 
@@ -116,7 +143,7 @@ func _gather() -> void:
 
 
 # ===================================================================== evaluation
-func power_of(u) -> float:
+static func power_of(u) -> float:
 	var dps: float = u.stats.ad * u.stats.attack_speed * (1.0 + u.stats.crit_chance) + u.stats.ap * 0.8 + u.level * 25.0
 	var ehp: float = u.hp * (1.0 + (u.stats.armor + u.stats.mr) * 0.005) + u.total_shield()
 	return sqrt(maxf(dps, 1.0) * maxf(ehp, 1.0))
@@ -141,23 +168,46 @@ func _turret_targeting_me() -> bool:
 	return enemy_turret != null and enemy_turret.attack_target == c
 
 
+func _minions_tanking(tu: Unit) -> bool:
+	for mn in ally_minions:
+		if G.flat_dist(mn.global_position, tu.global_position) < tu.attack_range_m() + 0.5:
+			return true
+	return false
+
+
+## Rough damage we can deal in a short trade (for kill decisions).
+func _burst() -> float:
+	var d: float = c.stats.ad * 2.5 + c.stats.ap * 1.2 + c.level * 40.0
+	for ab in c.abilities:
+		if ab != null and ab.level > 0 and ab.is_ready():
+			d += 60.0 + 30.0 * ab.level + c.stats.ap * 0.4
+	return d
+
+
 func _should_retreat() -> bool:
-	if _turret_targeting_me():
-		var tanked := false
-		for mn in ally_minions:
-			if G.flat_dist(mn.global_position, enemy_turret.global_position) < enemy_turret.attack_range_m() + 1.0:
-				tanked = true
-				break
-		if not tanked or c.hp_ratio() < 0.6:
-			return true
-	if enemies.is_empty():
-		return c.hp_ratio() < 0.15 and _nearest_relic() == null
 	var hp := c.hp_ratio()
-	if hp < retreat_hp * (1.2 - aggression * 0.4):
-		var ally_p := team_power(allies.filter(func(a): return G.flat_dist(a.global_position, c.global_position) < 10.0), true)
-		var enemy_p := team_power(enemies.filter(func(e): return G.flat_dist(e.global_position, c.global_position) < 11.0), false)
-		if enemy_p > ally_p * 0.6 or hp < 0.12:
-			return true
+	if _turret_targeting_me() and (not _minions_tanking(enemy_turret) or hp < 0.6):
+		return true
+	if enemies.is_empty():
+		return hp < 0.15 and _nearest_relic() == null
+	var p := c.global_position
+	var near_allies := allies.filter(func(a): return G.flat_dist(a.global_position, p) < 11.0)
+	var near_enemies := enemies.filter(func(e): return G.flat_dist(e.global_position, p) < 12.0)
+	var ally_p := team_power(near_allies, true)
+	var enemy_p := team_power(near_enemies, false)
+	# finishing a kill is worth staying for
+	if focus != null and is_instance_valid(focus) and not focus.dead and focus.hp < _burst() * 0.8 and hp > 0.12 \
+			and c.in_attack_range(focus, 1.5):
+		return false
+	var threshold := retreat_hp * (0.75 if frontline else 1.1) * (1.2 - aggression * 0.4)
+	if hp < threshold and (enemy_p > ally_p * 0.55 or hp < 0.1):
+		return true
+	# outnumbered and alone
+	if near_allies.is_empty() and near_enemies.size() >= 2 and enemy_p > ally_p * 1.3:
+		return true
+	# the team is falling back and the fight here is not winnable
+	if team_ai.stance == "retreat" and not near_enemies.is_empty() and enemy_p > ally_p * 0.9:
+		return true
 	return false
 
 
@@ -165,39 +215,50 @@ func _pick_fight_target() -> Unit:
 	if enemies.is_empty():
 		return null
 	var p := c.global_position
-	var engage := c.attack_range_m() + (5.0 if is_ranged else 7.0) + aggression * 4.0
-	var near_allies := allies.filter(func(a): return G.flat_dist(a.global_position, p) < 12.0)
-	var near_enemies := enemies.filter(func(e): return G.flat_dist(e.global_position, p) < 13.0)
-	var ratio := team_power(near_allies, true) / maxf(team_power(near_enemies, false), 1.0)
+	var st := team_ai.stance
+	var reach := c.attack_range_m() + c.radius
+	var engage := reach + 1.0
+	match st:
+		"engage":
+			engage = reach + (6.5 if frontline else 3.5) + aggression * 3.0
+		"hold":
+			engage = reach + (3.0 if frontline else 1.5) + aggression * 1.5
+		"retreat":
+			engage = reach + 0.5
+	var burst := _burst()
 	var best: Unit = null
 	var best_s := -INF
 	for e in enemies:
 		var d := G.flat_dist(p, e.global_position)
-		if d > engage:
+		var killable: bool = e.hp < burst and d < reach + 4.0
+		var attacking_me: bool = c.damage_log.has(e) and m.time - float(c.damage_log[e]) < 2.0
+		if d > engage and not killable and not (attacking_me and d < reach + 2.0):
 			continue
-		# don't chase deep into enemy turret range unless it's a kill
-		var under_turret := _under_enemy_turret(e.global_position)
-		if under_turret and e.hp_ratio() > 0.25 and ratio < 2.0:
+		# don't dive under their turret unless it's a sure thing
+		if _under_enemy_turret(e.global_position) and not (killable and c.hp_ratio() > 0.5) \
+				and not (st == "engage" and e.hp_ratio() < 0.3 and enemy_turret != null and _minions_tanking(enemy_turret)):
 			continue
 		var s := -d * 0.15
 		s += (1.0 - e.hp_ratio()) * 3.0
+		s += 4.0 if killable else 0.0
 		s += 1.5 if (e.cc & Buff.IMMOBILIZE) != 0 else 0.0
+		s += 2.0 if e == team_ai.focus else 0.0
 		s += 1.0 if e == focus else 0.0
-		s += 0.6 if e.stats.attack_range > 300.0 else 0.0   # carries
+		s += 0.6 if e.stats.attack_range > 300.0 else 0.0
+		s += 1.0 if attacking_me else 0.0
 		if s > best_s:
 			best_s = s
 			best = e
-	if best == null:
-		return null
-	if ratio < 0.55 - aggression * 0.3 and best.hp_ratio() > 0.3:
+	# melee: give up long chases of something we can't catch
+	if best != null and best == focus and not is_ranged and _chase_since > 0.0 and m.time - _chase_since > 3.0 \
+			and G.flat_dist(p, best.global_position) > reach + 2.5 and best.stats.move_speed >= c.stats.move_speed and best.hp_ratio() > 0.25:
+		_chase_since = m.time + 2.0   # cool off
 		return null
 	return best
 
 
 func _under_enemy_turret(pos: Vector3) -> bool:
 	for s in m.structures:
-		if s.team != c.team and s.kind == G.Kind.TURRET and not s.dead and not s.is_invulnerable() == false:
-			pass
 		if s.team != c.team and s.kind == G.Kind.TURRET and not s.dead:
 			if G.flat_dist(pos, s.global_position) < s.attack_range_m() + s.radius:
 				return true
@@ -208,6 +269,8 @@ func _under_enemy_turret(pos: Vector3) -> bool:
 func _move(goal: Vector3, force: bool = false) -> void:
 	if not force and _move_timer > 0.0 and _move_goal != Vector3.INF and G.flat_dist(goal, _move_goal) < 1.0:
 		return
+	if not m.nav.is_walkable(goal):
+		goal = m.nav.nearest_walkable(goal)
 	_move_goal = goal
 	_move_timer = 0.3
 	c.issue_move(goal)
@@ -219,18 +282,19 @@ func _attack(u: Unit) -> void:
 
 
 func _retreat() -> void:
-	var home: Vector3 = c.spawn_point
+	var goal := team_ai.safe_point
 	var relic = _nearest_relic()
-	var goal := home
-	if relic != null and G.flat_dist(relic.global_position, c.global_position) < G.flat_dist(home, c.global_position) * 0.6:
+	if relic != null and G.flat_dist(relic.global_position, c.global_position) < G.flat_dist(goal, c.global_position) * 0.7:
 		goal = relic.global_position
-	# if we're safe enough (no enemies close) and not low, go back to the lane instead
+	# never retreat past our own fountain line
+	if G.flat_dist(c.global_position, c.spawn_point) < G.flat_dist(goal, c.spawn_point):
+		goal = c.spawn_point
 	_move(goal)
 
 
 func _nearest_relic():
 	var best = null
-	var bd := 40.0
+	var bd := 22.0
 	for r in m.relics:
 		if r.active:
 			var d := G.flat_dist(r.global_position, c.global_position)
@@ -242,43 +306,74 @@ func _nearest_relic():
 
 func _fight(t: Unit) -> void:
 	var p := c.global_position
-	var d := c.edge_dist(t)
-	if is_ranged:
-		var t_melee: bool = t.stats.attack_range < 300.0
-		# kite: after the attack has fired, step away from approaching melee threats
-		if t_melee and d < 2.5 and c.windup_timer < 0.0 and c.attack_timer > c.stats.attack_period() * 0.35:
-			var away := G.flat_dir(t.global_position, p)
-			_move(p + away * 3.0, true)
-			return
-	_attack(t)
+	if not is_ranged:
+		_attack(t)
+		return
+	# ranged: orb-walk at max range — attack when ready, otherwise keep spacing and strafe
+	var in_range := c.in_attack_range(t)
+	if c.windup_timer >= 0.0:
+		return
+	if not in_range or c.attack_timer <= 0.05:
+		_attack(t)
+		return
+	var threat: Unit = null
+	var td := INF
+	for e in enemies:
+		var d := G.flat_dist(e.global_position, p)
+		var their_reach: float = e.attack_range_m() + e.radius + c.radius
+		if d < their_reach + 1.2 and d < td:
+			td = d
+			threat = e
+	var want := c.attack_range_m() + c.radius + t.radius - 0.5
+	var away := G.flat_dir(t.global_position, p)
+	var side := Vector3(-away.z, 0, away.x)
+	_strafe_t -= reaction
+	if _strafe_t <= 0.0:
+		_strafe_t = G.rng.randf_range(0.5, 1.1)
+		_strafe_dir = -_strafe_dir
+	var goal := p
+	if threat != null and td < want - 0.5:
+		goal = p + G.flat_dir(threat.global_position, p) * 2.5 + side * _strafe_dir * 0.8
+	else:
+		var dist := G.flat_dist(t.global_position, p)
+		goal = p + away * clampf(want - dist, -1.5, 1.5) + side * _strafe_dir * 1.2
+	if _under_enemy_turret(goal) and not _under_enemy_turret(p):
+		goal = p - team_ai.lane_dir * 1.5
+	_move(goal, true)
 
 
 func _lane() -> void:
 	var p := c.global_position
-	var enemy_nexus: Vector3 = m.nexus_units[1 - c.team].global_position
-	var my_nexus: Vector3 = m.nexus_units[c.team].global_position
-	var lane_dir := G.flat_dir(my_nexus, enemy_nexus)
-	# farthest allied minion along the lane
-	var front: Unit = null
-	var front_v := -INF
-	for mn in m.units:
-		if mn.kind == G.Kind.MINION and mn.team == c.team and not mn.dead:
-			var v: float = (mn.global_position - my_nexus).dot(lane_dir)
-			if v > front_v:
-				front_v = v
-				front = mn
-	# last-hit / attack minions in range
-	if not enemy_minions.is_empty():
+	var ta := team_ai
+	var lane_dir := ta.lane_dir
+	# health relic when hurt and it's on our side of the fight
+	if c.hp_ratio() < 0.6:
+		var relic = _nearest_relic()
+		if relic != null and ta.lane_coord(relic.global_position) < ta.lane_coord(ta.contact) + 3.0:
+			_move(relic.global_position)
+			return
+	var threat_close := false
+	for e in enemies:
+		if G.flat_dist(e.global_position, p) < e.attack_range_m() + e.radius + c.radius + 1.0:
+			threat_close = true
+			break
+	# farm: last hits first, then push the wave if it's safe
+	if not enemy_minions.is_empty() and ta.stance != "retreat":
 		var best: Unit = null
 		var best_s := INF
+		var ad := c.stats.ad
 		for e in enemy_minions:
-			if _under_enemy_turret(e.global_position) and front == null:
+			if _under_enemy_turret(e.global_position) and (enemy_turret == null or not _minions_tanking(enemy_turret) or _turret_targeting_me()):
 				continue
 			var d := G.flat_dist(p, e.global_position)
 			if d > c.attack_range_m() + 6.0:
 				continue
+			# while enemy champions are close, only farm what's already in range
+			if threat_close and not c.in_attack_range(e):
+				continue
+			var dmg: float = ad * Combat.resist_multiplier(e.stats.armor, c, true)
 			var s: float = e.hp + d * 15.0
-			if e.hp <= c.stats.ad * 1.05:
+			if e.hp <= dmg * 1.05:
 				s -= 1000.0
 			if s < best_s:
 				best_s = s
@@ -286,47 +381,80 @@ func _lane() -> void:
 		if best != null:
 			_attack(best)
 			return
-	# siege turret if our minions are tanking it
-	if enemy_turret != null and not enemy_turret.is_invulnerable():
-		var tanking := false
-		for mn in ally_minions:
-			if G.flat_dist(mn.global_position, enemy_turret.global_position) < enemy_turret.attack_range_m():
-				tanking = true
-				break
-		if tanking and enemy_turret.attack_target != c:
-			_attack(enemy_turret)
-			return
-	# attack inhibitor / nexus when exposed
+	# siege the turret while our minions tank it
+	if enemy_turret != null and not enemy_turret.is_invulnerable() and _minions_tanking(enemy_turret) and enemy_turret.attack_target != c \
+			and ta.stance != "retreat":
+		_attack(enemy_turret)
+		return
+	# hit exposed inhibitor / nexus
 	for s in m.structures:
 		if s.team != c.team and (s.kind == G.Kind.INHIBITOR or s.kind == G.Kind.NEXUS) and not s.dead and not s.is_invulnerable():
-			if G.flat_dist(p, s.global_position) < 12.0:
+			if G.flat_dist(p, s.global_position) < 12.0 and (enemy_turret == null or _minions_tanking(enemy_turret)):
 				_attack(s)
 				return
+	# position relative to our wave front
 	var goal: Vector3
-	if front != null:
-		var back := 4.5 if is_ranged else 1.5
-		goal = front.global_position - lane_dir * back
+	if ta.stance == "retreat":
+		goal = ta.safe_point
 	else:
-		# no wave: hold near our first standing turret
-		goal = _hold_position()
+		var back := (1.5 if frontline else 4.5)
+		if ta.stance == "hold" and not ta.enemies.is_empty():
+			back += 1.0 if frontline else 2.0
+		var k := minf(ta.front, ta.enemy_front + (1.0 if frontline else -2.0)) - back
+		goal = ta.lane_point(k)
 	var side := Vector3(-lane_dir.z, 0, lane_dir.x)
 	goal += side * personal_offset
-	if not m.nav.is_walkable(goal):
-		goal = m.nav.nearest_walkable(goal)
+	if _under_enemy_turret(goal) and (enemy_turret == null or not _minions_tanking(enemy_turret)):
+		goal -= lane_dir * 4.0
 	if G.flat_dist(p, goal) > 1.5:
 		_move(goal)
-	elif c.moving:
-		pass
 
 
-func _hold_position() -> Vector3:
-	var t = m.outer_turrets[c.team]
-	if t == null or t.dead:
-		t = m.inhib_turrets[c.team]
-	if t == null or t.dead:
-		return m.nexus_units[c.team].global_position
-	var enemy_nexus: Vector3 = m.nexus_units[1 - c.team].global_position
-	return t.global_position + G.flat_dir(t.global_position, enemy_nexus) * 3.0
+# ===================================================================== dodging
+func _try_dodge() -> bool:
+	if dodge_chance <= 0.0 or m.missiles.is_empty() or c.dead:
+		return false
+	if not c.casting.is_empty() or not c.channel.is_empty() or not c.dash.is_empty() or (c.cc & Buff.BLOCK_MOVE) != 0:
+		return false
+	var p := c.global_position
+	for mi_v in m.missiles:
+		if not is_instance_valid(mi_v):
+			continue
+		var mi: Missile = mi_v
+		if not mi.alive or mi.team == c.team or mi.is_attack:
+			continue
+		if mi.mode != Missile.Mode.LINEAR or not mi.collides or not mi.hits_champions:
+			continue
+		if mi.age < reaction:
+			continue
+		var to := Vector3(p.x - mi.global_position.x, 0, p.z - mi.global_position.z)
+		var along := to.dot(mi.dir)
+		if along < -0.5 or along > maxf(mi.speed, 1.0) * 0.9 + 1.0 or along > mi.max_dist - mi.traveled + c.radius:
+			continue
+		var perp_v := to - mi.dir * along
+		var perp := perp_v.length()
+		var clear: float = mi.width + c.radius + 0.35
+		if perp > clear:
+			continue
+		if _dodged.has(mi):
+			continue
+		_dodged[mi] = true
+		if _dodged.size() > 64:
+			_dodged.clear()
+		if G.rng.randf() > dodge_chance:
+			continue
+		var side: Vector3 = Vector3(-mi.dir.z, 0, mi.dir.x)
+		if perp_v.dot(side) < 0.0:
+			side = -side
+		var goal := p + side * (clear - perp + 0.5)
+		if not m.nav.is_walkable(goal):
+			goal = p - side * (clear + perp + 0.5)
+			if not m.nav.is_walkable(goal):
+				continue
+		c.issue_move(goal)
+		_dodge_until = m.time + (clear + 0.5) / maxf(c.stats.move_speed * G.U, 1.0) + 0.05
+		return true
+	return false
 
 
 # ===================================================================== abilities
@@ -450,6 +578,7 @@ func count_enemies_near(pos: Vector3, r: float, champs_only: bool = true) -> int
 
 
 ## Best point to hit the most enemy champions with a circle of radius r within range.
+## Returns Vector3.INF when fewer than min_count enemies can be hit.
 func best_cluster_point(rng: float, r: float, min_count: int = 1) -> Vector3:
 	var best := Vector3.INF
 	var best_n := min_count - 1
@@ -479,7 +608,8 @@ func mark_decision(ab) -> Dictionary:
 	if ab.recast_window > 0.0:
 		var tgt = ab.marked
 		if tgt != null and is_instance_valid(tgt) and tgt.kind == G.Kind.CHAMPION and mode == "fight" \
-				and (tgt.hp_ratio() < 0.5 or aggression > 0.6) and c.hp_ratio() > 0.45 and not _under_enemy_turret(tgt.global_position):
+				and (tgt.hp_ratio() < 0.5 or (frontline and team_ai.stance == "engage")) and c.hp_ratio() > 0.45 \
+				and not _under_enemy_turret(tgt.global_position):
 			return {"pos": tgt.global_position, "dir": G.flat_dir(c.global_position, tgt.global_position)}
 		return {}
 	var t := best_enemy_in_range(ab.range_m() * 0.85)
