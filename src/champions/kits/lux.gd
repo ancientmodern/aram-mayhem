@@ -16,8 +16,9 @@ func build_kit() -> void:
 	c.passive = Illumination.new(pd)
 	c.add_effect(c.passive)
 	var q = init_ability(LightBinding.new(), "Q")
-	if q.cooldowns.size() <= 1 and float(q.cooldowns[0]) == 10.0:
-		q.cooldowns = [11.0, 10.5, 10.0, 9.5, 9.0]   # not present in the extracted data (live values)
+	# [numbers] Light Binding has no CooldownTime in lux.bin; the 16.20 client data (lux_client.json cooldownCoefficients) and the
+	# wiki both list a flat 10 s at every rank (the old 11 / 10.5 / 10 / 9.5 / 9 table was a pre-26.x value).
+	q.cooldowns = [10.0, 10.0, 10.0, 10.0, 10.0]
 	c.abilities[0] = q
 	c.abilities[1] = init_ability(PrismaticBarrier.new(), "W")
 	c.abilities[2] = init_ability(LucentSingularity.new(), "E")
@@ -343,21 +344,43 @@ class LucentSingularity extends KitAbility:
 	func damage() -> float:
 		return dv("BaseDamage") + 0.8 * ap()
 
+	## [bugfix] League: the singularity is cast once; E again detonates it only once the orb has landed (the 5 s
+	## timer detonates it otherwise). A second E (key repeat, bot logic, queued cast) while the orb is still flying,
+	## or during the recast windup, used to detonate it on landing = a visible double cast.
+	func extra_block_reason() -> String:
+		if recast_window > 0.0 and (zone.is_empty() or not zone.landed):
+			return "orb in flight"
+		return ""
+
+	## [bugfix] Root cause of the "E casts forever" report: whether a cast is a recast was decided at execute() time, but
+	## begin_cast() (which pays mana / starts the cooldown only for fresh casts) decides it at press time. A recast whose
+	## 0.25 s windup straddled the singularity's detonation (landing, 5 s timer) therefore executed as a FREE fresh cast:
+	## new orb, no mana, no cooldown, and the bot (zone just placed on the enemy) recast it again -> endless E loop.
+	## The recast-ness is now fixed when the cast begins.
+	var _cast_is_recast := false
+
+	func begin_cast(t: Dictionary) -> void:
+		_cast_is_recast = recast_window > 0.0 and not zone.is_empty()
+		super(t)
+
 	func execute(t: Dictionary) -> void:
 		var o = owner
 		var m = o.match_ref
-		if recast_window > 0.0 and not zone.is_empty():
-			# recast: detonate now (or as soon as the orb lands)
-			if zone.landed:
-				_detonate()
-			else:
-				zone.detonate_on_land = true
+		if _cast_is_recast:
+			_cast_is_recast = false
+			# recast: detonate now (only reachable once landed, see extra_block_reason); nothing to do if the
+			# singularity already went off during the windup
+			if not zone.is_empty():
+				if zone.landed:
+					_detonate()
+				else:
+					zone.detonate_on_land = true
 			notify_cast(t)
 			return
 		var pos := ground(t.pos)
 		var from: Vector3 = K.cast_pos(o, 1.2)
 		var fly := maxf(0.15, G.flat_dist(from, pos) / 13.0)
-		zone = {"pos": pos, "landed": false, "node": null, "detonate_on_land": false}
+		zone = {"pos": pos, "landed": false, "node": null, "detonate_on_land": false, "land_time": -1.0}
 		var st := zone
 		recast_window = fly + dv("SlowZoneDuration", 5.0)
 		var self_ref := self
@@ -372,6 +395,7 @@ class LucentSingularity extends KitAbility:
 		var pos: Vector3 = st.pos
 		var r_m := ind_radius * G.U
 		st.landed = true
+		st.land_time = m.time
 		# League singularity zone (team colored, includes its radius ring)
 		st.node = LolVfx.spawn(m, LuxFx.team_variant(o, "Lux_Base_E_tar_aoe_red", "Lux_Base_E_tar_aoe_green"), pos + Vector3(0, 0.05, 0),
 				{"dir": G.flat_dir(o.global_position, pos)})
@@ -421,18 +445,22 @@ class LucentSingularity extends KitAbility:
 			if zone.is_empty():
 				return skip()
 			var zp: Vector3 = zone.pos
-			# detonate when a champion is inside (or about to walk out), or for a kill on minions late in the zone
-			for e in ctx.enemies:
-				var d := G.flat_dist(zp, e.global_position)
-				if d <= r_m + e.radius * 0.5:
-					return {"pos": zp, "dir": G.flat_dir(o.global_position, zp), "unit": null}
 			if not zone.landed:
 				return skip()
+			# [bugfix] a human lets the slow work for a moment before detonating: never cast + detonate back to back
+			var on_zone: float = o.match_ref.time - float(zone.get("land_time", -1.0))
+			var left: float = recast_window
+			# detonate when a champion is inside (after a short dwell, or at once for a kill / when the zone is about to
+			# time out anyway), or for a kill on minions late in the zone
+			for e in ctx.enemies:
+				var d := G.flat_dist(zp, e.global_position)
+				if d <= r_m + e.radius * 0.5 and (on_zone >= 1.2 or left < 1.0 or e.hp <= damage()):
+					return {"pos": zp, "dir": G.flat_dir(o.global_position, zp), "unit": null}
 			var minions := 0
 			for mn in ctx.enemy_minions:
 				if G.flat_dist(zp, mn.global_position) <= r_m:
 					minions += 1
-			if ctx.enemies.is_empty() and minions >= 3:
+			if ctx.enemies.is_empty() and minions >= 3 and on_zone >= 1.2:
 				return {"pos": zp, "dir": G.flat_dir(o.global_position, zp), "unit": null}
 			return skip()
 		var rng := range_m()
