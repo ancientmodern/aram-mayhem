@@ -1,0 +1,179 @@
+{
+ "events": {
+  "Play_sfx_hud_Store_Buy": [
+   "res://assets/audio/ui/shop/hud_store_buy_1.wav"
+  ],
+  "Play_sfx_hud_Store_Close": [
+   "res://assets/audio/ui/shop/hud_store_close_1.wav"
+  ],
+  "Play_sfx_hud_Store_Open": [
+   "res://assets/audio/ui/shop/hud_store_open_1.wav"
+  ],
+  "Play_sfx_hud_Store_Sell": [
+   "res://assets/audio/ui/shop/hud_store_sell_1.wav"
+  ],
+  "Play_sfx_hud_Store_Undo": [
+   "res://assets/audio/ui/shop/hud_store_undo_1.wav"
+  ],
+  "Play_sfx_hud_Store_Upgrade": [
+   "res://assets/audio/ui/shop/hud_store_upgrade_1.wav"
+  ],
+  "Play_sfx_hud_base_Store_Click": [
+   "res://assets/audio/ui/shop/hud_base_store_click_1.wav"
+  ],
+  "Play_sfx_hud_base_Store_Select": [
+   "res://assets/audio/ui/shop/hud_base_store_select_1.wav"
+  ],
+  "Play_sfx_hud_base_Store_Undo": [
+   "res://assets/audio/ui/shop/hud_base_store_undo_1.wav"
+  ],
+  "Play_sfx_hud_base_store_expand_open": [
+   "res://assets/audio/ui/shop/hud_base_store_expand_open_1.wav"
+  ],
+  "Play_sfx_hud_base_store_filter_invert": [
+   "res://assets/audio/ui/shop/hud_base_store_filter_invert_1.wav"
+  ],
+  "Play_sfx_hud_base_store_filter_remove": [
+   "res://assets/audio/ui/shop/hud_base_store_filter_remove_1.wav"
+  ],
+  "Play_sfx_hud_base_store_filter_select": [
+   "res://assets/audio/ui/shop/hud_base_store_filter_select_1.wav"
+  ],
+  "Play_sfx_hud_base_store_filter_stat_select": [
+   "res://assets/audio/ui/shop/hud_base_store_filter_stat_select_1.wav"
+  ],
+  "Play_sfx_hud_base_store_generic_close": [
+   "res://assets/audio/ui/shop/hud_base_store_generic_close_1.wav"
+  ],
+  "Play_sfx_hud_base_store_generic_open": [
+   "res://assets/audio/ui/shop/hud_base_store_generic_open_1.wav"
+  ],
+  "Play_sfx_hud_base_store_inventorytab_close": [
+   "res://assets/audio/ui/shop/hud_base_store_inventorytab_close_1.wav"
+  ],
+  "Play_sfx_hud_base_store_inventorytab_open": [
+   "res://assets/audio/ui/shop/hud_base_store_inventorytab_open_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_buy_basic": [
+   "res://assets/audio/ui/shop/hud_base_store_item_buy_basic_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_buy_components": [
+   "res://assets/audio/ui/shop/hud_base_store_item_buy_components_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_buy_legendary": [
+   "res://assets/audio/ui/shop/hud_base_store_item_buy_legendary_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_buy_upgrade": [
+   "res://assets/audio/ui/shop/hud_base_store_item_buy_upgrade_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_hover_blue": [
+   "res://assets/audio/ui/shop/hud_base_store_item_hover_blue_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_hover_mythic": [
+   "res://assets/audio/ui/shop/hud_base_store_item_hover_mythic_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_sell": [
+   "res://assets/audio/ui/shop/hud_base_store_item_sell_1.wav"
+  ],
+  "Play_sfx_hud_base_store_quicktab_close": [
+   "res://assets/audio/ui/shop/hud_base_store_quicktab_close_1.wav"
+  ],
+  "Play_sfx_hud_base_store_quicktab_open": [
+   "res://assets/audio/ui/shop/hud_base_store_quicktab_open_1.wav"
+  ],
+  "Play_sfx_hud_base_store_quicktab_open_highlight": [
+   "res://assets/audio/ui/shop/hud_base_store_quicktab_open_highlight_1.wav"
+  ],
+  "Play_sfx_hud_base_store_quicktab_pin": [
+   "res://assets/audio/ui/shop/hud_base_store_quicktab_pin_1.wav"
+  ],
+  "Play_sfx_hud_base_store_rec_select": [
+   "res://assets/audio/ui/shop/hud_base_store_rec_select_1.wav"
+  ],
+  "Play_sfx_hud_base_store_tab_select": [
+   "res://assets/audio/ui/shop/hud_base_store_tab_select_1.wav"
+  ],
+  "Play_sfx_hud_base_item_slot_drop": [
+   "res://assets/audio/ui/shop/hud_base_item_slot_drop_1.wav"
+  ],
+  "Play_sfx_hud_base_item_slot_grab": [
+   "res://assets/audio/ui/shop/hud_base_item_slot_grab_1.wav"
+  ],
+  "Play_sfx_hud_item_slot_drop": [
+   "res://assets/audio/ui/shop/hud_item_slot_drop_1.wav"
+  ],
+  "Play_sfx_hud_item_slot_grab": [
+   "res://assets/audio/ui/shop/hud_item_slot_grab_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_with_debt": [
+   "res://assets/audio/ui/shop/hud_base_store_item_with_debt_1.wav"
+  ],
+  "Play_sfx_hud_objectivevote_click_deny": [
+   "res://assets/audio/ui/shop/hud_objectivevote_click_deny_1.wav"
+  ],
+  "Play_sfx_Item2003_OnCast": [
+   "res://assets/audio/ui/shop/item2003_oncast_1.wav"
+  ],
+  "Play_sfx_Item2003_OnBuffActivate": [
+   "res://assets/audio/ui/shop/item2003_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_ItemCrystalFlask_OnCast": [
+   "res://assets/audio/ui/shop/itemcrystalflask_oncast_1.wav"
+  ],
+  "Play_sfx_ItemCrystalFlask_OnBuffActivate": [
+   "res://assets/audio/ui/shop/itemcrystalflask_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_ItemMiniRegenPotion_OnCast": [
+   "res://assets/audio/ui/shop/itemminiregenpotion_oncast_1.wav",
+   "res://assets/audio/ui/shop/itemminiregenpotion_oncast_2.wav"
+  ],
+  "Play_sfx_ItemPoroSnack_OnCast": [
+   "res://assets/audio/ui/shop/itemporosnack_oncast_1.wav",
+   "res://assets/audio/ui/shop/itemporosnack_oncast_2.wav",
+   "res://assets/audio/ui/shop/itemporosnack_oncast_3.wav"
+  ],
+  "Play_sfx_ElixirOfIron_OnBuffCast": [
+   "res://assets/audio/ui/shop/elixirofiron_onbuffcast_1.wav"
+  ],
+  "Play_sfx_ElixirOfSorcery_OnBuffCast": [
+   "res://assets/audio/ui/shop/elixirofsorcery_onbuffcast_1.wav"
+  ],
+  "Play_sfx_ElixirOfWrath_OnBuffCast": [
+   "res://assets/audio/ui/shop/elixirofwrath_onbuffcast_1.wav"
+  ]
+ },
+ "actions": {
+  "open": "Play_sfx_hud_base_store_generic_open",
+  "close": "Play_sfx_hud_base_store_generic_close",
+  "tab": "Play_sfx_hud_base_store_tab_select",
+  "select": "Play_sfx_hud_base_Store_Select",
+  "rec_select": "Play_sfx_hud_base_store_rec_select",
+  "buy_basic": "Play_sfx_hud_base_store_item_buy_basic",
+  "buy_components": "Play_sfx_hud_base_store_item_buy_components",
+  "buy_legendary": "Play_sfx_hud_base_store_item_buy_legendary",
+  "buy_upgrade": "Play_sfx_hud_base_store_item_buy_upgrade",
+  "buy_mythic": "Play_sfx_hud_base_store_item_buy_legendary",
+  "sell": "Play_sfx_hud_base_store_item_sell",
+  "undo": "Play_sfx_hud_base_Store_Undo",
+  "filter_class": "Play_sfx_hud_base_store_filter_select",
+  "filter_stat": "Play_sfx_hud_base_store_filter_stat_select",
+  "filter_remove": "Play_sfx_hud_base_store_filter_remove",
+  "filter_invert": "Play_sfx_hud_base_store_filter_invert",
+  "hover": "Play_sfx_hud_base_store_item_hover_blue",
+  "hover_mythic": "Play_sfx_hud_base_store_item_hover_mythic",
+  "quicktab_open": "Play_sfx_hud_base_store_quicktab_open",
+  "quicktab_close": "Play_sfx_hud_base_store_quicktab_close",
+  "quicktab_pin": "Play_sfx_hud_base_store_quicktab_pin",
+  "quicktab_highlight": "Play_sfx_hud_base_store_quicktab_open_highlight",
+  "inventory_open": "Play_sfx_hud_base_store_inventorytab_open",
+  "inventory_close": "Play_sfx_hud_base_store_inventorytab_close",
+  "expand": "Play_sfx_hud_base_store_expand_open",
+  "slot_grab": "Play_sfx_hud_base_item_slot_grab",
+  "slot_drop": "Play_sfx_hud_base_item_slot_drop",
+  "debt": "Play_sfx_hud_base_store_item_with_debt",
+  "deny": "Play_sfx_hud_objectivevote_click_deny",
+  "potion": "Play_sfx_Item2003_OnCast",
+  "potion_refill": "Play_sfx_ItemCrystalFlask_OnBuffActivate",
+  "elixir": "Play_sfx_ElixirOfIron_OnBuffCast"
+ }
+}

@@ -1,0 +1,842 @@
+{
+ "res://assets/audio/ui/sfx-celebrate-notif-intro.ogg": {
+  "len": 2.746,
+  "peak": -11.3,
+  "rms": -34.9
+ },
+ "res://assets/audio/ui/sfx-celebrate-receive-generic.ogg": {
+  "len": 2.112,
+  "peak": -13.5,
+  "rms": -33.1
+ },
+ "res://assets/audio/ui/sfx-champ-select-bench-update.ogg": {
+  "len": 2.367,
+  "peak": -9.5,
+  "rms": -30.1
+ },
+ "res://assets/audio/ui/sfx-cs-aram-card-2-appear.ogg": {
+  "len": 4.733,
+  "peak": -4.2,
+  "rms": -25.7
+ },
+ "res://assets/audio/ui/sfx-cs-aram-card-3-appear.ogg": {
+  "len": 6.0,
+  "peak": -2.0,
+  "rms": -23.4
+ },
+ "res://assets/audio/ui/sfx-cs-aram-card-hover.ogg": {
+  "len": 2.333,
+  "peak": -27.5,
+  "rms": -45.5
+ },
+ "res://assets/audio/ui/sfx-cs-aram-card-select.ogg": {
+  "len": 4.167,
+  "peak": -3.8,
+  "rms": -22.7
+ },
+ "res://assets/audio/ui/sfx-cs-button-reroll-click.ogg": {
+  "len": 2.78,
+  "peak": -6.0,
+  "rms": -25.4
+ },
+ "res://assets/audio/ui/sfx-cs-button-reroll-hover.ogg": {
+  "len": 0.933,
+  "peak": -53.2,
+  "rms": -72.7
+ },
+ "res://assets/audio/ui/sfx-cs-button-swap-click.ogg": {
+  "len": 0.78,
+  "peak": -9.4,
+  "rms": -29.9
+ },
+ "res://assets/audio/ui/sfx-cs-button-thumbnail-click.ogg": {
+  "len": 0.946,
+  "peak": -11.4,
+  "rms": -32.0
+ },
+ "res://assets/audio/ui/sfx-cs-champgrid-button-close.ogg": {
+  "len": 1.392,
+  "peak": -13.9,
+  "rms": -32.8
+ },
+ "res://assets/audio/ui/sfx-cs-champgrid-button-open.ogg": {
+  "len": 1.901,
+  "peak": -15.6,
+  "rms": -36.3
+ },
+ "res://assets/audio/ui/sfx-cs-draft-ban-button-hover.ogg": {
+  "len": 1.666,
+  "peak": -24.6,
+  "rms": -43.3
+ },
+ "res://assets/audio/ui/sfx-cs-draft-notif-yourpick.ogg": {
+  "len": 4.827,
+  "peak": -8.0,
+  "rms": -28.1
+ },
+ "res://assets/audio/ui/sfx-cs-draft-pick-intro.ogg": {
+  "len": 4.698,
+  "peak": -12.2,
+  "rms": -32.7
+ },
+ "res://assets/audio/ui/sfx-cs-lockin-button-click.ogg": {
+  "len": 2.044,
+  "peak": -9.9,
+  "rms": -28.4
+ },
+ "res://assets/audio/ui/sfx-cs-lockin-button-hover.ogg": {
+  "len": 2.704,
+  "peak": -21.5,
+  "rms": -44.0
+ },
+ "res://assets/audio/ui/sfx-cs-notif-boost-unlocked.ogg": {
+  "len": 3.07,
+  "peak": -11.8,
+  "rms": -28.4
+ },
+ "res://assets/audio/ui/sfx-cs-notif-swaprequest-accepted.ogg": {
+  "len": 3.071,
+  "peak": -7.3,
+  "rms": -26.3
+ },
+ "res://assets/audio/ui/sfx-cs-notif-swaprequest-declined.ogg": {
+  "len": 2.654,
+  "peak": -9.9,
+  "rms": -32.0
+ },
+ "res://assets/audio/ui/sfx-cs-notif-swaprequest-rcvd.ogg": {
+  "len": 2.543,
+  "peak": -9.7,
+  "rms": -31.3
+ },
+ "res://assets/audio/ui/sfx-cs-spells-open.ogg": {
+  "len": 1.912,
+  "peak": -11.8,
+  "rms": -32.1
+ },
+ "res://assets/audio/ui/sfx-cs-splash-back.ogg": {
+  "len": 2.269,
+  "peak": -14.3,
+  "rms": -36.3
+ },
+ "res://assets/audio/ui/sfx-cs-splash-forward.ogg": {
+  "len": 2.269,
+  "peak": -16.2,
+  "rms": -36.4
+ },
+ "res://assets/audio/ui/sfx-cs-timer-tick-small.ogg": {
+  "len": 0.626,
+  "peak": -22.2,
+  "rms": -43.0
+ },
+ "res://assets/audio/ui/sfx-cs-timer-tick.ogg": {
+  "len": 2.038,
+  "peak": -7.8,
+  "rms": -23.3
+ },
+ "res://assets/audio/ui/sfx-cs-ward-select.ogg": {
+  "len": 1.771,
+  "peak": -21.7,
+  "rms": -50.1
+ },
+ "res://assets/audio/ui/sfx-eog-chaos-order.ogg": {
+  "len": 3.632,
+  "peak": -15.5,
+  "rms": -35.6
+ },
+ "res://assets/audio/ui/sfx-eog-ui-edge-flare.ogg": {
+  "len": 2.728,
+  "peak": -24.3,
+  "rms": -49.4
+ },
+ "res://assets/audio/ui/sfx-eog-ui-exp-burst-negative.ogg": {
+  "len": 2.2,
+  "peak": -10.5,
+  "rms": -30.9
+ },
+ "res://assets/audio/ui/sfx-eog-ui-exp-burst.ogg": {
+  "len": 2.1,
+  "peak": -9.4,
+  "rms": -30.5
+ },
+ "res://assets/audio/ui/sfx-eog-ui-neutral-burst.ogg": {
+  "len": 1.2,
+  "peak": -16.7,
+  "rms": -38.5
+ },
+ "res://assets/audio/ui/sfx-gameselect-button-confirm-click.ogg": {
+  "len": 3.117,
+  "peak": -8.5,
+  "rms": -28.1
+ },
+ "res://assets/audio/ui/sfx-gameselect-button-confirm-hover.ogg": {
+  "len": 2.922,
+  "peak": -32.3,
+  "rms": -51.3
+ },
+ "res://assets/audio/ui/sfx-gameselect-trans-to-lobby.ogg": {
+  "len": 3.437,
+  "peak": -13.2,
+  "rms": -31.2
+ },
+ "res://assets/audio/ui/sfx-honor-scoreboard-team-choice.ogg": {
+  "len": 2.523,
+  "peak": -9.4,
+  "rms": -32.8
+ },
+ "res://assets/audio/ui/sfx-honor-vote-cast.ogg": {
+  "len": 3.0,
+  "peak": -7.2,
+  "rms": -26.2
+ },
+ "res://assets/audio/ui/sfx-honor-voting-intro.ogg": {
+  "len": 5.333,
+  "peak": -14.4,
+  "rms": -38.0
+ },
+ "res://assets/audio/ui/sfx-levelup-postgame-generic.ogg": {
+  "len": 4.433,
+  "peak": -6.6,
+  "rms": -28.2
+ },
+ "res://assets/audio/ui/sfx-lobby-button-find-match-click.ogg": {
+  "len": 5.279,
+  "peak": -7.8,
+  "rms": -26.3
+ },
+ "res://assets/audio/ui/sfx-lobby-button-find-match-hover.ogg": {
+  "len": 4.303,
+  "peak": -32.9,
+  "rms": -52.2
+ },
+ "res://assets/audio/ui/sfx-lobby-button-quit-click.ogg": {
+  "len": 2.849,
+  "peak": -8.5,
+  "rms": -25.2
+ },
+ "res://assets/audio/ui/sfx-lobby-button-quit-hover.ogg": {
+  "len": 0.933,
+  "peak": -53.2,
+  "rms": -72.6
+ },
+ "res://assets/audio/ui/sfx-lobby-trans-to-gameselect.ogg": {
+  "len": 2.655,
+  "peak": -15.7,
+  "rms": -32.0
+ },
+ "res://assets/audio/ui/sfx-nav-button-play-click.ogg": {
+  "len": 3.632,
+  "peak": -10.4,
+  "rms": -32.1
+ },
+ "res://assets/audio/ui/sfx-nav-button-play-hover.ogg": {
+  "len": 3.089,
+  "peak": -31.7,
+  "rms": -49.0
+ },
+ "res://assets/audio/ui/sfx-nav-button-text-click.ogg": {
+  "len": 1.155,
+  "peak": -28.8,
+  "rms": -56.5
+ },
+ "res://assets/audio/ui/sfx-purchase-button-click.ogg": {
+  "len": 1.294,
+  "peak": -26.2,
+  "rms": -43.7
+ },
+ "res://assets/audio/ui/sfx-purchase-button-hover.ogg": {
+  "len": 2.217,
+  "peak": -32.8,
+  "rms": -50.0
+ },
+ "res://assets/audio/ui/sfx-readycheck-accept-button-click.ogg": {
+  "len": 3.135,
+  "peak": -4.1,
+  "rms": -24.0
+ },
+ "res://assets/audio/ui/sfx-readycheck-accept-button-hover.ogg": {
+  "len": 2.938,
+  "peak": -17.4,
+  "rms": -36.5
+ },
+ "res://assets/audio/ui/sfx-readycheck-decline-button-click.ogg": {
+  "len": 4.913,
+  "peak": -4.7,
+  "rms": -25.5
+ },
+ "res://assets/audio/ui/sfx-readycheck-ringmagic-countdown.ogg": {
+  "len": 11.615,
+  "peak": -14.1,
+  "rms": -30.9
+ },
+ "res://assets/audio/ui/sfx-soc-notif-chat-rcvd.ogg": {
+  "len": 0.751,
+  "peak": -22.6,
+  "rms": -46.7
+ },
+ "res://assets/audio/ui/sfx-soc-ui-click-generic.ogg": {
+  "len": 0.422,
+  "peak": -31.9,
+  "rms": -53.0
+ },
+ "res://assets/audio/ui/sfx-soc-ui-drag.ogg": {
+  "len": 1.149,
+  "peak": -24.4,
+  "rms": -52.8
+ },
+ "res://assets/audio/ui/sfx-soc-ui-drop.ogg": {
+  "len": 0.945,
+  "peak": -31.4,
+  "rms": -53.4
+ },
+ "res://assets/audio/ui/sfx-ui-jade-buttonlocked.ogg": {
+  "len": 0.209,
+  "peak": -20.2,
+  "rms": -38.5
+ },
+ "res://assets/audio/ui/sfx-ui-jade-buttonpress-1.ogg": {
+  "len": 0.287,
+  "peak": -10.7,
+  "rms": -35.0
+ },
+ "res://assets/audio/ui/sfx-ui-jade-buttonpress.ogg": {
+  "len": 0.287,
+  "peak": -10.7,
+  "rms": -35.0
+ },
+ "res://assets/audio/ui/sfx-ui-jade-champselect-browse-skins.ogg": {
+  "len": 1.32,
+  "peak": -14.3,
+  "rms": -39.1
+ },
+ "res://assets/audio/ui/sfx-ui-jade-champselect-countdown-single.ogg": {
+  "len": 0.5,
+  "peak": -16.1,
+  "rms": -34.5
+ },
+ "res://assets/audio/ui/sfx-ui-jade-champselect-countdown10.ogg": {
+  "len": 0.533,
+  "peak": -10.1,
+  "rms": -31.5
+ },
+ "res://assets/audio/ui/sfx-ui-jade-champselect-exit.ogg": {
+  "len": 4.624,
+  "peak": -1.2,
+  "rms": -17.0
+ },
+ "res://assets/audio/ui/sfx-ui-jade-champselect-lockchampion-confirmed.ogg": {
+  "len": 0.392,
+  "peak": -20.5,
+  "rms": -37.4
+ },
+ "res://assets/audio/ui/sfx-ui-jade-champselect-lockchampion.ogg": {
+  "len": 1.698,
+  "peak": -3.1,
+  "rms": -23.1
+ },
+ "res://assets/audio/ui/sfx-ui-jade-champselect-yourturn.ogg": {
+  "len": 3.187,
+  "peak": -2.0,
+  "rms": -21.3
+ },
+ "res://assets/audio/ui/sfx-ui-jade-chat-message-receive.ogg": {
+  "len": 1.489,
+  "peak": -16.2,
+  "rms": -38.1
+ },
+ "res://assets/audio/ui/sfx-ui-jade-match-accept.ogg": {
+  "len": 1.872,
+  "peak": -4.0,
+  "rms": -23.1
+ },
+ "res://assets/audio/ui/sfx-ui-jade-match-decline.ogg": {
+  "len": 2.568,
+  "peak": -6.3,
+  "rms": -24.6
+ },
+ "res://assets/audio/ui/sfx-ui-jade-openstore.ogg": {
+  "len": 1.056,
+  "peak": -10.0,
+  "rms": -35.7
+ },
+ "res://assets/audio/ui/sfx-uikit-arrow-button-click.ogg": {
+  "len": 2.258,
+  "peak": -13.6,
+  "rms": -34.2
+ },
+ "res://assets/audio/ui/sfx-uikit-arrow-button-hover.ogg": {
+  "len": 0.933,
+  "peak": -53.2,
+  "rms": -72.6
+ },
+ "res://assets/audio/ui/sfx-uikit-button-arrowback-click.ogg": {
+  "len": 0.588,
+  "peak": -21.6,
+  "rms": -46.2
+ },
+ "res://assets/audio/ui/sfx-uikit-button-arrowfwd-click.ogg": {
+  "len": 0.587,
+  "peak": -21.6,
+  "rms": -45.5
+ },
+ "res://assets/audio/ui/sfx-uikit-button-big-click.ogg": {
+  "len": 1.182,
+  "peak": -19.8,
+  "rms": -40.9
+ },
+ "res://assets/audio/ui/sfx-uikit-button-circlegold-click.ogg": {
+  "len": 0.63,
+  "peak": -23.0,
+  "rms": -46.7
+ },
+ "res://assets/audio/ui/sfx-uikit-button-circlegold-hover.ogg": {
+  "len": 0.166,
+  "peak": -47.0,
+  "rms": -69.1
+ },
+ "res://assets/audio/ui/sfx-uikit-button-circlex-click.ogg": {
+  "len": 0.63,
+  "peak": -17.7,
+  "rms": -41.0
+ },
+ "res://assets/audio/ui/sfx-uikit-button-flyout-close-click.ogg": {
+  "len": 0.893,
+  "peak": -35.5,
+  "rms": -59.2
+ },
+ "res://assets/audio/ui/sfx-uikit-button-flyout-open-click.ogg": {
+  "len": 1.175,
+  "peak": -32.1,
+  "rms": -55.0
+ },
+ "res://assets/audio/ui/sfx-uikit-button-generic-click.ogg": {
+  "len": 0.675,
+  "peak": -19.8,
+  "rms": -43.1
+ },
+ "res://assets/audio/ui/sfx-uikit-button-generic-hover.ogg": {
+  "len": 0.933,
+  "peak": -53.2,
+  "rms": -72.7
+ },
+ "res://assets/audio/ui/sfx-uikit-button-gold-click.ogg": {
+  "len": 2.852,
+  "peak": -17.8,
+  "rms": -38.2
+ },
+ "res://assets/audio/ui/sfx-uikit-button-gold-hover.ogg": {
+  "len": 0.933,
+  "peak": -53.2,
+  "rms": -72.7
+ },
+ "res://assets/audio/ui/sfx-uikit-button-locked-click.ogg": {
+  "len": 1.534,
+  "peak": -10.1,
+  "rms": -23.9
+ },
+ "res://assets/audio/ui/sfx-uikit-button-pageup-click.ogg": {
+  "len": 2.437,
+  "peak": -13.7,
+  "rms": -43.1
+ },
+ "res://assets/audio/ui/sfx-uikit-button-pip-click.ogg": {
+  "len": 0.506,
+  "peak": -19.3,
+  "rms": -48.1
+ },
+ "res://assets/audio/ui/sfx-uikit-button-replay-click.ogg": {
+  "len": 1.901,
+  "peak": -16.4,
+  "rms": -39.9
+ },
+ "res://assets/audio/ui/sfx-uikit-button-text-click.ogg": {
+  "len": 1.155,
+  "peak": -28.8,
+  "rms": -56.5
+ },
+ "res://assets/audio/ui/sfx-uikit-checkbox-click.ogg": {
+  "len": 0.287,
+  "peak": -18.4,
+  "rms": -44.1
+ },
+ "res://assets/audio/ui/sfx-uikit-click-and-slide.ogg": {
+  "len": 1.275,
+  "peak": -18.4,
+  "rms": -34.3
+ },
+ "res://assets/audio/ui/sfx-uikit-click-generic.ogg": {
+  "len": 0.422,
+  "peak": -32.1,
+  "rms": -53.1
+ },
+ "res://assets/audio/ui/sfx-uikit-consolation-stinger.ogg": {
+  "len": 3.078,
+  "peak": -9.5,
+  "rms": -28.9
+ },
+ "res://assets/audio/ui/sfx-uikit-drag.ogg": {
+  "len": 0.945,
+  "peak": -31.4,
+  "rms": -53.4
+ },
+ "res://assets/audio/ui/sfx-uikit-drop.ogg": {
+  "len": 1.149,
+  "peak": -24.4,
+  "rms": -52.8
+ },
+ "res://assets/audio/ui/sfx-uikit-dropdown-click.ogg": {
+  "len": 0.418,
+  "peak": -25.8,
+  "rms": -46.6
+ },
+ "res://assets/audio/ui/sfx-uikit-dropdown-select.ogg": {
+  "len": 0.675,
+  "peak": -15.2,
+  "rms": -49.4
+ },
+ "res://assets/audio/ui/sfx-uikit-edit-click.ogg": {
+  "len": 0.491,
+  "peak": -17.6,
+  "rms": -41.5
+ },
+ "res://assets/audio/ui/sfx-uikit-framed-icon-click.ogg": {
+  "len": 2.258,
+  "peak": -13.6,
+  "rms": -34.2
+ },
+ "res://assets/audio/ui/sfx-uikit-generic-click-big.ogg": {
+  "len": 0.506,
+  "peak": -19.3,
+  "rms": -48.1
+ },
+ "res://assets/audio/ui/sfx-uikit-generic-click-small.ogg": {
+  "len": 0.422,
+  "peak": -32.1,
+  "rms": -53.1
+ },
+ "res://assets/audio/ui/sfx-uikit-grid-big-click.ogg": {
+  "len": 0.184,
+  "peak": -12.3,
+  "rms": -33.4
+ },
+ "res://assets/audio/ui/sfx-uikit-grid-big-hover.ogg": {
+  "len": 0.037,
+  "peak": -38.7,
+  "rms": -54.3
+ },
+ "res://assets/audio/ui/sfx-uikit-grid-click-release.ogg": {
+  "len": 0.664,
+  "peak": -19.5,
+  "rms": -45.2
+ },
+ "res://assets/audio/ui/sfx-uikit-grid-click.ogg": {
+  "len": 0.803,
+  "peak": -17.9,
+  "rms": -45.8
+ },
+ "res://assets/audio/ui/sfx-uikit-grid-drag.ogg": {
+  "len": 1.781,
+  "peak": -43.4,
+  "rms": -65.7
+ },
+ "res://assets/audio/ui/sfx-uikit-grid-hover.ogg": {
+  "len": 0.062,
+  "peak": -40.2,
+  "rms": -58.7
+ },
+ "res://assets/audio/ui/sfx-uikit-magic-button-click.ogg": {
+  "len": 3.533,
+  "peak": -2.8,
+  "rms": -23.3
+ },
+ "res://assets/audio/ui/sfx-uikit-magic-button-hover.ogg": {
+  "len": 3.012,
+  "peak": -35.8,
+  "rms": -53.9
+ },
+ "res://assets/audio/ui/sfx-uikit-radio-click.ogg": {
+  "len": 0.422,
+  "peak": -31.9,
+  "rms": -53.0
+ },
+ "res://assets/audio/ui/sfx-uikit-reward-toast.ogg": {
+  "len": 2.384,
+  "peak": -11.8,
+  "rms": -33.5
+ },
+ "res://assets/audio/ui/sfx-uikit-text-click-small.ogg": {
+  "len": 0.496,
+  "peak": -29.1,
+  "rms": -53.6
+ },
+ "res://assets/audio/ui/sfx-vc-volume-bar-click.ogg": {
+  "len": 0.375,
+  "peak": -19.9,
+  "rms": -42.5
+ },
+ "res://assets/audio/ui/sfx-vc-volume-scroll-click.ogg": {
+  "len": 0.188,
+  "peak": -24.3,
+  "rms": -45.2
+ },
+ "res://assets/audio/ui/sfx-vc-volume-scroll-release.ogg": {
+  "len": 0.301,
+  "peak": -19.1,
+  "rms": -42.9
+ },
+ "res://assets/audio/ui/sfx-vignette-celebration-intro.ogg": {
+  "len": 2.92,
+  "peak": -7.2,
+  "rms": -27.4
+ },
+ "res://assets/audio/ui/sfx-vignette-celebration-outro.ogg": {
+  "len": 1.572,
+  "peak": -17.8,
+  "rms": -37.5
+ },
+ "res://assets/audio/ui/shop/elixirofiron_onbuffcast_1.wav": {
+  "len": 5.184,
+  "peak": -0.0,
+  "rms": -8.6
+ },
+ "res://assets/audio/ui/shop/elixirofsorcery_onbuffcast_1.wav": {
+  "len": 4.275,
+  "peak": -0.0,
+  "rms": -9.7
+ },
+ "res://assets/audio/ui/shop/elixirofwrath_onbuffcast_1.wav": {
+  "len": 5.764,
+  "peak": -0.0,
+  "rms": -10.2
+ },
+ "res://assets/audio/ui/shop/hud_base_item_slot_drop_1.wav": {
+  "len": 0.322,
+  "peak": -9.1,
+  "rms": -28.5
+ },
+ "res://assets/audio/ui/shop/hud_base_item_slot_grab_1.wav": {
+  "len": 0.316,
+  "peak": -9.4,
+  "rms": -33.0
+ },
+ "res://assets/audio/ui/shop/hud_base_store_click_1.wav": {
+  "len": 0.556,
+  "peak": -0.8,
+  "rms": -25.4
+ },
+ "res://assets/audio/ui/shop/hud_base_store_expand_open_1.wav": {
+  "len": 0.887,
+  "peak": -10.1,
+  "rms": -34.4
+ },
+ "res://assets/audio/ui/shop/hud_base_store_filter_invert_1.wav": {
+  "len": 0.786,
+  "peak": -3.4,
+  "rms": -23.4
+ },
+ "res://assets/audio/ui/shop/hud_base_store_filter_remove_1.wav": {
+  "len": 0.786,
+  "peak": -3.4,
+  "rms": -23.4
+ },
+ "res://assets/audio/ui/shop/hud_base_store_filter_select_1.wav": {
+  "len": 0.902,
+  "peak": -0.2,
+  "rms": -16.4
+ },
+ "res://assets/audio/ui/shop/hud_base_store_filter_stat_select_1.wav": {
+  "len": 0.902,
+  "peak": -0.2,
+  "rms": -16.4
+ },
+ "res://assets/audio/ui/shop/hud_base_store_generic_close_1.wav": {
+  "len": 1.723,
+  "peak": -5.4,
+  "rms": -28.3
+ },
+ "res://assets/audio/ui/shop/hud_base_store_generic_open_1.wav": {
+  "len": 2.133,
+  "peak": -4.5,
+  "rms": -27.7
+ },
+ "res://assets/audio/ui/shop/hud_base_store_inventorytab_close_1.wav": {
+  "len": 0.301,
+  "peak": -18.7,
+  "rms": -43.4
+ },
+ "res://assets/audio/ui/shop/hud_base_store_inventorytab_open_1.wav": {
+  "len": 0.284,
+  "peak": -18.3,
+  "rms": -43.8
+ },
+ "res://assets/audio/ui/shop/hud_base_store_item_buy_basic_1.wav": {
+  "len": 0.783,
+  "peak": -1.4,
+  "rms": -23.7
+ },
+ "res://assets/audio/ui/shop/hud_base_store_item_buy_components_1.wav": {
+  "len": 1.44,
+  "peak": -3.0,
+  "rms": -23.7
+ },
+ "res://assets/audio/ui/shop/hud_base_store_item_buy_legendary_1.wav": {
+  "len": 2.893,
+  "peak": -2.0,
+  "rms": -20.3
+ },
+ "res://assets/audio/ui/shop/hud_base_store_item_buy_upgrade_1.wav": {
+  "len": 2.313,
+  "peak": -2.1,
+  "rms": -21.7
+ },
+ "res://assets/audio/ui/shop/hud_base_store_item_hover_blue_1.wav": {
+  "len": 2.143,
+  "peak": -10.9,
+  "rms": -31.1
+ },
+ "res://assets/audio/ui/shop/hud_base_store_item_hover_mythic_1.wav": {
+  "len": 2.506,
+  "peak": -1.6,
+  "rms": -22.1
+ },
+ "res://assets/audio/ui/shop/hud_base_store_item_sell_1.wav": {
+  "len": 1.119,
+  "peak": -1.1,
+  "rms": -22.5
+ },
+ "res://assets/audio/ui/shop/hud_base_store_item_with_debt_1.wav": {
+  "len": 1.116,
+  "peak": -5.7,
+  "rms": -26.8
+ },
+ "res://assets/audio/ui/shop/hud_base_store_quicktab_close_1.wav": {
+  "len": 0.301,
+  "peak": -18.7,
+  "rms": -43.4
+ },
+ "res://assets/audio/ui/shop/hud_base_store_quicktab_open_1.wav": {
+  "len": 0.284,
+  "peak": -18.3,
+  "rms": -43.8
+ },
+ "res://assets/audio/ui/shop/hud_base_store_quicktab_open_highlight_1.wav": {
+  "len": 0.921,
+  "peak": -24.2,
+  "rms": -43.4
+ },
+ "res://assets/audio/ui/shop/hud_base_store_quicktab_pin_1.wav": {
+  "len": 0.556,
+  "peak": -0.8,
+  "rms": -25.4
+ },
+ "res://assets/audio/ui/shop/hud_base_store_rec_select_1.wav": {
+  "len": 0.893,
+  "peak": -4.8,
+  "rms": -27.4
+ },
+ "res://assets/audio/ui/shop/hud_base_store_select_1.wav": {
+  "len": 0.556,
+  "peak": -0.8,
+  "rms": -25.4
+ },
+ "res://assets/audio/ui/shop/hud_base_store_tab_select_1.wav": {
+  "len": 1.121,
+  "peak": -1.6,
+  "rms": -16.6
+ },
+ "res://assets/audio/ui/shop/hud_base_store_undo_1.wav": {
+  "len": 1.053,
+  "peak": -0.9,
+  "rms": -22.4
+ },
+ "res://assets/audio/ui/shop/hud_item_slot_drop_1.wav": {
+  "len": 0.322,
+  "peak": -9.1,
+  "rms": -28.5
+ },
+ "res://assets/audio/ui/shop/hud_item_slot_grab_1.wav": {
+  "len": 0.316,
+  "peak": -9.4,
+  "rms": -33.0
+ },
+ "res://assets/audio/ui/shop/hud_objectivevote_click_deny_1.wav": {
+  "len": 0.83,
+  "peak": -0.5,
+  "rms": -19.7
+ },
+ "res://assets/audio/ui/shop/hud_store_buy_1.wav": {
+  "len": 0.789,
+  "peak": -0.0,
+  "rms": -17.7
+ },
+ "res://assets/audio/ui/shop/hud_store_close_1.wav": {
+  "len": 1.536,
+  "peak": -2.9,
+  "rms": -21.2
+ },
+ "res://assets/audio/ui/shop/hud_store_open_1.wav": {
+  "len": 1.235,
+  "peak": -0.1,
+  "rms": -17.4
+ },
+ "res://assets/audio/ui/shop/hud_store_sell_1.wav": {
+  "len": 0.671,
+  "peak": -3.7,
+  "rms": -21.4
+ },
+ "res://assets/audio/ui/shop/hud_store_undo_1.wav": {
+  "len": 0.367,
+  "peak": -10.1,
+  "rms": -30.7
+ },
+ "res://assets/audio/ui/shop/hud_store_upgrade_1.wav": {
+  "len": 0.789,
+  "peak": -0.0,
+  "rms": -17.7
+ },
+ "res://assets/audio/ui/shop/item2003_onbuffactivate_1.wav": {
+  "len": 3.043,
+  "peak": -0.3,
+  "rms": -14.5
+ },
+ "res://assets/audio/ui/shop/item2003_oncast_1.wav": {
+  "len": 4.41,
+  "peak": -0.0,
+  "rms": -17.0
+ },
+ "res://assets/audio/ui/shop/itemcrystalflask_onbuffactivate_1.wav": {
+  "len": 3.043,
+  "peak": -0.3,
+  "rms": -14.5
+ },
+ "res://assets/audio/ui/shop/itemcrystalflask_oncast_1.wav": {
+  "len": 4.41,
+  "peak": -0.0,
+  "rms": -17.0
+ },
+ "res://assets/audio/ui/shop/itemminiregenpotion_oncast_1.wav": {
+  "len": 1.298,
+  "peak": -0.0,
+  "rms": -17.7
+ },
+ "res://assets/audio/ui/shop/itemminiregenpotion_oncast_2.wav": {
+  "len": 4.41,
+  "peak": -0.0,
+  "rms": -17.0
+ },
+ "res://assets/audio/ui/shop/itemporosnack_oncast_1.wav": {
+  "len": 0.406,
+  "peak": -3.0,
+  "rms": -21.2
+ },
+ "res://assets/audio/ui/shop/itemporosnack_oncast_2.wav": {
+  "len": 0.456,
+  "peak": -2.4,
+  "rms": -20.3
+ },
+ "res://assets/audio/ui/shop/itemporosnack_oncast_3.wav": {
+  "len": 0.418,
+  "peak": -3.1,
+  "rms": -19.8
+ }
+}
