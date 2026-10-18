@@ -1,0 +1,192 @@
+[
+ {
+  "id": 157000,
+  "num": 0,
+  "name": "Yasuo",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157001,
+  "num": 1,
+  "name": "High Noon Yasuo",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157002,
+  "num": 2,
+  "name": "PROJECT: Yasuo",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157003,
+  "num": 3,
+  "name": "Blood Moon Yasuo",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157009,
+  "num": 9,
+  "name": "Nightbringer Yasuo",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157010,
+  "num": 10,
+  "name": "Odyssey Yasuo",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157017,
+  "num": 17,
+  "name": "Battle Boss Yasuo",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157018,
+  "num": 18,
+  "name": "True Damage Yasuo",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157035,
+  "num": 35,
+  "name": "Prestige True Damage Yasuo",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157036,
+  "num": 36,
+  "name": "Spirit Blossom Yasuo",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157045,
+  "num": 45,
+  "name": "Sea Dog Yasuo",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157054,
+  "num": 54,
+  "name": "Truth Dragon Yasuo",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157055,
+  "num": 55,
+  "name": "Dream Dragon Yasuo",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157056,
+  "num": 56,
+  "name": "Inkshadow Yasuo",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157057,
+  "num": 57,
+  "name": "Prestige Inkshadow Yasuo",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157068,
+  "num": 68,
+  "name": "Foreseen Yasuo",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157077,
+  "num": 77,
+  "name": "Battle Wolf Yasuo",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157087,
+  "num": 87,
+  "name": "Genesis Nightbringer Yasuo",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 157088,
+  "num": 88,
+  "name": "Petals of Spring Yasuo",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ }
+]
