@@ -1,0 +1,13 @@
+.godot/
+tools/extracted/
+*.tmp
+__pycache__/
+*.pyc
+
+# League of Legends game assets are extracted locally from your own install (tools/lol) and never committed
+assets/*
+!assets/ui/
+assets/ui/*
+!assets/ui/icon.png
+!assets/ui/icon.png.import
+data/anim/clips/
