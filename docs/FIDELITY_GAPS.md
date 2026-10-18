@@ -45,12 +45,15 @@ Owner tags: [motion] [vfx] [world-ui] [hud] [env] [kits-a] [kits-b]
   indicators from League textures, level-up effect, gold popups.
 
 ## HUD & shop
-- [hud] The HUD is a generic approximation. Rebuild it from League's own HUD textures and layout (bottom champion
-  panel, ability frames, cooldown sweeps, rank pips, level-up buttons, item slots, gold, stat panel, summoners,
-  XP ring, buffs, minimap frame and icons, top score, Tab scoreboard, kill feed, announcements, death timer).
-- [hud] The shop is "very hard to use". Replicate League's shop: recommended tab, categorized list, search,
-  build tree (builds from/into with cost), buy/sell/undo, hotkeys, right-click buy, tooltips.
-- [hud] Remove augment UI (augments disabled via Rules.AUGMENTS_ENABLED).
+- [hud] Done: HUD rebuilt from League's own UI bins + atlases (tools/lol/extract_hud.py -> assets/ui/hud/layout.json,
+  tex/, icons/, minimap_map12.png); src/ui/hud.gd draws every element at League's position/anchor/UV via
+  src/ui/hud/hud_layout.gd. Shop rebuilt from the ItemShop layout (src/ui/shop_panel.gd). Augment UI removed.
+- [hud] Still below League: EffectAnimation sprite sheets (glint/sheen/level-up/item-complete FX) are not played
+  (frame counts sit in unnamed bin fields); ~55 standalone UI textures (e.g. the HUD gold button, Shop_Button*)
+  are referenced by hash only and could not be resolved (gold bar from clarity_hudatlas used instead); TextData
+  font descriptions are links to entries we could not find, so sizes/colours are chosen by eye; minimap bounds
+  (-28,-19)-(12849,12858) are Riot's published Map12 values, not read from map12.bin; no target frame, no pings,
+  no chat, no item-set tab, no drag-to-sell; buffs without an icon fall back to the source champion's art.
 
 ## Environment
 - [env] Fixed: turret side "walls" were rubble submeshes, now hidden.
