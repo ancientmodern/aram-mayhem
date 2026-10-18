@@ -15,6 +15,7 @@ import os
 import sys
 import time
 
+import re
 import numpy as np
 import xxhash
 
@@ -179,7 +180,9 @@ def export(char: str, skin: int, out_path: str, wads, max_tex=2048, keep_unnamed
     skn = read_skn(bins.read(skn_path.lower()))
     skl = read_skl(bins.read(skl_path.lower()))
     skin_scale = smp.get("skinScale") or 1.0
-    hidden = set((smp.get("initialSubmeshToHide") or "").lower().split())
+    # League lists are comma and/or space separated ("State1,State2,State3, MedRubble_Left", "Destroyed, X"):
+    # split on both, or "Destroyed," / "state1,state2,state3," never match a submesh name
+    hidden = set(t for t in re.split(r"[\s,;]+", (smp.get("initialSubmeshToHide") or "").lower()) if t)
 
     # ---------------- materials / textures
     def resolve_material_texture(mat_link):

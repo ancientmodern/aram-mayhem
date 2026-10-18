@@ -69,6 +69,9 @@ def main():
         s = m.group().decode()
         for cut in range(len(s), 2, -1):  # strings may carry trailing garbage bytes
             names.setdefault(fnv1a(s[:cut]), s[:cut])
+    extract_extras(bf, names)
+    if "--env-only" in os.sys.argv:
+        return
     results = []
     for k, e in bf.entries.items():
         walk(e, k, results, names)
@@ -98,6 +101,41 @@ def main():
     for r in out["structures"] + out["spawns"] + out["relics"] + out["barracks"]:
         cr = [x for x in r["strings"] if "CharacterRecords" in x]
         print(f"  {str(r['name'])[:34]:34s} {r['pos']}  {cr[:1]}")
+
+
+# [env] Map lighting + level props (base.materials.bin MapContainer / GdsMapObject type 10)
+def extract_extras(bf, names):
+    """data/map/map12_env.json: MapSunProperties of the Base MapContainer and every LevelProp placement
+    (animated map characters: chains, bridge statues, banners, decorative poros...). A LevelProp named
+    LevelProp_<Character><n> is the character <Character> with skin mapObjectSkinID (default 0)."""
+    sun = {}
+    props = []
+    sun_cls = fnv1a("MapSunProperties")
+    for k, e in bf.entries.items():
+        if e.cls == fnv1a("MapContainer"):
+            for c in e.get("components") or []:
+                if isinstance(c, BinObject) and c.cls == sun_cls:
+                    for f in ("sunColor", "sunDirection", "skyLightColor", "horizonColor", "groundColor",
+                              "skyLightScale", "lightMapColorScale", "fogColor", "fogAlternateColor", "fogStartAndEnd"):
+                        v = c.get(f)
+                        if v is not None:
+                            sun[f] = list(v) if isinstance(v, tuple) else v
+        if e.cls != fnv1a("MapPlaceableContainer"):
+            continue
+        items = e.get("items") or {}
+        for it in items.values():
+            if not isinstance(it, BinObject) or it.cls != fnv1a("GdsMapObject") or it.get("type") != 10:
+                continue
+            nm = it.get("name")
+            if not isinstance(nm, str) or not nm.startswith("LevelProp_"):
+                continue
+            ch = re.sub(r"\d+$", "", nm[len("LevelProp_"):])
+            props.append({"name": nm, "character": ch, "skin": int(it.get("mapObjectSkinID") or 0),
+                          "xform": [round(x, 5) for x in it.get("Transform")]})
+    props.sort(key=lambda r: r["name"])
+    path = os.path.join(ROOT, "data", "map", "map12_env.json")
+    json.dump({"sun": sun, "level_props": props}, open(path, "w", encoding="utf-8", newline=chr(10)), indent=1)
+    print("sun", sun.get("sunDirection"), "level props", len(props))
 
 
 if __name__ == "__main__":
