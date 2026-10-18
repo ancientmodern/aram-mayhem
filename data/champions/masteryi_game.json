@@ -1,0 +1,344 @@
+{
+ "alias": "MasterYi",
+ "name": "Master Yi",
+ "stats": {
+  "base_hp": 640.0,
+  "hp_per_level": 105.0,
+  "base_hp_regen": 1.5,
+  "hp_regen_per_level": 0.13,
+  "base_ad": 65.0,
+  "ad_per_level": 2.5,
+  "base_armor": 33.0,
+  "armor_per_level": 5.0,
+  "base_mr": 32.0,
+  "mr_per_level": 2.05,
+  "base_ms": 355.0,
+  "attack_range": 175.0,
+  "attack_speed": 0.679,
+  "attack_speed_ratio": 0.679,
+  "attack_speed_per_level": 2.5,
+  "resource_type": 0,
+  "mana_base": 251.0,
+  "mana_per_level": 42.0,
+  "mana_regen": 1.45,
+  "mana_regen_per_level": 0.09,
+  "critDamageMultiplier": 2.0,
+  "acquisitionRange": 600.0,
+  "selectionHeight": 155.0,
+  "selectionRadius": 125.0,
+  "pathfindingCollisionRadius": 35.0,
+  "attack_cast_offset": -0.0560000017285347,
+  "attack_total_time": null,
+  "attack_cast_time": null
+ },
+ "spell_slots": {
+  "Q": "AlphaStrike",
+  "W": "Meditate",
+  "E": "WujuStyle",
+  "R": "Highlander"
+ },
+ "passive": "MasterYiPassive",
+ "passive_name": null,
+ "passive_desc": "Every few consecutive basic attack, Master Yi strikes twice.",
+ "spells": {
+  "MasterYiPassive": {
+   "script": "MasterYiPassive",
+   "data_values": {
+    "StackDuration": 4.0,
+    "AttackCount": 4.0
+   },
+   "calcs": {
+    "#1ddee768": "0.5*AD"
+   },
+   "castRange": 0.0,
+   "name": "Double Strike",
+   "tooltip": "Every @AttackCount@th Attack, Master Yi strikes twice. The second Attack deals <physicalDamage>@TotalDamage@ physical damage</physicalDamage>.",
+   "summary": "Every few consecutive basic attack, Master Yi strikes twice."
+  },
+  "MasterYiDoubleStrike": {
+   "script": "MasterYiDoubleStrike",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 20.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Passive",
+   "mAlternateName": "MasterYiDoubleStrike"
+  },
+  "MasterYiBasicAttack2": {
+   "script": "MasterYiBasicAttack2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 20.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Attack2",
+   "mAlternateName": "MasterYiBasicAttack2"
+  },
+  "MasterYiBasicAttack": {
+   "script": "MasterYiBasicAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 20.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAlternateName": "MasterYiBasicAttack"
+  },
+  "AlphaStrikeTeleport": {
+   "script": "AlphaStrikeTeleport",
+   "data_values": {},
+   "cooldownTime": 210.0,
+   "castRange": 10000.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAlternateName": "AlphaStrikeTeleport"
+  },
+  "AlphaStrikeMissileReturn": {
+   "script": "AlphaStrikeMissileReturn",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 2000.0,
+   "castRadius": 300.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 4000.0,
+   "mCastTime": 0.10000000149011612,
+   "mAlternateName": "AlphaStrike"
+  },
+  "MasterYi_Q_Reposition": {
+   "script": "MasterYi_Q_Reposition",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 25000.0
+  },
+  "AlphaStrikeBounce": {
+   "script": "AlphaStrikeBounce",
+   "data_values": {},
+   "cooldownTime": [
+    19.5,
+    18.0,
+    16.5,
+    15.0,
+    13.5,
+    12.0,
+    12.0
+   ],
+   "castRange": 3000.0,
+   "castRadius": 300.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 4000.0,
+   "mCastTime": 0.10000000149011612,
+   "mAlternateName": "AlphaStrike"
+  },
+  "AlphaStrike": {
+   "script": "AlphaStrike",
+   "data_values": {
+    "SubsequentHitMultiplier": 0.25,
+    "BaseDamage": [
+     0.0,
+     20.0,
+     40.0,
+     60.0,
+     80.0,
+     100.0,
+     120.0
+    ],
+    "BonusMonsterDamage": [
+     35.0,
+     60.0,
+     85.0,
+     110.0,
+     135.0,
+     160.0,
+     185.0
+    ],
+    "AttackDamageRatio": 0.7,
+    "BonusCritDamageRatio": 1.0,
+    "BasicAttackCDR": 1.0,
+    "AlphaStrikeBounces": 4.0,
+    "BaseOnHitMultiplier": 0.75
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamage + AttackDamageRatio*AD",
+    "#bed1a105": "((BaseDamage + AttackDamageRatio*AD)) * SubsequentHitMultiplier",
+    "#bac7073c": "070e3593: () * (BonusCritDamageRatio * (1*stat9 + -1))",
+    "#b0f66055": "070e3593: () * (BonusCritDamageRatio * (1*stat9 + -1))",
+    "#55c2cc24": "070e3593: () * (1 + (SubsequentHitMultiplier * (-1 + AlphaStrikeBounces)))",
+    "#60103254": "(((BaseDamage + AttackDamageRatio*AD) * (1 + (SubsequentHitMultiplier * (-1 + AlphaStrikeBounces))))) * (BonusCritDamageRatio * 1*stat9)"
+   },
+   "cooldownTime": [
+    20.5,
+    20.0,
+    19.5,
+    19.0,
+    18.5,
+    18.0,
+    17.5
+   ],
+   "mana": [
+    50.0,
+    55.0,
+    60.0,
+    65.0,
+    70.0,
+    75.0
+   ],
+   "castRange": 600.0,
+   "castRadius": 300.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 4000.0,
+   "mAlternateName": "AlphaStrike",
+   "name": "Alpha Strike",
+   "tooltip": "Master Yi becomes Untargetable and teleports to rapidly strike enemies near his target, dealing <physicalDamage>@TotalDamage@ physical damage</physicalDamage> to all enemies hit after @AlphaStrikeBounces@ hits. <br><br>This Ability can strike the same enemy repeatedly if there are no other targets, dealing @SubsequentHitMultiplier*100@% damage for subsequent hits (<physicalDamage>@SubesquentDamage@</physicalDamage>), for a maximum single target total of <physicalDamage>@SingleTotalDamage@ physical damage</physicalDamage>.",
+   "summary": "Master Yi teleports across the battlefield with blinding speed, dealing physical damage to multiple units in his path, while simultaneously becoming untargetable. Alpha Strike can critically strike and deals bonus physical damage to monsters. Basic attacks reduce Alpha Strike's cooldown."
+  },
+  "AlphaStrikeMissile": {
+   "script": "AlphaStrikeMissile",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 2000.0,
+   "castRadius": 300.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 4000.0,
+   "mCastTime": 0.10000000149011612,
+   "mAlternateName": "AlphaStrike"
+  },
+  "Meditate": {
+   "script": "Meditate",
+   "data_values": {
+    "BaseHeal": [
+     40.0,
+     120.0,
+     200.0,
+     280.0,
+     360.0,
+     440.0,
+     520.0
+    ],
+    "HealDuration": 4.0,
+    "MaxMissingHealthPercent": 1.0,
+    "TickFrequency": 0.5,
+    "DamageReduction": [
+     0.425,
+     0.45,
+     0.475,
+     0.5,
+     0.525,
+     0.55,
+     0.575
+    ],
+    "DamageReductionTowerMod": 0.5,
+    "BaseManaCost": 40.0,
+    "PercentManaCostPerSecond": 0.06,
+    "InitialExtraDR": [
+     0.275,
+     0.25,
+     0.225,
+     0.2,
+     0.175,
+     0.15,
+     0.125
+    ],
+    "InitialExtraDRDuration": 0.5,
+    "DRLinger": 0.5
+   },
+   "calcs": {
+    "#3d3d6f53": "BaseHeal + 1*AP",
+    "#195a25d5": "(DamageReduction + InitialExtraDR)  [as %]"
+   },
+   "mana": 40.0,
+   "castRange": 20.0,
+   "castRadius": 550.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 828.5,
+   "mAnimationName": "Spell2",
+   "name": "Meditate",
+   "tooltip": "Master Yi channels, restoring <healing>@TotalHeal@ Health</healing> over @HealDuration@ seconds. This healing is increased by up to @MaxMissingHealthPercent*100@% based on Master Yi's missing Health.<br><br>While channeling and for @DRLinger@ seconds afterwards, he takes @InitialDR@ reduced damage, decreased to @DamageReduction*100@% after the first @InitialExtraDRDuration@ seconds.",
+   "summary": "Master Yi rejuvenates his body by focus of mind, restoring Health and taking reduced damage for a short time. In addition, Master Yi will gain stacks of Double Strike and pause the remaining duration on Wuju Style and Highlander for each second he channels."
+  },
+  "WujuStyle": {
+   "script": "WujuStyle",
+   "data_values": {
+    "BaseDamage": [
+     15.0,
+     20.0,
+     25.0,
+     30.0,
+     35.0,
+     40.0,
+     45.0
+    ],
+    "ADRatio": 0.35,
+    "Duration": 5.0,
+    "LegacySwordVFXDuration": 3.0
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamage + ADRatio*bonusAD"
+   },
+   "cooldownTime": 14.0,
+   "castRange": 20.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 347.79998779296875,
+   "name": "Wuju Style",
+   "tooltip": "Master Yi's Attacks deal an additional <trueDamage>@TotalDamage@ true damage</trueDamage> for @Duration@ seconds.",
+   "summary": "Grants bonus true damage on basic attacks."
+  },
+  "Highlander": {
+   "script": "Highlander",
+   "data_values": {
+    "RDuration": 7.0,
+    "RASBonus": [
+     5.0,
+     25.0,
+     45.0,
+     65.0,
+     85.0,
+     105.0,
+     125.0
+    ],
+    "RMSBonus": [
+     30.0,
+     40.0,
+     50.0,
+     60.0,
+     70.0,
+     80.0,
+     90.0
+    ],
+    "RKillAssistExtension": 7.0,
+    "RCooldownRefund": 0.7
+   },
+   "cooldownTime": 85.0,
+   "mana": [
+    100.0,
+    100.0,
+    100.0,
+    100.0,
+    100.0,
+    0.0
+   ],
+   "castRange": 1.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 20.0,
+   "mAnimationName": "",
+   "name": "Highlander",
+   "tooltip": "<spellPassive>Passive:</spellPassive> Champion takedowns reduce the remaining Cooldown of Master Yi's basic Abilities by @RCooldownRefund*100@%.<br><br><spellActive>Active:</spellActive> Master Yi enters a trance, gaining <speed>@RMSBonus@% Move Speed</speed>, <attackSpeed>@RASBonus@% Attack Speed</attackSpeed>, and immunity to <status>Slows</status> for @RDuration@ seconds. Champion takedowns extend the duration of this Ability by @RKillAssistExtension@ seconds.",
+   "summary": "Master Yi moves with unparalleled agility, temporarily increasing his Move Speed and Attack Speed as well as making him immune to all slowing effects. While active, Champion kills or assists extend Highlander's duration. Passively reduces cooldown for his other abilities on a kill or assist."
+  },
+  "MasterYiCritAttack": {
+   "script": "MasterYiCritAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 20.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Crit"
+  }
+ }
+}

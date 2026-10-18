@@ -1,0 +1,192 @@
+[
+ {
+  "id": 11000,
+  "num": 0,
+  "name": "Master Yi",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11001,
+  "num": 1,
+  "name": "Assassin Master Yi",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11002,
+  "num": 2,
+  "name": "Chosen Master Yi",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11003,
+  "num": 3,
+  "name": "Ionia Master Yi",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11004,
+  "num": 4,
+  "name": "Samurai Yi",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11005,
+  "num": 5,
+  "name": "Headhunter Master Yi",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11009,
+  "num": 9,
+  "name": "PROJECT: Yi",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11010,
+  "num": 10,
+  "name": "Cosmic Blade Master Yi",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11011,
+  "num": 11,
+  "name": "Eternal Sword Yi",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11017,
+  "num": 17,
+  "name": "Snow Man Yi",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11024,
+  "num": 24,
+  "name": "Blood Moon Master Yi",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11033,
+  "num": 33,
+  "name": "PsyOps Master Yi",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11042,
+  "num": 42,
+  "name": "Debonair Master Yi",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11052,
+  "num": 52,
+  "name": "Spirit Blossom Master Yi",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11053,
+  "num": 53,
+  "name": "Prestige Spirit Blossom Master Yi",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11089,
+  "num": 89,
+  "name": "Inkshadow Master Yi",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11096,
+  "num": 96,
+  "name": "Heavenscale Master Yi",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11106,
+  "num": 106,
+  "name": "Victorious Master Yi",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 11116,
+  "num": 116,
+  "name": "PROJECT: Command Line Yi",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ }
+]
