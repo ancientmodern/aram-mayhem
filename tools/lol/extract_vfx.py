@@ -1026,14 +1026,28 @@ def troy_system(tpath):
             groups.append(g)
     ems = []
     for g in groups:
-        e = {"emitterName": g, "texture": get(g, "p-texture")}
+        tex = get(g, "p-texture")
+        if not isinstance(tex, str):
+            tex = get(g, "p-meshtex")   # mesh groups name their texture p-meshtex (Ghost's swirl)
+        e = {"emitterName": g, "texture": tex}
         if not isinstance(e["texture"], str):
             continue
         mesh = get(g, "p-mesh")
+        ptype = int((nums(g, "p-type") or [0])[0])
         if isinstance(mesh, str):
             e["primitive"] = {"__class": "VfxPrimitiveMesh", "mMesh": {"mSimpleMeshName": mesh}}
-        elif int((nums(g, "p-type") or [0])[0]) == 1:
+        elif ptype == 11:
+            e["primitive"] = {"__class": "VfxPrimitiveAttachedMesh", "mMesh": {}}   # avatar copies (Ghost)
+        elif ptype == 1:
             e["primitive"] = {"__class": "VfxPrimitiveArbitraryQuad"}
+        nm_tex = get(g, "p-normal-map")
+        if isinstance(nm_tex, str):
+            # refraction group (Cleanse's "distort"): its texture is only a mask, never draw it as a quad
+            pw = _troy_nums(get(g, "p-distortion-power")) or [1.0]   # "1d" style strings parse as None
+            e["distortionDefinition"] = {"distortion": min(float(pw[0]), 1.0) * 0.05, "normalMapTexture": nm_tex}
+        uvs = nums(g, "p-uvscroll-rgb")
+        if uvs and len(uvs) >= 2:
+            e["birthUVScrollRate"] = {"constantValue": uvs[:2]}
         e["blendMode"] = int((nums(g, "rendermode") or [0])[0])
         e["rate"] = value(g, "e-rate", 1, [1.0], rand=False)
         el = nums(g, "e-life")
