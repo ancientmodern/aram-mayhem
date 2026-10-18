@@ -12,19 +12,18 @@ uniform sampler2D albedo_tex : source_color, filter_linear_mipmap_anisotropic, r
 uniform bool use_alpha_scissor = false;
 // League discards only fully transparent texels (clip(d.a == 0)); a small threshold avoids filtered fringes
 uniform float alpha_scissor = 0.02;
-// unused by League's shader (kept so existing material setup code still applies cleanly)
-uniform float self_illum = 0.0;
+// League skinMeshProperties.selfIllumination (0.7 for every champion in our roster, Veigar 0.75, chaos melee/siege
+// minions 0.6), scaled by LIGHTGRID_SCALE.y
+uniform float self_illum = 0.7;
 // Map12 light grid (tools/lol/extract_lightgrid.py): 6 faces side by side, raw gamma BGRA -> RGB
 global uniform sampler2D lightgrid : filter_linear, repeat_disable;
 global uniform float lightgrid_on;
 // LIGHTGRID_SCALE.x: the grid is stored at half intensity (MapBakeProperties.lightGridCharacterFullBrightIntensity
 // = 0.5), so the CPU most likely passes 1 / 0.5 = 2 (docs/LEAGUE_SHADERS.md, open item)
 uniform float lightgrid_scale = 2.0;
-// League's raw grid x 2 leaves camera-facing sides at ~0.2 (far darker than live League), so part of L must come
-// from a constant term the CPU supplies (SELF_ILLUMINATION / MapLightingV2.MinimumEnvironmentColorContribution).
-// Fitted floor until a reference capture pins it down (docs/LEAGUE_SHADERS.md open items).
-uniform float ambient_floor = 0.55;
-uniform float grid_gain = 0.8;   // x lightgrid_scale
+// LIGHTGRID_SCALE.y: the light grid header's third float (0.8501) is the only candidate in the data; with
+// selfIllumination 0.7 it gives the constant term 0.595 (an earlier hand fit landed at 0.55)
+uniform float self_illum_scale = 0.8501;
 const float GRID_EXTENT = 12877.525;   // League units covered by the 256 x 256 grid
 
 // explicit indices: the ink next_pass shares the instance uniform buffer
@@ -69,7 +68,7 @@ void fragment() {
 	// no grid (tests without a map): mid-lane grey ambient
 	vec3 amb = lightgrid_on > 0.5 ? v_amb : vec3(0.21);
 	// hit flash = League SELF_ILLUMINATION: raises L toward full-bright texture, never past it
-	vec3 L = clamp(vec3(flash + ambient_floor) + amb * lightgrid_scale * grid_gain, 0.0, 1.0);
+	vec3 L = clamp(vec3(flash + self_illum_scale * self_illum) + amb * lightgrid_scale, 0.0, 1.0);
 	vec3 col = clamp(d * L, 0.0, 1.0);
 	// our own highlight (player selection glow), not a League shader term
 	col += glow.rgb * glow.a * 0.35;

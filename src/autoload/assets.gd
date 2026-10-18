@@ -59,6 +59,20 @@ static func unit_model(unit_name: String, skin: int) -> Node3D:
 	return _instance_model(unit_model_path(unit_name, skin), 0.0)
 
 
+## League skinMeshProperties.selfIllumination (skin bins): 0.7 for all our champions except Veigar (0.75);
+## chaos melee/siege minions 0.6; everything else uses the 0.7 default.
+const SELF_ILLUM := {"veigar": 0.75, "chaosminionmelee": 0.6, "chaosminionsiege": 0.6}
+static var _cur_self_illum := 0.7
+
+
+static func league_self_illum(path: String) -> float:
+	var low := path.to_lower()
+	for k in SELF_ILLUM:
+		if low.contains(k):
+			return SELF_ILLUM[k]
+	return 0.7
+
+
 static func _instance_model(path: String, self_illum: float) -> Node3D:
 	var ps := _load_scene(path)
 	if ps == null:
@@ -73,6 +87,7 @@ static func _instance_model(path: String, self_illum: float) -> Node3D:
 		sc = 1.0
 	inst.scale = Vector3.ONE * sc
 	holder.set_meta("anim_aliases", meta.get("aliases", {}))
+	_cur_self_illum = league_self_illum(path)
 	_apply_materials(inst, self_illum)
 	_setup_anim_player(inst)
 	return holder
@@ -124,7 +139,7 @@ static func _champion_material(src: Material, self_illum: float) -> Material:
 	if tex != null:
 		sm.set_shader_parameter("albedo_tex", tex)
 	sm.set_shader_parameter("use_alpha_scissor", masked)
-	sm.set_shader_parameter("self_illum", 0.6 if self_illum > 0.0 else 0.55)
+	sm.set_shader_parameter("self_illum", _cur_self_illum)
 	# League has no character outline pass (decompiled shader cache: only the hover outline exists); silhouette
 	# darkness is painted into the textures. The inverted-hull ink stays available behind INK_OUTLINE.
 	if not INK_OUTLINE:
