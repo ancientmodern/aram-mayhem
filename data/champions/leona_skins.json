@@ -1,0 +1,192 @@
+[
+ {
+  "id": 89000,
+  "num": 0,
+  "name": "Leona",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89001,
+  "num": 1,
+  "name": "Valkyrie Leona",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89002,
+  "num": 2,
+  "name": "Defender Leona",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89003,
+  "num": 3,
+  "name": "Iron Solari Leona",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89004,
+  "num": 4,
+  "name": "Pool Party Leona",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89008,
+  "num": 8,
+  "name": "PROJECT: Leona",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89009,
+  "num": 9,
+  "name": "Barbecue Leona",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89010,
+  "num": 10,
+  "name": "Solar Eclipse Leona",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89011,
+  "num": 11,
+  "name": "Lunar Eclipse Leona",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89012,
+  "num": 12,
+  "name": "Mecha Kingdoms Leona",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89021,
+  "num": 21,
+  "name": "Battle Academia Leona",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89022,
+  "num": 22,
+  "name": "DWG Leona",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89023,
+  "num": 23,
+  "name": "Prestige Battle Academia Leona",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89033,
+  "num": 33,
+  "name": "Debonair Leona",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89034,
+  "num": 34,
+  "name": "High Noon Leona",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89050,
+  "num": 50,
+  "name": "Crystalis Motus Leona",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89052,
+  "num": 52,
+  "name": "Battle Lion Leona",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89053,
+  "num": 53,
+  "name": "Prestige Battle Lion Leona",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 89064,
+  "num": 64,
+  "name": "Eternal Aspect Leona",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ }
+]

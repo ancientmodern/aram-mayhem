@@ -1,0 +1,368 @@
+{
+ "alias": "Leona",
+ "name": "Leona",
+ "stats": {
+  "base_hp": 646.0,
+  "hp_per_level": 101.0,
+  "base_hp_regen": 1.7,
+  "hp_regen_per_level": 0.17,
+  "base_ad": 60.0,
+  "ad_per_level": 3.0,
+  "base_armor": 43.0,
+  "armor_per_level": 4.8,
+  "base_mr": 32.0,
+  "mr_per_level": 2.05,
+  "base_ms": 335.0,
+  "attack_range": 125.0,
+  "attack_speed": 0.625,
+  "attack_speed_ratio": 0.625,
+  "attack_speed_per_level": 2.9,
+  "resource_type": 0,
+  "mana_base": 302.0,
+  "mana_per_level": 40.0,
+  "mana_regen": 1.2,
+  "mana_regen_per_level": 0.16,
+  "critDamageMultiplier": 2.0,
+  "acquisitionRange": 400.0,
+  "selectionHeight": 188.88890075683594,
+  "selectionRadius": 120.0,
+  "pathfindingCollisionRadius": 35.0,
+  "attack_cast_offset": -0.07083333283662796,
+  "attack_total_time": null,
+  "attack_cast_time": null
+ },
+ "spell_slots": {
+  "Q": "LeonaShieldOfDaybreak",
+  "W": "LeonaSolarBarrier",
+  "E": "LeonaZenithBlade",
+  "R": "LeonaSolarFlare"
+ },
+ "passive": "LeonaSunlightPassive",
+ "passive_name": "Sunlight",
+ "passive_desc": "Damaging spells afflict enemies with Sunlight for 1.5 seconds. When allied Champions deal damage to those targets, they consume the Sunlight to deal additional magic damage.",
+ "spells": {
+  "LeonaSunlightPassive": {
+   "script": "LeonaSunlightPassive",
+   "data_values": {
+    "MarkDuration": 2.5
+   },
+   "calcs": {
+    "#1ddee768": "2421b258"
+   },
+   "castRange": 0.0,
+   "name": "Sunlight",
+   "tooltip": "Leona's abilities mark enemies for @MarkDuration@ seconds. Other allied champions consume the mark when they damage the marked enemy, dealing an additional <magicDamage>@TotalDamage@ magic damage</magicDamage>. ",
+   "summary": "Damaging spells afflict enemies with Sunlight for 1.5 seconds. When allied Champions deal damage to those targets, they consume the Sunlight to deal additional magic damage."
+  },
+  "LeonaSunlight": {
+   "script": "LeonaSunlight",
+   "data_values": {}
+  },
+  "LeonaShieldOfDaybreakAttack": {
+   "script": "LeonaShieldOfDaybreakAttack",
+   "data_values": {},
+   "cooldownTime": 1.0,
+   "castRange": 450.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 20.0,
+   "mCastTime": 0.25,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "LeonaShieldOfDaybreakAttack"
+  },
+  "LeonaShieldOfDaybreak": {
+   "script": "LeonaShieldOfDaybreak",
+   "data_values": {
+    "StunDuration": 1.0,
+    "BaseDamage": [
+     10.0,
+     10.0,
+     35.0,
+     60.0,
+     85.0,
+     110.0,
+     135.0
+    ]
+   },
+   "calcs": {
+    "#f2cbde43": "BaseDamage + 0.3*AP"
+   },
+   "cooldownTime": 5.0,
+   "mana": [
+    30.0,
+    35.0,
+    40.0,
+    45.0,
+    50.0,
+    55.0
+   ],
+   "castRange": 100.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mCastTime": 0.25,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "LeonaShieldOfDaybreak",
+   "name": "Shield of Daybreak",
+   "tooltip": "Leona's next Attack <status>Stuns</status> for @StunDuration@ seconds and deals an additional <magicDamage>@TotalDamageTooltip@</magicDamage> magic damage.",
+   "summary": "Leona uses her shield to perform her next basic attack, dealing bonus magic damage and stunning the target."
+  },
+  "LeonaZenithBlade": {
+   "script": "LeonaZenithBlade",
+   "data_values": {
+    "BaseDamage": [
+     10.0,
+     50.0,
+     90.0,
+     130.0,
+     170.0,
+     210.0,
+     250.0
+    ],
+    "RootDuration": 0.5
+   },
+   "calcs": {
+    "#f2cbde43": "BaseDamage + 0.4*AP"
+   },
+   "cooldownTime": [
+    13.0,
+    12.0,
+    10.5,
+    9.0,
+    7.5,
+    6.0,
+    6.0
+   ],
+   "mana": [
+    40.0,
+    45.0,
+    50.0,
+    55.0,
+    60.0,
+    65.0
+   ],
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 875.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mLineWidth": 80.0,
+   "mCastTime": 0.25,
+   "mAnimationName": "Spell3",
+   "mAlternateName": "LeonaZenithBlade",
+   "name": "Zenith Blade",
+   "tooltip": "Leona thrusts with a sword of light, dealing <magicDamage>@TotalDamageTooltip@ magic damage</magicDamage>. The last champion struck will be <status>Rooted</status> for @RootDuration@ seconds and Leona will dash to them.",
+   "summary": "Leona projects a solar image of her sword, dealing magic damage to all enemies in a line. When the image fades, the last enemy champion struck will be briefly immobilized and Leona will dash to them."
+  },
+  "LeonaZenithBladeMissile": {
+   "script": "LeonaZenithBladeMissile",
+   "data_values": {},
+   "cooldownTime": [
+    13.0,
+    12.0,
+    11.0,
+    10.0,
+    9.0,
+    8.0,
+    8.0
+   ],
+   "castRange": 900.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2000.0,
+   "mLineWidth": 70.0,
+   "mAnimationName": "Spell4",
+   "mAlternateName": "FlashFrostSpell"
+  },
+  "LeonaSolarFlare": {
+   "script": "LeonaSolarFlare",
+   "data_values": {
+    "OnHitBaseDamage": [
+     20.0,
+     30.0,
+     40.0,
+     50.0,
+     60.0,
+     70.0,
+     80.0
+    ],
+    "OnHitStacks": [
+     2.0,
+     3.0,
+     4.0,
+     5.0,
+     6.0,
+     7.0,
+     8.0
+    ],
+    "OnHitDuration": 5.0,
+    "AttackRangeIncrease": 100.0,
+    "OnHitAPRatio": 0.15,
+    "ExplosionBaseDamage": [
+     75.0,
+     150.0,
+     225.0,
+     300.0,
+     375.0,
+     450.0,
+     525.0
+    ],
+    "ExplosionAPRatio": 0.8,
+    "SlowPercent": 80.0,
+    "CCDuration": 1.75
+   },
+   "calcs": {
+    "#f4c90e5c": "OnHitBaseDamage + OnHitAPRatio*AP",
+    "#ae34cbf1": "ExplosionBaseDamage + ExplosionAPRatio*AP"
+   },
+   "cooldownTime": [
+    90.0,
+    90.0,
+    75.0,
+    60.0,
+    90.0,
+    90.0,
+    150.0
+   ],
+   "mana": [
+    100.0,
+    100.0,
+    100.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "castRange": 1200.0,
+   "castRadius": 120.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 20.0,
+   "mAnimationName": "Spell4",
+   "name": "Solar Flare",
+   "tooltip": "Leona calls down a radiant beam of solar energy dealing <magicDamage>@ExplosionCalculatedDamage@ magic damage</magicDamage> and <status>Slowing</status> by @SlowPercent@% for @CCDuration@ seconds. Enemies in the center of the flare are <status>Stunned</status> instead of <status>Slowed</status>.",
+   "summary": "Leona calls down a beam of solar energy, dealing damage to enemies in an area. Enemies in the center of the area are stunned, while enemies on the outside are slowed."
+  },
+  "LeonaBasicAttack4": {
+   "script": "LeonaBasicAttack4",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 200.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 347.79998779296875,
+   "mAnimationName": "Spell2_attack",
+   "mAlternateName": "GarenBasicAttack"
+  },
+  "LeonaBasicAttack3": {
+   "script": "LeonaBasicAttack3",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 200.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 347.79998779296875,
+   "mAnimationName": "Attack3",
+   "mAlternateName": "GarenBasicAttack"
+  },
+  "LeonaBasicAttack2": {
+   "script": "LeonaBasicAttack2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 200.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 347.79998779296875,
+   "mAnimationName": "Attack2",
+   "mAlternateName": "GarenBasicAttack"
+  },
+  "LeonaBasicAttack": {
+   "script": "LeonaBasicAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 200.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 347.79998779296875,
+   "mAlternateName": "GarenBasicAttack"
+  },
+  "LeonaSolarBarrier": {
+   "script": "LeonaSolarBarrier",
+   "data_values": {
+    "FlatDamageReduction": [
+     4.0,
+     8.0,
+     12.0,
+     16.0,
+     20.0,
+     24.0,
+     28.0
+    ],
+    "FlatDamageReductionMax": 0.5,
+    "APRatio": 0.4,
+    "ExplosionBaseDamage": [
+     25.0,
+     55.0,
+     85.0,
+     115.0,
+     145.0,
+     175.0,
+     205.0
+    ],
+    "MRBaseBonus": [
+     12.5,
+     20.0,
+     27.5,
+     35.0,
+     42.5,
+     50.0,
+     57.5
+    ],
+    "ArmorBaseBonus": [
+     12.5,
+     20.0,
+     27.5,
+     35.0,
+     42.5,
+     50.0,
+     57.5
+    ],
+    "ArmorMRDuration": 3.0
+   },
+   "calcs": {
+    "#f6b0b002": "ArmorBaseBonus + 0.2*bonusArmor",
+    "#1bd2a57a": "ArmorBaseBonus + 0.2*bonusMoveSpeed",
+    "#f2cbde43": "ExplosionBaseDamage + APRatio*AP"
+   },
+   "cooldownTime": [
+    14.0,
+    14.0,
+    13.0,
+    12.0,
+    11.0,
+    10.0,
+    9.0
+   ],
+   "mana": 60.0,
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 450.0,
+   "castRadius": 500.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 828.5,
+   "mAnimationName": "Spell2",
+   "mAlternateName": "LeonaSolarBarrier",
+   "name": "Eclipse",
+   "tooltip": "Leona raises her shield, reducing incoming damage by @FlatDamageReduction@ and gaining <scaleArmor>@BonusArmorTooltip@ Armor</scaleArmor> and <scaleMR>@BonusMRTooltip@ Magic Resist</scaleMR> for @ArmorMRDuration@ seconds. Afterwards, her shield detonates, dealing <magicDamage>@TotalDamageTooltip@ magic damage</magicDamage> to nearby enemies. If she hits at least one, she retains the <scaleArmor>Armor</scaleArmor> and <scaleMR>Magic Resist</scaleMR> bonuses for an additional @ArmorMRDuration@ seconds.<br>",
+   "summary": "Leona raises her shield to gain Damage Reduction, Armor, and Magic Resist. When the duration first ends, if there are nearby enemies, she will deal magic damage to them and prolong the duration of the effect."
+  },
+  "LeonaCritAttack": {
+   "script": "LeonaCritAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 200.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 347.79998779296875,
+   "mAnimationName": "Crit",
+   "mAlternateName": "LeonaCritAttack"
+  }
+ }
+}
