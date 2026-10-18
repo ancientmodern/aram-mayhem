@@ -1,0 +1,302 @@
+{
+ "sfx": {
+  "Play_sfx_Lux_Death3D_cast": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_death3d_cast_1.wav"
+  ],
+  "Play_sfx_Lux_LuxBasicAttack2_OnCast": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Lux_LuxBasicAttack2_OnHit": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Lux_LuxBasicAttack_OnCast": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Lux_LuxBasicAttack_OnHit": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Lux_LuxCritAttack_OnCast": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_oncast_1.wav"
+  ],
+  "Play_sfx_Lux_LuxCritAttack_OnHit": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxbasicattack2_onhit_1.wav"
+  ],
+  "Play_sfx_Lux_LuxIlluminationPassive_hit": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxilluminationpassive_hit_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxilluminationpassive_hit_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxilluminationpassive_hit_3.wav"
+  ],
+  "Play_sfx_Lux_LuxLightBinding_OnBuffActivate": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbinding_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbinding_onbuffactivate_2.wav"
+  ],
+  "Play_sfx_Lux_LuxLightBinding_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbinding_onbuffdeactivate_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbinding_onbuffdeactivate_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbinding_onbuffdeactivate_3.wav"
+  ],
+  "Play_sfx_Lux_LuxLightBinding_OnCast": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbinding_oncast_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbinding_oncast_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbinding_oncast_3.wav"
+  ],
+  "Play_sfx_Lux_LuxLightBindingDummy_OnMissileLaunch": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbindingdummy_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbindingdummy_onmissilelaunch_2.wav"
+  ],
+  "Play_sfx_Lux_LuxLightBindingMis_OnBuffActivate": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbindingmis_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbindingmis_onbuffactivate_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbindingmis_onbuffactivate_3.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbindingmis_onbuffactivate_4.wav"
+  ],
+  "Play_sfx_Lux_LuxLightBindingMis_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbinding_onbuffdeactivate_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbinding_onbuffdeactivate_3.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightbinding_onbuffdeactivate_2.wav"
+  ],
+  "Play_sfx_Lux_LuxLightStrikeKugel_buffactivate": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightstrikekugel_buffactivate_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightstrikekugel_buffactivate_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightstrikekugel_buffactivate_3.wav"
+  ],
+  "Play_sfx_Lux_LuxLightStrikeKugel_hit": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightstrikekugel_hit_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightstrikekugel_hit_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightstrikekugel_hit_3.wav"
+  ],
+  "Play_sfx_Lux_LuxLightStrikeKugel_OnCast": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightstrikekugel_oncast_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightstrikekugel_oncast_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightstrikekugel_oncast_3.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightstrikekugel_oncast_4.wav"
+  ],
+  "Play_sfx_Lux_LuxLightStrikeKugel_OnMissileLaunch": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightstrikekugel_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxlightstrikekugel_onmissilelaunch_2.wav"
+  ],
+  "Play_sfx_Lux_LuxPrismaticWave_OnCast": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxprismaticwave_oncast_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxprismaticwave_oncast_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxprismaticwave_oncast_3.wav"
+  ],
+  "Play_sfx_Lux_LuxPrismaticWaveMissile_OnMissileLaunch": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxprismaticwavemissile_onmissilelaunch_1.wav"
+  ],
+  "Play_sfx_Lux_LuxPrismaticWaveShield_buffactivate": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxprismaticwaveshield_buffactivate_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxprismaticwaveshield_buffactivate_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxprismaticwaveshield_buffactivate_3.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxprismaticwaveshield_buffactivate_4.wav"
+  ],
+  "Play_sfx_Lux_LuxPrismaticWaveShieldSelf_buffactivate": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxprismaticwaveshieldself_buffactivate_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxprismaticwaveshieldself_buffactivate_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxprismaticwaveshieldself_buffactivate_3.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxprismaticwaveshieldself_buffactivate_4.wav"
+  ],
+  "Play_sfx_Lux_LuxR_OnCast": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_3.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_4.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_5.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_6.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_7.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_8.wav"
+  ],
+  "Play_sfx_Lux_LuxRBeam_beamend": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxrbeam_beamend_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxrbeam_beamend_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_6.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_8.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_5.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_7.wav"
+  ],
+  "Play_sfx_Lux_LuxRBeam_beammiddle": [
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxrbeam_beamend_1.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxrbeam_beamend_2.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_6.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_8.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_5.wav",
+   "res://assets/audio/game/champions/lux/play_sfx_lux_luxr_oncast_7.wav"
+  ]
+ },
+ "vo": {
+  "Play_vo_Lux_Attack2DGeneral": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_attack2dgeneral_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_attack2dgeneral_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_attack2dgeneral_3.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_attack2dgeneral_4.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_attack2dgeneral_5.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_attack2dgeneral_6.wav"
+  ],
+  "Play_vo_Lux_Death3D": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_death3d_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_death3d_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_death3d_3.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_death3d_4.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DDemacia": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3ddemacia_1.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DEzreal": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dezreal_1.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DGalio": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dgalio_1.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DGaren": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dgaren_1.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DJarvanIV": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3djarvaniv_1.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DKatarina": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dkatarina_1.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DLeona": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dleona_1.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DLucian": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dlucian_1.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DNoxus": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dnoxus_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dnoxus_2.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DRyze": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dryze_1.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DShadowIsles": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dshadowisles_1.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DSona": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dsona_1.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DTaliyah": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dtaliyah_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dtaliyah_2.wav"
+  ],
+  "Play_vo_Lux_FirstEncounter3DTwitch": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_firstencounter3dtwitch_1.wav"
+  ],
+  "Play_vo_Lux_Joke3DGeneral": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_joke3dgeneral_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_joke3dgeneral_2.wav"
+  ],
+  "Play_vo_Lux_JokeResponse3DGeneral": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_jokeresponse3dgeneral_1.wav"
+  ],
+  "Play_vo_Lux_Kill3DGeneral": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_kill3dgeneral_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_kill3dgeneral_2.wav"
+  ],
+  "Play_vo_Lux_Laugh3DGeneral": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_laugh3dgeneral_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_laugh3dgeneral_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_laugh3dgeneral_3.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_laugh3dgeneral_4.wav"
+  ],
+  "Play_vo_Lux_LuxBasicAttack2_cast3D": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxbasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxbasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxbasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxbasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Lux_LuxBasicAttack_cast3D": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxbasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxbasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxbasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxbasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Lux_LuxCritAttack_cast3D": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxbasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxbasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxbasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxbasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Lux_LuxLightBinding_cast3D": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxlightbinding_cast3d_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxlightbinding_cast3d_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxlightbinding_cast3d_3.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxlightbinding_cast3d_4.wav"
+  ],
+  "Play_vo_Lux_LuxLightStrikeKugel_cast3D": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxlightstrikekugel_cast3d_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxlightstrikekugel_cast3d_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxlightstrikekugel_cast3d_3.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxlightstrikekugel_cast3d_4.wav"
+  ],
+  "Play_vo_Lux_LuxLightstrikeToggle_cast3D": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxlightstriketoggle_cast3d_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxlightstriketoggle_cast3d_2.wav"
+  ],
+  "Play_vo_Lux_LuxPrismaticWave_cast3D": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxprismaticwave_cast3d_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxprismaticwave_cast3d_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxprismaticwave_cast3d_3.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxprismaticwave_cast3d_4.wav"
+  ],
+  "Play_vo_Lux_LuxR_cast3D": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxr_cast3d_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxr_cast3d_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxr_cast3d_3.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxr_cast3d_4.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxr_cast3d_5.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_luxr_cast3d_6.wav"
+  ],
+  "Play_vo_Lux_Move2DFirst": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dfirst_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dfirst_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dfirst_3.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dfirst_4.wav"
+  ],
+  "Play_vo_Lux_Move2DFirstAllyDemacia": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dfirstallydemacia_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dfirstallydemacia_2.wav"
+  ],
+  "Play_vo_Lux_Move2DFirstAllyGalio": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dfirstallygalio_1.wav"
+  ],
+  "Play_vo_Lux_Move2DFirstAllyGaren": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dfirstallygaren_1.wav"
+  ],
+  "Play_vo_Lux_Move2DFirstAllyTaliyah": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dfirstallytaliyah_1.wav"
+  ],
+  "Play_vo_Lux_Move2DStandard": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dstandard_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dstandard_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dstandard_3.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dstandard_4.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dstandard_5.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_move2dstandard_6.wav"
+  ],
+  "Play_vo_Lux_Respawn2DGeneral": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_respawn2dgeneral_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_respawn2dgeneral_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_respawn2dgeneral_3.wav"
+  ],
+  "Play_vo_Lux_Taunt3DGeneral": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_taunt3dgeneral_1.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_taunt3dgeneral_2.wav",
+   "res://assets/audio/game/champions/lux/play_vo_lux_taunt3dgeneral_3.wav"
+  ],
+  "Play_vo_Lux_TauntResponse3DGeneral": [
+   "res://assets/audio/game/champions/lux/play_vo_lux_tauntresponse3dgeneral_1.wav"
+  ]
+ }
+}

@@ -1,0 +1,320 @@
+{
+ "sfx": {
+  "Play_sfx_Jinx_Dance3D_buffactivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_dance3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Jinx_Dance3D_loop": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_dance3d_loop_1.wav"
+  ],
+  "Play_sfx_Jinx_Death3D_cast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_death3d_cast_1.wav"
+  ],
+  "Play_sfx_Jinx_JinxBasicAttack2_OnCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxBasicAttack2_OnHit": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxBasicAttack2_OnMissileCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilecast_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilecast_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxBasicAttack2_OnMissileLaunch": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilelaunch_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxBasicAttack_OnCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxBasicAttack_OnHit": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxBasicAttack_OnMissileCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilecast_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilecast_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxBasicAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilelaunch_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxCritAttack_OnCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxCritAttack_OnHit": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onhit_4.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxCritAttack_OnMissileCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilecast_4.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilecast_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilecast_1.wav"
+  ],
+  "Play_sfx_Jinx_JinxCritAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilelaunch_4.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxbasicattack2_onmissilelaunch_1.wav"
+  ],
+  "Play_sfx_Jinx_JinxE_OnCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxe_oncast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxe_oncast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxe_oncast_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxEMine_buffactivate_fire": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_buffactivate_fire_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_buffactivate_fire_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_buffactivate_fire_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxEMine_OnBuffActivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_onbuffactivate_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_onbuffactivate_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_onbuffactivate_4.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_onbuffactivate_5.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_onbuffactivate_6.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_onbuffactivate_7.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_onbuffactivate_8.wav"
+  ],
+  "Play_sfx_Jinx_JinxEMine_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_onbuffdeactivate_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_onbuffdeactivate_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxemine_onbuffdeactivate_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxEMineSnare_OnBuffActivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxeminesnare_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxeminesnare_onbuffactivate_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxeminesnare_onbuffactivate_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxPassiveKill_OnBuffActivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxpassivekill_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxpassivekill_onbuffactivate_2.wav"
+  ],
+  "Play_sfx_Jinx_JinxQ_OnBuffActivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxq_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Jinx_JinxQAttack2_OnCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxQAttack2_OnMissileCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilecast_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilecast_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxQAttack2_OnMissileLaunch": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilelaunch_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxQAttack_hit": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack_hit_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack_hit_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack_hit_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack_hit_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxQAttack_OnCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxQAttack_OnMissileCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilecast_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilecast_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxQAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilelaunch_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxQCritAttack_OnCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_oncast_4.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxQCritAttack_OnMissileCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilecast_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilecast_4.wav"
+  ],
+  "Play_sfx_Jinx_JinxQCritAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilelaunch_4.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqattack2_onmissilelaunch_2.wav"
+  ],
+  "Play_sfx_Jinx_JinxQIcon_OnBuffActivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxqicon_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Jinx_JinxR_boosteractivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_boosteractivate_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_boosteractivate_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_boosteractivate_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxR_boosterlaunch": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_boosterlaunch_1.wav"
+  ],
+  "Play_sfx_Jinx_JinxR_hit": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_hit_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_hit_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_hit_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxR_missilelaunch": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_missilelaunch_1.wav"
+  ],
+  "Play_sfx_Jinx_JinxR_OnCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_oncast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_oncast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_oncast_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxR_OnMissileCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxr_onmissilecast_2.wav"
+  ],
+  "Play_sfx_Jinx_JinxW_OnCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxw_oncast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxw_oncast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxw_oncast_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxWMissile_hit": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxwmissile_hit_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxwmissile_hit_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxwmissile_hit_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxWMissile_OnMissileCast": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxwmissile_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxwmissile_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxwmissile_onmissilecast_3.wav"
+  ],
+  "Play_sfx_Jinx_JinxWMissile_OnMissileLaunch": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxwmissile_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxwmissile_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_jinxwmissile_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Jinx_Joke3D_buffactivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_joke3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Jinx_Recall3D_buffactivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_recall3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Jinx_Recall3D_leadout": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_recall3d_leadout_1.wav"
+  ],
+  "Play_sfx_Jinx_Respawn3D_buffactivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_respawn3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Jinx_Taunt23D_buffactivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_taunt23d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Jinx_Taunt3D_buffactivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_taunt3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Jinx_Winddown3D_buffactivate": [
+   "res://assets/audio/game/champions/jinx/play_sfx_jinx_respawn3d_buffactivate_1.wav"
+  ]
+ },
+ "vo": {
+  "Play_vo_Jinx_Attack2DGeneral": [
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_attack2dgeneral_1.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_attack2dgeneral_2.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_attack2dgeneral_3.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_attack2dgeneral_4.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_attack2dgeneral_5.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_attack2dgeneral_6.wav"
+  ],
+  "Play_vo_Jinx_Death3D": [
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_death3d_1.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_death3d_2.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_death3d_3.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_death3d_4.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_death3d_5.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_death3d_6.wav"
+  ],
+  "Play_vo_Jinx_FirstEncounter3DCaitlyn": [
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_firstencounter3dcaitlyn_1.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_firstencounter3dcaitlyn_2.wav"
+  ],
+  "Play_vo_Jinx_FirstEncounter3DVi": [
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_firstencounter3dvi_1.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_firstencounter3dvi_2.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_firstencounter3dvi_3.wav"
+  ],
+  "Play_vo_Jinx_JinxE_cast3D": [
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_jinxe_cast3d_1.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_jinxe_cast3d_2.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_jinxe_cast3d_3.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_jinxe_cast3d_4.wav"
+  ],
+  "Play_vo_Jinx_JinxR_cast3D": [
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_jinxr_cast3d_1.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_jinxr_cast3d_2.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_jinxr_cast3d_3.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_jinxr_cast3d_4.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_jinxr_cast3d_5.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_jinxr_cast3d_6.wav"
+  ],
+  "Play_vo_Jinx_JinxW_cast3D": [
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_jinxw_cast3d_1.wav"
+  ],
+  "Play_vo_Jinx_Joke3DGeneral": [
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_joke3dgeneral_1.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_joke3dgeneral_2.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_joke3dgeneral_3.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_joke3dgeneral_4.wav"
+  ],
+  "Play_vo_Jinx_laugh3D_in": [
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_laugh3d_in_1.wav"
+  ],
+  "Play_vo_Jinx_laugh3D_loop": [
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_laugh3d_loop_1.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_laugh3d_loop_2.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_laugh3d_loop_3.wav"
+  ],
+  "Play_vo_Jinx_Move2DStandard": [
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_move2dstandard_1.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_move2dstandard_2.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_move2dstandard_3.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_move2dstandard_4.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_move2dstandard_5.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_move2dstandard_6.wav"
+  ],
+  "Play_vo_Jinx_Taunt3DGeneral": [
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_taunt3dgeneral_1.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_taunt3dgeneral_2.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_taunt3dgeneral_3.wav",
+   "res://assets/audio/game/champions/jinx/play_vo_jinx_taunt3dgeneral_4.wav"
+  ]
+ }
+}

@@ -1,0 +1,389 @@
+{
+ "sfx": {
+  "Play_sfx_Ahri_AhriBasicAttack2_OnCast": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Ahri_AhriBasicAttack2_OnHit": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Ahri_AhriBasicAttack2_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onmissilelaunch_4.wav"
+  ],
+  "Play_sfx_Ahri_AhriBasicAttack_OnCast": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Ahri_AhriBasicAttack_OnHit": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Ahri_AhriBasicAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onmissilelaunch_4.wav"
+  ],
+  "Play_sfx_Ahri_AhriCritAttack_OnCast": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Ahri_AhriCritAttack_OnHit": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Ahri_AhriCritAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahribasicattack2_onmissilelaunch_4.wav"
+  ],
+  "Play_sfx_Ahri_AhriE_OnCast": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrie_oncast_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrie_oncast_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrie_oncast_3.wav"
+  ],
+  "Play_sfx_Ahri_AhriEMissile_hit": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriemissile_hit_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriemissile_hit_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriemissile_hit_3.wav"
+  ],
+  "Play_sfx_Ahri_AhriEMissile_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriemissile_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriemissile_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriemissile_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Ahri_AhriPassive_hit": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahripassive_hit_1.wav"
+  ],
+  "Play_sfx_Ahri_AhriPassive_minionheal_buffactivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahripassive_minionheal_buffactivate_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahripassive_minionheal_buffactivate_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahripassive_minionheal_buffactivate_3.wav"
+  ],
+  "Play_sfx_Ahri_AhriPassiveMissile_buffactivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahripassive_minionheal_buffactivate_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahripassive_minionheal_buffactivate_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahripassive_minionheal_buffactivate_2.wav"
+  ],
+  "Play_sfx_Ahri_AhriPassiveMissile_missilelaunch": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahripassivemissile_missilelaunch_1.wav"
+  ],
+  "Play_sfx_Ahri_AhriQ_OnCast": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriq_oncast_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriq_oncast_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriq_oncast_3.wav"
+  ],
+  "Play_sfx_Ahri_AhriQDamage_hit": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqdamage_hit_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqdamage_hit_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqdamage_hit_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqdamage_hit_4.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqdamage_hit_5.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqdamage_hit_6.wav"
+  ],
+  "Play_sfx_Ahri_AhriQMissile_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqmissile_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqmissile_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqmissile_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Ahri_AhriQReturnDamage_hit": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqreturndamage_hit_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqreturndamage_hit_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqreturndamage_hit_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqreturndamage_hit_4.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqreturndamage_hit_5.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqreturndamage_hit_6.wav"
+  ],
+  "Play_sfx_Ahri_AhriQReturnMissile_buffdeactivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqreturnmissile_buffdeactivate_1.wav"
+  ],
+  "Play_sfx_Ahri_AhriQReturnMissile_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqreturnmissile_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqreturnmissile_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriqreturnmissile_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Ahri_AhriR_OnBuffActivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrir_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Ahri_AhriR_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrir_onbuffdeactivate_1.wav"
+  ],
+  "Play_sfx_Ahri_AhriR_OnCast": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrir_oncast_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrir_oncast_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrir_oncast_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrir_oncast_4.wav"
+  ],
+  "Play_sfx_Ahri_AhriRMissile_OnHit": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrirmissile_onhit_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrirmissile_onhit_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrirmissile_onhit_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrirmissile_onhit_4.wav"
+  ],
+  "Play_sfx_Ahri_AhriRMissile_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrirmissile_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrirmissile_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrirmissile_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahrirmissile_onmissilelaunch_4.wav"
+  ],
+  "Play_sfx_Ahri_AhriW_OnBuffActivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriw_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Ahri_AhriW_OnCast": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriw_oncast_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriw_oncast_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriw_oncast_3.wav"
+  ],
+  "Play_sfx_Ahri_AhriWDamageMissile_hit": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriwdamagemissile_hit_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriwdamagemissile_hit_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriwdamagemissile_hit_3.wav"
+  ],
+  "Play_sfx_Ahri_AhriWDamageMissile_missilelaunch": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriwdamagemissile_missilelaunch_1.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriwdamagemissile_missilelaunch_2.wav",
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_ahriwdamagemissile_missilelaunch_3.wav"
+  ],
+  "Play_sfx_Ahri_Dance3D_buffactivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_dance3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Ahri_Dance3D_loop": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_dance3d_loop_1.wav"
+  ],
+  "Play_sfx_Ahri_Death3D_cast": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_death3d_cast_1.wav"
+  ],
+  "Play_sfx_Ahri_Idle3D_buffactivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_idle3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Ahri_Joke3D_buffactivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_joke3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Ahri_Joke3D_loop": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_joke3d_loop_1.wav"
+  ],
+  "Play_sfx_Ahri_Laugh3D_buffactivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_laugh3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Ahri_Recall3D_buffactivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_recall3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Ahri_Respawn3D_buffactivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_respawn3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Ahri_Taunt3D_buffactivate": [
+   "res://assets/audio/game/champions/ahri/play_sfx_ahri_taunt3d_buffactivate_1.wav"
+  ]
+ },
+ "vo": {
+  "Play_vo_Ahri_AhriBasicAttack2_cast3D": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahribasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahribasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahribasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahribasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Ahri_AhriBasicAttack_cast3D": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahribasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahribasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahribasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahribasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Ahri_AhriCritAttack_cast3D": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahribasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahribasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahribasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahribasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Ahri_AhriE_cast3D": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahrie_cast3d_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahrie_cast3d_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahrie_cast3d_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahrie_cast3d_4.wav"
+  ],
+  "Play_vo_Ahri_AhriPassive_cast3D": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahripassive_cast3d_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahripassive_cast3d_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahripassive_cast3d_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahripassive_cast3d_4.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahripassive_cast3d_5.wav"
+  ],
+  "Play_vo_Ahri_AhriQ_cast3D": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahriq_cast3d_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahriq_cast3d_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahriq_cast3d_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahriq_cast3d_4.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahriq_cast3d_5.wav"
+  ],
+  "Play_vo_Ahri_AhriR_cast3D": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahrir_cast3d_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahrir_cast3d_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahrir_cast3d_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahrir_cast3d_4.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahrir_cast3d_5.wav"
+  ],
+  "Play_vo_Ahri_AhriW_cast3D": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahriw_cast3d_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahriw_cast3d_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahriw_cast3d_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_ahriw_cast3d_4.wav"
+  ],
+  "Play_vo_Ahri_Attack2DGeneral": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_attack2dgeneral_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_attack2dgeneral_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_attack2dgeneral_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_attack2dgeneral_4.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_attack2dgeneral_5.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_attack2dgeneral_6.wav"
+  ],
+  "Play_vo_Ahri_Death3D": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_death3d_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_death3d_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_death3d_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_death3d_4.wav"
+  ],
+  "Play_vo_Ahri_FirstEncounter3DBraum": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dbraum_1.wav"
+  ],
+  "Play_vo_Ahri_FirstEncounter3DGeneral": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dgeneral_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dgeneral_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dgeneral_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dgeneral_4.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dgeneral_5.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dgeneral_6.wav"
+  ],
+  "Play_vo_Ahri_FirstEncounter3DIllaoi": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dillaoi_1.wav"
+  ],
+  "Play_vo_Ahri_FirstEncounter3DLillia": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dlillia_1.wav"
+  ],
+  "Play_vo_Ahri_FirstEncounter3DMissFortune": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dmissfortune_1.wav"
+  ],
+  "Play_vo_Ahri_FirstEncounter3DPyke": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dpyke_1.wav"
+  ],
+  "Play_vo_Ahri_FirstEncounter3DRakan": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3drakan_1.wav"
+  ],
+  "Play_vo_Ahri_FirstEncounter3DVastaya": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dvastaya_1.wav"
+  ],
+  "Play_vo_Ahri_FirstEncounter3DXayah": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dxayah_1.wav"
+  ],
+  "Play_vo_Ahri_FirstEncounter3DYasuo": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dyasuo_1.wav"
+  ],
+  "Play_vo_Ahri_FirstEncounter3DYone": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_firstencounter3dyone_1.wav"
+  ],
+  "Play_vo_Ahri_Joke3DGeneral": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_joke3dgeneral_1.wav"
+  ],
+  "Play_vo_Ahri_JokeResponse3DGeneral": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_jokeresponse3dgeneral_1.wav"
+  ],
+  "Play_vo_Ahri_Kill3DAssist": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dassist_1.wav"
+  ],
+  "Play_vo_Ahri_Kill3DBraum": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dbraum_1.wav"
+  ],
+  "Play_vo_Ahri_Kill3DGeneral": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dgeneral_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dgeneral_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dgeneral_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dgeneral_4.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dgeneral_5.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dgeneral_6.wav"
+  ],
+  "Play_vo_Ahri_Kill3DIllaoi": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dillaoi_1.wav"
+  ],
+  "Play_vo_Ahri_Kill3DLillia": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dlillia_1.wav"
+  ],
+  "Play_vo_Ahri_Kill3DMissFortune": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dmissfortune_1.wav"
+  ],
+  "Play_vo_Ahri_Kill3DPenta": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dpenta_1.wav"
+  ],
+  "Play_vo_Ahri_Kill3DPyke": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dpyke_1.wav"
+  ],
+  "Play_vo_Ahri_Kill3DRakan": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3drakan_1.wav"
+  ],
+  "Play_vo_Ahri_Kill3DVastaya": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dvastaya_1.wav"
+  ],
+  "Play_vo_Ahri_Kill3DXayah": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dxayah_1.wav"
+  ],
+  "Play_vo_Ahri_Kill3DYasuo": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dyasuo_1.wav"
+  ],
+  "Play_vo_Ahri_Kill3DYone": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_kill3dyone_1.wav"
+  ],
+  "Play_vo_Ahri_Laugh3DGeneral": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_laugh3dgeneral_1.wav"
+  ],
+  "Play_vo_Ahri_Move2DFirst": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dfirst_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dfirst_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dfirst_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dfirst_4.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dfirst_5.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dfirst_6.wav"
+  ],
+  "Play_vo_Ahri_Move2DLong": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dlong_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dlong_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dlong_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dlong_4.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dlong_5.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dlong_6.wav"
+  ],
+  "Play_vo_Ahri_Move2DStandard": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dstandard_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dstandard_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dstandard_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dstandard_4.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dstandard_5.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_move2dstandard_6.wav"
+  ],
+  "Play_vo_Ahri_Respawn2DGeneral": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_respawn2dgeneral_1.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_respawn2dgeneral_2.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_respawn2dgeneral_3.wav",
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_respawn2dgeneral_4.wav"
+  ],
+  "Play_vo_Ahri_Taunt3DGeneral": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_taunt3dgeneral_1.wav"
+  ],
+  "Play_vo_Ahri_TauntResponse3DGeneral": [
+   "res://assets/audio/game/champions/ahri/play_vo_ahri_tauntresponse3dgeneral_1.wav"
+  ]
+ }
+}

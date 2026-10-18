@@ -1,0 +1,448 @@
+{
+ "sfx": {
+  "Play_sfx_Ezreal_Dance3D_buffactivate": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_dance3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Ezreal_Dance3D_loop": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_dance3d_loop_1.wav"
+  ],
+  "Play_sfx_Ezreal_Death3D_cast": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_death3d_cast_1.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealBasicAttack2_OnCast": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealBasicAttack2_OnHit": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealBasicAttack2_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealBasicAttack_OnCast": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealBasicAttack_OnHit": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealBasicAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealCritAttack_OnCast": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealCritAttack_OnHit": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealCritAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealbasicattack2_onmissilelaunch_1.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealE_OnCast": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezreale_oncast_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezreale_oncast_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezreale_oncast_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealE_return": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezreale_return_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezreale_return_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezreale_return_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealEMissile_OnHit": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealemissile_onhit_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealemissile_onhit_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealemissile_onhit_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealemissile_onhit_4.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealemissile_onhit_5.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealEMissile_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealemissile_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealemissile_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealemissile_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealQ_OnCast": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealq_oncast_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealq_oncast_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealq_oncast_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealQ_OnHit": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealq_onhit_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealq_onhit_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealq_onhit_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealQ_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealq_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealq_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealq_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealR_OnCast": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealr_oncast_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealr_oncast_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealr_oncast_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealR_OnHit": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealr_onhit_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealr_onhit_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealr_onhit_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealR_OnMissileCast": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealr_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealr_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealr_onmissilecast_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealR_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealr_onmissilelaunch_1.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealW_OnCast": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealw_oncast_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealw_oncast_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealw_oncast_3.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealW_OnHit": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealw_onhit_1.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealW_OnMissileLaunch": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealw_onmissilelaunch_1.wav"
+  ],
+  "Play_sfx_Ezreal_EzrealWAttach_detonate": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealwattach_detonate_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealwattach_detonate_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_ezrealwattach_detonate_3.wav"
+  ],
+  "Play_sfx_Ezreal_Joke3D_buffactivate": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_joke3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Ezreal_Laugh3D_buffactivate": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_laugh3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Ezreal_Recall3D_buffactivate": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_recall3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Ezreal_Recall3D_leadout": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_recall3d_leadout_1.wav"
+  ],
+  "Play_sfx_Ezreal_Recall3D_winddown": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_recall3d_winddown_1.wav"
+  ],
+  "Play_sfx_Ezreal_Taunt3D_buffactivate": [
+   "res://assets/audio/game/champions/ezreal/play_sfx_ezreal_taunt3d_buffactivate_1.wav"
+  ]
+ },
+ "vo": {
+  "Play_vo_Ezreal_Attack2DBaron": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dbaron_1.wav"
+  ],
+  "Play_vo_Ezreal_Attack2DDragon": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2ddragon_1.wav"
+  ],
+  "Play_vo_Ezreal_Attack2DEkko": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dekko_1.wav"
+  ],
+  "Play_vo_Ezreal_Attack2DGaren": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dgaren_1.wav"
+  ],
+  "Play_vo_Ezreal_Attack2DGeneral": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dgeneral_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dgeneral_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dgeneral_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dgeneral_4.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dgeneral_5.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dgeneral_6.wav"
+  ],
+  "Play_vo_Ezreal_Attack2DLux": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dlux_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dlux_2.wav"
+  ],
+  "Play_vo_Ezreal_Attack2DShyvana": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dshyvana_1.wav"
+  ],
+  "Play_vo_Ezreal_Attack2DYordle": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dyordle_1.wav"
+  ],
+  "Play_vo_Ezreal_Attack2DZoe": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_attack2dzoe_1.wav"
+  ],
+  "Play_vo_Ezreal_Death3D": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_death3d_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_death3d_2.wav"
+  ],
+  "Play_vo_Ezreal_EzrealBasicAttack2_cast3D": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealbasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealbasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealbasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealbasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Ezreal_EzrealBasicAttack_cast3D": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealbasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealbasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealbasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealbasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Ezreal_EzrealCritAttack_cast3D": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealbasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealbasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealbasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealbasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Ezreal_EzrealE_cast3D": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezreale_cast3d_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezreale_cast3d_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezreale_cast3d_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezreale_cast3d_4.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezreale_cast3d_5.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezreale_cast3d_6.wav"
+  ],
+  "Play_vo_Ezreal_EzrealQ_cast3D": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealq_cast3d_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealq_cast3d_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealq_cast3d_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealq_cast3d_4.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealq_cast3d_5.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealq_cast3d_6.wav"
+  ],
+  "Play_vo_Ezreal_EzrealR_cast3D": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealr_cast3d_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealr_cast3d_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealr_cast3d_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealr_cast3d_4.wav"
+  ],
+  "Play_vo_Ezreal_EzrealW_cast3D": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealw_cast3d_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealw_cast3d_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealw_cast3d_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_ezrealw_cast3d_4.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DAnnie": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dannie_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DAscended": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dascended_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DAshe": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dashe_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DAurelionSol": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3daurelionsol_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DBilgewater": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dbilgewater_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DCaitlyn": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dcaitlyn_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DCamille": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dcamille_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DCorki": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dcorki_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DDarkin": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3ddarkin_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DDemacia": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3ddemacia_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3ddemacia_2.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DDemigod": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3ddemigod_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3ddemigod_2.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DDemon": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3ddemon_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DEzreal": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dezreal_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DGalio": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dgalio_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DGeneral": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dgeneral_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dgeneral_2.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DHeimerdinger": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dheimerdinger_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DJayce": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3djayce_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DJhin": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3djhin_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DJinx": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3djinx_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DKindred": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dkindred_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DLeBlanc": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dleblanc_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DLucian": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dlucian_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DLux": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dlux_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dlux_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dlux_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dlux_4.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DNoxus": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dnoxus_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dnoxus_2.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DOrnn": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dornn_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DPiltover": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dpiltover_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DPyke": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dpyke_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DRakan": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3drakan_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DRekSai": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dreksai_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DRyze": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dryze_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DShadowIsles": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dshadowisles_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DShurima": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dshurima_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DSivir": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dsivir_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DTaliyah": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dtaliyah_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DTargon": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dtargon_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DTaric": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dtaric_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DUndead": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dundead_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DVastaya": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dvastaya_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DXayah": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dxayah_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DXerath": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dxerath_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DYordle": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dyordle_1.wav"
+  ],
+  "Play_vo_Ezreal_FirstEncounter3DZoe": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dzoe_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_firstencounter3dzoe_2.wav"
+  ],
+  "Play_vo_Ezreal_Joke3DGeneral": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_joke3dgeneral_1.wav"
+  ],
+  "Play_vo_Ezreal_JokeResponse3DGeneral": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_jokeresponse3dgeneral_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_jokeresponse3dgeneral_2.wav"
+  ],
+  "Play_vo_Ezreal_Kill3DBaron": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_kill3dbaron_1.wav"
+  ],
+  "Play_vo_Ezreal_Kill3DGeneral": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_kill3dgeneral_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_kill3dgeneral_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_kill3dgeneral_3.wav"
+  ],
+  "Play_vo_Ezreal_Kill3DPenta": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_kill3dpenta_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_kill3dpenta_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_kill3dpenta_3.wav"
+  ],
+  "Play_vo_Ezreal_Kill3DTurret": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_kill3dturret_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_kill3dturret_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_kill3dturret_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_kill3dturret_4.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_kill3dturret_5.wav"
+  ],
+  "Play_vo_Ezreal_Laugh3DGeneral": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_laugh3dgeneral_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_laugh3dgeneral_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_laugh3dgeneral_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_laugh3dgeneral_4.wav"
+  ],
+  "Play_vo_Ezreal_Move2DFirst": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dfirst_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dfirst_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dfirst_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dfirst_4.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dfirst_5.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dfirst_6.wav"
+  ],
+  "Play_vo_Ezreal_Move2DJungle": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2djungle_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2djungle_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2djungle_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2djungle_4.wav"
+  ],
+  "Play_vo_Ezreal_Move2DLong": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dlong_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dlong_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dlong_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dlong_4.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dlong_5.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dlong_6.wav"
+  ],
+  "Play_vo_Ezreal_Move2DRiver": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2driver_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2driver_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2driver_3.wav"
+  ],
+  "Play_vo_Ezreal_Move2DStandard": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dstandard_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dstandard_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dstandard_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dstandard_4.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dstandard_5.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_move2dstandard_6.wav"
+  ],
+  "Play_vo_Ezreal_Respawn2DGeneral": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_respawn2dgeneral_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_respawn2dgeneral_2.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_respawn2dgeneral_3.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_respawn2dgeneral_4.wav"
+  ],
+  "Play_vo_Ezreal_Taunt3DGeneral": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_taunt3dgeneral_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_taunt3dgeneral_2.wav"
+  ],
+  "Play_vo_Ezreal_TauntResponse3DGeneral": [
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_tauntresponse3dgeneral_1.wav",
+   "res://assets/audio/game/champions/ezreal/play_vo_ezreal_tauntresponse3dgeneral_2.wav"
+  ]
+ }
+}

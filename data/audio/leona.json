@@ -1,0 +1,261 @@
+{
+ "sfx": {
+  "Play_sfx_Leona_Dance3D_buffactivate": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_dance3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Leona_Death3D_cast": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_death3d_cast_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_death3d_cast_2.wav"
+  ],
+  "Play_sfx_Leona_Joke3D_buffactivate": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_joke3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Leona_Laugh3D_buffactivate": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_laugh3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Leona_LeonaBasicAttack2_OnCast": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaBasicAttack2_OnHit": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaBasicAttack3_OnCast": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaBasicAttack3_OnHit": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack3_onhit_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack3_onhit_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack3_onhit_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack3_onhit_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaBasicAttack4_OnCast": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaBasicAttack4_OnHit": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaBasicAttack_OnCast": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaBasicAttack_OnHit": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaCritAttack_OnCast": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaCritAttack_OnHit": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonacritattack_onhit_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonacritattack_onhit_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonacritattack_onhit_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonacritattack_onhit_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaShieldOfDaybreak_OnBuffActivate": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonashieldofdaybreak_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Leona_LeonaShieldOfDaybreak_OnCast": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonashieldofdaybreak_oncast_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonashieldofdaybreak_oncast_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonashieldofdaybreak_oncast_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonashieldofdaybreak_oncast_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaShieldOfDaybreakAttack_hit": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonacritattack_onhit_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonacritattack_onhit_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonacritattack_onhit_4.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonacritattack_onhit_2.wav"
+  ],
+  "Play_sfx_Leona_LeonaShieldOfDaybreakAttack_OnCast": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_4.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonashieldofdaybreakattack_oncast_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonabasicattack2_oncast_2.wav"
+  ],
+  "Play_sfx_Leona_LeonaSolarBarrier2_OnBuffActivate": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier2_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier2_onbuffactivate_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier2_onbuffactivate_3.wav"
+  ],
+  "Play_sfx_Leona_LeonaSolarBarrier_hit": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_hit_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_hit_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_hit_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_hit_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaSolarBarrier_hitwhiff": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_hitwhiff_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_hitwhiff_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_hitwhiff_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_hitwhiff_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaSolarBarrier_OnBuffActivate": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_onbuffactivate_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_onbuffactivate_3.wav"
+  ],
+  "Play_sfx_Leona_LeonaSolarBarrier_OnCast": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_oncast_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_oncast_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_oncast_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarbarrier_oncast_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaSolarFlare_buffactivate": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarflare_buffactivate_1.wav"
+  ],
+  "Play_sfx_Leona_LeonaSolarFlare_hit": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarflare_hit_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarflare_hit_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarflare_hit_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarflare_hit_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaSolarFlare_OnCast": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarflare_oncast_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarflare_oncast_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarflare_oncast_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasolarflare_oncast_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaSunlight_hit": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasunlight_hit_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasunlight_hit_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonasunlight_hit_3.wav"
+  ],
+  "Play_sfx_Leona_LeonaZenithBlade_OnCast": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblade_oncast_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblade_oncast_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblade_oncast_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblade_oncast_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaZenithBladeDash_hit": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithbladedash_hit_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithbladedash_hit_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithbladedash_hit_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithbladedash_hit_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaZenithBladeDash_missilelaunch": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithbladedash_missilelaunch_1.wav"
+  ],
+  "Play_sfx_Leona_LeonaZenithBladeMissile_hit": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblademissile_hit_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblademissile_hit_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblademissile_hit_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblademissile_hit_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaZenithBladeMissile_hitchampion": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblademissile_hitchampion_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblademissile_hitchampion_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblademissile_hitchampion_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblademissile_hitchampion_4.wav"
+  ],
+  "Play_sfx_Leona_LeonaZenithBladeMissile_OnMissileLaunch": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblademissile_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblademissile_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblademissile_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/leona/play_sfx_leona_leonazenithblademissile_onmissilelaunch_4.wav"
+  ],
+  "Play_sfx_Leona_Taunt3D_buffactivate": [
+   "res://assets/audio/game/champions/leona/play_sfx_leona_taunt3d_buffactivate_1.wav"
+  ]
+ },
+ "vo": {
+  "Play_vo_Leona_Attack2DGeneral": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_attack2dgeneral_1.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_attack2dgeneral_2.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_attack2dgeneral_3.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_attack2dgeneral_4.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_attack2dgeneral_5.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_attack2dgeneral_6.wav"
+  ],
+  "Play_vo_Leona_Death3D": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_death3d_1.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_death3d_2.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_death3d_3.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_death3d_4.wav"
+  ],
+  "Play_vo_Leona_Joke3DGeneral": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_joke3dgeneral_1.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_joke3dgeneral_2.wav"
+  ],
+  "Play_vo_Leona_Laugh3DGeneral": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_laugh3dgeneral_1.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_laugh3dgeneral_2.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_laugh3dgeneral_3.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_laugh3dgeneral_4.wav"
+  ],
+  "Play_vo_Leona_LeonaBasicAttack2_cast3D": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Leona_LeonaBasicAttack3_cast3D": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Leona_LeonaBasicAttack_cast3D": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Leona_LeonaCritAttack_cast3D": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Leona_LeonaShieldOfDaybreakAttack_cast3D": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonabasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Leona_LeonaSolarFlare_cast3D": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonasolarflare_cast3d_1.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonasolarflare_cast3d_2.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonasolarflare_cast3d_3.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonasolarflare_cast3d_4.wav"
+  ],
+  "Play_vo_Leona_LeonaZenithBlade_cast3D": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonazenithblade_cast3d_1.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonazenithblade_cast3d_2.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonazenithblade_cast3d_3.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_leonazenithblade_cast3d_4.wav"
+  ],
+  "Play_vo_Leona_Move2DStandard": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_move2dstandard_1.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_move2dstandard_2.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_move2dstandard_3.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_move2dstandard_4.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_move2dstandard_5.wav",
+   "res://assets/audio/game/champions/leona/play_vo_leona_move2dstandard_6.wav"
+  ],
+  "Play_vo_Leona_Taunt3DGeneral": [
+   "res://assets/audio/game/champions/leona/play_vo_leona_taunt3dgeneral_1.wav"
+  ]
+ }
+}

@@ -1,0 +1,302 @@
+{
+ "sfx": {
+  "Play_sfx_MissFortune_MissFortuneBasicAttack2_OnCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneBasicAttack2_OnHit": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_6.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneBasicAttack2_OnMissileCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilecast_3.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneBasicAttack2_OnMissileLaunch": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneBasicAttack_OnCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneBasicAttack_OnHit": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_6.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneBasicAttack_OnMissileCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilecast_3.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneBasicAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneBulletEMPTY_OnMissileLaunch": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebulletempty_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebulletempty_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebulletempty_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebulletempty_onmissilelaunch_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebulletempty_onmissilelaunch_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebulletempty_onmissilelaunch_6.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebulletempty_onmissilelaunch_7.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebulletempty_onmissilelaunch_8.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneBulletTime_OnCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebullettime_oncast_1.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneCritAttack_OnCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneCritAttack_OnHit": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onhit_6.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneCritAttack_OnMissileCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilecast_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilecast_1.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneCritAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunebasicattack2_onmissilelaunch_1.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttack2_OnCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_6.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttack2_OnHit": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_5.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttack2_OnHitLocation": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhitlocation_1.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttack2_OnMissileCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_6.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttack2_OnMissileLaunch": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_6.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttack_OnCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_6.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttack_OnHit": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_5.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttack_OnHitLocation": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhitlocation_1.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttack_OnMissileCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_6.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_6.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttackCrit_OnCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_6.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_oncast_5.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttackCrit_OnHit": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhit_5.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttackCrit_OnHitLocation": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onhitlocation_1.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttackCrit_OnMissileCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_6.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilecast_4.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortunePassiveAttackCrit_OnMissileLaunch": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_6.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunepassiveattack2_onmissilelaunch_2.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneRicochetShot_OnCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunericochetshot_oncast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunericochetshot_oncast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunericochetshot_oncast_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunericochetshot_oncast_4.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneRicochetShot_OnHit": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunericochetshot_onhit_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunericochetshot_onhit_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunericochetshot_onhit_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunericochetshot_onhit_4.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneRicochetShot_OnMissileLaunch": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunericochetshot_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunericochetshot_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunericochetshot_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunericochetshot_onmissilelaunch_4.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneRShotExtra_OnHit": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunershotextra_onhit_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunershotextra_onhit_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunershotextra_onhit_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunershotextra_onhit_4.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneRShotExtra_OnMissileLaunch": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunershotextra_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunershotextra_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunershotextra_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunershotextra_onmissilelaunch_4.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneScattershot_both_buffactivate": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunescattershot_both_buffactivate_1.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneScattershot_ground_buffactivate": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunescattershot_ground_buffactivate_1.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneScattershot_OnCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunescattershot_oncast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunescattershot_oncast_2.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneScattershot_water_buffactivate": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunescattershot_water_buffactivate_1.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneStrutStacks_OnBuffCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunestrutstacks_onbuffcast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunestrutstacks_onbuffcast_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunestrutstacks_onbuffcast_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortunestrutstacks_onbuffcast_4.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneViciousStrikes_OnBuffActivate": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortuneviciousstrikes_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortuneviciousstrikes_onbuffactivate_2.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneViciousStrikes_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortuneviciousstrikes_onbuffdeactivate_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortuneviciousstrikes_onbuffdeactivate_2.wav"
+  ],
+  "Play_sfx_MissFortune_MissFortuneViciousStrikes_OnCast": [
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortuneviciousstrikes_oncast_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_sfx_missfortune_missfortuneviciousstrikes_oncast_2.wav"
+  ]
+ },
+ "vo": {
+  "Play_vo_MissFortune_Attack2DGeneral": [
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_attack2dgeneral_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_attack2dgeneral_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_attack2dgeneral_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_attack2dgeneral_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_attack2dgeneral_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_attack2dgeneral_6.wav"
+  ],
+  "Play_vo_MissFortune_Death3D": [
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_death3d_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_death3d_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_death3d_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_death3d_4.wav"
+  ],
+  "Play_vo_MissFortune_Joke3DGeneral": [
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_joke3dgeneral_1.wav"
+  ],
+  "Play_vo_MissFortune_Laugh3DGeneral": [
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_laugh3dgeneral_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_laugh3dgeneral_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_laugh3dgeneral_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_laugh3dgeneral_4.wav"
+  ],
+  "Play_vo_MissFortune_MissFortuneBulletTime_cast3D": [
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_missfortunebullettime_cast3d_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_missfortunebullettime_cast3d_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_missfortunebullettime_cast3d_3.wav"
+  ],
+  "Play_vo_MissFortune_MissFortuneRicochetShot_cast3D": [
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_missfortunericochetshot_cast3d_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_missfortunericochetshot_cast3d_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_missfortunericochetshot_cast3d_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_missfortunericochetshot_cast3d_4.wav"
+  ],
+  "Play_vo_MissFortune_MissFortuneViciousStrikes_cast3D": [
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_missfortuneviciousstrikes_cast3d_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_missfortuneviciousstrikes_cast3d_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_missfortuneviciousstrikes_cast3d_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_missfortuneviciousstrikes_cast3d_4.wav"
+  ],
+  "Play_vo_MissFortune_Move2DStandard": [
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_move2dstandard_1.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_move2dstandard_2.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_move2dstandard_3.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_move2dstandard_4.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_move2dstandard_5.wav",
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_move2dstandard_6.wav"
+  ],
+  "Play_vo_MissFortune_Taunt3DGeneral": [
+   "res://assets/audio/game/champions/missfortune/play_vo_missfortune_taunt3dgeneral_1.wav"
+  ]
+ }
+}

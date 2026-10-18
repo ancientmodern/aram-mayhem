@@ -1,0 +1,133 @@
+{
+ "sfx": {
+  "Play_sfx_Veigar_Dance_buffactivate": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_dance_buffactivate_1.wav"
+  ],
+  "Play_sfx_Veigar_VeigarBalefulStrike_OnCast": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbalefulstrike_oncast_1.wav"
+  ],
+  "Play_sfx_Veigar_VeigarBalefulStrikeMis_OnHit": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbalefulstrikemis_onhit_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbalefulstrikemis_onhit_2.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbalefulstrikemis_onhit_3.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbalefulstrikemis_onhit_4.wav"
+  ],
+  "Play_sfx_Veigar_VeigarBalefulStrikeMis_OnMissileLaunch": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbalefulstrikemis_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbalefulstrikemis_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbalefulstrikemis_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Veigar_VeigarBasicAttack2_OnCast": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Veigar_VeigarBasicAttack2_OnHit": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Veigar_VeigarBasicAttack2_OnMissileLaunch": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Veigar_VeigarBasicAttack_OnCast": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Veigar_VeigarBasicAttack_OnHit": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Veigar_VeigarBasicAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Veigar_VeigarCritAttack_OnCast": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Veigar_VeigarCritAttack_OnHit": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Veigar_VeigarCritAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarbasicattack2_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Veigar_VeigarDarkMatter_hit": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigardarkmatter_hit_1.wav"
+  ],
+  "Play_sfx_Veigar_VeigarDarkMatter_OnCast": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigardarkmatter_oncast_1.wav"
+  ],
+  "Play_sfx_Veigar_VeigarEventHorizon_buffactivate": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigareventhorizon_buffactivate_1.wav"
+  ],
+  "Play_sfx_Veigar_VeigarEventHorizon_loop": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigareventhorizon_loop_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigareventhorizon_loop_2.wav"
+  ],
+  "Play_sfx_Veigar_VeigarEventHorizon_OnCast": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigareventhorizon_oncast_1.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigareventhorizon_oncast_2.wav",
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigareventhorizon_oncast_3.wav"
+  ],
+  "Play_sfx_Veigar_VeigarR_OnCast": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarr_oncast_1.wav"
+  ],
+  "Play_sfx_Veigar_VeigarR_OnHit": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarr_onhit_1.wav"
+  ],
+  "Play_sfx_Veigar_VeigarR_OnMissileLaunch": [
+   "res://assets/audio/game/champions/veigar/play_sfx_veigar_veigarr_onmissilelaunch_1.wav"
+  ]
+ },
+ "vo": {
+  "Play_vo_Veigar_Attack2DGeneral": [
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_attack2dgeneral_1.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_attack2dgeneral_2.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_attack2dgeneral_3.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_attack2dgeneral_4.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_attack2dgeneral_5.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_attack2dgeneral_6.wav"
+  ],
+  "Play_vo_Veigar_Joke3DGeneral": [
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_joke3dgeneral_1.wav"
+  ],
+  "Play_vo_Veigar_Kill3DR": [
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_kill3dr_1.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_kill3dr_2.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_kill3dr_3.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_kill3dr_4.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_kill3dr_5.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_kill3dr_6.wav"
+  ],
+  "Play_vo_Veigar_Laugh3DGeneral": [
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_kill3dr_1.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_kill3dr_2.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_kill3dr_3.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_kill3dr_4.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_kill3dr_5.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_kill3dr_6.wav"
+  ],
+  "Play_vo_Veigar_Move2DStandard": [
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_move2dstandard_1.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_move2dstandard_2.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_move2dstandard_3.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_move2dstandard_4.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_move2dstandard_5.wav",
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_move2dstandard_6.wav"
+  ],
+  "Play_vo_Veigar_Taunt3DGeneral": [
+   "res://assets/audio/game/champions/veigar/play_vo_veigar_taunt3dgeneral_1.wav"
+  ]
+ }
+}

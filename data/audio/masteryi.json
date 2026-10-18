@@ -1,0 +1,223 @@
+{
+ "sfx": {
+  "Play_sfx_MasterYi_AlphaStrike_hit": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_alphastrike_hit_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_alphastrike_hit_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_alphastrike_hit_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_alphastrike_hit_4.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_alphastrike_hit_5.wav"
+  ],
+  "Play_sfx_MasterYi_AlphaStrike_missilecast": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_alphastrike_missilecast_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_alphastrike_missilecast_2.wav"
+  ],
+  "Play_sfx_MasterYi_Dance3D_buffactivate": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_dance3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_MasterYi_Death3D_cast": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_death3d_cast_1.wav"
+  ],
+  "Play_sfx_MasterYi_Highlander_OnBuffActivate": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_highlander_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_MasterYi_Highlander_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_highlander_onbuffdeactivate_1.wav"
+  ],
+  "Play_sfx_MasterYi_Highlander_trail": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_highlander_trail_1.wav"
+  ],
+  "Play_sfx_MasterYi_Joke3D_buffactivate": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_joke3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_MasterYi_Laugh3D_buffactivate": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_laugh3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_MasterYi_MasterYiBasicAttack2_OnCast": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_MasterYi_MasterYiBasicAttack2_OnHit": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_MasterYi_MasterYiBasicAttack_basic2wuju": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_basic2wuju_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_basic2wuju_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_basic2wuju_3.wav"
+  ],
+  "Play_sfx_MasterYi_MasterYiBasicAttack_basicwuju": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_basicwuju_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_basicwuju_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_basicwuju_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_basicwuju_4.wav"
+  ],
+  "Play_sfx_MasterYi_MasterYiBasicAttack_doublestrikewuju": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_doublestrikewuju_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_doublestrikewuju_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_doublestrikewuju_3.wav"
+  ],
+  "Play_sfx_MasterYi_MasterYiBasicAttack_OnCast": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_oncast_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_oncast_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_oncast_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_oncast_4.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack_oncast_5.wav"
+  ],
+  "Play_sfx_MasterYi_MasterYiBasicAttack_OnHit": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_MasterYi_MasterYiCritAttack_OnCast": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryicritattack_oncast_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryicritattack_oncast_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryicritattack_oncast_3.wav"
+  ],
+  "Play_sfx_MasterYi_MasterYiCritAttack_OnHit": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_4.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_MasterYi_MasterYiDoubleStrike_OnCast": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryidoublestrike_oncast_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryidoublestrike_oncast_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryidoublestrike_oncast_3.wav"
+  ],
+  "Play_sfx_MasterYi_MasterYiDoubleStrike_OnHit": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_4.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_masteryibasicattack2_onhit_2.wav"
+  ],
+  "Play_sfx_MasterYi_Meditate_foley": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_meditate_foley_1.wav"
+  ],
+  "Play_sfx_MasterYi_Meditate_OnBuffActivate": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_meditate_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_meditate_onbuffactivate_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_meditate_onbuffactivate_3.wav"
+  ],
+  "Play_sfx_MasterYi_Meditate_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_meditate_onbuffdeactivate_1.wav"
+  ],
+  "Play_sfx_MasterYi_Meditate_OnCast": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_meditate_oncast_1.wav"
+  ],
+  "Play_sfx_MasterYi_Recall3D_buffactivate": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_recall3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_MasterYi_Taunt3D_buffactivate": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_taunt3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_MasterYi_WujuStyle_OnCast": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_wujustyle_oncast_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_wujustyle_oncast_2.wav"
+  ],
+  "Play_sfx_MasterYi_WujuStyleSuperCharged_OnBuffActivate": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_wujustylesupercharged_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_wujustylesupercharged_onbuffactivate_2.wav"
+  ],
+  "Play_sfx_MasterYi_WujuStyleSuperCharged_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_wujustylesupercharged_onbuffdeactivate_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_sfx_masteryi_wujustylesupercharged_onbuffdeactivate_2.wav"
+  ]
+ },
+ "vo": {
+  "Play_vo_MasterYi_AlphaStrike_cast3D": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_alphastrike_cast3d_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_alphastrike_cast3d_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_alphastrike_cast3d_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_alphastrike_cast3d_4.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_alphastrike_cast3d_5.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_alphastrike_cast3d_6.wav"
+  ],
+  "Play_vo_MasterYi_Attack2DGeneral": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_attack2dgeneral_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_attack2dgeneral_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_attack2dgeneral_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_attack2dgeneral_4.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_attack2dgeneral_5.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_attack2dgeneral_6.wav"
+  ],
+  "Play_vo_MasterYi_Death3D": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_death3d_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_death3d_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_death3d_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_death3d_4.wav"
+  ],
+  "Play_vo_MasterYi_FirstEncounter3DWukong": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_firstencounter3dwukong_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_firstencounter3dwukong_2.wav"
+  ],
+  "Play_vo_MasterYi_Highlander_cast3D": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_highlander_cast3d_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_highlander_cast3d_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_highlander_cast3d_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_highlander_cast3d_4.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_highlander_cast3d_5.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_highlander_cast3d_6.wav"
+  ],
+  "Play_vo_MasterYi_Joke3DGeneral": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_joke3dgeneral_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_joke3dgeneral_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_joke3dgeneral_3.wav"
+  ],
+  "Play_vo_MasterYi_Laugh3DGeneral": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_laugh3dgeneral_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_laugh3dgeneral_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_laugh3dgeneral_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_laugh3dgeneral_4.wav"
+  ],
+  "Play_vo_MasterYi_MasterYiBasicAttack2_cast3D": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_masteryibasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_masteryibasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_masteryibasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_masteryibasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_MasterYi_MasterYiBasicAttack_cast3D": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_masteryibasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_masteryibasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_masteryibasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_masteryibasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_MasterYi_MasterYiCritAttack_cast3D": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_masteryibasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_masteryibasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_masteryibasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_masteryibasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_MasterYi_Meditate_cast3D": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_meditate_cast3d_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_meditate_cast3d_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_meditate_cast3d_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_meditate_cast3d_4.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_meditate_cast3d_5.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_meditate_cast3d_6.wav"
+  ],
+  "Play_vo_MasterYi_Move2DStandard": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_move2dstandard_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_move2dstandard_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_move2dstandard_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_move2dstandard_4.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_move2dstandard_5.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_move2dstandard_6.wav"
+  ],
+  "Play_vo_MasterYi_Taunt3DGeneral": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_taunt3dgeneral_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_taunt3dgeneral_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_taunt3dgeneral_3.wav"
+  ],
+  "Play_vo_MasterYi_WujuStyle_cast3D": [
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_wujustyle_cast3d_1.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_wujustyle_cast3d_2.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_wujustyle_cast3d_3.wav",
+   "res://assets/audio/game/champions/masteryi/play_vo_masteryi_wujustyle_cast3d_4.wav"
+  ]
+ }
+}

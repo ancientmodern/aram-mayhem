@@ -1,0 +1,476 @@
+{
+ "sfx": {
+  "Play_sfx_Yasuo_Dance3D_buffactivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_dance3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Yasuo_Dance3D_buffactivate_leadin": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_dance3d_buffactivate_leadin_1.wav"
+  ],
+  "Play_sfx_Yasuo_Death3D_cast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_death3d_cast_1.wav"
+  ],
+  "Play_sfx_Yasuo_Joke3D_buffactivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_joke3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Yasuo_Laugh3D_buffactivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_laugh3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Yasuo_Recall_windup": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_recall_windup_1.wav"
+  ],
+  "Play_sfx_Yasuo_Taunt23D_buffactivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_taunt23d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Yasuo_Taunt3D_buffactivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_taunt3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoBasicAttack2_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_5.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_6.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_7.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_8.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoBasicAttack2_OnHit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoBasicAttack3_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_5.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_6.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_7.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_8.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoBasicAttack3_OnHit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoBasicAttack4_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack4_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack4_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack4_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack4_oncast_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack4_oncast_5.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack4_oncast_6.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoBasicAttack4_OnHit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoBasicAttack5_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_5.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_6.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_7.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_oncast_8.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoBasicAttack5_OnHit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoBasicAttack6_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_5.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_6.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_7.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack3_oncast_8.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoBasicAttack6_OnHit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoBasicAttack_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack4_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack4_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack4_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack4_oncast_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack4_oncast_5.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack4_oncast_6.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoBasicAttack_OnHit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuobasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoCritAttack2_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoCritAttack2_OnHit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoCritAttack3_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_oncast_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoCritAttack3_OnHit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoCritAttack4_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoCritAttack4_OnHit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoCritAttack5_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_oncast_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoCritAttack5_OnHit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoCritAttack_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_oncast_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoCritAttack_OnHit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuocritattack3_onhit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoDashWrapper_cast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuodashwrapper_cast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuodashwrapper_cast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuodashwrapper_cast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuodashwrapper_cast_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoDashWrapper_hit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuodashwrapper_hit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuodashwrapper_hit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuodashwrapper_hit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuodashwrapper_hit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoEQComboSoundHit_OnBuffActivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoeqcombosoundhit_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoeqcombosoundhit_onbuffactivate_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoeqcombosoundhit_onbuffactivate_3.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoEQComboSoundHit_OnHit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoeqcombosoundhit_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoeqcombosoundhit_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoeqcombosoundhit_onhit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoeqcombosoundhit_onhit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoPassiveMSShieldOn_buffdeactivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuopassivemsshieldon_buffdeactivate_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuopassivemsshieldon_buffdeactivate_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuopassivemsshieldon_buffdeactivate_3.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoPassiveShield_OnBuffActivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuopassiveshield_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuopassiveshield_onbuffactivate_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuopassiveshield_onbuffactivate_3.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoQ2_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_5.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoQ3W_hit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq3w_hit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq3w_hit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq3w_hit_3.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoQ3W_missilelaunch": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq3w_missilelaunch_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq3w_missilelaunch_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq3w_missilelaunch_3.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoQ3W_OnBuffActivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq3w_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq3w_onbuffactivate_2.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoQ3W_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq3w_onbuffdeactivate_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq3w_onbuffdeactivate_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq3w_onbuffdeactivate_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq3w_onbuffdeactivate_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoQ3W_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_5.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_1.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoQ_hit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoeqcombosoundhit_onhit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoeqcombosoundhit_onhit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoeqcombosoundhit_onhit_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoeqcombosoundhit_onhit_3.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoQW_buffactivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoqw_buffactivate_1.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoQW_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_5.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuoq2_oncast_3.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoRDummySpell_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuordummyspell_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuordummyspell_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuordummyspell_oncast_3.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoRKnockUpCombo_hit_land": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuorknockupcombo_hit_land_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuorknockupcombo_hit_land_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuorknockupcombo_hit_land_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuorknockupcombo_hit_land_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoRKnockUpCombo_OnBuffActivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuorknockupcombo_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuorknockupcombo_onbuffactivate_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuorknockupcombo_onbuffactivate_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuorknockupcombo_onbuffactivate_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoRLeashParticle_buffactivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuorleashparticle_buffactivate_1.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoSheathSpark_buffactivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuosheathspark_buffactivate_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuosheathspark_buffactivate_2.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoWindWallBuff_missilecast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowindwallbuff_missilecast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowindwallbuff_missilecast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowindwallbuff_missilecast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowindwallbuff_missilecast_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowindwallbuff_missilecast_5.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowindwallbuff_missilecast_6.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoWMovingWall_buffactivate": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowmovingwall_buffactivate_1.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoWMovingWall_hit": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowmovingwall_hit_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowmovingwall_hit_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowmovingwall_hit_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowmovingwall_hit_4.wav"
+  ],
+  "Play_sfx_Yasuo_YasuoWMovingWall_OnCast": [
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowmovingwall_oncast_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowmovingwall_oncast_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowmovingwall_oncast_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_sfx_yasuo_yasuowmovingwall_oncast_4.wav"
+  ]
+ },
+ "vo": {
+  "Play_vo_Yasuo_Attack2DGeneral": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_attack2dgeneral_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_attack2dgeneral_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_attack2dgeneral_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_attack2dgeneral_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_attack2dgeneral_5.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_attack2dgeneral_6.wav"
+  ],
+  "Play_vo_Yasuo_Death3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_death3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_death3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_death3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_death3d_4.wav"
+  ],
+  "Play_vo_Yasuo_FirstEncounter3DMasterYi": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3dmasteryi_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3dmasteryi_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3dmasteryi_3.wav"
+  ],
+  "Play_vo_Yasuo_FirstEncounter3DRiven": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3driven_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3driven_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3driven_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3driven_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3driven_5.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3driven_6.wav"
+  ],
+  "Play_vo_Yasuo_FirstEncounter3DShen": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3dshen_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3dshen_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3dshen_3.wav"
+  ],
+  "Play_vo_Yasuo_FirstEncounter3DYone": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3dyone_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3dyone_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_firstencounter3dyone_3.wav"
+  ],
+  "Play_vo_Yasuo_Joke3DGeneral": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_joke3dgeneral_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_joke3dgeneral_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_joke3dgeneral_3.wav"
+  ],
+  "Play_vo_Yasuo_Kill3DYone": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_kill3dyone_1.wav"
+  ],
+  "Play_vo_Yasuo_Laugh3DGeneral": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_laugh3dgeneral_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_laugh3dgeneral_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_laugh3dgeneral_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_laugh3dgeneral_4.wav"
+  ],
+  "Play_vo_Yasuo_Move2DFirstEnemyYone": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_move2dfirstenemyyone_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_move2dfirstenemyyone_2.wav"
+  ],
+  "Play_vo_Yasuo_Move2DStandard": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_move2dstandard_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_move2dstandard_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_move2dstandard_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_move2dstandard_4.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_move2dstandard_5.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_move2dstandard_6.wav"
+  ],
+  "Play_vo_Yasuo_Taunt3DGeneral": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_taunt3dgeneral_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_taunt3dgeneral_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_taunt3dgeneral_3.wav"
+  ],
+  "Play_vo_Yasuo_YasuoBasicAttack2_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoBasicAttack3_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoBasicAttack4_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoBasicAttack5_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoBasicAttack6_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoBasicAttack_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoCritAttack2_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoCritAttack3_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoCritAttack4_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoCritAttack5_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoCritAttack_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuobasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoEDash_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuoedash_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuoedash_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuoedash_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuoedash_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoQ1_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuoq1_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuoq1_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuoq1_cast3d_3.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuoq1_cast3d_4.wav"
+  ],
+  "Play_vo_Yasuo_YasuoQ2_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuoq2_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuoq2_cast3d_2.wav"
+  ],
+  "Play_vo_Yasuo_YasuoQ3Wrapper_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuoq3wrapper_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuoq3wrapper_cast3d_2.wav"
+  ],
+  "Play_vo_Yasuo_YasuoR_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuor_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuor_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuor_cast3d_3.wav"
+  ],
+  "Play_vo_Yasuo_YasuoW_cast3D": [
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuow_cast3d_1.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuow_cast3d_2.wav",
+   "res://assets/audio/game/champions/yasuo/play_vo_yasuo_yasuow_cast3d_3.wav"
+  ]
+ }
+}

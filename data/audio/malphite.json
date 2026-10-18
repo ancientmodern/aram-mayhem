@@ -1,0 +1,148 @@
+{
+ "sfx": {
+  "Play_sfx_Malphite_CleaveArc_hit": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_cleavearc_hit_1.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_cleavearc_hit_2.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_cleavearc_hit_3.wav"
+  ],
+  "Play_sfx_Malphite_Landslide_hit": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_landslide_hit_1.wav"
+  ],
+  "Play_sfx_Malphite_Landslide_OnCast": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_landslide_oncast_1.wav"
+  ],
+  "Play_sfx_Malphite_MalphiteBasicAttack2_OnCast": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Malphite_MalphiteBasicAttack2_OnHit": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Malphite_MalphiteBasicAttack_OnCast": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Malphite_MalphiteBasicAttack_OnHit": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Malphite_MalphiteCleave_OnBuffActivate": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitecleave_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Malphite_MalphiteCritAttack_OnCast": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitecritattack_oncast_1.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitecritattack_oncast_2.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitecritattack_oncast_3.wav"
+  ],
+  "Play_sfx_Malphite_MalphiteCritAttack_OnHit": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_onhit_1.wav"
+  ],
+  "Play_sfx_Malphite_MalphiteShieldEffect_OnBuffActivate": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphiteshieldeffect_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Malphite_MalphiteShieldEffect_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphiteshieldeffect_onbuffdeactivate_1.wav"
+  ],
+  "Play_sfx_Malphite_MalphiteThunderclap_OnBuffActivate": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitecleave_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Malphite_Obduracy_OnCast": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_obduracy_oncast_1.wav"
+  ],
+  "Play_sfx_Malphite_ObduracyAttack_OnCast": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_malphitebasicattack2_oncast_2.wav"
+  ],
+  "Play_sfx_Malphite_ObduracyAttack_OnHit": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_obduracyattack_onhit_1.wav"
+  ],
+  "Play_sfx_Malphite_SeismicShard_OnBuffActivate": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_seismicshard_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Malphite_SeismicShard_OnCast": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_seismicshard_oncast_1.wav"
+  ],
+  "Play_sfx_Malphite_SeismicShard_OnHit": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_seismicshard_onhit_1.wav"
+  ],
+  "Play_sfx_Malphite_SeismicShard_OnMissileLaunch": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_seismicshard_onmissilelaunch_1.wav"
+  ],
+  "Play_sfx_Malphite_UFSlash_hit": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_ufslash_hit_1.wav"
+  ],
+  "Play_sfx_Malphite_UFSlash_land": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_ufslash_land_1.wav"
+  ],
+  "Play_sfx_Malphite_UFSlash_OnCast": [
+   "res://assets/audio/game/champions/malphite/play_sfx_malphite_ufslash_oncast_1.wav"
+  ]
+ },
+ "vo": {
+  "Play_vo_Malphite_Attack2DGeneral": [
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_attack2dgeneral_1.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_attack2dgeneral_2.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_attack2dgeneral_3.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_attack2dgeneral_4.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_attack2dgeneral_5.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_attack2dgeneral_6.wav"
+  ],
+  "Play_vo_Malphite_Death3D": [
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_death3d_1.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_death3d_2.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_death3d_3.wav"
+  ],
+  "Play_vo_Malphite_Joke3DGeneral": [
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_joke3dgeneral_1.wav"
+  ],
+  "Play_vo_Malphite_Landslide_cast3D": [
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_1.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_2.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_3.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_4.wav"
+  ],
+  "Play_vo_Malphite_Laugh3DGeneral": [
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_laugh3dgeneral_1.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_laugh3dgeneral_2.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_laugh3dgeneral_3.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_laugh3dgeneral_4.wav"
+  ],
+  "Play_vo_Malphite_MalphiteBasicAttack2_cast3D": [
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_1.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_2.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_3.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_4.wav"
+  ],
+  "Play_vo_Malphite_MalphiteBasicAttack_cast3D": [
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_1.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_2.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_3.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_4.wav"
+  ],
+  "Play_vo_Malphite_MalphiteCritAttack_cast3D": [
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_1.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_2.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_3.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_landslide_cast3d_4.wav"
+  ],
+  "Play_vo_Malphite_Move2DStandard": [
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_move2dstandard_1.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_move2dstandard_2.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_move2dstandard_3.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_move2dstandard_4.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_move2dstandard_5.wav",
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_move2dstandard_6.wav"
+  ],
+  "Play_vo_Malphite_Taunt3DGeneral": [
+   "res://assets/audio/game/champions/malphite/play_vo_malphite_taunt3dgeneral_1.wav"
+  ]
+ }
+}

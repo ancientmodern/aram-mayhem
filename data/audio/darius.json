@@ -1,0 +1,217 @@
+{
+ "sfx": {
+  "Play_sfx_Darius_Dance3D_buffactivate": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dance3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Darius_DariusAxeGrabCone_OnCast": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusaxegrabcone_oncast_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusaxegrabcone_oncast_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusaxegrabcone_oncast_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusaxegrabcone_oncast_4.wav"
+  ],
+  "Play_sfx_Darius_DariusAxeGrabCone_OnHit": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusaxegrabcone_onhit_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusaxegrabcone_onhit_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusaxegrabcone_onhit_3.wav"
+  ],
+  "Play_sfx_Darius_DariusAxeGrabConeBump_buffactivate": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusaxegrabconebump_buffactivate_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusaxegrabconebump_buffactivate_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusaxegrabconebump_buffactivate_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusaxegrabconebump_buffactivate_4.wav"
+  ],
+  "Play_sfx_Darius_DariusBasicAttack2_OnCast": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Darius_DariusBasicAttack2_OnHit": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Darius_DariusBasicAttack_OnCast": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Darius_DariusBasicAttack_OnHit": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Darius_DariusCleave_hit_inner": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariuscleave_hit_inner_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariuscleave_hit_inner_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariuscleave_hit_inner_3.wav"
+  ],
+  "Play_sfx_Darius_DariusCleave_hit_outter": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariuscleave_hit_outter_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariuscleave_hit_outter_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariuscleave_hit_outter_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariuscleave_hit_outter_4.wav"
+  ],
+  "Play_sfx_Darius_DariusCleave_OnCast": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariuscleave_oncast_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariuscleave_oncast_2.wav"
+  ],
+  "Play_sfx_Darius_DariusCritAttack_OnCast": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_Darius_DariusCritAttack_OnHit": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_Darius_DariusExecute_hit_kill": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusexecute_hit_kill_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusexecute_hit_kill_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusexecute_hit_kill_3.wav"
+  ],
+  "Play_sfx_Darius_DariusExecute_OnCast": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusexecute_oncast_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusexecute_oncast_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusexecute_oncast_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusexecute_oncast_4.wav"
+  ],
+  "Play_sfx_Darius_DariusExecute_OnHit": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusexecute_onhit_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusexecute_onhit_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusexecute_onhit_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusexecute_onhit_4.wav"
+  ],
+  "Play_sfx_Darius_DariusHemoMax_loop": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariushemomax_loop_1.wav"
+  ],
+  "Play_sfx_Darius_DariusHemoMax_OnBuffActivate": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariushemomax_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariushemomax_onbuffactivate_2.wav"
+  ],
+  "Play_sfx_Darius_DariusNoxianTacticsONH_OnBuffActivate": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusnoxiantacticsonh_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Darius_DariusNoxianTacticsONH_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusnoxiantacticsonh_onbuffdeactivate_1.wav"
+  ],
+  "Play_sfx_Darius_DariusNoxianTacticsONH_OnCast": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusnoxiantacticsonh_oncast_1.wav"
+  ],
+  "Play_sfx_Darius_DariusNoxianTacticsONHAttack_OnCast": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusnoxiantacticsonhattack_oncast_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusnoxiantacticsonhattack_oncast_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusnoxiantacticsonhattack_oncast_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusnoxiantacticsonhattack_oncast_4.wav"
+  ],
+  "Play_sfx_Darius_DariusNoxianTacticsONHAttack_OnHit": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusnoxiantacticsonhattack_onhit_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusnoxiantacticsonhattack_onhit_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusnoxiantacticsonhattack_onhit_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusnoxiantacticsonhattack_onhit_4.wav"
+  ],
+  "Play_sfx_Darius_DariusQCast_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusqcast_onbuffdeactivate_1.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusqcast_onbuffdeactivate_2.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusqcast_onbuffdeactivate_3.wav",
+   "res://assets/audio/game/champions/darius/play_sfx_darius_dariusqcast_onbuffdeactivate_4.wav"
+  ],
+  "Play_sfx_Darius_Death3D_cast": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_death3d_cast_1.wav"
+  ],
+  "Play_sfx_Darius_Joke3D_buffactivate": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_joke3d_buffactivate_1.wav"
+  ],
+  "Play_sfx_Darius_Taunt3D_buffactivate": [
+   "res://assets/audio/game/champions/darius/play_sfx_darius_taunt3d_buffactivate_1.wav"
+  ]
+ },
+ "vo": {
+  "Play_vo_Darius_Attack2DGeneral": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_attack2dgeneral_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_attack2dgeneral_2.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_attack2dgeneral_3.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_attack2dgeneral_4.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_attack2dgeneral_5.wav"
+  ],
+  "Play_vo_Darius_DariusBasicAttack2_cast3D": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Darius_DariusBasicAttack_cast3D": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Darius_DariusCleave_cast3D": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariuscleave_cast3d_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariuscleave_cast3d_2.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariuscleave_cast3d_3.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariuscleave_cast3d_4.wav"
+  ],
+  "Play_vo_Darius_DariusCritAttack_cast3D": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Darius_DariusExecute_cast3D": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusexecute_cast3d_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusexecute_cast3d_2.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusexecute_cast3d_3.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusexecute_cast3d_4.wav"
+  ],
+  "Play_vo_Darius_DariusNoxianTacticsONH_cast3D": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusnoxiantacticsonh_cast3d_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusnoxiantacticsonh_cast3d_2.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusnoxiantacticsonh_cast3d_3.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusnoxiantacticsonh_cast3d_4.wav"
+  ],
+  "Play_vo_Darius_DariusNoxianTacticsONHAttack_cast3D": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_2.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_3.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_dariusbasicattack2_cast3d_4.wav"
+  ],
+  "Play_vo_Darius_Death3D": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_death3d_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_death3d_2.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_death3d_3.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_death3d_4.wav"
+  ],
+  "Play_vo_Darius_Joke3DGeneral": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_joke3dgeneral_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_joke3dgeneral_2.wav"
+  ],
+  "Play_vo_Darius_Laugh3DGeneral": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_laugh3dgeneral_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_laugh3dgeneral_2.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_laugh3dgeneral_3.wav"
+  ],
+  "Play_vo_Darius_Move2DStandard": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_move2dstandard_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_move2dstandard_2.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_move2dstandard_3.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_move2dstandard_4.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_move2dstandard_5.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_move2dstandard_6.wav"
+  ],
+  "Play_vo_Darius_Spell3DPMax": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_spell3dpmax_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_spell3dpmax_2.wav"
+  ],
+  "Play_vo_Darius_Taunt3DGeneral": [
+   "res://assets/audio/game/champions/darius/play_vo_darius_taunt3dgeneral_1.wav",
+   "res://assets/audio/game/champions/darius/play_vo_darius_taunt3dgeneral_2.wav"
+  ]
+ }
+}

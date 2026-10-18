@@ -1,0 +1,393 @@
+{
+ "sfx": {
+  "Play_sfx_Sona_Joke3D_buffactivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_joke3d_buffactivate_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_joke3d_buffactivate_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_joke3d_buffactivate_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_joke3d_buffactivate_4.wav"
+  ],
+  "Play_sfx_Sona_Laugh3D_buffactivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_laugh3d_buffactivate_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_laugh3d_buffactivate_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_laugh3d_buffactivate_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_laugh3d_buffactivate_4.wav"
+  ],
+  "Play_sfx_Sona_SonaAmbientESound_OnBuffActivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientesound_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientesound_onbuffactivate_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientesound_onbuffactivate_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientesound_onbuffactivate_4.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientesound_onbuffactivate_5.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientesound_onbuffactivate_6.wav"
+  ],
+  "Play_sfx_Sona_SonaAmbientQSound_OnBuffActivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientqsound_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientqsound_onbuffactivate_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientqsound_onbuffactivate_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientqsound_onbuffactivate_4.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientqsound_onbuffactivate_5.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientqsound_onbuffactivate_6.wav"
+  ],
+  "Play_sfx_Sona_SonaAmbientWSound_OnBuffActivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientwsound_onbuffactivate_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientwsound_onbuffactivate_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientwsound_onbuffactivate_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientwsound_onbuffactivate_4.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientwsound_onbuffactivate_5.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaambientwsound_onbuffactivate_6.wav"
+  ],
+  "Play_sfx_Sona_SonaBasicAttack2_OnCast": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Sona_SonaBasicAttack2_OnHit": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Sona_SonaBasicAttack2_OnMissileLaunch": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_4.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_5.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_6.wav"
+  ],
+  "Play_sfx_Sona_SonaBasicAttack_OnCast": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Sona_SonaBasicAttack_OnHit": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Sona_SonaBasicAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_4.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_5.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_6.wav"
+  ],
+  "Play_sfx_Sona_SonaCritAttack_OnCast": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_Sona_SonaCritAttack_OnHit": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onhit_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onhit_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onhit_3.wav"
+  ],
+  "Play_sfx_Sona_SonaCritAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_4.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_5.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_onmissilelaunch_6.wav"
+  ],
+  "Play_sfx_Sona_SonaE_OnCast": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonae_oncast_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonae_oncast_2.wav"
+  ],
+  "Play_sfx_Sona_SonaEHaste_buffactivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaehaste_buffactivate_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaehaste_buffactivate_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaehaste_buffactivate_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaehaste_buffactivate_4.wav"
+  ],
+  "Play_sfx_Sona_SonaEPassiveAttack_OnCast": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_2.wav"
+  ],
+  "Play_sfx_Sona_SonaEPassiveAttack_OnHit": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaepassiveattack_onhit_1.wav"
+  ],
+  "Play_sfx_Sona_SonaEPassiveAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaepassiveattack_onmissilelaunch_1.wav"
+  ],
+  "Play_sfx_Sona_SonaESelfHaste_OnBuffActivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaeselfhaste_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Sona_SonaP_stack_buffactivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonap_stack_buffactivate_1.wav"
+  ],
+  "Play_sfx_Sona_SonaP_stack_hit": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonap_stack_hit_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonap_stack_hit_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonap_stack_hit_3.wav"
+  ],
+  "Play_sfx_Sona_SonaP_stack_missilelaunch": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonap_stack_missilelaunch_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonap_stack_missilelaunch_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonap_stack_missilelaunch_3.wav"
+  ],
+  "Play_sfx_Sona_SonaQ_OnBuffActivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaq_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Sona_SonaQ_OnCast": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaq_oncast_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaq_oncast_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaq_oncast_3.wav"
+  ],
+  "Play_sfx_Sona_SonaQMissile_OnHit": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqmissile_onhit_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqmissile_onhit_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqmissile_onhit_3.wav"
+  ],
+  "Play_sfx_Sona_SonaQMissile_OnMissileLaunch": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqmissile_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqmissile_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqmissile_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Sona_SonaQPassiveAttack_OnCast": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_2.wav"
+  ],
+  "Play_sfx_Sona_SonaQPassiveAttack_OnHit": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaepassiveattack_onhit_1.wav"
+  ],
+  "Play_sfx_Sona_SonaQPassiveAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaepassiveattack_onmissilelaunch_1.wav"
+  ],
+  "Play_sfx_Sona_SonaQProc_hit": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqproc_hit_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqproc_hit_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqproc_hit_3.wav"
+  ],
+  "Play_sfx_Sona_SonaQProc_missilelaunch": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqproc_missilelaunch_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqproc_missilelaunch_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqproc_missilelaunch_3.wav"
+  ],
+  "Play_sfx_Sona_SonaQProcAttacker_buffactivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqprocattacker_buffactivate_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqprocattacker_buffactivate_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqprocattacker_buffactivate_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaqprocattacker_buffactivate_4.wav"
+  ],
+  "Play_sfx_Sona_SonaR_OnBuffActivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonar_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Sona_SonaR_OnBuffDeactivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonar_onbuffdeactivate_1.wav"
+  ],
+  "Play_sfx_Sona_SonaR_OnCast": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonar_oncast_1.wav"
+  ],
+  "Play_sfx_Sona_SonaR_OnHit": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonar_onhit_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonar_onhit_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonar_onhit_3.wav"
+  ],
+  "Play_sfx_Sona_SonaR_OnMissileLaunch": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonar_onmissilelaunch_1.wav"
+  ],
+  "Play_sfx_Sona_SonaW_OnBuffActivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaw_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Sona_SonaW_OnCast": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaw_oncast_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaw_oncast_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaw_oncast_3.wav"
+  ],
+  "Play_sfx_Sona_SonaWMissile_OnHit": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonawmissile_onhit_1.wav"
+  ],
+  "Play_sfx_Sona_SonaWMissile_OnMissileLaunch": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonawmissile_onmissilelaunch_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonawmissile_onmissilelaunch_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonawmissile_onmissilelaunch_3.wav"
+  ],
+  "Play_sfx_Sona_SonaWPassiveAttack_OnCast": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_3.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonabasicattack2_oncast_2.wav"
+  ],
+  "Play_sfx_Sona_SonaWPassiveAttack_OnHit": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaepassiveattack_onhit_1.wav"
+  ],
+  "Play_sfx_Sona_SonaWPassiveAttack_OnMissileLaunch": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonaepassiveattack_onmissilelaunch_1.wav"
+  ],
+  "Play_sfx_Sona_SonaWShield_buffactivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonawshield_buffactivate_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_sonawshield_buffactivate_2.wav"
+  ],
+  "Play_sfx_Sona_Taunt3D_buffactivate": [
+   "res://assets/audio/game/champions/sona/play_sfx_sona_taunt3d_buffactivate_1.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_taunt3d_buffactivate_2.wav",
+   "res://assets/audio/game/champions/sona/play_sfx_sona_taunt3d_buffactivate_3.wav"
+  ]
+ },
+ "vo": {
+  "Play_vo_Sona_Attack2DGeneral": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_attack2dgeneral_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_attack2dgeneral_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_attack2dgeneral_3.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_attack2dgeneral_4.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_attack2dgeneral_5.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_attack2dgeneral_6.wav"
+  ],
+  "Play_vo_Sona_FirstEncounter2DFiddlesticks": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_firstencounter2dfiddlesticks_1.wav"
+  ],
+  "Play_vo_Sona_FirstEncounter2DIrelia": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_firstencounter2direlia_1.wav"
+  ],
+  "Play_vo_Sona_FirstEncounter2DJarvanIV": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_firstencounter2djarvaniv_1.wav"
+  ],
+  "Play_vo_Sona_FirstEncounter2DJhin": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_firstencounter2djhin_1.wav"
+  ],
+  "Play_vo_Sona_FirstEncounter2DLux": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_firstencounter2dlux_1.wav"
+  ],
+  "Play_vo_Sona_FirstEncounter2DRyze": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_firstencounter2dryze_1.wav"
+  ],
+  "Play_vo_Sona_FirstEncounter2DSwain": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_firstencounter2dswain_1.wav"
+  ],
+  "Play_vo_Sona_FirstEncounter2DSylas": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_firstencounter2dsylas_1.wav"
+  ],
+  "Play_vo_Sona_FirstEncounter2DTaric": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_firstencounter2dtaric_1.wav"
+  ],
+  "Play_vo_Sona_FirstEncounter2DXinZhao": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_firstencounter2dxinzhao_1.wav"
+  ],
+  "Play_vo_Sona_Joke3DGeneral": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_joke3dgeneral_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_joke3dgeneral_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_joke3dgeneral_3.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_joke3dgeneral_4.wav"
+  ],
+  "Play_vo_Sona_JokeResponse2DGeneral": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_jokeresponse2dgeneral_1.wav"
+  ],
+  "Play_vo_Sona_Kill2DFiddlesticks": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2dfiddlesticks_1.wav"
+  ],
+  "Play_vo_Sona_Kill2DGaren": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2dgaren_1.wav"
+  ],
+  "Play_vo_Sona_Kill2DGeneral": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2dgeneral_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2dgeneral_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2dgeneral_3.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2dgeneral_4.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2dgeneral_5.wav"
+  ],
+  "Play_vo_Sona_Kill2DIrelia": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2direlia_1.wav"
+  ],
+  "Play_vo_Sona_Kill2DJarvanIV": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2djarvaniv_1.wav"
+  ],
+  "Play_vo_Sona_Kill2DJhin": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2djhin_1.wav"
+  ],
+  "Play_vo_Sona_Kill2DLux": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2dlux_1.wav"
+  ],
+  "Play_vo_Sona_Kill2DRyze": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2dryze_1.wav"
+  ],
+  "Play_vo_Sona_Kill2DSylas": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2dsylas_1.wav"
+  ],
+  "Play_vo_Sona_Kill2DTaric": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2dtaric_1.wav"
+  ],
+  "Play_vo_Sona_Kill2DXinZhao": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_kill2dxinzhao_1.wav"
+  ],
+  "Play_vo_Sona_Laugh3DGeneral": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_laugh3dgeneral_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_laugh3dgeneral_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_laugh3dgeneral_3.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_laugh3dgeneral_4.wav"
+  ],
+  "Play_vo_Sona_Move2DFirst": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dfirst_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dfirst_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dfirst_3.wav"
+  ],
+  "Play_vo_Sona_Move2DLong": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dlong_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dlong_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dlong_3.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dlong_4.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dlong_5.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dlong_6.wav"
+  ],
+  "Play_vo_Sona_Move2DStandard": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dstandard_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dstandard_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dstandard_3.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dstandard_4.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dstandard_5.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_move2dstandard_6.wav"
+  ],
+  "Play_vo_Sona_Respawn2DGeneral": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_respawn2dgeneral_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_respawn2dgeneral_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_respawn2dgeneral_3.wav"
+  ],
+  "Play_vo_Sona_SonaBasicAttack_cast2D": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonabasicattack_cast2d_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonabasicattack_cast2d_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonabasicattack_cast2d_3.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonabasicattack_cast2d_4.wav"
+  ],
+  "Play_vo_Sona_SonaE_cast2D": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonae_cast2d_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonae_cast2d_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonae_cast2d_3.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonae_cast2d_4.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonae_cast2d_5.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonae_cast2d_6.wav"
+  ],
+  "Play_vo_Sona_SonaQ_cast2D": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonaq_cast2d_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonaq_cast2d_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonaq_cast2d_3.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonaq_cast2d_4.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonaq_cast2d_5.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonaq_cast2d_6.wav"
+  ],
+  "Play_vo_Sona_SonaR_cast2D": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonar_cast2d_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonar_cast2d_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonar_cast2d_3.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonar_cast2d_4.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonar_cast2d_5.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonar_cast2d_6.wav"
+  ],
+  "Play_vo_Sona_SonaW_cast2D": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonaw_cast2d_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonaw_cast2d_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonaw_cast2d_3.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonaw_cast2d_4.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonaw_cast2d_5.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_sonaw_cast2d_6.wav"
+  ],
+  "Play_vo_Sona_Taunt3DGeneral": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_taunt3dgeneral_1.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_taunt3dgeneral_2.wav",
+   "res://assets/audio/game/champions/sona/play_vo_sona_taunt3dgeneral_3.wav"
+  ],
+  "Play_vo_Sona_TauntResponse2DGeneral": [
+   "res://assets/audio/game/champions/sona/play_vo_sona_tauntresponse2dgeneral_1.wav"
+  ]
+ }
+}
