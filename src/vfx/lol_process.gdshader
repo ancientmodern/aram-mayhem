@@ -1,7 +1,7 @@
 shader_type particles;
 // League emitter simulation (VfxEmitterDefinitionData), driven by LolVfx:
 //  - birth values: base x probability-table quantile (rand_lut) x emitter-time curve (birth_lut)
-//  - emission shapes: sphere / box / cylinder (flag 1 = radial velocity frame), legacy offset + rotation angles
+//  - emission shapes: sphere / box / cylinder (flag 1 = fill volume), legacy offset + rotation angles
 //  - motion: velocity, drag, world + local acceleration, orbital velocity, noise / attraction fields
 //  - over life: per-axis scale curve, color curve (incl. lookup textures), rotation + spin, flipbooks
 
@@ -9,7 +9,7 @@ uniform int shape_type = 0;            // 0 point, 1 sphere, 2 box, 3 cylinder
 uniform float shape_radius = 0.0;
 uniform vec3 shape_box = vec3(0.0);
 uniform float shape_height = 0.0;
-uniform bool shape_radial = false;     // velocity is expressed in the frame of the emission point's azimuth
+uniform bool shape_fill = false;       // SpawnShape flags 0x1: fill the volume (else boundary only, + box quarter turns)
 uniform vec3 shape_offset = vec3(0.0);
 uniform int emit_rots = 0;             // legacy emitRotationAngles count (angles come from rand_lut row 7)
 uniform vec3 emit_axis0 = vec3(0.0, 1.0, 0.0);
@@ -44,9 +44,12 @@ uniform vec3 scale_base = vec3(1.0);
 uniform bool uniform_scale = false;
 uniform bool has_scale_curve = false;
 uniform sampler2D scale_curve : repeat_disable, filter_linear;
+uniform bool dir_orient = false;       // isDirectionOriented on arbitrary quads / meshes
 uniform vec2 dir_stretch = vec2(0.0);  // isDirectionOriented: x = League directionVelocityScale (per m/s), y = min
 
 uniform vec3 rot_base = vec3(0.0);     // degrees (already arranged per orientation by LolVfx)
+uniform bool has_rot_curve = false;
+uniform sampler2D rot_curve : repeat_disable, filter_linear;   // accumulated rotation0 over life (arranged like rot_base)
 uniform int spin_axis = 2;             // axis the spin is added to (free quads / meshes)
 uniform float spin_base = 0.0;         // degrees / second around the spin axis
 uniform int orient = 0;                // 0 camera billboard, 1 free (arbitrary quad), 2 ground (Y up), 3 mesh,
@@ -55,6 +58,7 @@ uniform int orient = 0;                // 0 camera billboard, 1 free (arbitrary 
 uniform vec4 color_base = vec4(1.0);
 uniform bool has_color_curve = false;
 uniform sampler2D color_curve : repeat_disable, filter_linear;
+uniform float color_rows = 1.0;        // rows of birth-random colour lookups (USERDATA6.w picks one)
 
 uniform float frames = 1.0;
 uniform float fps = 0.0;
@@ -138,26 +142,32 @@ void start() {
 	float et = emitter_t(0.0, NUMBER);
 	// ---- emission position (emitter space)
 	vec3 p = shape_offset * q(6, rnd(seed)).xyz;
-	float az = 0.0;
-	if (shape_type == 1) {
-		vec3 d = normalize(vec3(rnd(seed) * 2.0 - 1.0, rnd(seed) * 2.0 - 1.0, rnd(seed) * 2.0 - 1.0) + vec3(0.0001));
-		p += d * shape_radius * pow(rnd(seed), 0.333);
-		az = atan(d.z, d.x);
-	} else if (shape_type == 2) {
-		p += (vec3(rnd(seed), rnd(seed), rnd(seed)) * 2.0 - 1.0) * shape_box;
-	} else if (shape_type == 3) {
-		az = rnd(seed) * TAU;
-		p += vec3(cos(az), 0.0, sin(az)) * shape_radius * sqrt(rnd(seed)) + vec3(0.0, rnd(seed) * shape_height, 0.0);
-	} else if (shape_radial) {
-		az = rnd(seed) * TAU;
-	}
-	// ---- velocity (emitter space)
+	// [vfx-runtime] SpawnShape (meta-wiki VfxEmitterDefinitionData.SpawnShape): the shape's random rotation turns
+	// the offset AND the birth velocity; flags bit 0x1 (shape_fill) fills the volume, else only the boundary
 	vec3 v = (has_birth_vel ? texture(birth_lut, vec2(et, 2.5 / 3.0)).xyz : vel_base) * q(2, rnd(seed)).xyz;
-	if (shape_radial && (shape_type == 1 || shape_type == 3)) {
-		// x = outward, z = tangential around the emitter's up axis
-		float ca = cos(az);
-		float sa = sin(az);
-		v = vec3(v.x * ca - v.z * sa, v.y, v.x * sa + v.z * ca);
+	if (shape_type == 1) {
+		// sphere: radius out along X (uniform up to it when filled), then full random turns about Y, then Z
+		vec3 o = vec3(shape_radius * (shape_fill ? rnd(seed) : 1.0), 0.0, 0.0);
+		mat3 r = axis_angle(vec3(0.0, 0.0, 1.0), rnd(seed) * TAU) * axis_angle(vec3(0.0, 1.0, 0.0), rnd(seed) * TAU);
+		p += r * o;
+		v = r * v;
+	} else if (shape_type == 2) {
+		// box: x, y uniform within the half extents; z on the +Size.z face (League +z = Godot -z) or through the
+		// depth when filled; random quarter turns about Y and Z unless filled
+		vec3 o = vec3((rnd(seed) * 2.0 - 1.0) * shape_box.x, (rnd(seed) * 2.0 - 1.0) * shape_box.y,
+				shape_fill ? (rnd(seed) * 2.0 - 1.0) * shape_box.z : -shape_box.z);
+		mat3 r = mat3(1.0);
+		if (!shape_fill) {
+			r = axis_angle(vec3(0.0, 0.0, 1.0), floor(rnd(seed) * 4.0) * 1.5707963) * axis_angle(vec3(0.0, 1.0, 0.0), floor(rnd(seed) * 4.0) * 1.5707963);
+		}
+		p += r * o;
+		v = r * v;
+	} else if (shape_type == 3) {
+		// cylinder: radius out along X (uniform up to it when filled), y uniform in 0..height, a random turn about Y
+		vec3 o = vec3(shape_radius * (shape_fill ? rnd(seed) : 1.0), rnd(seed) * shape_height, 0.0);
+		mat3 r = axis_angle(vec3(0.0, 1.0, 0.0), rnd(seed) * TAU);
+		p += r * o;
+		v = r * v;
 	}
 	if (emit_rots > 0) {
 		vec4 ang = q(7, rnd(seed));
@@ -201,7 +211,7 @@ void start() {
 	// ---- orbit / drag / origin
 	mat3 eb = mat3(EMISSION_TRANSFORM);
 	USERDATA5 = vec4(EMISSION_TRANSFORM[3].xyz, rnd(seed) * 100.0);   // origin + noise phase
-	USERDATA6 = vec4(eb * (orbit * q(8, rnd(seed)).xyz), 0.0);
+	USERDATA6 = vec4(eb * (orbit * q(8, rnd(seed)).xyz), rnd(seed));   // w: birth random of the colour lookup
 	TRANSFORM = EMISSION_TRANSFORM * mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(p, 1.0));
 	VELOCITY = eb * v;
 	if (orient == 5) {
@@ -256,6 +266,9 @@ void process() {
 	USERDATA3.w += USERDATA1.w * DELTA;
 	float spin = USERDATA3.w;
 	vec3 rot = USERDATA3.xyz;
+	if (has_rot_curve) {
+		rot += texture(rot_curve, vec2(life, 0.5)).xyz;   // integrated rotation0 (isRotationEnabled), degrees
+	}
 	mat3 b;
 	if (orient == 0) {
 		CUSTOM.x = radians(-(rot.z + spin));
@@ -283,14 +296,22 @@ void process() {
 		vec3 y = vec3(sin(yaw) * cos(pit), sin(pit), cos(yaw) * cos(pit));
 		vec3 x = normalize(cross(y, abs(y.y) < 0.99 ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0)));
 		vec3 z = cross(x, y);
-		float len = max(s.z, s.y);
-		b = mat3(x * s.x, y * len, z);
+		// meta-wiki VfxPrimitiveRay: x = full width, y = length; the scale.z start offset is applied by the material
+		b = mat3(x * s.x, y * s.y, z);
 	} else {
 		vec3 rs = rot;
 		rs[spin_axis] += spin;
 		b = rot_euler(rs) * mat3(vec3(s.x, 0.0, 0.0), vec3(0.0, s.y, 0.0), vec3(0.0, 0.0, max(s.z, 0.001)));
 	}
-	if (orient == 1 || orient == 2 || orient == 3) {
+	if (dir_orient && (orient == 1 || orient == 3) && length(VELOCITY) > 0.0001) {
+		// isDirectionOriented on arbitrary quads / meshes: applied last (meta-wiki particle update step 7), it turns
+		// the particle's local +Z (League; Godot -Z after the z mirror) along its travel
+		vec3 zc = -normalize(VELOCITY);
+		vec3 xc = cross(vec3(0.0, 1.0, 0.0), zc);
+		xc = length(xc) > 0.0001 ? normalize(xc) : vec3(1.0, 0.0, 0.0);
+		vec3 yc = cross(zc, xc);
+		b = mat3(xc, yc, zc) * b;
+	} else if (orient == 1 || orient == 2 || orient == 3) {
 		b = eb * b;   // follow the effect's facing (cast direction)
 	}
 	TRANSFORM[0].xyz = b[0];
@@ -302,7 +323,7 @@ void process() {
 		c = color_base * texture(birth_lut, vec2(emitter_t(age, uint(0)), 0.5 / 3.0));
 	}
 	if (has_color_curve) {
-		c *= texture(color_curve, vec2(life, 0.5));
+		c *= texture(color_curve, vec2(life, (floor(USERDATA6.w * color_rows * 0.9999) + 0.5) / color_rows));
 	}
 	COLOR = c;
 	// ---- flipbook

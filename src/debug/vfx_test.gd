@@ -13,6 +13,7 @@ var shot_dir := "user://vfxtest"
 var times: Array = [0.12, 0.35, 0.7, 1.4]
 var dist := 15.0
 var solo := false
+var face := Vector3.RIGHT   ## --vfxface=x,z: facing of point-spawned systems [vfx-runtime]
 var sweep: Array = []   ## --vfxall=Ahri,Lux,shared: every system of these sets, solo, fast (dark-quad sweep)
 
 
@@ -30,6 +31,9 @@ func _ready() -> void:
 				times.append(float(t))
 		elif a.begins_with("--vfxdist="):
 			dist = float(a.substr(10))
+		elif a.begins_with("--vfxface="):
+			var fz := a.substr(10).split(",")
+			face = Vector3(float(fz[0]), 0, float(fz[1])).normalized()
 		elif a == "--vfxsolo":
 			solo = true
 		elif a.begins_with("--vfxall="):
@@ -82,9 +86,11 @@ func _spawn(m, c, n: String, pos: Vector3) -> void:
 		print("VFXTEST attach ", n, " bone=", b, " socket offset=", off, " ok=", fx2 != null)
 	else:
 		var p := pos - Vector3(0, 0.9, 0)
-		var o := {"dir": Vector3.RIGHT, "center": c.height * 0.5}
+		var o := {"dir": face, "center": c.height * 0.5}
 		if low.contains("beam"):
 			o["length"] = 10.0
+		if low.contains("windwall"):
+			o["missile"] = true   # [vfx-runtime] played on a moving-wall missile in League (yasuo.gd)
 		LolVfx.spawn(m, n, p, o)
 
 
@@ -99,6 +105,8 @@ func _run() -> void:
 	LolVfx.load_set("shared")
 	LolVfx.load_set("map12")
 	LolVfx.load_set("summoners")
+	for extra in ["hexgate", "items", "moments"]:   # [vfx-runtime] every set can be named in --vfxtest
+		LolVfx.load_set(extra)
 	if not sweep.is_empty():
 		names = []
 		for f in sweep:

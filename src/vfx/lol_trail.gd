@@ -50,8 +50,8 @@ func _material() -> ShaderMaterial:
 	return mat_for(texture, tex2, blend)
 
 
-static func mat_for(texture: Texture2D, tex2: Texture2D, blend: int) -> ShaderMaterial:
-	var key := "%s|%s|%d" % [texture.resource_path if texture != null else "", tex2.resource_path if tex2 != null else "", blend]
+static func mat_for(texture: Texture2D, tex2: Texture2D, blend: int, prio := 5) -> ShaderMaterial:
+	var key := "%s|%s|%d|%d" % [texture.resource_path if texture != null else "", tex2.resource_path if tex2 != null else "", blend, prio]
 	if _mats.has(key):
 		return _mats[key]
 	var mat := ShaderMaterial.new()
@@ -65,7 +65,7 @@ static func mat_for(texture: Texture2D, tex2: Texture2D, blend: int) -> ShaderMa
 		mat.set_shader_parameter("linear_color", true)
 	else:
 		mat.set_shader_parameter("intensity", 0.85)
-	mat.render_priority = 5
+	mat.render_priority = prio   # [vfx-runtime] League pass order (LolVfx._priority)
 	_mats[key] = mat
 	return mat
 

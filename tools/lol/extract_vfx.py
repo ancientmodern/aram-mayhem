@@ -35,7 +35,13 @@ for n, h in {"shape": 0x3bf0b4ed, "erosionDrive": 0xc6fbacd5, "VfxShapeLegacy2":
              "uvScaleMult": 0xcd124686, "texDivMult": 0x164b5733, "height": 0xd5bdbb42}.items():
     TABLE[h] = n
 for n in ["uvRotationMult", "mSubmeshesToDraw", "texAddressModeMult", "uvScrollClampMult", "linger",
-          "particleUVScrollRate", "birthUVScrollRate", "uvScale", "particleUVRotateRate"]:
+          "particleUVScrollRate", "birthUVScrollRate", "uvScale", "particleUVRotateRate",
+          # [vfx-runtime] names from the CommunityDragon hash lists (tools/extracted/cdhash) used by the gates /
+          # render state below (see docs/VFX_COVERAGE.md)
+          "disabled", "Filtering", "keywordsRequired", "keywordsIncluded", "keywordsExcluded", "spectatorPolicy",
+          "miscRenderFlags", "isRotationEnabled", "AlignYawToCamera", "AlignPitchToCamera",
+          "hasPostRotateOrientation", "postRotateOrientationAxis", "FlexShapeDefinition", "uvTransformCenter",
+          "palleteSrcMixColor"]:
     TABLE[fnv1a(n)] = n
 
 _wads = {}
@@ -148,6 +154,42 @@ def integrate(v, life, n=16):
             out.append(list(acc))
     while len(out) < n:
         out.append(list(acc))
+    return out
+
+
+def _plife_max(e):
+    v = val(e.get("particleLifetime"), 1.0)
+    q = quantiles(e.get("particleLifetime"))
+    m = max(r[0] for r in q) if q else 1.0
+    return max(_f(v, 1.0) * m, 0.01)
+
+
+def integrate_vec(v, life, mult=1.0, n=16):
+    """Accumulated value over life (n samples, any component count) of an integrated rate. A bare constant is
+    applied as one fixed amount c * life for the whole life (League integrates only dynamics curves)."""
+    dyn = v.get("dynamics") if isinstance(v, dict) else None
+    times = dyn.get("times") if isinstance(dyn, dict) else None
+    vals = dyn.get("values") if isinstance(dyn, dict) else None
+    if not times:
+        c = v.get("constantValue") if isinstance(v, dict) else None
+        if c is None:
+            return None
+        c = c if isinstance(c, list) else [c]
+        return [[round(x * mult * life, 4) for x in c]] * n
+    steps = 64
+    prev = _curve_at(times, vals, 0.0)
+    prev = prev if isinstance(prev, list) else [prev]
+    acc = [0.0] * len(prev)
+    out = [list(acc)]
+    for k in range(1, steps + 1):
+        cur = _curve_at(times, vals, k / steps)
+        cur = cur if isinstance(cur, list) else [cur]
+        acc = [a + (p + c) * 0.5 * life / steps * mult for a, p, c in zip(acc, prev, cur)]
+        prev = cur
+        if k % (steps // (n - 1)) == 0 and len(out) < n:
+            out.append([round(x, 4) for x in acc])
+    while len(out) < n:
+        out.append([round(x, 4) for x in acc])
     return out
 
 
@@ -391,7 +433,26 @@ H = {  # unnamed hashes identified by context
 }
 
 
+def emitter_gate(e):
+    """League's load-time spawn gates (LeagueToolkit meta-wiki VfxEmitterDefinitionData "Spawn gates"): a
+    `disabled` emitter is dropped while the system definition is prepared; `Filtering` drops it unless the
+    instance carries every `keywordsRequired` keyword (our base skins carry none) and its spectatorPolicy
+    allows a player client (2 = EnableWhenSpectating only). Returns True when the emitter exists."""
+    if e.get("disabled"):
+        return False
+    f = e.get("Filtering") or e.get("filtering")
+    if isinstance(f, dict):
+        if f.get("keywordsRequired") or f.get("keywordsIncluded"):
+            return False
+        sp = f.get("spectatorPolicy")
+        if sp is not None and int(sp) >= 2:
+            return False
+    return True
+
+
 def emitter(w, e, ctx):
+    if not emitter_gate(e):
+        return None
     o = {"name": e.get("emitterName", "")}
     prim = e.get("primitive")
     pcls = prim.get("__class") if isinstance(prim, dict) else None
@@ -485,7 +546,14 @@ def emitter(w, e, ctx):
         o["dvmin"] = _f(e.get("directionVelocityMinScale"), 0.0)
     o["uniform"] = bool(e.get("isUniformScale", False))
     o["pass"] = int(e.get("pass", 0) or 0)
-    o["alpha_ref"] = int(e.get("alphaRef", 0) or 0)
+    # alphaRef is declared with default 5 (Riot's writer omits defaults: 1422 emitters write an explicit 0, none
+    # write 5); 0 turns the test off. Under Add / None blending it is what drops transparent texels.
+    ar = e.get("alphaRef")
+    o["alpha_ref"] = 5 if ar is None else int(ar)
+    # miscRenderFlags bit 0x1 = DisableZBuffer (depth test off), 0x4 = DisableFow; the byte is also the last
+    # draw-order key (meta-wiki VfxEmitterDefinitionData; ltk-manager ParticleSystem::MISC_RENDER_FLAG)
+    if e.get("miscRenderFlags"):
+        o["misc"] = int(e.get("miscRenderFlags"))
     db = e.get("depthBiasFactors")
     if isinstance(db, list) and len(db) == 2:
         o["dbias"] = [_f(db[0]), _f(db[1])]
@@ -502,7 +570,10 @@ def emitter(w, e, ctx):
         if o["bcolor_ec"]:
             o["bcolor_ec"] = [[round(a * b, 4) for a, b in zip(x, e["color"]["constantValue"])] for x in o["bcolor_ec"]]
     o["ctex"] = export_tex(w, e.get("particleColorTexture"))
-    o["ctype"] = [int(e.get("colorLookUpTypeX", 0) or 0), int(e.get("colorLookUpTypeY", 0) or 0)]
+    # colour lookup drivers: 0 Constant (coord = scale), 1 Lifetime (scale*age+offset), 2 Velocity, 3 BirthRandom.
+    # Declared defaults X = 1, Y = 0 (explicit X=0 / Y=1..3 occur, never X=1 / Y=0), so the default sample point
+    # is (age fraction, 1).
+    o["clut"] = [int(e.get("colorLookUpTypeX", 1)), int(e.get("colorLookUpTypeY", 0))]
     if e.get("colorLookUpScales"):
         o["cscale"] = e.get("colorLookUpScales")
     if e.get("colorLookUpOffsets"):
@@ -526,6 +597,11 @@ def emitter(w, e, ctx):
     o["rotvel"] = val(e.get("birthRotationalVelocity0"), [0, 0, 0])
     o["rotvel_q"] = quantiles(e.get("birthRotationalVelocity0"))
     o["rot"] = curve(e.get("rotation0"))
+    # rotation0 is an integrated spin RATE in degrees per 1/60 s, active only with isRotationEnabled; a bare
+    # constantValue is a fixed extra angle c * 60 * lifetime (meta-wiki rotation0 / isRotationEnabled)
+    r0 = e.get("rotation0")
+    if e.get("isRotationEnabled") and isinstance(r0, dict):
+        o["rotint"] = integrate_vec(r0, _plife_max(e), 60.0)
     # ---- motion (League units -> meters, z flipped)
     bvv = e.get("birthVelocity")
     o["bvel"] = gvm(val(bvv, [0, 0, 0]))
@@ -571,7 +647,8 @@ def emitter(w, e, ctx):
         if c == "VfxShapeSphere":
             shape = {"type": "sphere", "radius": _f(sh.get("radius")) * U, "flags": flags}
         elif c == "VfxShapeBox":
-            shape = {"type": "box", "size": [abs(x) * U for x in (sh.get("boxSize") or [0, 0, 0])], "flags": flags}
+            # Size holds HALF extents (meta-wiki SpawnShape table)
+            shape = {"type": "box", "half": [abs(x) * U for x in (sh.get("boxSize") or [0, 0, 0])], "flags": flags}
         elif c == "VfxShapeCylinder":
             shape = {"type": "cyl", "radius": _f(sh.get("radius")) * U, "height": _f(sh.get("height")) * U, "flags": flags}
         else:
@@ -662,8 +739,10 @@ def emitter(w, e, ctx):
     if isinstance(sp, dict):
         o["soft"] = True
         o["soft_in"] = (_f(sp.get("beginIn")) + _f(sp.get("deltaIn"), 0.0)) * U or 0.3
-    elif isinstance(e.get("softParticle"), dict):
-        o["soft"] = True
+        if _f(sp.get("beginIn")) > 0:
+            o["soft_begin"] = _f(sp.get("beginIn")) * U   # fade = smoothstep(beginIn, beginIn + deltaIn, depth gap)
+        if _f(sp.get("deltaOut")) > 0:
+            o["soft_out"] = [_f(sp.get("beginOut")) * U, _f(sp.get("deltaOut")) * U]   # optional far fade
     else:
         o["soft"] = False
     # ---- distortion / reflection / falloff
@@ -683,6 +762,11 @@ def emitter(w, e, ctx):
         sel = val(pd.get("paletteSelector"), [0, 0, 0])
         o["palette"] = {"row": _f(sel[0] if isinstance(sel, list) else sel), "count": int(pd.get("paletteCount", 1) or 1),
                         "tex": export_tex(w, pd.get("paletteTexture"))}
+        mx = val(pd.get("palleteSrcMixColor"), None)
+        if isinstance(mx, list) and len(mx) == 4:
+            o["palette"]["mix"] = mx   # quad_ps: u = saturate(dot(texel, mixer))
+    if o.get("clut") == [1, 0]:
+        del o["clut"]   # the default lookup (age fraction, 1)
     # drop keys that carry no information (smaller json)
     for k in [k for k, v in o.items() if v is None or v is False or v == [] or v == {}]:
         if k not in ("tex", "single", "local", "ground", "dir", "uniform", "soft", "lorient"):
@@ -714,8 +798,17 @@ def system(w, sysobj, ctx=None):
     for e in ems:
         life = e["life"] if e["life"] >= 0 else 2.0
         pl = e["plife"][1] if e["plife"][1] > 0 else 0.0
-        dur = max(dur, e.get("delay", 0.0) + (0.0 if e.get("single") else life) + pl)
+        # `lifetime` is the emission END time measured from the system start, not from timeBeforeFirstEmission
+        # (meta-wiki: "with a delay of 1 and a lifetime of 3 the emitter emits for 2 seconds")
+        d0 = e.get("delay", 0.0)
+        dur = max(dur, (d0 if e.get("single") else max(life, d0)) + pl)
     out = {"emitters": ems, "dur": round(dur, 3), "loop": any(e["life"] < 0 for e in ems)}
+    xf = sysobj.get("transform")
+    if isinstance(xf, list) and len(xf) == 16:
+        # system transform (meta-wiki particle update step 7); only uniform scale is used by shipped data we play
+        sc = round((abs(xf[0]) + abs(xf[5]) + abs(xf[10])) / 3.0, 4)
+        if abs(sc - 1.0) > 1e-3:
+            out["sys_scale"] = sc
     if sysobj.get("overrideScaleCap"):
         out["scale_cap"] = _f(sysobj.get("overrideScaleCap"))
     return name, out
@@ -896,6 +989,8 @@ LEGACY_TROY = {
     "Global_SS_Flash_02": "data/particles/global_ss_flash_02.troybin",    # arrival
     "Global_SS_Barrier": "data/particles/global_ss_barrier.troybin",      # shield bubble
     "LevelUp_glb": "data/particles/levelup_glb.troybin",                  # champion level up
+    # [anim-events] Order melee minion swing (Attack1-3 ParticleEventData mEffectName "DATA/Particles/...troy")
+    "SRU_Order_MM_BA1_cas": "data/particles/sru_order_mm_ba1_cas.troybin",
 }
 
 

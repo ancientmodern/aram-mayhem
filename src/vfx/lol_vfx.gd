@@ -15,7 +15,8 @@ extends Node3D
 const S := 0.01          ## League units -> meters
 const QUAD_SCALE := 2.0  ## League quad size is a half-extent
 const MAX_ONESHOT := 6.0 ## seconds a non-looping effect may live
-static var ROT_ORDER := 4   ## euler order yzx: verified on Yasuo W wall + Q streak geometry
+static var ROT_ORDER := 0   ## League composes Z, then X, then Y (meta-wiki birthRotation0; ReyEngine rotateEuler,
+                            ## checked on the SR gate shields / flat ground glows (90,0,-90)); --rotorder=N overrides
 const MAX_FADE := 2.5    ## seconds particles may keep fading after stop()
 const MAX_AMOUNT := 256  ## particle cap per emitter
 const MAX_BURST := 64    ## cap for isSingleParticle bursts
@@ -61,7 +62,11 @@ var _budget := 0
 var _mis := {}                   ## missile flight: {"start_h", "end_h", "end_bone"}
 var _mis_frame: Node3D = null    ## missile systems: League +Y = flight direction
 var _ground_nodes: Array = []    ## missile ground-layer emitters kept on the terrain
-const MIS_BASIS := Basis(Vector3(1, 0, 0), Vector3(0, 0, -1), Vector3(0, 1, 0))   ## Y -> -Z (forward), Z -> Y
+## Missile frame: League X = right, Y = travel, Z = UP (an improper frame in League's left-handed space).
+## [vfx-runtime] evidence: Ezreal_Base_Q_mis ground_glow sits at League z = -100 (= the ground under a missile
+## flying at 100), its Leading_glow drifts +Y and its Mesh_cone trails at -Y; Yasuo's wind-wall meshes stand up
+## (mesh Y -> League Z under the Z-X-Y euler order) only with Z = up.
+const MIS_BASIS := Basis(Vector3(1, 0, 0), Vector3(0, 0, -1), Vector3(0, -1, 0))   ## Y -> -Z (forward), z (= -League Z) -> -Y
 var _opts := {}
 
 
@@ -184,7 +189,7 @@ static func _prebuild(sd) -> void:
 			_tex(e.get("tex"))
 		elif not (e.get("distort") is bool):
 			var s0 := _particle_spec(e, false)
-			var el: float = float(e.get("life", -1.0))
+			var el: float = _emit_window(e)
 			if el > 0.0 and el < 0.12 and not e.get("single", false):
 				_particle_spec(e, true)
 			else:
@@ -193,6 +198,13 @@ static func _prebuild(sd) -> void:
 
 static func has(name: String) -> bool:
 	return _db.has(name)
+
+
+## [anim-events] True when the system never ends on its own (an emitter with infinite life): animation-event
+## particles of such systems are stopped by the event (end frame / clip exit) instead of timing out.
+static func is_looping(name: String) -> bool:
+	var sd = _db.get(name)
+	return sd is Dictionary and bool(sd.get("loop", false))
 
 
 static func clear_cache() -> void:
@@ -420,6 +432,8 @@ static func on_cast(ab, t: Dictionary) -> void:
 	if k == "" or not (o is Champion):
 		return
 	var nm := champ_fx(o, k + "_cas")
+	if nm != "" and o.anim_ev != null and o.anim_ev.binds_fx(nm):
+		return   # [anim-events] the cast clip's own particle event plays it (at League's bone and frame)
 	if nm != "":
 		var dir: Vector3 = t.get("dir", o.facing)
 		var opts := {"dir": dir, "center": o.height * 0.35, "max_life": 3.0}
@@ -640,7 +654,7 @@ static var _log_spawns: bool = "--vfxlog" in OS.get_cmdline_user_args()
 func _refresh() -> void:
 	_dynamic = _face_unit != null or follow != null or _anchor != null or not _mis.is_empty() \
 			or not _ground_nodes.is_empty() or not _rate_fx.is_empty() or not _carriers.is_empty() \
-			or not _ameshes.is_empty() or (_stopped and not _lingers.is_empty())
+			or not _ameshes.is_empty() or (_stopped and not _lingers.is_empty()) 			or (not _waxes.is_empty() and _host != null)
 	var w := INF
 	for tm in _timers:
 		w = minf(w, _born + float(tm[0]))
@@ -666,6 +680,7 @@ func _apply_dir() -> void:
 	if dir.length_squared() > 0.001:
 		var d := Vector3(dir.x, 0, dir.z).normalized()
 		global_basis = Basis.looking_at(d, Vector3.UP) * Basis.from_scale(scale)
+	_sync_axes()
 
 
 func _setup(opts: Dictionary) -> void:
@@ -680,7 +695,7 @@ func _setup(opts: Dictionary) -> void:
 			_mis = {"end_bone": DEFAULT_HIT_BONE}
 	if _host == null and get_parent() is Unit:
 		_host = get_parent()
-	var sc: float = float(opts.get("scale", 1.0))
+	var sc: float = float(opts.get("scale", 1.0)) * float(def.get("sys_scale", 1.0))
 	if absf(sc - 1.0) > 0.001:
 		scale = Vector3.ONE * sc
 	var bone: String = String(opts.get("bone", ""))
@@ -748,6 +763,8 @@ func _tick() -> void:
 			stop()
 	if _anchor != null:
 		_update_anchor()
+	if not _waxes.is_empty():
+		_sync_axes()
 	if not _mis.is_empty():
 		_track_missile()
 	if not _ground_nodes.is_empty():
@@ -856,8 +873,8 @@ func _emitter_nodes() -> Array:
 	var out: Array = []
 	for c in get_children():
 		out.append(c)
-	for holder in [_anchor, _mis_frame]:
-		if holder != null:
+	for holder in [_anchor, _mis_frame] + _waxes:
+		if holder != null and is_instance_valid(holder):
 			for c in holder.get_children():
 				out.append(c)
 	return out
@@ -943,9 +960,36 @@ func _ground_snap() -> void:
 func _parent_for(e: Dictionary) -> Node3D:
 	if _mis_frame != null and e.get("lorient", true) and not _is_ground(e):
 		return _mis_frame
-	if _anchor != null and not _is_ground(e):
-		return _anchor
-	return self
+	var base: Node3D = _anchor if (_anchor != null and not _is_ground(e)) else self
+	if not e.get("lorient", true) and _mis_frame == null:
+		# isLocalOrientation = false: the spawn frame is axis aligned, only the system's position is used
+		# (meta-wiki VfxEmitterDefinitionData.isLocalOrientation)
+		return _world_axes(base)
+	return base
+
+
+var _waxes: Array = []   ## axis-aligned holders for isLocalOrientation = false emitters
+
+
+func _world_axes(base: Node3D) -> Node3D:
+	for h in _waxes:
+		if h.get_parent() == base:
+			return h
+	var h := Node3D.new()
+	h.name = "WorldAxes"
+	base.add_child(h)
+	_waxes.append(h)
+	_sync_axes()
+	return h
+
+
+func _sync_axes() -> void:
+	if _waxes.is_empty() or not is_inside_tree():
+		return
+	var sc := global_basis.get_scale()
+	for h in _waxes:
+		if is_instance_valid(h):
+			h.global_basis = Basis.from_scale(sc)
 
 
 static func _is_ground(e: Dictionary) -> bool:
@@ -962,7 +1006,20 @@ func _place_offset(e: Dictionary, n: Node3D) -> Vector3:
 	return off
 
 
+## QA: --vfxemit=a,b draws only the emitters with these names (isolating one emitter of a system).
+static var _emit_only: Array = _arg_list("--vfxemit=")
+
+
+static func _arg_list(prefix: String) -> Array:
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with(prefix):
+			return Array(a.substr(prefix.length()).split(","))
+	return []
+
+
 func _build_emitter(e: Dictionary) -> void:
+	if not _emit_only.is_empty() and not (String(e.get("name", "")) in _emit_only):
+		return
 	var prim: String = e.get("prim", "quad")
 	if e.has("children"):
 		_build_children(e)
@@ -1000,7 +1057,7 @@ func _build_emitter(e: Dictionary) -> void:
 	if spec.rate_ec != null:
 		_rate_fx.append([p, spec.rate_ec, spec.elife if spec.elife > 0.0 else 1.0, delay, spec.rate])
 	if spec.timed and not _loop:
-		_after_node(delay + spec.elife, p, 1)
+		_after_node(maxf(spec.elife, delay + 0.02), p, 1)   # lifetime = end time on the system clock
 
 
 ## Fresh GPUParticles3D from a spec (property sets are ~10x cheaper than Node.duplicate()).
@@ -1019,6 +1076,7 @@ static func _new_particles(sp: Dictionary) -> GPUParticles3D:
 	p.material_override = sp.mat
 	p.emitting = false
 	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	p.sorting_offset = sp.get("sort", 0.0)
 	p.set_meta("life_scale", sp.life_scale)
 	p.set_meta("linger", sp.linger)
 	if sp.linger_color != null:
@@ -1045,6 +1103,7 @@ static func _particle_spec(e: Dictionary, loop: bool) -> Dictionary:
 	var life_max: float = 3600.0 if infinite else maxf(float(plife[1]), 0.05)
 	var rate: float = maxf(float(e.get("rate", 1.0)), 0.0)
 	var elife: float = float(e.get("life", -1.0))
+	var window := _emit_window(e)
 	var life_scale := 1.0
 	var amount := 1
 	var lifetime := life_max
@@ -1063,10 +1122,10 @@ static func _particle_spec(e: Dictionary, loop: bool) -> Dictionary:
 		# Godot emits amount / lifetime per second: stretch the cycle so the rate is exact, particles die early
 		lifetime = maxf(amount / rate, life_max)
 		life_scale = life_max / lifetime
-		if elife > 0.0 and elife < 0.12 and not loop:
+		if window > 0.0 and window < 0.12 and not loop:
 			# a very short emitter with a high rate is really a burst
 			one_shot = true
-			amount = clampi(int(ceil(rate * maxf(elife, 0.05))), 1, MAX_AMOUNT)
+			amount = clampi(int(ceil(rate * maxf(window, 0.05))), 1, MAX_AMOUNT)
 			lifetime = life_max
 			life_scale = 1.0
 	out.amount = amount
@@ -1085,9 +1144,19 @@ static func _particle_spec(e: Dictionary, loop: bool) -> Dictionary:
 	out.rate = rate
 	out.rate_ec = e.rate_ec if (e.get("rate_ec") is Array and not single and not one_shot) else null
 	out.timed = not single and elife > 0.0 and not one_shot
+	out.sort = _sort_offset(e)
 	e[ck] = out
 	_warm.append([out.mat, out.pm])
 	return out
+
+
+## Seconds the emitter emits: League `lifetime` is the END time on the system clock, measured from the system
+## start and not from timeBeforeFirstEmission (meta-wiki VfxEmitterDefinitionData.lifetime); -1 = no end.
+static func _emit_window(e: Dictionary) -> float:
+	var el := float(e.get("life", -1.0))
+	if el < 0.0:
+		return -1.0
+	return maxf(el - float(e.get("delay", 0.0)), 0.0)
 
 
 static func _trail_spec(e: Dictionary) -> Dictionary:
@@ -1118,7 +1187,7 @@ static func _trail_spec(e: Dictionary) -> Dictionary:
 	if sh is Dictionary and sh.get("type", "") == "offset":
 		off += _v3(sh.get("offset", [0, 0, 0]))
 	sp.offset = off
-	sp.mat = LolTrail.mat_for(sp.texture, sp.tex2, sp.blend)
+	sp.mat = LolTrail.mat_for(sp.texture, sp.tex2, sp.blend, _priority(e))
 	e["_tspec"] = sp
 	return sp
 
@@ -1154,7 +1223,7 @@ func _build_trail(e: Dictionary) -> void:
 				t.emitting = true)
 	var elife: float = float(e.get("life", -1.0))
 	if elife > 0.0 and not _loop:
-		_after(delay + elife, func():
+		_after(maxf(elife, delay + 0.02), func():
 			if is_instance_valid(t):
 				t.emitting = false)
 
@@ -1483,12 +1552,36 @@ static func _scale_tex(e: Dictionary) -> ImageTexture:
 	return _float_tex(rows)
 
 
+## Colour over life x particleColorTexture lookup, baked as 32 life samples x N birth-random rows.
+## Lookup drivers per axis (meta-wiki colorLookUpTypeX/Y): 0 Constant (coord = scale), 1 Lifetime
+## (scale * age + offset), 2 Velocity (approximated by its offset), 3 BirthRandom (scale * r + offset); always
+## clamped. Defaults X = Lifetime, Y = Constant 1 -> (age, 1). No lookup on eroding emitters, nor on meshes with
+## a textureMult layer.
+const CLUT_ROWS := 8
+
+
+static func _clut(e: Dictionary) -> Array:
+	var cl = e.get("clut")
+	if cl is Array and cl.size() == 2:
+		return [int(cl[0]), int(cl[1])]
+	return [1, 0]
+
+
+static func _color_rows(e: Dictionary) -> int:
+	if e.get("ctex") == null or e.get("ero_tex") != null or (e.get("prim", "") == "mesh" and e.get("tex2") != null):
+		return 1
+	var cl := _clut(e)
+	return CLUT_ROWS if (cl[0] == 3 or cl[1] == 3) else 1
+
+
 static func _color_tex(e: Dictionary) -> ImageTexture:
 	var cur = e.get("color")
 	var ctex = e.get("ctex")
+	if e.get("ero_tex") != null or (e.get("prim", "") == "mesh" and e.get("tex2") != null):
+		ctex = null
 	if cur == null and ctex == null:
 		return null
-	var ctype: Array = e.get("ctype", [0, 0])
+	var cl := _clut(e)
 	var csc := _v2(e.get("cscale"), Vector2.ONE)
 	var cof := _v2(e.get("coff"), Vector2.ZERO)
 	var img: Image = null
@@ -1499,29 +1592,31 @@ static func _color_tex(e: Dictionary) -> ImageTexture:
 			if img != null and img.is_compressed():
 				img = img.duplicate()
 				img.decompress()
-	var rows := []
-	for i in 32:
-		var u := i / 31.0
-		var col := Color.WHITE
-		if cur is Dictionary:
-			col = _sample_color_curve(cur, u)
-		if img != null:
-			var w := img.get_width()
-			var h := img.get_height()
-			# lookup texture: X follows particle life (type 0/3), Y follows life only for type 3
-			var ux := clampf(u * csc.x + cof.x, 0.0, 1.0)
-			var uy := clampf(u * csc.y + cof.y, 0.0, 1.0)
-			var px := w / 2
-			var py := h / 2
-			if int(ctype[1]) == 3 and int(ctype[0]) != 3:
-				py = clampi(int(uy * (h - 1)), 0, h - 1)
-			else:
-				px = clampi(int(ux * (w - 1)), 0, w - 1)
-				if int(ctype[1]) == 3:
-					py = clampi(int(uy * (h - 1)), 0, h - 1)
-			col *= img.get_pixel(px, py)
-		rows.append(col)
-	return _float_tex(rows)
+	var nrows := _color_rows(e)
+	var out := Image.create(32, nrows, false, Image.FORMAT_RGBAF)
+	for j in nrows:
+		var r := (j + 0.5) / nrows
+		for i in 32:
+			var u := i / 31.0
+			var col := Color.WHITE
+			if cur is Dictionary:
+				col = _sample_color_curve(cur, u)
+			if img != null:
+				var w := img.get_width()
+				var h := img.get_height()
+				var cx := _clut_coord(cl[0], csc.x, cof.x, u, r)
+				var cy := _clut_coord(cl[1], csc.y, cof.y, u, r)
+				col *= img.get_pixel(clampi(int(cx * (w - 1) + 0.5), 0, w - 1), clampi(int(cy * (h - 1) + 0.5), 0, h - 1))
+			out.set_pixel(i, j, col)
+	return ImageTexture.create_from_image(out)
+
+
+static func _clut_coord(kind: int, sc: float, of: float, life: float, r: float) -> float:
+	match kind:
+		1: return clampf(sc * life + of, 0.0, 1.0)
+		2: return clampf(of, 0.0, 1.0)
+		3: return clampf(sc * r + of, 0.0, 1.0)
+	return clampf(sc, 0.0, 1.0)
 
 
 static func _uv_tex(e: Dictionary) -> ImageTexture:
@@ -1548,28 +1643,47 @@ static func _ero_tex(e: Dictionary) -> ImageTexture:
 
 
 # ----------------------------------------------------------------- materials
-static func _shader(blend: int, distort := false, bias := false, solid := false) -> Shader:
-	# League blendMode (from texture statistics over all champions): 0 (default) / 2 / 4 = additive,
-	# 1 = alpha blend, 3 = solid (opaque meshes: rocks, rockets, relic icons), 5 = premultiplied alpha
+static func _shader(blend: int, distort := false, bias := false, solid := false, rs := 0) -> Shader:
+	# League blendMode (ParticleSystem::BLEND_MODE, meta-wiki VfxEmitterDefinitionData): 0 Add (default; colour
+	# premultiplied by alpha, ONE,ONE), 1 Alpha, 2 Subtract (drawn additive here), 3 None (opaque, writes depth),
+	# 4 AlphaAdd (SrcAlpha,One), 5 PremultipliedAlpha
+	# rs [vfx-runtime] render-state bits: RS_NO_DEPTH (miscRenderFlags 0x1 DisableZBuffer), RS_CULL (meshes
+	# without disableBackfaceCull cull their back faces)
 	var mode := "blend_add"
 	match blend:
 		1, 3: mode = "blend_mix"
 		5: mode = "blend_premul_alpha"
 	if distort:
 		mode = "blend_mix"
-	var key := mode + ("|d" if distort else "") + ("|b" if bias else "") + ("|s" if solid else "")
+	var premul := blend == 0 and not distort and not solid
+	var key := mode + ("|d" if distort else "") + ("|b" if bias else "") + ("|s" if solid else "") + ("|p" if premul else "") + "|%d" % rs
 	if _shaders.has(key):
 		return _shaders[key]
 	var hint := "" if mode == "blend_add" else "source_color,"
-	var modes := "unshaded, cull_disabled, depth_draw_always" if solid else "unshaded, cull_disabled, depth_draw_never"
-	var defs := ("#define DISTORT\n" if distort else "") + ("#define DEPTH_BIAS\n" if bias else "") + ("#define SOLID\n" if solid else "")
+	var cull := (_cull_mode if _cull_mode != "" else "cull_front") if rs & RS_CULL else "cull_disabled"   # vmesh winding: normals face Godot's back side
+	var modes := ("unshaded, %s, depth_draw_always" if solid else "unshaded, %s, depth_draw_never") % cull
+	if rs & RS_NO_DEPTH:
+		modes += ", depth_test_disabled"
+	var defs := ("#define DISTORT
+" if distort else "") + ("#define DEPTH_BIAS
+" if bias else "") + ("#define SOLID
+" if solid else "")
+	if premul:
+		defs += "#define PREMUL_ADD
+"
 	if hint == "":
-		defs += "#define RAW_TEX\n"   # [lead] colour pipeline: additive textures are sampled raw (gamma)
+		defs += "#define RAW_TEX
+"   # [lead] colour pipeline: additive textures are sampled raw (gamma)
 	var code := FileAccess.get_file_as_string("res://src/vfx/lol_particle.gdshader.txt").replace("__BLEND__", mode).replace("__TEXHINT__", hint).replace("__DEFINES__", defs).replace("__MODES__", modes)
 	var sh := Shader.new()
 	sh.code = code
 	_shaders[key] = sh
 	return sh
+
+
+const RS_NO_DEPTH := 1
+static var _cull_mode: String = (["cull_" + String(_arg_list("--vfxcull=")[0])] if not _arg_list("--vfxcull=").is_empty() else [""])[0]   ## QA override
+const RS_CULL := 2
 
 
 static func _v2(a, d: Vector2) -> Vector2:
@@ -1587,7 +1701,8 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 			e.get("alpha_ref"), e.get("uvscale"), e.get("uvrate"), e.get("uvint"), e.get("tex2"), e.get("uv2scale"), e.get("uv2rate"),
 			e.get("uv2int"), e.get("ero_tex"), e.get("ero_curve"), e.get("ero_ch"), e.get("soft"), e.get("pass"), e.get("plife"),
 			e.get("uvrot"), e.get("uvrotrate"), e.get("uvclamp"), e.get("uv2rot"), e.get("uv2off"), e.get("uv2clamp"), e.get("flip"),
-			e.get("fresnel"), e.get("falloff"), e.get("dbias"), e.get("distort"), e.get("ground"), e.get("soft_in"), e.get("uvmode"), e.get("palette"), e.get("uvoff")])]
+			e.get("fresnel"), e.get("falloff"), e.get("dbias"), e.get("distort"), e.get("ground"), e.get("soft_in"), e.get("uvmode"), e.get("palette"), e.get("uvoff"),
+			e.get("misc"), e.get("addr"), e.get("disable_cull"), e.get("prim"), e.get("emuv"), e.get("soft_begin"), e.get("bscale") if _orient(e) == 5 else null])]
 	if _mats.has(key):
 		e[ek] = _mats[key]
 		return _mats[key]
@@ -1606,7 +1721,15 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 	if amesh:
 		bias = 0.02
 	bias = clampf(bias, 0.0, 1.0)
-	mat.shader = _shader(blend, is_dist, bias > 0.0, blend == 3 and o == 3 and not amesh)
+	# [vfx-runtime] render state: miscRenderFlags 0x1 = depth test off (not for ground-layer decals: League draws
+	# that phase before the characters, Godot draws transparents after them); meshes cull back faces unless
+	# disableBackfaceCull (meta-wiki disableBackfaceCull: "quads, beams and trails are always two sided")
+	var rs := 0
+	if int(e.get("misc", 0)) & 1 and o != 2:
+		rs |= RS_NO_DEPTH
+	if o == 3 and not amesh and not e.get("disable_cull", false):
+		rs |= RS_CULL
+	mat.shader = _shader(blend, is_dist, bias > 0.0, blend == 3 and o == 3 and not amesh, rs)
 	if blend == 1 or blend == 3 or blend == 5:
 		mat.set_shader_parameter("linear_color", true)
 	else:
@@ -1624,14 +1747,27 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 		frames = int(div[0]) * int(div[1])
 	mat.set_shader_parameter("texdiv", Vector2(maxf(1, float(div[0])), maxf(1, float(div[1]))))
 	mat.set_shader_parameter("total_frames", float(frames))
-	mat.set_shader_parameter("alpha_ref", float(e.get("alpha_ref", 0)) / 255.0)
+	mat.set_shader_parameter("alpha_ref", float(e.get("alpha_ref", 5)) / 255.0)
+	mat.set_shader_parameter("uv_swap", e.get("prim", "") == "aquad" and not amesh)
+	mat.set_shader_parameter("addr_mode", int(e.get("addr", 0)))
+	mat.set_shader_parameter("lock_alpha_uv", int(e.get("uvmode", 0)) == 2)
+	if o != 3 and not amesh:
+		mat.set_shader_parameter("emitter_uv_rate", _v2(e.get("emuv"), Vector2.ZERO))
+	if o == 5:
+		var rbs: Array = e.get("bscale", [1, 1, 0])
+		if rbs.size() > 2 and absf(float(rbs[1])) > 0.001:
+			mat.set_shader_parameter("ray_offset", float(rbs[2]) / float(rbs[1]))
+	if e.has("soft_begin"):
+		mat.set_shader_parameter("soft_begin", float(e.soft_begin))
+	if e.has("soft_out"):
+		mat.set_shader_parameter("soft_out_begin", float(e.soft_out[0]))
+		mat.set_shader_parameter("soft_out_dist", float(e.soft_out[1]))
+	mat.set_shader_parameter("mesh_saturate", o == 3 and not amesh)
 	mat.set_shader_parameter("uv_scale", _v2(e.get("uvscale"), Vector2.ONE))
 	mat.set_shader_parameter("uv_rate", _v2(e.get("uvrate"), Vector2.ZERO))
 	mat.set_shader_parameter("uv_rot", float(e.get("uvrot", 0.0)))
 	mat.set_shader_parameter("uv_rot_rate", float(e.get("uvrotrate", 0.0)))
 	mat.set_shader_parameter("uv_clamp", bool(e.get("uvclamp", false)))
-	# uvMode 2 is not an alpha lock: locking alpha froze Annie Q's scrolling flame mesh into a flat oval
-	mat.set_shader_parameter("alpha_lock", false)
 	var uo2 = e.get("uvoff")
 	if uo2 is Array and uo2.size() == 2 and frames <= 1 and (_v2(uo2[0], Vector2.ZERO) != Vector2.ZERO or _v2(uo2[1], Vector2.ZERO) != Vector2.ZERO):
 		mat.set_shader_parameter("uv_off_pack", true)
@@ -1641,6 +1777,9 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 		mat.set_shader_parameter("has_palette", true)
 		var cnt := maxf(float(pal.get("count", 1)), 1.0)
 		mat.set_shader_parameter("palette_v", (clampf(float(pal.get("row", 0.0)), 0.0, cnt - 1.0) + 0.5) / cnt)
+		var pm4 = pal.get("mix")
+		if pm4 is Array and pm4.size() == 4:
+			mat.set_shader_parameter("palette_mixer", Vector4(float(pm4[0]), float(pm4[1]), float(pm4[2]), float(pm4[3])))
 	var fl: Array = e.get("flip", [false, false])
 	mat.set_shader_parameter("uv_flip", Vector2(1.0 if fl[0] else 0.0, 1.0 if fl[1] else 0.0))
 	var plife: Array = e.get("plife", [1.0, 1.0])
@@ -1672,12 +1811,16 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 	var fr = e.get("fresnel")
 	if fr is Dictionary and (o == 3 or amesh):
 		var fc := _col(fr.get("color", [0, 0, 0, 0]))
-		if fc.r + fc.g + fc.b > 0.01 or (amesh and blend == 1):
+		if fc.r + fc.g + fc.b > 0.001 or (amesh and blend == 1):
 			mat.set_shader_parameter("fresnel_color", fc)
-			# League "fresnel" is the rim width: 0.15 = thin rim, 1 = broad
-			mat.set_shader_parameter("fresnel_pow", clampf(1.0 / maxf(float(fr.get("f", 0.2)), 0.05) * 0.5, 0.8, 8.0))
 			# alpha-blended attached-mesh shells are rim lights, not opaque silhouettes (Annie stun, Ahri Q/W)
-			mat.set_shader_parameter("rim_alpha", amesh and blend == 1)
+			var rim_a: bool = amesh and blend == 1
+			mat.set_shader_parameter("rim_alpha", rim_a)
+			if rim_a:
+				mat.set_shader_parameter("fresnel_pow", clampf(1.0 / maxf(float(fr.get("f", 0.2)), 0.05) * 0.5, 0.8, 8.0))
+			else:
+				# mesh_ps [exact]: F = 1 - pow(saturate(N.V), fresnel) with the emitter's raw `fresnel`
+				mat.set_shader_parameter("fresnel_pow", maxf(float(fr.get("f", 1.0)), 0.001))
 	var ft := _tex(e.get("falloff"))
 	if ft != null and (o == 3 or amesh):
 		mat.set_shader_parameter("falloff_tex", ft)
@@ -1687,10 +1830,30 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 		if not (blend == 1 or blend == 3 or blend == 5):
 			mat.set_shader_parameter("tex_mask", true)
 	mat.set_shader_parameter("depth_bias", bias)
-	mat.render_priority = clampi(int(e.get("pass", 0)) / 2, -60, 60)
+	mat.render_priority = _priority(e)
 	_mats[key] = mat
 	e[ek] = mat
 	return mat
+
+
+## [vfx-runtime] League draw order (meta-wiki VfxEmitterDefinitionData "Draw order"): render phase (ground layer
+## second, before the characters), then `pass` (lower first, any range), then blend rank, then the
+## miscRenderFlags byte. `pass` is compressed monotonically into Godot's render_priority (exact for |pass| <= 16,
+## logarithmic beyond); blend rank and flags break ties through the node's sorting_offset (_sort_offset).
+static func _priority(e: Dictionary) -> int:
+	var p := float(e.get("pass", 0))
+	var ap := absf(p)
+	var f := ap if ap <= 16.0 else 16.0 + 8.0 * log(ap / 16.0) / log(2.0)
+	f = signf(p) * f
+	if _is_ground(e):
+		return -124 + clampi(int(round(f / 40.0)), -3, 3)
+	return clampi(int(round(f)), -115, 115)
+
+
+static func _sort_offset(e: Dictionary) -> float:
+	var b := int(e.get("blend", 0))
+	var rank := 0 if b == 3 else (1 if b == 0 or b == 2 else 2)
+	return rank * 0.02 + float(int(e.get("misc", 0)) & 255) * 0.002
 
 
 static var _proc_shader: Shader = null
@@ -1714,11 +1877,13 @@ static func _scale_base(e: Dictionary, bs) -> Vector3:
 	var uni: bool = e.get("uniform", false)
 	if o == 3:
 		return Vector3(bx, by if by > 0.0001 and not uni else bx, bz if bz > 0.0001 and not uni else bx)
-	if o == 0:
-		return Vector3(bx, bx, 1.0) * S * QUAD_SCALE
+	if o == 0 or o == 4:
+		# camera quads: half-width x, half-height y (meta-wiki VfxPrimitiveCameraQuad); only isUniformScale
+		# makes them square
+		return Vector3(bx, bx if uni else by, 1.0) * S * QUAD_SCALE
 	if o == 5:
-		# rays: x = width, y / z = length (League units)
-		return Vector3(bx * S * QUAD_SCALE, by * S, bz * S)
+		# rays: x = FULL width, y = length, z = start offset along the axis (meta-wiki VfxPrimitiveRay)
+		return Vector3(bx * S, by * S, bz * S)
 	var hy := by if (by > 0.01 and not uni and prim == "aquad") else bx
 	return Vector3(bx * S * QUAD_SCALE, hy * S * QUAD_SCALE, 1.0)
 
@@ -1734,7 +1899,7 @@ static func _rand_tex(e: Dictionary) -> ImageTexture:
 		for v in pq:
 			r0.append(Color(float(v), 1, 1, 1))
 		rows[0] = r0
-	var uni: bool = e.get("uniform", false) or o == 0
+	var uni: bool = e.get("uniform", false)
 	var maps := {1: "bscale_q", 2: "bvel_q", 5: "bcolor_q", 8: "orbit_q", 9: "drag_q"}
 	for row in maps:
 		var qv = e.get(maps[row])
@@ -1746,9 +1911,11 @@ static func _rand_tex(e: Dictionary) -> ImageTexture:
 			var c := Color(float(a[0]), float(a[1]) if a.size() > 1 else 1.0, float(a[2]) if a.size() > 2 else 1.0,
 					float(a[3]) if a.size() > 3 else 1.0)
 			if row == 1:
-				if o == 0 or uni:
-					c = Color(c.r, c.r, 1.0, 1.0)
-				elif o != 3:
+				if uni:
+					c = Color(c.r, c.r, c.r, 1.0)
+				elif o == 0 or o == 4 or o == 1:
+					c = Color(c.r, c.g, 1.0, 1.0)
+				elif o == 2:
 					c = Color(c.r, c.g if e.get("prim", "") == "aquad" else c.r, 1.0, 1.0)
 			r.append(c)
 		rows[row] = r
@@ -1871,16 +2038,18 @@ static func _process_material(e: Dictionary, single: bool, life_scale: float, bu
 			"sphere":
 				pm.set_shader_parameter("shape_type", 1)
 				pm.set_shader_parameter("shape_radius", float(sh.get("radius", 0.0)))
-				pm.set_shader_parameter("shape_radial", fl & 1 != 0)
+				pm.set_shader_parameter("shape_fill", fl & 1 != 0)
 			"box":
-				var sz: Array = sh.get("size", [0, 0, 0])
+				# "half" = League Size (half extents); older data stored "size" as full extents
+				var hf: Vector3 = _v3(sh.get("half")) if sh.has("half") else _v3(sh.get("size", [0, 0, 0])) * 0.5
 				pm.set_shader_parameter("shape_type", 2)
-				pm.set_shader_parameter("shape_box", Vector3(float(sz[0]), float(sz[1]), float(sz[2])) * 0.5)
+				pm.set_shader_parameter("shape_box", hf)
+				pm.set_shader_parameter("shape_fill", fl & 1 != 0)
 			"cyl":
 				pm.set_shader_parameter("shape_type", 3)
 				pm.set_shader_parameter("shape_radius", float(sh.get("radius", 0.0)))
 				pm.set_shader_parameter("shape_height", float(sh.get("height", 0.0)))
-				pm.set_shader_parameter("shape_radial", fl & 1 != 0)
+				pm.set_shader_parameter("shape_fill", fl & 1 != 0)
 			"offset":
 				pm.set_shader_parameter("shape_offset", _v3(sh.get("offset", [0, 0, 0])))
 				var rots = sh.get("rots")
@@ -1911,11 +2080,13 @@ static func _process_material(e: Dictionary, single: bool, life_scale: float, bu
 		pm.set_shader_parameter("field_drag", float(fields.drag))
 	if e.has("dvs"):
 		pm.set_shader_parameter("dir_stretch", Vector2(float(e.dvs), float(e.get("dvmin", 0.0))))
+	if e.get("dir", false) and (o == 1 or o == 3):
+		pm.set_shader_parameter("dir_orient", true)
 	# scale
 	var bs: Array = e.get("bscale", [1, 1, 1])
 	pm.set_shader_parameter("scale_base", _scale_base(e, bs))
 	var uni: bool = e.get("uniform", false)
-	pm.set_shader_parameter("uniform_scale", uni or o == 0)
+	pm.set_shader_parameter("uniform_scale", uni)
 	var stex := _scale_tex(e)
 	if stex != null:
 		pm.set_shader_parameter("scale_curve", stex)
@@ -1935,6 +2106,20 @@ static func _process_material(e: Dictionary, single: bool, life_scale: float, bu
 		pm.set_shader_parameter("rot_base", Vector3(-rot.x, -rot.y, rot.z))
 		pm.set_shader_parameter("spin_axis", spin_i)
 		pm.set_shader_parameter("spin_base", rv[spin_i] * (-1.0 if spin_i < 2 else 1.0))
+	# integrated rotation0 (isRotationEnabled), arranged per orientation like rot_base
+	var ri = e.get("rotint")
+	if ri is Array and ri.size() > 1:
+		var rrows := []
+		for v in ri:
+			var r3 := _vec3_or(v, Vector3.ZERO)
+			if o == 0 or o == 4:
+				rrows.append(Color(0, 0, r3.x, 1))
+			elif o == 2:
+				rrows.append(Color(0, 0, r3[0 if prim == "quad" else 2], 1))
+			else:
+				rrows.append(Color(-r3.x, -r3.y, r3.z, 1))
+		pm.set_shader_parameter("rot_curve", _float_tex(rrows))
+		pm.set_shader_parameter("has_rot_curve", true)
 	# color
 	var bc := _col(e.get("bcolor", [1, 1, 1, 1]))
 	if e.get("bcolor_ec") is Array:
@@ -1944,6 +2129,7 @@ static func _process_material(e: Dictionary, single: bool, life_scale: float, bu
 	if ct != null:
 		pm.set_shader_parameter("color_curve", ct)
 		pm.set_shader_parameter("has_color_curve", true)
+		pm.set_shader_parameter("color_rows", float(_color_rows(e)))
 	# flipbook / uv offset
 	var div: Array = e.get("texdiv", [1, 1])
 	var frames := int(e.get("frames", 0))
