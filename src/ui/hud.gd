@@ -28,6 +28,7 @@ const ITEM_KEYS := ["1", "2", "3", "4", "5", "6"]
 const MM_MIN := Vector2(-28.0, -19.0)
 const MM_MAX := Vector2(12849.0, 12858.0)
 const ANN_TIME := 3.2
+const ANN_K := 1.45                  ## [ui-polish] announcement banner scale
 const SLOT_KEYS := ["Q", "W", "E", "R", "D", "F"]
 
 
@@ -71,7 +72,7 @@ var chat: HudChat = null
 var pings: HudPings = null
 var target_frame: HudTarget = null
 var scoreboard_visible := false
-var fps_visible := true
+var fps_visible := false             ## [ui-polish] off by default like League; Ctrl+F (or F11) toggles, --fps starts it on
 var advanced_stats := false
 var fail_msg := ""
 var fail_t := 0.0
@@ -99,6 +100,8 @@ var _fx: Array = []                  ## running one-shot flipbooks {key, t0, off
 var _was_ready := [true, true, true, true, true, true]
 var _could_level := [false, false, false, false]
 var _ab_levels := [0, 0, 0, 0]
+var _fail_snd_t := -10.0
+var _item_cd := {}                   ## item instance id -> previous active cooldown (item-used sound)
 var _glow_t0 := [0.0, 0.0, 0.0, 0.0]
 var _drag := {}                      ## inventory drag {slot, start, active}
 var _fx_was_active := false
@@ -129,6 +132,7 @@ func _ready() -> void:
 	f_body = Assets.font("spiegel", "Regular")
 	f_bold = Assets.font("spiegel", "Bold")
 	champ = G.player
+	fps_visible = "--fps" in OS.get_cmdline_user_args()
 	_last_level = champ.level
 	G.announcement.connect(_on_announce)
 	G.champion_killed.connect(_on_kill)
@@ -232,6 +236,8 @@ func _process_frame(delta: float) -> void:
 	if sb != scoreboard_visible:
 		scoreboard_visible = sb
 		cv_top.sig = null
+		if sb:
+			hud_sfx("Play_sfx_hud_base_Score_Open", -4.0)
 	_fps_t -= delta
 	if _fps_t <= 0.0:
 		_fps_t = 1.0
@@ -295,10 +301,20 @@ func _unhandled_input(event: InputEvent) -> void:
 		if (k.keycode == KEY_ENTER or k.keycode == KEY_KP_ENTER) and not shop_panel.visible:
 			chat.open()
 			get_viewport().set_input_as_handled()
+		elif k.keycode == KEY_F and k.ctrl_pressed:
+			fps_visible = not fps_visible
+			cv_info.sig = null
 		elif k.keycode == KEY_C and not k.ctrl_pressed:
 			advanced_stats = not advanced_stats
+			hud_sfx("Play_sfx_hud_base_champ_stats_open" if advanced_stats else "Play_sfx_hud_base_champ_stats_close", -8.0)
 			cv_base.queue_redraw()
 			cv_info.sig = null
+
+
+## [ui-polish] League's in-game HUD sound events (data/audio/shared.json) through GameAudio, 2D, rate-limited there.
+func hud_sfx(ev: String, vol_db: float = -4.0) -> void:
+	if match_ref != null and match_ref.audio != null:
+		match_ref.audio.play(ev, null, vol_db, 0.0)
 
 
 func toggle_shop() -> void:
@@ -322,10 +338,12 @@ func _on_cast_failed(_ab, reason: String) -> void:
 		"cc": fail_msg = "Can't cast right now"
 		_: fail_msg = ""
 	fail_t = 1.5 if fail_msg != "" else 0.0
-	if match_ref != null and match_ref.audio != null:
-		var ev := {"cooldown": "Play_sfx_hud_base_SpellFail_Cooldown", "mana": "Play_sfx_hud_base_SpellFail_NoMana",
-			"cc": "Play_sfx_hud_base_SpellFail_Silence"}.get(reason, "")
-		match_ref.audio.play(ev, null, -6.0, 0.0)
+	# [ui-polish] League's SpellFail sounds (on cooldown / no mana / silenced-CC / not learned), not spammed on key repeat
+	var ev: String = {"cooldown": "Play_sfx_hud_base_SpellFail_Cooldown", "mana": "Play_sfx_hud_base_SpellFail_NoMana",
+		"cc": "Play_sfx_hud_base_SpellFail_Silence", "not learned": "Play_sfx_hud_base_SpellFail_Cooldown"}.get(reason, "")
+	if ev != "" and _now - _fail_snd_t > 0.35:
+		_fail_snd_t = _now
+		hud_sfx(ev, -5.0)
 
 
 func _on_kill(victim, killer, assisters) -> void:
@@ -377,6 +395,7 @@ func _gui_input(event: InputEvent) -> void:
 			_minimap_camera(_mouse)
 		if not _drag.is_empty() and not _drag.active and _mouse.distance_to(_drag.start) > 6.0:
 			_drag.active = true
+			hud_sfx("Play_sfx_hud_base_item_slot_grab", -4.0)
 		_update_hover()
 		return
 	if not (event is InputEventMouseButton):
@@ -406,12 +425,15 @@ func _gui_input(event: InputEvent) -> void:
 	if hk != "":
 		if mb.button_index == MOUSE_BUTTON_LEFT:
 			if hk.begins_with("lvl"):
-				champ.level_ability(int(hk.substr(3)))
-				Sfx.ui("gold_click")
+				if champ.level_ability(int(hk.substr(3))):
+					hud_sfx("Play_sfx_hud_base_LevelUp_click", -3.0)
+				else:
+					Sfx.ui("locked")
 			elif hk == "shop":
 				toggle_shop()
 			elif hk == "stats_btn":
 				advanced_stats = not advanced_stats
+				hud_sfx("Play_sfx_hud_base_champ_stats_open" if advanced_stats else "Play_sfx_hud_base_champ_stats_close", -8.0)
 				cv_base.queue_redraw()
 				cv_info.sig = null
 			elif hk.begins_with("item") and not hk.begins_with("item_t"):
@@ -448,7 +470,7 @@ func _end_drag(mp: Vector2) -> void:
 				champ.items.remove_at(from)
 				champ.items.append(it)
 			champ.items_changed.emit()
-			Sfx.ui("click")
+			hud_sfx("Play_sfx_hud_base_item_slot_drop", -4.0)
 			return
 
 
@@ -1037,7 +1059,7 @@ func _draw_kill_feed(ci: CanvasItem) -> void:
 	var K := "Kill:KillCallout0_"
 	var i := 0
 	for f in feed:
-		var off := Vector2(0, 70.0 * i)
+		var off := Vector2(0, 58.0 * i)   # [ui-polish] tighter pitch so 5 rows never reach the ally portrait column
 		var a := clampf(f.t / 0.6, 0.0, 1.0) * clampf((10.0 - f.t) / 0.15, 0.0, 1.0)
 		var tint: Color = Color(0.12, 0.38, 0.78, 0.9 * a) if f.ally else Color(0.72, 0.14, 0.14, 0.9 * a)
 		L.draw(ci, K + "Background", tint, off)
@@ -1054,7 +1076,7 @@ func _draw_kill_feed(ci: CanvasItem) -> void:
 		L.draw(ci, K + "TargetFrame", w, off)
 		var ai := 0
 		for asst in f.assists:
-			if ai > 3 or not is_instance_valid(asst):
+			if ai > 1 or not is_instance_valid(asst):
 				break
 			HudLayout.square_icon(ci, Assets.champion_square(asst.alias), L.r(K + "Assister%dPortrait" % ai, off), w)
 			L.draw(ci, K + "Assister%dFrame" % ai, w, off)
@@ -1084,17 +1106,30 @@ func _track_fx() -> void:
 			_fx.append({"key": P + "_SheenFX", "t0": _now})
 			_fx.append({"key": P + "_GlintFX", "t0": _now})
 		_was_ready[i] = ready
+	var point_ready := false
 	for i in 4:
 		var can := champ.can_level_ability(i)
 		if can and not _could_level[i]:
 			_fx.append({"key": PF + "LevelUp%d_ButtonIn" % i, "t0": _now})
 			_glow_t0[i] = _now
+			point_ready = true
 		_could_level[i] = can
 		var ab: Ability = champ.abilities[i]
 		var lv := ab.level if ab != null else 0
 		if lv > _ab_levels[i]:
 			_fx.append({"key": PF + "LevelUp%d_AbilityIn" % i, "t0": _now})
+			hud_sfx("Play_sfx_hud_base_spell_levelup", -7.0)
 		_ab_levels[i] = lv
+	# skill point available (not for the free first point at match start; the level-up sting itself is GameAudio's)
+	if point_ready and match_ref != null and match_ref.time > 2.0:
+		hud_sfx("Play_sfx_hud_base_LevelUp_layer", -8.0)
+	# item active used (its cooldown just started)
+	for it in champ.items:
+		var iid: int = it.get_instance_id()
+		var al: float = it.active_left
+		if _item_cd.has(iid) and al > float(_item_cd[iid]) + 0.5 and it.has_active():
+			hud_sfx("Play_sfx_hud_base_spell_generic_use", -6.0)
+		_item_cd[iid] = al
 	for j in range(_fx.size() - 1, -1, -1):
 		var f: Dictionary = _fx[j]
 		if L.fx_frame(f.key, _now - f.t0) < 0:
@@ -1138,6 +1173,9 @@ func _draw_announcement(ci: CanvasItem) -> void:
 	var B := "Banner:"
 	var w := Color(1, 1, 1, a)
 	var text: String = ann.text
+	# [ui-polish] League's banner is drawn larger than the raw layout rects (about a fifth of the screen height with the
+	# kill portraits): scale the art about the top-centre, text is re-rasterised at the larger size below.
+	ci.draw_set_transform(Vector2(size.x * 0.5 * (1.0 - ANN_K), 0.0), 0.0, Vector2(ANN_K, ANN_K))
 	var up := text.to_upper()
 	if ann.has("kill"):
 		var k: Dictionary = ann.kill
@@ -1169,19 +1207,21 @@ func _draw_announcement(ci: CanvasItem) -> void:
 		L.draw(ci, B + ("RightIconGlowRed" if ally else "RightIconGlowBlue"), w)
 		L.draw(ci, B + "AnnBannerLeftIcon_gold_ring", w)
 		L.draw(ci, B + "AnnBannerRightIcon_gold_ring", w)
-		_banner_text(ci, up, 222.0, "AnnouncementMajor", pop, a)
+		ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		_banner_text(ci, up, 222.0, "AnnouncementMajor", pop * ANN_K, a)
 	else:
 		L.draw(ci, B + "AnnBannerGold_Underline", w)
-		_banner_text(ci, up, 176.0, "AnnouncementMajor", pop, a)
+		ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		_banner_text(ci, up, 176.0, "AnnouncementMajor", pop * ANN_K, a)
 		if ann.sub != "":
-			_banner_text(ci, String(ann.sub), 214.0, "AnnouncementMinor", 0.75, a, C_DIM)
+			_banner_text(ci, String(ann.sub), 214.0, "AnnouncementMinor", 0.75 * ANN_K, a, C_DIM)
 
 
 ## Banner text in League's Announcement* font style (Beaufort Bold, size / shadow from fonts.json).
 func _banner_text(ci: CanvasItem, s_txt: String, y_src: float, style: String, k: float, a: float, col := Color(0.97, 0.93, 0.84)) -> void:
 	var st := L.style(style, L.hud_scale * k)
 	var px: int = st.px
-	var c := Vector2(size.x * 0.5, L.pt("Banner:AnnBannerGold_Underline", Vector2(800, y_src)).y)
+	var c := Vector2(size.x * 0.5, L.pt("Banner:AnnBannerGold_Underline", Vector2(800, y_src)).y * ANN_K)
 	HudLayout.styled_in(ci, Rect2(c.x - 400.0, c.y - px, 800.0, px * 2.0), s_txt, st, px, Color(col.r, col.g, col.b, a), 1)
 
 
