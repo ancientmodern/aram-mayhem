@@ -209,6 +209,7 @@ func _exit_tree() -> void:
 	AugmentDB._impl.clear()
 	AugmentDB._catalog.clear()
 	LolVfx.clear_cache()
+	Vfx.clear_cache()
 	LolVfx._shaders.clear()
 	LolTrail._mats.clear()
 
