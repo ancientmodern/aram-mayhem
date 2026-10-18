@@ -1,0 +1,394 @@
+{
+ "alias": "Ahri",
+ "name": "Ahri",
+ "stats": {
+  "base_hp": 590.0,
+  "hp_per_level": 104.0,
+  "base_hp_regen": 0.5,
+  "hp_regen_per_level": 0.12,
+  "base_ad": 53.0,
+  "ad_per_level": 3.0,
+  "base_armor": 21.0,
+  "armor_per_level": 4.2,
+  "base_mr": 30.0,
+  "mr_per_level": 1.3,
+  "base_ms": 330.0,
+  "attack_range": 550.0,
+  "attack_speed": 0.668,
+  "attack_speed_ratio": 0.625,
+  "attack_speed_per_level": 2.2,
+  "resource_type": 0,
+  "mana_base": 418.0,
+  "mana_per_level": 25.0,
+  "mana_regen": 1.6,
+  "mana_regen_per_level": 0.16,
+  "critDamageMultiplier": 2.0,
+  "acquisitionRange": 525.0,
+  "selectionHeight": 135.0,
+  "selectionRadius": 100.0,
+  "pathfindingCollisionRadius": 35.0,
+  "healthBarHeight": 94.0,
+  "attack_cast_offset": -0.10000000149011612,
+  "attack_total_time": null,
+  "attack_cast_time": null
+ },
+ "spell_slots": {
+  "Q": "AhriQ",
+  "W": "AhriW",
+  "E": "AhriE",
+  "R": "AhriR"
+ },
+ "passive": "AhriPassive",
+ "passive_name": "Essence Theft",
+ "passive_desc": "After killing 9 minions or monsters, Ahri heals. After taking down an enemy champion, Ahri heals for a greater amount.",
+ "spells": {
+  "AhriSkin86Manager": {
+   "script": "AhriSkin86Manager",
+   "data_values": {
+    "GoldToNextForm": [
+     2000.0,
+     6000.0,
+     6000.0,
+     6000.0,
+     6000.0,
+     6000.0,
+     6000.0
+    ],
+    "SecondsOutOfCombatTillTransform": 5.0,
+    "SecondsOutOfCombatTillEmote": 3.0
+   }
+  },
+  "AhriPassiveCounter": {
+   "script": "AhriPassiveCounter",
+   "data_values": {}
+  },
+  "AhriPassiveMissile": {
+   "script": "AhriPassiveMissile",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 25000.0,
+   "castRadius": 710.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1300.0,
+   "mAnimationName": ""
+  },
+  "AhriPassive": {
+   "script": "AhriPassive",
+   "data_values": {
+    "TakedownWindow": 3.0,
+    "MaxStacks": 9.0
+   },
+   "calcs": {
+    "#3be92e68": "lerpByLevel(75->165) + 0.3*AP",
+    "#48015261": "lerpByLevel(35->95) + 0.2*AP"
+   },
+   "cooldownTime": 0.0,
+   "castRange": 0.0,
+   "name": "Essence Theft",
+   "tooltip": "Killing minions or monsters grants Ahri an Essence Fragment. After obtaining @MaxStacks@ Fragments, Ahri consumes them to <healing>restore @MinionHeal@ Health</healing>.<br><br>When Ahri scores a takedown against an enemy champion within @TakedownWindow@ seconds of damaging them, she feasts upon their Essence, <healing>restoring @ChampionHeal@ Health</healing>.",
+   "summary": "After killing 9 minions or monsters, Ahri heals.<br>After taking down an enemy champion, Ahri heals for a greater amount."
+  },
+  "AhriWDamageMissile": {
+   "script": "AhriWDamageMissile",
+   "data_values": {},
+   "cooldownTime": [
+    11.0,
+    10.0,
+    9.0,
+    8.0,
+    7.0,
+    6.0,
+    6.0
+   ],
+   "castRange": 25000.0,
+   "castRadius": 710.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1400.0,
+   "mCastTime": 0.25,
+   "mAnimationName": "Spell3",
+   "mAlternateName": "AhriFoxFire"
+  },
+  "AhriW": {
+   "script": "AhriW",
+   "data_values": {
+    "MovementSpeed": 0.4,
+    "MovementSpeedDuration": 2.0,
+    "MinionBonusDamageMultiplier": 2.0,
+    "MinionBonusDamageThreshold": 0.2,
+    "BaseDamage": [
+     20.0,
+     40.0,
+     60.0,
+     80.0,
+     100.0,
+     120.0,
+     140.0
+    ],
+    "RepeatDamageMod": 0.4,
+    "AcquisitionRange": 550.0,
+    "BonusAcquisitionRange": 725.0,
+    "InitialDelay": 0.25,
+    "SecondaryDelay": 0.4,
+    "FlameDuration": 2.5,
+    "OrbitRadius": 150.0,
+    "APRatio": 0.4
+   },
+   "calcs": {
+    "#140bdb48": "BaseDamage + APRatio*AP",
+    "#77c9c0a3": "070e3593: () * RepeatDamageMod"
+   },
+   "cooldownTime": [
+    9.0,
+    9.0,
+    8.0,
+    7.0,
+    6.0,
+    5.0,
+    4.0
+   ],
+   "mana": 30.0,
+   "castRange": 600.0,
+   "castRangeDisplayOverride": 700.0,
+   "castRadius": 1000.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1800.0,
+   "mCastTime": 0.25,
+   "mAnimationName": "",
+   "mAlternateName": "AhriFoxFire",
+   "name": "Fox-Fire",
+   "tooltip": "Ahri releases 3 fox-fires that seek nearby enemies and deal <magicDamage>@SingleFireDamage@ magic damage</magicDamage>, reduced to <magicDamage>@MultiFireDamage@ damage</magicDamage> beyond the first. She also gains <speed>@MovementSpeed*100@% Move Speed</speed> decaying over @MovementSpeedDuration@ seconds.",
+   "summary": "Ahri gains a brief burst of Move Speed and releases three fox-fires, that lock onto and attack nearby enemies."
+  },
+  "AhriWMissile": {
+   "script": "AhriWMissile",
+   "data_values": {},
+   "cooldownTime": [
+    10.0,
+    9.0,
+    8.0,
+    7.0,
+    6.0,
+    5.0,
+    5.0
+   ],
+   "castRange": 300.0,
+   "castRadius": 710.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 900.0,
+   "mAnimationName": "Spell3",
+   "mAlternateName": "AhriFoxFire"
+  },
+  "AhriBasicAttack": {
+   "script": "AhriBasicAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 550.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1750.0
+  },
+  "AhriRMissile": {
+   "script": "AhriRMissile",
+   "data_values": {},
+   "cooldownTime": [
+    11.0,
+    10.0,
+    9.0,
+    8.0,
+    7.0,
+    6.0,
+    6.0
+   ],
+   "castRange": 800.0,
+   "castRadius": 710.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1400.0,
+   "mAnimationName": "Spell3",
+   "mAlternateName": "AhriTumble"
+  },
+  "AhriR": {
+   "script": "AhriR",
+   "data_values": {
+    "RBaseDamage": [
+     25.0,
+     75.0,
+     125.0,
+     175.0,
+     225.0,
+     275.0,
+     325.0
+    ],
+    "RMaxTargetsPerCast": 3.0,
+    "RMaxCasts": 3.0,
+    "RDashDistance": 500.0,
+    "RBaseDashSpeed": 1200.0,
+    "RRecastWindow": 15.0,
+    "RAcquisitionRange": 600.0,
+    "RDashCooldown": 1.0,
+    "RAPCoefficient": 0.35,
+    "RResetCasts": 1.0,
+    "PDurationExtension": 10.0
+   },
+   "calcs": {
+    "#400d63cc": "RBaseDamage + RAPCoefficient*AP"
+   },
+   "cooldownTime": [
+    140.0,
+    140.0,
+    120.0,
+    100.0,
+    100.0,
+    100.0,
+    100.0
+   ],
+   "mana": 100.0,
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 450.0,
+   "castRadius": 300.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2200.0,
+   "mAnimationName": "Spell4",
+   "mAlternateName": "AhriTumble",
+   "name": "Spirit Rush",
+   "tooltip": "Ahri nimbly dashes, firing @RMaxTargetsPerCast@ essence bolts at nearby enemies, prioritizing champions. These bolts deal <magicDamage>@RCalculatedDamage@ magic damage</magicDamage> each. <spellName>Spirit Rush</spellName> can be <recast>Recast</recast> up to 2 more times within @RRecastWindow@ seconds.<br><br>Consuming a champion's Essence with <spellName>Essence Theft</spellName> during this period extends the recast window by up to @PDurationExtension@ seconds and grants an additional recast of <spellName>Spirit Rush</spellName> (up to @RMaxCasts@ stored).",
+   "summary": "Ahri dashes forward and fires essence bolts, damaging nearby enemies. Spirit Rush can be cast up to three times before going on cooldown, and gains additional recasts when taking down enemy champions."
+  },
+  "AhriBasicAttack2": {
+   "script": "AhriBasicAttack2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 550.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1750.0,
+   "mAnimationName": "Attack2"
+  },
+  "AhriQReturnMissile": {
+   "script": "AhriQReturnMissile",
+   "data_values": {},
+   "cooldownTime": 11.0,
+   "castRange": 25000.0,
+   "castRadius": 275.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 60.0,
+   "mLineWidth": 100.0,
+   "mAnimationName": "Spell3",
+   "mAlternateName": "AhriOrbofDeception"
+  },
+  "AhriQMissile": {
+   "script": "AhriQMissile",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 1000.0,
+   "castRadius": 275.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2500.0,
+   "mLineWidth": 100.0,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "AhriOrbofDeception"
+  },
+  "AhriQ": {
+   "script": "AhriQ",
+   "data_values": {
+    "BaseDamage": [
+     10.0,
+     35.0,
+     60.0,
+     85.0,
+     110.0,
+     135.0,
+     160.0
+    ]
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamage + 0.5*AP"
+   },
+   "cooldownTime": 7.0,
+   "mana": [
+    55.0,
+    65.0,
+    75.0,
+    85.0,
+    95.0,
+    95.0
+   ],
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 970.0,
+   "castRadius": 275.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1100.0,
+   "mLineWidth": 100.0,
+   "mCastTime": 0.25,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "AhriOrbofDeception",
+   "name": "Orb of Deception",
+   "tooltip": "Ahri throws then pulls back her orb, dealing <magicDamage>@TotalDamage@ magic damage</magicDamage> on the way out and <trueDamage>@TotalDamage@ true damage</trueDamage> on the way back.",
+   "summary": "Ahri sends out and pulls back her orb, dealing magic damage on the way out and true damage on the way back. "
+  },
+  "AhriE": {
+   "script": "AhriE",
+   "data_values": {
+    "BaseDamage": [
+     40.0,
+     80.0,
+     120.0,
+     160.0,
+     200.0,
+     240.0,
+     280.0
+    ],
+    "SlowPercent": -0.65,
+    "CharmDuration": [
+     1.05,
+     1.2,
+     1.35,
+     1.5,
+     1.65,
+     1.8,
+     1.95
+    ],
+    "APRatio": 0.85
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamage + APRatio*AP"
+   },
+   "cooldownTime": 12.0,
+   "mana": 60.0,
+   "castRange": 10000.0,
+   "castRangeDisplayOverride": 975.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mLineWidth": 60.0,
+   "mCastTime": 0.25,
+   "mAnimationName": "Spell3",
+   "mAlternateName": "AhriSeduce",
+   "name": "Charm",
+   "tooltip": "Ahri blows a kiss that <status>Charms</status> the first enemy hit for @CharmDuration@ seconds and deals <magicDamage>@TotalDamage@ magic damage</magicDamage>.",
+   "summary": "Ahri blows a kiss that damages and charms an enemy it encounters, instantly stopping movement abilities and causing them to walk harmlessly towards her."
+  },
+  "AhriEMissile": {
+   "script": "AhriEMissile",
+   "data_values": {},
+   "cooldownTime": 12.0,
+   "castRange": 1000.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1550.0,
+   "mLineWidth": 60.0,
+   "mAnimationName": "Spell3",
+   "mAlternateName": "AhriSeduce"
+  },
+  "AhriCritAttack": {
+   "script": "AhriCritAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 550.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1750.0,
+   "mAnimationName": "Crit"
+  }
+ }
+}

@@ -1,0 +1,212 @@
+[
+ {
+  "id": 103000,
+  "num": 0,
+  "name": "Ahri",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103001,
+  "num": 1,
+  "name": "Dynasty Ahri",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103002,
+  "num": 2,
+  "name": "Midnight Ahri",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103003,
+  "num": 3,
+  "name": "Foxfire Ahri",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103004,
+  "num": 4,
+  "name": "Popstar Ahri",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103005,
+  "num": 5,
+  "name": "Challenger Ahri",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103006,
+  "num": 6,
+  "name": "Academy Ahri",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103007,
+  "num": 7,
+  "name": "Arcade Ahri",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103014,
+  "num": 14,
+  "name": "Star Guardian Ahri",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103015,
+  "num": 15,
+  "name": "K/DA Ahri",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103016,
+  "num": 16,
+  "name": "Prestige K/DA Ahri",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103017,
+  "num": 17,
+  "name": "Elderwood Ahri",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103027,
+  "num": 27,
+  "name": "Spirit Blossom Ahri",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103028,
+  "num": 28,
+  "name": "K/DA ALL OUT Ahri",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103042,
+  "num": 42,
+  "name": "Coven Ahri",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103065,
+  "num": 65,
+  "name": "Prestige K/DA Ahri (2022)",
+  "rarity": "kMythic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103066,
+  "num": 66,
+  "name": "Arcana Ahri",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103076,
+  "num": 76,
+  "name": "Snow Moon Ahri",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103085,
+  "num": 85,
+  "name": "Risen Legend Ahri",
+  "rarity": "kTranscendent",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103088,
+  "num": 88,
+  "name": "Spirit Blossom Springs Ahri",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 103089,
+  "num": 89,
+  "name": "After Hours Spirit Blossom Springs Ahri",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ }
+]
