@@ -46,6 +46,12 @@ window/vsync/vsync_mode=1
 theme/default_font_antialiasing=1
 theme/default_font_hinting=1
 
+[importer_defaults]
+
+texture={
+"mipmaps/generate": true
+}
+
 [input_devices]
 
 pointing/emulate_touch_from_mouse=false

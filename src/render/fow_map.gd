@@ -27,6 +27,8 @@ func setup(p_match) -> void:
 	m = p_match
 	if DisplayServer.get_name() == "headless" or m.nav == null or m.nav.w == 0:
 		return   # no GPU in headless runs
+	if OS.get_cmdline_user_args().has("--nofow"):
+		return   # debug: judge the scene without fog (reference-frame comparisons)
 	var shader: Shader = load("res://src/render/fow_update.gdshader")
 	var nav_tex := _nav_texture(m.nav)
 	_src.resize(MAX_SRC)
