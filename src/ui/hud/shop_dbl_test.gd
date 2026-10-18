@@ -56,13 +56,28 @@ func _click(p: Vector2, button := MOUSE_BUTTON_LEFT) -> void:
 
 
 ## Two quick clicks at the same spot (the mouse does not move between them; the panel re-lays-out in between).
-func _dbl(p: Vector2) -> void:
+var _sel_before := -2
+var _drop_before := false
+
+
+func _dbl(p: Vector2, away := -1) -> void:
 	await _move(p)
+	if away >= 0:
+		shop.selected = away   # make "unchanged" meaningful: the panel shows something other than the clicked item
+		await get_tree().process_frame
+	_sel_before = shop.selected   # [cc-anim] the view a double-click buy has to leave untouched
+	_drop_before = shop._drop_open
 	for i in 2:
 		_btn(p, MOUSE_BUTTON_LEFT, true)
 		await get_tree().process_frame
 		_btn(p, MOUSE_BUTTON_LEFT, false)
 		await get_tree().process_frame
+
+
+## [cc-anim] after a double-click buy the panel must show exactly what it showed before the double-click.
+func _check_view(name: String) -> void:
+	_check(name + ": view unchanged by the buy", shop.selected == _sel_before and shop._drop_open == _drop_before,
+			"selected %d -> %d" % [_sel_before, shop.selected])
 
 
 func _check(name: String, ok: bool, detail := "") -> void:
@@ -124,9 +139,10 @@ func _run() -> void:
 	await _click(card_r.get_center() + Vector2(0, -40))
 	_check("rec single click selects only", shop.selected == card_id and c.items.is_empty())
 	await _wait(0.5)
-	await _dbl(card_r.get_center() + Vector2(0, -40))
+	await _dbl(card_r.get_center() + Vector2(0, -40), 3006)
 	await _wait(0.2)
 	_check("rec double-click buys", _has(card_id) or c.items.size() > 0, "items=%d" % c.items.size())
+	_check_view("rec card")
 	await _shot("1_rec_after_buy")
 	# component icon inside a recommended card
 	_reset()
@@ -139,9 +155,10 @@ func _run() -> void:
 			comp_r = h[0]
 			break
 	if comp >= 0:
-		await _dbl(comp_r.get_center())
+		await _dbl(comp_r.get_center(), 3006)
 		await _wait(0.2)
 		_check("rec card component double-click buys that component", _has(comp), "comp=%d" % comp)
+		_check_view("rec component")
 
 	# --- all items grid ---
 	await _click(shop.L.r("Shop:ItemShop_TabButton_Default", Vector2(215, 0)).get_center())
@@ -153,9 +170,10 @@ func _run() -> void:
 	await _click(gr.get_center())
 	_check("grid single click only selects", shop.selected == gid and not _has(gid))
 	await _wait(0.5)
-	await _dbl(gr.get_center())
+	await _dbl(gr.get_center(), 3006)
 	await _wait(0.2)
 	_check("grid double-click buys", _has(gid))
+	_check_view("grid")
 	_reset()
 
 	# --- recipe tree: root, component ---
@@ -175,6 +193,7 @@ func _run() -> void:
 	await _dbl(cr.get_center())
 	await _wait(0.2)
 	_check("tree component double-click buys it", _has(comps[0]), "sel=%d items=%s gold=%d" % [shop.selected, c.items.map(func(i): return i.item_id), c.gold])
+	_check_view("tree component")
 	_reset()
 	shop.selected = 6655
 	await _wait(0.3)
@@ -185,6 +204,7 @@ func _run() -> void:
 		await _dbl(rr.get_center())
 		await _wait(0.2)
 		_check("tree root double-click buys the item", _has(6655))
+		_check_view("tree root")
 	_reset()
 	# right-click on a tree node buys it
 	shop.selected = 6655
@@ -205,6 +225,7 @@ func _run() -> void:
 	await _dbl(br.get_center())
 	await _wait(0.2)
 	_check("builds-into double-click buys", _has(into[0]), "id=%d" % into[0])
+	_check_view("builds-into")
 
 	# --- search results ---
 	_reset()
@@ -239,8 +260,9 @@ func _run() -> void:
 	_check("search result visible", sid >= 0, "search='%s'" % shop.search)
 	await _shot("4_search")
 	if sid >= 0:
-		await _dbl(sr.get_center())
+		await _dbl(sr.get_center(), 3006)
 		await _wait(0.2)
 		_check("search double-click buys", c.items.size() > 0, "id=%d items=%d" % [sid, c.items.size()])
+		_check_view("search")
 	print("SHOPDBL DONE fails=", fails)
 	get_tree().quit()

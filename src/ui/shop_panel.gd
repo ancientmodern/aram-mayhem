@@ -202,6 +202,25 @@ func _select(id: int, owned = null) -> void:
 	_drop_open = false
 
 
+## [cc-anim] the shop view a double-click must not disturb: what is selected (= root of the recipe tree) and how the
+## details pane is scrolled / the "builds into" list is folded.
+var _pre_click := {}
+
+
+func _view_state() -> Dictionary:
+	return {"selected": selected, "owned": selected_owned, "details": scroll["details"], "drop": _drop_open}
+
+
+func _restore_view(v: Dictionary) -> void:
+	selected = v.selected
+	selected_owned = v.owned
+	# the selected owned item may just have been consumed by the purchase (components -> recipe)
+	if selected_owned != null and not (selected_owned in champ().items):
+		selected_owned = null
+	scroll["details"] = v.details
+	_drop_open = v.drop
+
+
 func _buy(id: int) -> void:
 	var c = champ()
 	if session.buy(c, id):
@@ -295,13 +314,19 @@ func _input(event: InputEvent) -> void:
 		return
 	_click_pos = mp
 	if not right and _is_double_click():
-		# [ui-fix] double-click buys the item that was clicked first, wherever the (re-laid-out) panel now has the cursor
+		# [ui-fix] double-click buys the item that was clicked first, wherever the (re-laid-out) panel now has the cursor.
+		# [cc-anim] ...and leaves the panel exactly as it was before the first click (League: no navigation to the
+		# bought item): the selection / build-tree root / details scroll are put back afterwards.
 		var bid := _last_click_id
 		_last_click_id = -1
-		_drop_open = false
-		_select(bid)
+		var pre := _pre_click
+		_pre_click = {}
 		_buy(bid)
+		if not pre.is_empty():
+			_restore_view(pre)
 		return
+	if not right:
+		_pre_click = _view_state()
 	for i in range(_hits.size() - 1, -1, -1):
 		var h: Array = _hits[i]
 		if not (h[0] as Rect2).has_point(mp):
