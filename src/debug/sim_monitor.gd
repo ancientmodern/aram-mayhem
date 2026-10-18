@@ -32,6 +32,7 @@ func _ready() -> void:
 	G.match_over.connect(func(w): _log("GAME OVER winner=%s" % G.TEAM_NAMES[w]); _summary(); get_tree().quit())
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(shot_dir))
 	_start_watchdog()
+	G.debug_sites = true
 
 
 var _wd: Thread = null
@@ -52,9 +53,13 @@ func _watchdog() -> void:
 			stuck += 1
 			if stuck == 4:
 				var f := FileAccess.open("user://watchdog.txt", FileAccess.WRITE)
-				f.store_line("HANG ctx=%s unit=%s beat=%d" % [G.ctx, G.ctx_unit, G.beat])
+				var msg := "HANG ctx=%s unit=%s | %s | %s" % [G.ctx, G.ctx_unit, G.ctx2, G.ctx3]
+				f.store_line(msg)
+				for cr in G.crumbs():
+					f.store_line("  crumb " + str(cr))
+					print("  crumb " + str(cr))
 				f.flush()
-				print("WATCHDOG HANG ctx=%s unit=%s" % [G.ctx, G.ctx_unit])
+				print("WATCHDOG " + msg)
 		else:
 			stuck = 0
 		last = G.beat
