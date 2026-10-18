@@ -31,6 +31,39 @@ func _ready() -> void:
 	G.augment_chosen.connect(func(c, a): _log("AUGMENT %s took %s [%s]" % [c.display_name, a.display_name, a.get("rarity")]))
 	G.match_over.connect(func(w): _log("GAME OVER winner=%s" % G.TEAM_NAMES[w]); _summary(); get_tree().quit())
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(shot_dir))
+	_start_watchdog()
+
+
+var _wd: Thread = null
+var _wd_run := true
+
+
+func _start_watchdog() -> void:
+	_wd = Thread.new()
+	_wd.start(_watchdog)
+
+
+func _watchdog() -> void:
+	var last := -1
+	var stuck := 0
+	while _wd_run:
+		OS.delay_msec(1000)
+		if G.beat == last:
+			stuck += 1
+			if stuck == 4:
+				var f := FileAccess.open("user://watchdog.txt", FileAccess.WRITE)
+				f.store_line("HANG ctx=%s unit=%s beat=%d" % [G.ctx, G.ctx_unit, G.beat])
+				f.flush()
+				print("WATCHDOG HANG ctx=%s unit=%s" % [G.ctx, G.ctx_unit])
+		else:
+			stuck = 0
+		last = G.beat
+
+
+func _exit_tree() -> void:
+	_wd_run = false
+	if _wd != null:
+		_wd.wait_to_finish()
 
 
 func _log(s: String) -> void:
@@ -63,7 +96,15 @@ func _report() -> void:
 	for u in match_ref.units:
 		if u.kind == G.Kind.MINION and not u.dead:
 			minions[u.team] += 1
-	var line := "STATE minions=%s kills=%s fps=%d |" % [str(minions), str(match_ref.kills), Engine.get_frames_per_second()]
+	var nb := 0
+	var ne := 0
+	for u in match_ref.units:
+		nb += u.buffs.size()
+		ne += u.effects.size()
+	var diag := "units=%d buffs=%d effects=%d missiles=%d timers=%d tickers=%d fx=%d nodes=%d mem=%dMB" % [match_ref.units.size(), nb, ne,
+			match_ref.missiles.size(), match_ref._timers.size(), match_ref.tickers.size(), match_ref.fx_root.get_child_count(),
+			get_tree().get_node_count(), OS.get_static_memory_usage() / 1048576]
+	var line := "STATE minions=%s kills=%s fps=%d %s |" % [str(minions), str(match_ref.kills), Engine.get_frames_per_second(), diag]
 	for c in match_ref.champions:
 		line += " %s L%d %d/%d/%d hp%d%% %s%s;" % [c.alias.substr(0, 5), c.level, c.kills, c.deaths, c.assists,
 				int(c.hp_ratio() * 100), "DEAD" if c.dead else (c.controller.mode if c.controller is BotBrain else "pl"),
