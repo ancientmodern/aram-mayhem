@@ -63,7 +63,7 @@ func draw_screen(vs: Vector2) -> void:
 	if _show_settings:
 		draw_rect(Rect2(Vector2.ZERO, vs), Color(0, 0, 0, 0.6))
 		hit_area("~block", Rect2(Vector2.ZERO, vs))
-		var r := Rect2(vs * 0.5 - Vector2(400, 300), Vector2(800, 600))
+		var r := Rect2(vs * 0.5 - Vector2(400, 345), Vector2(800, 690))
 		draw_settings(r)
 		button("settings_back", Rect2(r.get_center().x - 110, r.end.y - 70, 220, 46), "Done")
 
