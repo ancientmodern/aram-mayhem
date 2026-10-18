@@ -76,6 +76,68 @@ func _type(s: String) -> void:
 		await _key(OS.find_keycode_from_string(ch.to_upper()), ch.unicode_at(0))
 
 
+## New HUD features: target frame, ping wheel + world ping, chat, item drag-swap.
+func _features(hud) -> void:
+	var enemy = null
+	var ally = null
+	for ch in match_ref.champions:
+		if ch.team != c.team and enemy == null:
+			enemy = ch
+		elif ch.team == c.team and ch != c and ally == null:
+			ally = ch
+	hud.target_frame.selected = ally
+	# buffs without icons: summoner (Ghost), champion passive mark (darius_hemo), generic stun
+	var g := Buff.new("ghost", 8.0)
+	c.add_buff(g, c)
+	var hemo := Buff.new("darius_hemo", 8.0)
+	hemo.is_debuff = true
+	var darius = null
+	for ch in match_ref.champions:
+		if ch.alias == "Darius":
+			darius = ch
+	c.add_buff(hemo, darius if darius != null else enemy)
+	var stn := Buff.new("stun", 8.0)
+	stn.is_debuff = true
+	ally.add_buff(stn, enemy)
+	G.champion_killed.emit(enemy, c, [])
+	G.announce("Turret destroyed", "", G.COLOR_ALLY)
+	await _wait(0.4)
+	await _shot("01b_target_chat")
+	var vs: Vector2 = hud.size
+	var ev := InputEventMouseButton.new()
+	ev.button_index = MOUSE_BUTTON_LEFT
+	ev.pressed = true
+	ev.alt_pressed = true
+	ev.position = vs * Vector2(0.5, 0.45)
+	hud.pings.handle_button(ev)
+	hud.pings.handle_motion(ev.position + Vector2(70, -70))
+	await _wait(0.2)
+	await _shot("01c_ping_wheel")
+	ev.pressed = false
+	hud.pings.handle_button(ev)
+	await _wait(0.3)
+	await _shot("01d_ping_world")
+	hud.chat.open()
+	hud.chat.input.text = "gl hf"
+	await _wait(0.3)
+	await _shot("01e_chat_open")
+	hud.chat._on_submit("gl hf")
+	# two items, then drag slot 0 onto slot 1 (swap)
+	ItemDB.buy(c, 1052)
+	ItemDB.buy(c, 1036)
+	await _wait(0.2)
+	var a: Rect2 = hud.L.r("Inventory:InventoryItem0_Backdrop")
+	var b: Rect2 = hud.L.r("Inventory:InventoryItem1_Backdrop")
+	var first = c.items[0]
+	hud._drag = {"slot": 0, "start": a.get_center(), "active": true}
+	hud._mouse = b.get_center() + Vector2(6, -10)
+	await _wait(0.2)
+	await _shot("01f_item_drag")
+	hud._end_drag(b.get_center())
+	print("HUDTEST drag swap ok=", c.items.size() > 1 and c.items[1] == first)
+	hud.target_frame.selected = null
+
+
 func _run() -> void:
 	await _wait(2.5)
 	c = G.player
@@ -88,6 +150,7 @@ func _run() -> void:
 		c.level_ability(0)
 	await _wait(0.5)
 	await _shot("01_hud")
+	await _features(hud)
 	# ability tooltip
 	var qr: Rect2 = hud.L.r("PlayerFrame:Ability0_BorderAvailable")
 	await _move(qr.get_center())
