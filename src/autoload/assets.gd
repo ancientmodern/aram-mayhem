@@ -379,6 +379,89 @@ static func _wheel_stride(ap: AnimationPlayer, skel: Skeleton3D, an: String, bon
 	return spd if r > 0.05 and spd > 0.3 and spd < 12.0 else 0.0
 
 
+## [motion3] Weapon-hold calibration (see core/weapon_hold.gd): for each weapon bone, the hand it rests in
+## at idle, its hand-local rest transform, and the stray-distance thresholds measured on the ordinary
+## clips. Cached per model file. weapon_names = lower-case bone names.
+static var _wh_cache := {}
+
+
+static func weapon_hold_calibrate(ap: AnimationPlayer, skel: Skeleton3D, weapon_names: Array) -> Array:
+	var key := ""
+	if ap.owner != null:
+		key = ap.owner.scene_file_path
+	if key == "":
+		key = str(ap.get_animation_list())
+	if _wh_cache.has(key):
+		return _wh_cache[key]
+	var out: Array = []
+	var weps: Array = []
+	var hands: Array = []
+	for i in skel.get_bone_count():
+		var n := skel.get_bone_name(i).to_lower()
+		if n in weapon_names:
+			weps.append(i)
+		elif n.contains("hand") and not n.contains("buffbone") and not n.contains("finger") and not n.contains("thumb") 				and not n.contains("parenting") and not n.contains("snap"):
+			hands.append(i)
+	if weps.is_empty() or hands.is_empty():
+		_wh_cache[key] = out
+		return out
+	var good: Array = []
+	var idle := ""
+	for an in ap.get_animation_list():
+		var low := String(an).to_lower()
+		if low.contains("_in") or low.contains("_out") or low.contains("to_") or low.contains("_to") or low.contains("wndup") 				or low.contains("windup") or low.contains("spell"):
+			continue
+		# idle1 / run / attack / crit are the reference "held" clips (idle2..4 fidgets stray like the casts do)
+		if low.begins_with("idle") and idle != "" and low != "idle1":
+			continue
+		if low.begins_with("idle") or low.begins_with("run") or low.begins_with("attack") or low.begins_with("crit") 				or low.begins_with("walk"):
+			good.append(String(an))
+			if idle == "" and low.begins_with("idle"):
+				idle = String(an)
+	if idle == "":
+		_wh_cache[key] = out
+		return out
+	var was_active := ap.active
+	ap.active = true
+	# hand + hand-local rest transform of each weapon at idle
+	ap.play(idle, 0.0, 1.0)
+	ap.seek(0.0, true)
+	var best_h := {}
+	var nominal := {}
+	for w in weps:
+		var gw := skel.get_bone_global_pose(w)
+		var bh := -1
+		var bd := INF
+		for h in hands:
+			var dd := (skel.get_bone_global_pose(h).origin - gw.origin).length()
+			if dd < bd:
+				bd = dd
+				bh = h
+		best_h[w] = bh
+		nominal[w] = skel.get_bone_global_pose(bh).affine_inverse() * gw
+	var maxd := {}
+	for w in weps:
+		maxd[w] = 0.0
+	for an in good:
+		var a := ap.get_animation(an)
+		ap.play(an, 0.0, 1.0)
+		for i in 21:
+			ap.seek(minf(a.length * float(i) / 20.0, a.length - 0.0001), true)
+			for w in weps:
+				var wo := skel.get_bone_global_pose(w).origin
+				var d := INF
+				for h in hands:   # the weapon may swap hands: distance to the nearest hand
+					d = minf(d, (skel.get_bone_global_pose(h).origin - wo).length())
+				maxd[w] = maxf(maxd[w], d)
+	ap.stop()
+	ap.active = was_active
+	for w in weps:
+		var t1: float = maxd[w] * 1.15 + 0.05
+		out.append({"w": w, "h": best_h[w], "hands": hands, "n": nominal[w], "t1": t1, "t2": t1 + maxf(0.2, t1 * 0.25)})
+	_wh_cache[key] = out
+	return out
+
+
 ## Map logical animation names to available clips.
 static func build_anim_map(ap: AnimationPlayer, overrides: Dictionary, aliases: Dictionary = {}) -> Dictionary:
 	var out := {}
