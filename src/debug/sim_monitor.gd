@@ -111,9 +111,12 @@ func _report() -> void:
 			get_tree().get_node_count(), OS.get_static_memory_usage() / 1048576]
 	var line := "STATE minions=%s kills=%s fps=%d %s |" % [str(minions), str(match_ref.kills), Engine.get_frames_per_second(), diag]
 	for c in match_ref.champions:
-		line += " %s L%d %d/%d/%d hp%d%% %s%s;" % [c.alias.substr(0, 5), c.level, c.kills, c.deaths, c.assists,
+		line += " %s L%d %d/%d/%d hp%d%% %s%s @%d,%d;" % [c.alias.substr(0, 5), c.level, c.kills, c.deaths, c.assists,
 				int(c.hp_ratio() * 100), "DEAD" if c.dead else (c.controller.mode if c.controller is BotBrain else "pl"),
-				"" if c.augments.is_empty() else " A%d" % c.augments.size()]
+				"" if c.augments.is_empty() else " A%d" % c.augments.size(), int(c.global_position.x), int(c.global_position.z)]
+	var ta0: TeamAI = match_ref.team_ai(0)
+	var ta1: TeamAI = match_ref.team_ai(1)
+	line += " | T0 %s f=%.0f ef=%.0f  T1 %s f=%.0f ef=%.0f" % [ta0.stance, ta0.front, ta0.enemy_front, ta1.stance, ta1.front, ta1.enemy_front]
 	_log(line)
 
 

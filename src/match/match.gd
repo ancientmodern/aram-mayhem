@@ -545,6 +545,33 @@ func _on_champion_killed(victim: Unit, killer, killer_champ) -> void:
 	var col := G.COLOR_ALLY if team == (G.player.team if G.player else 0) else G.COLOR_ENEMY
 	announce_sub = "%s  ⚔  %s" % [killer_champ.display_name if killer_champ != null else (killer.display_name if killer != null and is_instance_valid(killer) else "Executed"), victim.display_name]
 	G.announce(announce_text, announce_sub, col)
+	G.announcer_event.emit(_announce_key(announce_text, victim, killer_champ), team == (G.player.team if G.player else 0))
+	# ace: the whole enemy team is down
+	if champions_of(victim.team, true).is_empty():
+		after(1.6, func():
+			G.announce("Ace!", "", col)
+			G.announcer_event.emit("ace", team == (G.player.team if G.player else 0)))
+
+
+func _announce_key(text: String, victim, killer_champ) -> String:
+	match text:
+		"First Blood!": return "first_blood"
+		"Double Kill!": return "double_kill"
+		"Triple Kill!": return "triple_kill"
+		"Quadra Kill!": return "quadra_kill"
+		"PENTAKILL!": return "penta_kill"
+		"Shut Down!": return "shutdown"
+		"Killing Spree!": return "killing_spree"
+		"Rampage!": return "rampage"
+		"Unstoppable!": return "unstoppable"
+		"Dominating!": return "dominating"
+		"Godlike!": return "godlike"
+		"Legendary!": return "legendary"
+	if victim == G.player:
+		return "you_slain"
+	if killer_champ == G.player:
+		return "you_killed"
+	return "enemy_slain" if G.player != null and victim.team != G.player.team else "ally_slain"
 
 
 func _on_structure_destroyed(s: Unit, killer_champ) -> void:
@@ -560,6 +587,12 @@ func _on_structure_destroyed(s: Unit, killer_champ) -> void:
 	for c in champions_of(team, false):
 		c.add_gold(gold, s)
 	G.structure_destroyed.emit(s, killer_champ)
+	var ours: bool = G.player != null and s.team == G.player.team
+	match s.kind:
+		G.Kind.TURRET:
+			G.announcer_event.emit("turret_lost" if ours else "turret_destroyed", not ours)
+		G.Kind.INHIBITOR:
+			G.announcer_event.emit("inhib_lost" if ours else "inhib_destroyed", not ours)
 	if s.kind == G.Kind.NEXUS:
 		end_game(team)
 
@@ -649,6 +682,15 @@ func start(cfg: Dictionary) -> void:
 	_spawn_champions(cfg)
 	_setup_view()
 	G.match_started.emit()
+	after(1.5, func():
+		G.announce("Welcome to the Howling Abyss", "ARAM: Mayhem", Color(0.75, 0.85, 1.0))
+		G.announcer_event.emit("welcome", true))
+	after(Rules.FIRST_WAVE_TIME - 30.0, func():
+		G.announce("Thirty seconds until minions spawn", "", Color(0.85, 0.85, 0.9))
+		G.announcer_event.emit("minions_30", true))
+	after(Rules.FIRST_WAVE_TIME, func():
+		G.announce("Minions have spawned", "", Color(0.85, 0.85, 0.9))
+		G.announcer_event.emit("minions_spawned", true))
 
 
 func _block_for(u: Unit) -> float:

@@ -33,6 +33,7 @@ signal gold_earned(champion, amount, source_unit)
 signal augment_offer_ready(champion)
 signal augment_chosen(champion, augment)
 signal announcement(text, sub, color)
+signal announcer_event(key, ally_side)   ## voice-line hook: "welcome", "first_blood", "ace", ...
 signal match_started
 signal match_over(winning_team)
 

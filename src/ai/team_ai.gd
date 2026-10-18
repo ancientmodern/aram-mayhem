@@ -72,23 +72,30 @@ func refresh() -> void:
 			enemies.append(e)
 	alive = allies.size()
 	enemy_alive = m.champions_of(1 - team, true).size()
+	# strength: everyone alive counts, those far from the fight count less (they can still arrive)
 	strength = 0.0
 	enemy_strength = 0.0
 	for a in allies:
-		if absf(lane_coord(a.global_position) - mid) < 22.0:
-			strength += BotBrain.power_of(a)
-	for e in enemies:
-		if absf(lane_coord(e.global_position) - mid) < 22.0:
-			enemy_strength += BotBrain.power_of(e)
-	# stance
+		strength += BotBrain.power_of(a) * _presence(a, mid)
+	for e in m.champions_of(1 - team, true):
+		enemy_strength += BotBrain.power_of(e) * _presence(e, mid)
+	# stance with hysteresis so the team doesn't flip-flop every refresh
 	var ratio := strength / maxf(enemy_strength, 1.0)
-	if alive - enemy_alive <= -2 or ratio < 0.65:
-		stance = "retreat"
-	elif ratio > 1.2 and alive >= enemy_alive:
-		stance = "engage"
-	else:
-		stance = "hold"
+	var down := enemy_alive - alive
+	match stance:
+		"engage":
+			if ratio < 1.05 or down >= 1:
+				stance = "hold"
+		"retreat":
+			if ratio > 0.85 and down <= 1:
+				stance = "hold"
+		_:
+			if down >= 2 or ratio < 0.6:
+				stance = "retreat"
+			elif ratio > 1.25 and down <= 0:
+				stance = "engage"
 	# focus target: squishy / low / disabled enemies near the fight
+	var prev_focus = focus
 	focus = null
 	var best := -INF
 	for e in enemies:
@@ -99,10 +106,15 @@ func refresh() -> void:
 		var s := -ehp / 400.0 - d * 0.1
 		s += 2.0 if (e.cc & Buff.IMMOBILIZE) != 0 else 0.0
 		s += 1.0 if e.stats.attack_range > 300.0 else 0.0
-		s += 0.5 if focus == e else 0.0
+		s += 0.8 if prev_focus == e else 0.0
 		if s > best:
 			best = s
 			focus = e
+
+
+func _presence(u, mid: float) -> float:
+	var d := absf(lane_coord(u.global_position) - mid)
+	return clampf(1.3 - d / 40.0, 0.35, 1.0)
 
 
 func _first_turret(t: int) -> Unit:

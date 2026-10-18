@@ -27,6 +27,7 @@ func _process(delta: float) -> void:
 		mouse_filter = Control.MOUSE_FILTER_STOP
 		Sfx.ui("victory" if victory else "defeat")
 		Sfx.ui("eog")
+		G.announcer_event.emit("victory" if victory else "defeat", victory)
 	if _phase == 2:
 		_stats_t += delta / maxf(Engine.time_scale, 0.001)
 
