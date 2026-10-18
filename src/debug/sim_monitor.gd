@@ -96,6 +96,7 @@ func _process(_delta: float) -> void:
 		b.setup(G.player, match_ref)
 		G.player.controller = b
 		G.player.is_bot = true
+		G.player.auto_level_abilities()
 	if t >= _next_report:
 		_next_report += report_every
 		_report()

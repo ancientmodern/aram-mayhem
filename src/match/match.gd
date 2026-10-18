@@ -421,9 +421,11 @@ func spawn_attack_missile(src: Unit, tgt: Unit, crit: bool) -> Missile:
 	if src is Champion and src.kit != null and src.kit.has_method("attack_missile_visual"):
 		vis = src.kit.attack_missile_visual(crit)
 	mi.visual = vis if vis != null else Vfx.attack_missile(src, crit)
-	mi.on_hit = func(_m, u):
-		if is_instance_valid(src) and not src.is_queued_for_deletion():
-			src.attack_hit(u, crit)
+	# read the shooter from the missile at impact time (never capture a unit that may be freed)
+	mi.on_hit = func(m2, u):
+		var s = m2.source
+		if s != null and is_instance_valid(s) and not s.is_queued_for_deletion():
+			s.attack_hit(u, crit)
 	add_missile(mi, from)
 	return mi
 

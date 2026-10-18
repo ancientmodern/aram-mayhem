@@ -678,12 +678,12 @@ func _draw_death(vs: Vector2) -> void:
 
 func _draw_scoreboard(vs: Vector2) -> void:
 	var w := 1100.0
-	var h := 520.0
+	var h := 560.0
 	var r := Rect2(vs.x * 0.5 - w * 0.5, vs.y * 0.5 - h * 0.5 - 60, w, h)
 	_frame(r, Color(0.02, 0.04, 0.07, 0.95), C_GOLD, 2.0)
 	_text_center("SCOREBOARD", Vector2(r.get_center().x, r.position.y + 24), 20, C_GOLD, f_title)
 	for team in 2:
-		var y := r.position.y + 60 + team * 230
+		var y := r.position.y + 66 + team * 248
 		var col := G.COLOR_ALLY if team == champ.team else G.COLOR_ENEMY
 		_text("ORDER" if team == 0 else "CHAOS", Vector2(r.position.x + 20, y), 16, col, f_title)
 		var i := 0
