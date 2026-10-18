@@ -1,10 +1,6 @@
 extends ChampionKit
 ## Annie, the Dark Child.
 
-const FIRE := Color(1.0, 0.42, 0.08)
-const FIRE_HOT := Color(1.0, 0.78, 0.35)
-const EMBER := Color(1.0, 0.22, 0.04)
-const STUN_WHITE := Color(1.0, 0.93, 0.78)
 const HOLD := {"hold": true}
 
 
@@ -22,6 +18,10 @@ func build_kit() -> void:
 	# AnnieE has no cooldown in the extracted data (live: 14/13/12/11/10)
 	c.abilities[2].cooldowns = [14.0, 13.0, 12.0, 11.0, 10.0]
 	c.add_effect(TibbersPen.new(c.abilities[3]))
+	# Skin particles (SkinCharacterDataProperties / animation events): the flame in her hand idles at the custom
+	# Idle_Fire bone and flares on every attack (Idle_cas)
+	c.add_effect(K.IdleFx.new([{"lol": "Annie_Base_Idle_fire", "bone": "Cstm_Buffbone_Idle_Fire"}]))
+	c.add_effect(AttackFx.new())
 
 
 func ai_tuning() -> Dictionary:
@@ -30,7 +30,7 @@ func ai_tuning() -> Dictionary:
 
 ## League VFX: Q/W/R visuals are spawned by the kit at the right place and moment.
 func vfx_map() -> Dictionary:
-	return {"Q_tar": "", "W_cas": "", "W_tar": "Annie_Base_W_Hit", "R_cas": ""}
+	return {"Q_cas": "", "Q_tar": "", "W_cas": "", "W_tar": "Annie_Base_W_Hit", "R_cas": ""}
 
 
 ## Bot AI returns HOLD to deliberately skip a cast ({} would fall back to BotBrain.default_consider).
@@ -39,6 +39,17 @@ class KAbility extends Ability:
 		if t.get("hold", false):
 			return false
 		return super.try_cast(t)
+
+
+## Attack animation events: Annie_Base_Idle_cas at the Idle_Fire bone (R_Hand on crit swings, which we cannot tell
+## apart here).
+class AttackFx extends Effect:
+	func _init() -> void:
+		id = "annie_attack_fx"
+		hidden = true
+
+	func on_attack_launch(_target) -> void:
+		K.attach_fx(owner, {"lol": "Annie_Base_Idle_cas", "bone": "Cstm_Buffbone_Idle_Fire"}, false)
 
 
 # ===================================================================== shared helpers
@@ -180,9 +191,7 @@ class Pyromania extends Effect:
 	func _show_ready(_pop: bool) -> void:
 		_hide_ready()
 		var o = owner
-		ready_fx = LolVfx.attach(o, "Annie_Base_StunReady", {"loop": true, "height": 0.05})
-		if ready_fx == null:
-			ready_fx = Vfx.aura(o, STUN_WHITE, 0.95, 1.0e6, 0.07)
+		ready_fx = K.attach_fx(o, {"lol": "Annie_Base_StunReady", "height": 0.05})
 
 	func _hide_ready() -> void:
 		for fx in [ready_fx, ready_fx2]:
@@ -205,6 +214,11 @@ class Disintegrate extends KAbility:
 	func damage() -> float:
 		return dv("BaseDamage") + dv("APRatio", 0.8) * ap()
 
+	## spell1 animation event: Annie_Base_Q_cas at the Idle_Fire bone from the first frame
+	func begin_cast(t: Dictionary) -> void:
+		super(t)
+		K.attach_fx(owner, {"lol": "Annie_Base_Q_cas", "bone": "Cstm_Buffbone_Idle_Fire", "dir": owner.facing}, false)
+
 	func execute(t: Dictionary) -> void:
 		var o = owner
 		var u = t.get("unit")
@@ -223,7 +237,6 @@ class Disintegrate extends KAbility:
 			if info != null and info.killed and is_instance_valid(o) and not o.dead:
 				o.mana = minf(o.stats.max_mana, o.mana + paid)
 				self_ref.cd = maxf(0.0, self_ref.cd - self_ref.cd_total * 0.5)
-				Vfx.rising(o, Color(0.5, 0.7, 1.0), 0.35, 14, 0.4)
 		K.homing_missile(self, K.cast_pos(o, 1.2), u, 1400.0, on_hit, {"lol": "Annie_Base_Q_mis"})
 		notify_cast(t)
 
@@ -733,9 +746,27 @@ class TibbersFists extends Effect:
 			info.amount = r_ab.dv("TibbersAttackDamage") + r_ab.dv("TibbersAttackAPRatio", 0.1) * r_ab.owner.stats.ap
 			info.is_pet = true
 
+	var swing := 0
+
+	## AnnieTibbers attack animation event (frame 9, Root bone): the alternating arm swipe trails
+	func on_attack_launch(target) -> void:
+		var nm := "AnnieTibbers_Base_BA_ArmSwipe_01" if swing % 2 == 0 else "AnnieTibbers_Base_BA_ArmSwipe_02"
+		swing += 1
+		var o = owner
+		var d: Vector3 = o.facing
+		if target != null and is_instance_valid(target):
+			d = G.flat_dir(o.global_position, target.global_position)
+		if o.match_ref != null:
+			var wr := weakref(o)
+			o.match_ref.after(0.2, func():
+				var u = wr.get_ref()
+				if u != null and not u.dead:
+					K.attach_fx(u, {"lol": nm, "bone": "Root", "dir": d}, false))
+
 	func on_attack_hit(target, _info) -> void:
 		if owner.match_ref != null and is_instance_valid(target):
-			Vfx.hit_spark(owner.match_ref, target.global_position + Vector3(0, 1.0, 0), FIRE, 1.0)
+			var tp: Vector3 = target.global_position
+			K.spawn_fx(owner.match_ref, "AnnieTibbers_Base_BA", tp, {"center": float(target.height) * 0.5, "dir": G.flat_dir(owner.global_position, tp)})
 
 
 class Tibbers extends Summon:
@@ -744,26 +775,23 @@ class Tibbers extends Summon:
 	var move_cmd_until := 0.0
 	var move_goal_cmd := Vector3.ZERO
 	var burn_acc := 0.0
-	var fx: Array = []
+	var idle_fx = null
 
 	func setup_visuals() -> void:
 		add_effect(TibbersFists.new(r_ab))
-		fx.append(Vfx.aura(self, FIRE, 3.0, lifetime + 3.0, 0.06))
-		var flames := VfxNode.new()
-		add_child(flames)
-		flames.position.y = 0.4
-		var e := Vfx.emitter(FIRE, 50, 0.9, 0.7, {"radius": 1.0, "dir": Vector3.UP, "spread": 20.0, "vmin": 0.8, "vmax": 2.4, "energy": 1.5,
-				"gravity": Vector3(0, 1.0, 0)})
-		flames.add_child(e)
-		flames.trails.append(e)
-		var e2 := Vfx.emitter(EMBER, 24, 1.2, 0.18, {"radius": 2.6, "dir": Vector3.UP, "spread": 10.0, "vmin": 0.6, "vmax": 1.6,
-				"tex": Vfx.spark_texture()})
-		flames.add_child(e2)
-		flames.trails.append(e2)
-		var l := Vfx.light(FIRE, 2.5, 7.0)
-		l.position.y = 1.2
-		flames.add_child(l)
-		fx.append(flames)
+		# SkinCharacterDataProperties of AnnieTibbers: flames on the head / body / elbows / hands / knees / feet and the
+		# burning ground ring, all attached for his whole life
+		var specs := [
+			{"lol": "AnnieTibbers_Base_Idle_head", "bone": "Head"},
+			{"lol": "AnnieTibbers_Base_Idle_body", "bone": "Spine1"},
+			{"lol": "AnnieTibbers_Base_Idle_arm", "bone": "R_Elbow"}, {"lol": "AnnieTibbers_Base_Idle_arm", "bone": "L_Elbow"},
+			{"lol": "AnnieTibbers_Base_Idle_hand", "bone": "R_Buffbone_Glb_Hand_Loc"},
+			{"lol": "AnnieTibbers_Base_Idle_hand", "bone": "L_Buffbone_Glb_Hand_Loc"},
+			{"lol": "AnnieTibbers_Base_Idle_leg", "bone": "R_KneeLower"}, {"lol": "AnnieTibbers_Base_Idle_leg", "bone": "L_KneeLower"},
+			{"lol": "AnnieTibbers_Base_Idle_foot", "bone": "R_Foot"}, {"lol": "AnnieTibbers_Base_Idle_foot", "bone": "L_Foot"},
+			{"lol": "AnnieTibbers_Base_Idle_Ground", "bone": "Buffbone_Glb_Ground_Loc"}]
+		idle_fx = K.IdleFx.new(specs)
+		add_effect(idle_fx)
 		# drop from the sky
 		airborne_height = 6.0
 		var tw := create_tween()
@@ -775,15 +803,12 @@ class Tibbers extends Summon:
 		move_cmd_until = 0.0
 		controlled_target = u
 		issue_attack(u)
-		if match_ref != null:
-			Vfx.ring(match_ref, u.global_position, FIRE, 1.2, 0.35, 0.15, 0.1)
 
 	func command_move(pos: Vector3) -> void:
 		controlled_target = null
 		move_goal_cmd = pos
 		issue_move(pos)
 		move_cmd_until = match_ref.time + G.flat_dist(global_position, pos) / maxf(stats.move_speed * G.U, 1.0) + 0.4
-		Vfx.ring(match_ref, pos, FIRE_HOT, 0.9, 0.35, 0.15, 0.1)
 
 	func think(dt: float) -> void:
 		_burn(dt)
@@ -812,18 +837,13 @@ class Tibbers extends Summon:
 		if r_ab == null or annie == null or not is_instance_valid(annie):
 			return
 		var dps: float = r_ab.dv("AuraDamage") + 0.04 * annie.stats.ap
-		var sparks: bool = burn_n % 2 == 0   # embers at 2 Hz is plenty
 		for u in match_ref.enemies_in_radius(team, global_position, AURA_RADIUS * G.U):
 			Combat.deal(annie, u, dps * AURA_TICK, G.DmgType.MAGIC, {"is_spell": true, "is_aoe": true, "is_dot": true,
 					"ability": r_ab, "tag": "tibbers_aura"})
-			if sparks and u.kind == G.Kind.CHAMPION:
-				Vfx.hit_spark(match_ref, u.global_position + Vector3(0, 0.9, 0), EMBER, 0.45)
 
 	func _fade_fx() -> void:
-		for f in fx:
-			if f != null and is_instance_valid(f):
-				f.detach_and_fade()
-		fx.clear()
+		if idle_fx != null:
+			idle_fx._clear()
 
 	func on_died(killer) -> void:
 		_fade_fx()
@@ -831,6 +851,4 @@ class Tibbers extends Summon:
 
 	func _expire() -> void:
 		_fade_fx()
-		if match_ref != null:
-			Vfx.burst(match_ref, global_position + Vector3(0, 1.2, 0), EMBER, 1.5, {"sparks": 30})
 		super._expire()

@@ -80,7 +80,13 @@ class SwingTrails extends Effect:
 			nm = "Garen_Base_Q_Sword_Trail"
 		elif owner._pending_crit:
 			nm = "Garen_Base_AA_Crit"
-		LolVfx.attach(owner, nm, {"dir": owner.facing})
+		# attack / spell1 animation events: the weapon trail at the centre bone, the swipe flare at the Weapon bone
+		# (the empowered swing also kicks up Q_Jump_Blur at Root)
+		K.attach_fx(owner, {"lol": nm, "bone": "C_Buffbone_Glb_Center_Loc", "dir": owner.facing}, false)
+		K.attach_fx(owner, {"lol": "Garen_Base_Q_Sword_Swipe_Blur" if q.is_empowered() else "Garen_Base_AA_Sword_Swipe_Front",
+				"bone": "Weapon", "dir": owner.facing}, false)
+		if q.is_empowered():
+			K.attach_fx(owner, {"lol": "Garen_Base_Q_Jump_Blur", "bone": "Root", "dir": owner.facing}, false)
 
 
 # ===================================================================== passive
@@ -137,7 +143,7 @@ class DecisiveStrike extends Ability:
 		LFx.stop(boost_fx)
 		boost_fx = LolVfx.attach(o, "Garen_Base_P_Boost", {"loop": true, "height": 0.6})
 		var bf := boost_fx
-		o.match_ref.after(dv("MovementSpeedDuration", 1.4), func(): LFx.stop(bf))
+		K.stop_later(o.match_ref, dv("MovementSpeedDuration", 1.4), bf)
 		notify_cast(t)
 
 	var sword_fx: LolVfx = null
@@ -412,6 +418,7 @@ class DemacianJustice extends Ability:
 		var m = o.match_ref
 		# League: the target is marked and the giant sword of Demacia drops onto it
 		var dir := G.flat_dir(o.global_position, u.global_position)
+		LolVfx.spawn(m, "Garen_Base_R_Indicator", u.global_position, {"dir": dir})
 		LolVfx.attach(u, "Garen_Base_R_Buf_Enemy_Activate", {"height": u.height + 0.3, "max_life": 2.0})
 		LolVfx.spawn(m, "Garen_Base_R_Sword_Tar", u.global_position, {"dir": dir})
 		var self_ref := self

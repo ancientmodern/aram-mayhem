@@ -1,8 +1,6 @@
 extends ChampionKit
 ## Ezreal, the Prodigal Explorer.
 
-const GOLD := Color(1.0, 0.82, 0.3)
-
 
 func build_kit() -> void:
 	c.attack_missile_speed = 2000.0
@@ -140,18 +138,11 @@ class RisingSpellForce extends Effect:
 
 	func add_stack() -> void:
 		var o = owner
-		var b: Buff = o.find_buff("ezreal_rsf")
-		var before: int = b.stacks if b != null else 0
 		K.buff(o, "ezreal_rsf", dur, {}, o, {"name": "Rising Spell Force", "icon": icon,
 			"per_stack": {"as": per}, "max_stacks": max_st, "stack_mode": Buff.Stack.ADD_STACK})
 		o.stats.mark_dirty()
-		b = o.find_buff("ezreal_rsf")
-		if b != null and b.stacks >= max_st and before < max_st:
-			# fully charged: golden glow while maxed
-			# lives as long as the maxed buff (refreshes keep it); freed with the buff
-			var n := Vfx.aura(o, GOLD, 1.0, 0.0, 0.1)
-			b.vfx = n
-			Vfx.rising(o, GOLD, 0.6, 24, 0.5)
+		# League shows the stacks only as the glowing gauntlet (Ezreal_Base_P_glow01..05 are UV glows painted on the
+		# glove mesh, not particles), so there is no body effect here
 
 
 # ===================================================================== Q

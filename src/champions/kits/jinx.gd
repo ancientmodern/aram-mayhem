@@ -95,14 +95,14 @@ class KitAbility extends Ability:
 
 
 class FX extends RefCounted:
-	static func solid(mesh: Mesh, color: Color, energy: float = 2.0) -> MeshInstance3D:
-		var mi := MeshInstance3D.new()
-		mi.mesh = mesh
-		var mat := Vfx.add_material(color, energy, false)
-		mat.set_shader_parameter("use_mask", false)
-		mi.material_override = mat
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		return mi
+	## World position of a League bone on `u` (falls back to a hand-height point in front of the unit).
+	static func bone_pos(u: Unit, bone: String, h: float = 1.2) -> Vector3:
+		var sk: Node3D = u.socket(bone) if u.has_method("socket") else null
+		if sk != null and sk.is_inside_tree():
+			var p := sk.global_position
+			if p.is_finite() and G.flat_dist(p, u.global_position) < 3.0:
+				return p
+		return K.cast_pos(u, h)
 
 	## True when `u` fights against the local player (League's red / enemy-colored variants).
 	static func is_enemy_of_player(u) -> bool:
@@ -186,9 +186,12 @@ class GetExcited extends Effect:
 		var q = o.abilities[0]
 		if q != null:
 			q.refresh_anims()
+			var wo := weakref(o)
+			var wq := weakref(q)
 			m.after(duration + 0.05, func():
-				if is_instance_valid(o):
-					q.refresh_anims())
+				var qq = wq.get_ref()
+				if wo.get_ref() != null and qq != null:
+					qq.refresh_anims())
 
 
 # ===================================================================== Q
@@ -294,6 +297,7 @@ class Switcheroo extends KitAbility:
 				LolVfx.spawn(m, "Jinx_Base_Q_Rocket_Tar_Unit", u.global_position + Vector3(0, u.height * 0.5, 0), {"dir": dir})
 		# League rocket explosion (blast + splash dome) at the target's feet
 		LolVfx.spawn(m, "Jinx_Base_Q_Rocket_tar", ground(pos), {"dir": dir, "height": 0.1})
+		LolVfx.spawn(m, "Jinx_Base_Q_Rocket_GroundAOE", ground(pos), {"dir": dir, "height": 0.05})
 
 	# --------------------------------------------------------------- AI
 	func ai_consider(ctx) -> Dictionary:
@@ -409,7 +413,19 @@ class SwitcherooHook extends Effect:
 		var dir: Vector3 = owner.facing
 		if target != null and is_instance_valid(target):
 			dir = G.flat_dir(owner.global_position, target.global_position)
-		FX.hand_fx(owner, "Jinx_Base_Q_Rocket_Cas" if _pending == 2 else "Jinx_Base_Q_Minigun_Cas_Medium", dir, owner.height * 0.55, owner.radius)
+		var crit: bool = owner._pending_crit
+		var nm := "Jinx_Base_Q_Rocket_Cas"
+		var bone := "Cstm_Buffbone_Rocket_Launcher"
+		if _pending != 2:
+			# the minigun flash comes in range variants (League picks by the distance to the target)
+			bone = "Cstm_Buffbone_Minigun"
+			var dist: float = G.flat_dist(owner.global_position, target.global_position) if target != null and is_instance_valid(target) else 4.0
+			var rng := "PointBlank" if dist < 1.8 else ("Short" if dist < 3.2 else ("Medium" if dist < 5.0 else "Long"))
+			if crit:
+				nm = "Jinx_Base_Q_Minigun_Crit_Cas" if rng == "Long" else "Jinx_Base_Q_Minigun_Crit_Cas_" + rng
+			else:
+				nm = "Jinx_Base_Q_Minigun_Cas_" + rng
+		K.attach_fx(owner, {"lol": nm, "bone": bone, "dir": dir}, false)
 
 	func _on_missile(node) -> void:
 		if _pending == 0 or not (node is Missile):
@@ -457,14 +473,14 @@ class Zap extends KitAbility:
 		anim_lock = cast_time + 0.15
 		super(t)
 		# League Zapper charge flash at the gun (replaces the procedural charge orb)
-		FX.hand_fx(owner, "Jinx_Base_W_Cas", t.get("dir", owner.facing), 1.25, 0.8)
+		K.attach_fx(owner, {"lol": "Jinx_Base_W_Cas", "bone": "Cstm_Buffbone_Pistol", "dir": t.get("dir", owner.facing)}, false)
 
 	func damage() -> float:
 		return dv("Damage") + dv("ADRatio", 1.4) * ad()
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
-		var from: Vector3 = K.cast_pos(o, 1.25)
+		var from: Vector3 = FX.bone_pos(o, "Cstm_Buffbone_Pistol", 1.25)
 		var dir: Vector3 = t.dir
 		var dmg := damage()
 		var slow := dv("SlowPercent", 40.0) / 100.0
@@ -598,37 +614,23 @@ class FlameChompers extends KitAbility:
 			K.arc_missile(self, o.global_position + Vector3(0, 1.3, 0), p, LAND_TIME, func(_mi, _pos): self_ref._place(p, cast_hits), {"lol": "Jinx_Base_E_Mis", "arc": 2.2})
 		notify_cast(t)
 
-	static func _body_mesh() -> Mesh:
-		var sm := SphereMesh.new()
-		sm.radius = 0.24
-		sm.height = 0.36
-		return sm
-
-	## Chomper body: League's chomper is an animated mesh (not supported by LolVfx), so the small
-	## procedural body stays; the trigger ring / set / explosion effects are League's.
-	func _chomper_visual(m, pos: Vector3, life: float) -> VfxNode:
-		var n := VfxNode.new()
-		n.lifetime = life
+	## Chomper: League's own JinxMine model (exported to assets/units/jinxmine) with its idle animation, plus the
+	## team-coloured trigger ring from the particle set.
+	func _chomper_visual(m, pos: Vector3, life: float) -> Node3D:
+		var n := Node3D.new()
 		m.add_fx(n, pos)
-		var body := FX.solid(_body_mesh(), Color(0.75, 0.2, 0.5), 1.3)
-		body.position.y = 0.2
-		n.add_child(body)
-		var jaw := MeshInstance3D.new()
-		var tm := TorusMesh.new()
-		tm.inner_radius = 0.2
-		tm.outer_radius = 0.27
-		jaw.mesh = tm
-		var jm := Vfx.add_material(Color(1.0, 0.95, 0.9), 2.0, false)
-		jm.set_shader_parameter("use_mask", false)
-		jaw.material_override = jm
-		jaw.position.y = 0.2
-		jaw.scale = Vector3(1, 0.35, 1)
-		n.add_child(jaw)
-		for sx in [-1.0, 1.0]:
-			var eye := Vfx.sprite(Color(1.0, 0.9, 0.2), 0.14, 3.0)
-			eye.position = Vector3(sx * 0.1, 0.38, 0.0)
-			n.add_child(eye)
-		# League trigger-area ring, team colored (red = hostile to the local player)
+		var model: Node3D = Assets.unit_model("JinxMine", 0)
+		if model != null:
+			n.add_child(model)
+			var ap: AnimationPlayer = model.find_child("AnimationPlayer", true, false)
+			if ap != null:
+				for an in ap.get_animation_list():
+					if String(an).to_lower().ends_with("idle1"):
+						var a: Animation = ap.get_animation(an)
+						a.loop_mode = Animation.LOOP_LINEAR
+						ap.play(an)
+						break
+			n.set_meta("model", model)
 		var ring := LolVfx.spawn(m, "Jinx_Base_E_Mine_Ready_Red" if FX.is_enemy_of_player(owner) else "Jinx_Base_E_Mine_Ready_Green", pos, {"loop": true, "height": 0.05})
 		n.set_meta("ring", ring)
 		if ring != null:
@@ -637,9 +639,11 @@ class FlameChompers extends KitAbility:
 				var r = wr.get_ref()
 				if r != null:
 					r.stop())
-		var tw := n.create_tween().set_loops()
-		tw.tween_property(body, "scale", Vector3(1.1, 0.8, 1.1), 0.18)
-		tw.tween_property(body, "scale", Vector3.ONE, 0.18)
+		var wn := weakref(n)
+		m.after(life + 0.1, func():
+			var nn = wn.get_ref()
+			if nn != null:
+				nn.queue_free())
 		return n
 
 	func _place(p: Vector3, cast_hits: Dictionary) -> void:
@@ -653,11 +657,16 @@ class FlameChompers extends KitAbility:
 		var node := _chomper_visual(m, pos, arm + dur)
 		LolVfx.spawn(m, "Jinx_Base_E_Mine_Set", pos, {"height": 0.1})
 		var st := {"age": 0.0, "armed": false, "acc": 0.0}
-		var self_ref := self
+		# weak references only: a ticker that captured a freed object logs one error per frame until it expires
+		var oref := weakref(o)
+		var nref := weakref(node)
+		var self_ref := weakref(self)
 		m.add_ticker(arm + dur, func(dt: float) -> bool:
-			st.age += dt
-			if not is_instance_valid(o):
+			var own = oref.get_ref()
+			var ab = self_ref.get_ref()
+			if own == null or ab == null or own.dead:
 				return false
+			st.age += dt
 			if st.age < arm:
 				return true
 			if not st.armed:
@@ -668,28 +677,32 @@ class FlameChompers extends KitAbility:
 			if st.acc < 1.0 / 30.0:
 				return true
 			st.acc = 0.0
-			var caught: Array = m.enemies_in_radius(o.team, pos, TRIGGER_R * G.U, true)
+			var caught: Array = m.enemies_in_radius(own.team, pos, TRIGGER_R * G.U, true)
 			if caught.is_empty():
 				return true
-			self_ref._explode(pos, node, cast_hits)
+			ab._explode(pos, nref.get_ref(), cast_hits)
 			return false)
 
-	func _explode(pos: Vector3, node: VfxNode, cast_hits: Dictionary) -> void:
+	func _explode(pos: Vector3, node, cast_hits: Dictionary) -> void:
 		var o = owner
 		var m = o.match_ref
-		if is_instance_valid(node):
+		if node != null and is_instance_valid(node):
 			var ring = node.get_meta("ring", null)
 			if ring != null and is_instance_valid(ring):
 				ring.stop()
-			node.detach_and_fade()
+			# the chomper bites (attack clip) and is gone right after
+			var model = node.get_meta("model", null)
+			var ap: AnimationPlayer = model.find_child("AnimationPlayer", true, false) if model != null else null
+			if ap != null:
+				for an in ap.get_animation_list():
+					if String(an).to_lower().ends_with("attack1"):
+						ap.play(an)
+						break
+			K.stop_later(m, 0.45, node, true, 0.0)
 		var root_t := dv("RootDuration", 1.5)
 		for u in m.enemies_in_radius(o.team, pos, (TRIGGER_R + 40.0) * G.U, true):
-			var rb: Buff = K.root(u, root_t, o, ORANGE)
-			# League chomper bite on the rooted champion instead of the generic root aura
-			if rb != null and not (rb.vfx is LolVfx):
-				if rb.vfx != null and is_instance_valid(rb.vfx):
-					rb.vfx.queue_free()
-				rb.vfx = LolVfx.attach(u, "Jinx_Base_E_Mine_Debuff", {"loop": true})
+			# League: the chomper's bite (Mine_Debuff) holds the rooted champion
+			K.root(u, root_t, o, {"lol": "Jinx_Base_E_Mine_Debuff"})
 		# chompers of the same throw don't stack their damage on one enemy
 		var dmg := damage()
 		for u in m.enemies_in_radius(o.team, pos, BLAST_R * G.U):
@@ -765,11 +778,11 @@ class DeathRocket extends KitAbility:
 	func execute(t: Dictionary) -> void:
 		var o = owner
 		var m = o.match_ref
-		var from: Vector3 = K.cast_pos(o, 1.3)
+		var from: Vector3 = FX.bone_pos(o, "Cstm_Buffbone_Rocket_Launcher", 1.3)
 		var dir: Vector3 = t.dir
 		var self_ref := self
 		# League: launch flash at the launcher, rocket (R_Mis) + exhaust / trails (R_Rocket_Child, R_Booster) following it
-		LolVfx.spawn(m, "Jinx_Base_R_Cas", from, {"dir": dir})
+		K.attach_fx(o, {"lol": "Jinx_Base_R_Cas", "bone": "Cstm_Buffbone_Rocket_Launcher", "dir": dir}, false)
 		var mi := K.line_missile(self, from, dir, V0 * 100.0, 25000.0, {
 			"width": 140.0, "minions": false, "lol": "Jinx_Base_R_Mis", "height": 1.3,
 			"accel": ACCEL * 100.0, "max_speed": VMAX * 100.0,

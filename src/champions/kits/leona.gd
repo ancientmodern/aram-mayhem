@@ -23,6 +23,10 @@ func build_kit() -> void:
 	c.abilities[2].cast_range = 875.0
 	c.abilities[3].cast_time = 0.25
 	c.add_effect(QAttackHook.new(c.abilities[0]))
+	# the champion's permanent skin particles (SkinCharacterDataProperties): sword and shield flames
+	c.add_effect(K.IdleFx.new([
+		{"lol": "Leona_Base_Idle_Sword", "bone": "BUFFBONE_GLB_WEAPON_1"},
+		{"lol": "Leona_Base_Idle_Shield", "bone": "BUFFBONE_CSTM_SHIELD_TOP"}]))
 
 
 func ai_tuning() -> Dictionary:
@@ -200,7 +204,7 @@ class ShieldOfDawn extends KAbility:
 		empowered_until = o.match_ref.time + window()
 		_clear_fx()
 		# League: the radiant shield glow for the empowered window
-		fx = LolVfx.attach(o, "Leona_Base_Q_cas", {"loop": true, "height": 1.1, "dir": o.facing})
+		fx = K.attach_fx(o, {"lol": "Leona_Base_Q_cas", "bone": "BUFFBONE_CSTM_SHIELD_MID"})
 		notify_cast(t)
 
 	func is_empowered() -> bool:
@@ -309,15 +313,9 @@ class Eclipse extends KAbility:
 		b.cap = dv("FlatDamageReductionMax", 0.5)
 		b.icon = icon
 		# League: the eclipse (sun disc, corona, rays) around Leona while the stance lasts
-		b.vfx = LolVfx.attach(o, "Leona_Base_W_buf_1", {"loop": true, "height": 1.1})
+		b.vfx = K.attach_fx(o, {"lol": "Leona_Base_W_buf_1", "height": 1.1})
 		o.remove_buffs_by_id("leona_w")
 		o.add_buff(b, o)
-		# area preview of the detonation (League has no radius indicator here; kept for readability)
-		var tel := Vfx.aura(o, Color(SUN.r, SUN.g, SUN.b, 0.35), ind_radius * G.U, dur, 0.05)
-		var tmat: ShaderMaterial = (tel.get_child(0) as MeshInstance3D).material_override
-		tmat.set_shader_parameter("thickness", 0.025)
-		tmat.set_shader_parameter("fill", 0.03)
-		tmat.set_shader_parameter("segments", 0.0)
 		_set_stance(true)
 		var self_ref := self
 		m.after(dur, func():
@@ -361,7 +359,7 @@ class Eclipse extends KAbility:
 			var dur := dv("ArmorMRDuration", 3.0)
 			var kb := K.buff(o, "leona_w_keep", dur, resist_stats(), o, {"name": "Eclipse", "icon": icon})
 			if kb != null and (kb.vfx == null or not is_instance_valid(kb.vfx)):
-				kb.vfx = LolVfx.attach(o, "Leona_Base_W_buf_2", {"loop": true, "height": 1.1})
+				kb.vfx = K.attach_fx(o, {"lol": "Leona_Base_W_buf_2", "height": 1.1})
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -443,7 +441,7 @@ class ZenithBlade extends KAbility:
 		var dest: Vector3 = tgt.global_position - G.flat_dir(o.global_position, tgt.global_position) * (o.radius + tgt.radius * 0.8)
 		# League: Zenith dash streak, solar flare on arrival
 		var trail := LolVfx.attach(o, "Leona_Base_E_mis_dash", {"loop": true, "dir": G.flat_dir(o.global_position, dest)})
-		m.after(travel + 0.05, func(): LFx.stop(trail))
+		K.stop_later(m, travel + 0.05, trail)
 		o.start_dash(dest, {"speed": spd, "anim": "spell3", "on_arrive": func(_u):
 			LFx.stop(trail)
 			LolVfx.attach(o, "Leona_Base_E_cas_arrive", {"height": 1.0})})
@@ -510,6 +508,9 @@ class SolarFlare extends KAbility:
 		var cc := dv("CCDuration", 1.75)
 		var slow := dv("SlowPercent", 80.0) / 100.0
 		var self_ref := self
+		# League: the sword glows (R_buf) through the cast animation
+		var glow := K.attach_fx(o, {"lol": "Leona_Base_R_buf", "bone": "BUFFBONE_GLB_WEAPON_1"})
+		K.stop_later(m, 0.9, glow, true)
 		# League telegraph: focused sun + outer slow ring / inner stun ring (red for the enemy team)
 		LolVfx.spawn(m, "Leona_Base_R_hit_aoe_red" if LFx.hostile(o) else "Leona_Base_R_hit_aoe_green", pos, {"dir": G.flat_dir(o.global_position, pos), "height": 0.05})
 		m.after(dl, func():

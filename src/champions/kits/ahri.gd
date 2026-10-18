@@ -21,11 +21,27 @@ func build_kit() -> void:
 	c.abilities[3] = init_ability(SpiritRush.new(), "R")
 	# castRangeDisplayOverride (450) is the cursor ring; the dash itself covers RDashDistance (500)
 	c.abilities[3].cast_range = c.abilities[3].dv("RDashDistance", 500.0)
+	# permanent skin particle: the fox-fire orb floating at her hand (SkinCharacterDataProperties)
+	c.add_effect(K.IdleFx.new([{"lol": "Ahri_Base_Orb", "bone": "BUFFBONE_GLB_WEAPON_1"}]))
+	c.add_effect(AttackFx.new())
 
 
 ## League VFX: Q hits are spawned by the kit (outbound Q_tar vs. return Q_tar_02).
 func vfx_map() -> Dictionary:
 	return {"Q_tar": ""}
+
+
+## Basic attack: the fingertip flash at the casting hand (AhriBasicAttack start bone R_hand).
+class AttackFx extends Effect:
+	func _init() -> void:
+		id = "ahri_attack_fx"
+		hidden = true
+
+	func on_attack_launch(target) -> void:
+		var d: Vector3 = owner.facing
+		if target != null and is_instance_valid(target):
+			d = G.flat_dir(owner.global_position, target.global_position)
+		K.attach_fx(owner, {"lol": "Ahri_Base_BA_cas_fingertips", "bone": "R_Hand", "dir": d}, false)
 
 
 class AhriFx:
@@ -57,7 +73,7 @@ class EssenceTheft extends Effect:
 				stacks = 0
 				var heal: float = lerpf(35.0, 95.0, (owner.level - 1) / 17.0) + 0.2 * owner.stats.ap
 				Combat.heal(owner, owner, heal)
-				LolVfx.attach(owner, "Ahri_Base_P_Heal_minion")
+				K.attach_fx(owner, "Ahri_Base_P_Heal_minion", false)
 
 	func on_takedown(victim) -> void:
 		if victim.kind != G.Kind.CHAMPION:
@@ -69,7 +85,12 @@ class EssenceTheft extends Effect:
 			return
 		var heal: float = lerpf(75.0, 165.0, (owner.level - 1) / 17.0) + 0.3 * owner.stats.ap
 		Combat.heal(owner, owner, heal)
-		LolVfx.attach(owner, "Ahri_Base_P_Heal_champion")
+		# League: the victim's essence flies to Ahri (P_mis), lands on her (P_tar) and heals (P_Heal_champion)
+		var o = owner
+		if is_instance_valid(victim):
+			K.homing_missile(o.abilities[0], victim.global_position + Vector3(0, victim.height * 0.5, 0), o, 1400.0, func(_mm, _u):
+				K.attach_fx(o, "Ahri_Base_P_tar", false), {"lol": "Ahri_Base_P_mis"})
+		K.attach_fx(owner, "Ahri_Base_P_Heal_champion", false)
 		var r: Ability = owner.abilities[3]
 		if r != null and r.recast_window > 0.0:
 			r.recast_window += 10.0
@@ -120,7 +141,7 @@ class OrbOfDeception extends Ability:
 		mi.width = 100.0 * G.U
 		mi.height = 1.1
 		var lv := LolVfx.make("Ahri_Base_Q_mis_02", {"loop": true})
-		mi.visual = lv if lv != null else Vfx.orb(Color(0.7, 0.85, 1.0), 0.75, true)
+		mi.visual = lv if lv != null else Node3D.new()
 		mi.custom["keep_visual"] = true
 		var self_ref := self
 		mi.on_hit = func(_m, u):
@@ -161,16 +182,21 @@ class FoxFire extends Ability:
 	func execute(t: Dictionary) -> void:
 		var o = owner
 		var m = o.match_ref
-		K.haste(o, dv("MovementSpeed", 0.4), dv("MovementSpeedDuration", 2.0), o, true, "ahri_w_ms")
-		var holder := VfxNode.new()
-		holder.lifetime = 2.6
+		var hb := K.haste(o, dv("MovementSpeed", 0.4), dv("MovementSpeedDuration", 2.0), o, true, "ahri_w_ms")
+		if hb != null and hb.vfx == null:
+			# League AhriWSpeedBuff: the speed streak trail at the body centre
+			hb.vfx = K.attach_fx(o, {"lol": "Ahri_Base_Q_Speed", "bone": "C_Buffbone_Glb_Center_Loc"})
+		var holder := Node3D.new()
 		o.add_child(holder)
+		m.after(dv("FlameDuration", 2.5) + 0.2, func():
+			if is_instance_valid(holder):
+				holder.queue_free())
 		holder.position.y = 1.0
 		var flames := []
 		for i in 3:
 			var f: Node3D = LolVfx.make("Ahri_Base_W_mis", {"loop": true})
 			if f == null:
-				f = Vfx.orb(Color(0.45, 0.6, 1.0), 0.42, false, true)
+				f = Node3D.new()
 			holder.add_child(f)
 			flames.append(f)
 		var spin := holder.create_tween().set_loops()
@@ -204,7 +230,6 @@ class FoxFire extends Ability:
 		var st := {"age": 0.0, "fired": [false, false, false]}
 		var init_d := dv("InitialDelay", 0.25)
 		var stagger := 0.12
-		holder.lifetime = dv("FlameDuration", 2.5) + 0.1
 		m.add_ticker(dv("FlameDuration", 2.5), func(dt: float) -> bool:
 			st.age += dt
 			if not is_instance_valid(o) or o.dead:
@@ -271,12 +296,12 @@ class Charm extends Ability:
 			"width": 60.0, "lol": "Ahri_Base_E_mis",
 			"on_hit": func(_m, u):
 				self_ref.hit(u, dmg, G.DmgType.MAGIC, {"tag": "e"})
-				var b: Buff = K.charm(u, dur, o, 0.65)
-				# League charm hearts replace the generic charm particles
-				if b != null and LolVfx.has("Ahri_Base_E_buf"):
-					if b.vfx != null and is_instance_valid(b.vfx):
-						b.vfx.queue_free()
-					b.vfx = LolVfx.attach(u, "Ahri_Base_E_buf", {"loop": true, "height": u.height * 0.85}),
+				# AhriE buff: hearts at the head bone + the ground ring (Doom_buf) at the layout bone
+				var b: Buff = K.charm(u, dur, o, 0.65, {"lol": "Ahri_Base_E_buf", "bone": "C_BUFFBONE_GLB_HEAD_LOC"})
+				if b != null and b is K.FxBuff:
+					var ring := K.attach_fx(u, {"lol": "Ahri_Base_Doom_buf", "height": 0.05})
+					if ring != null:
+						b.extra_fx.append(ring),
 		})
 		notify_cast(t)
 
@@ -293,6 +318,7 @@ class SpiritRush extends Ability:
 	var dash_lock := 0.0
 	var _ind_fx: LolVfx = null
 	var _ind_shown := 0
+	var _ready_fx: Array = []   ## R_Eyes + R_Ready_tar while the recast window is open
 
 	func _init() -> void:
 		target_type = Target.POINT
@@ -318,6 +344,17 @@ class SpiritRush extends Ability:
 	## League recast charges on the ground under Ahri while Spirit Rush can be recast.
 	func _sync_indicator() -> void:
 		var want := clampi(casts_left, 0, 3) if recast_window > 0.0 and not owner.dead else 0
+		if want == 0 and not _ready_fx.is_empty():
+			for n in _ready_fx:
+				K.kill_fx(n, 0.3)
+			_ready_fx.clear()
+		elif want > 0 and _ready_fx.is_empty():
+			# SkinCharacterDataProperties: glowing eyes (L_Eye / R_Eye) and the soul aura at the layout bone
+			for spec in [{"lol": "Ahri_Base_R_Eyes", "bone": "L_Eye"}, {"lol": "Ahri_Base_R_Eyes", "bone": "R_Eye"},
+					{"lol": "Ahri_Base_R_Ready_tar", "bone": "C_Buffbone_Glb_Layout_Loc"}]:
+				var n := K.attach_fx(owner, spec)
+				if n != null:
+					_ready_fx.append(n)
 		if want == _ind_shown and (want == 0 or is_instance_valid(_ind_fx)):
 			return
 		if _ind_fx != null and is_instance_valid(_ind_fx):
@@ -325,7 +362,7 @@ class SpiritRush extends Ability:
 		_ind_fx = null
 		_ind_shown = want
 		if want > 0:
-			_ind_fx = LolVfx.attach(owner, "Ahri_Base_R_Indicator_%d" % want, {"loop": true, "height": 0.05})
+			_ind_fx = K.attach_fx(owner, {"lol": "Ahri_Base_R_Indicator_%d" % want, "bone": "C_Buffbone_Glb_Layout_Loc"})
 
 	func execute(t: Dictionary) -> void:
 		var o = owner

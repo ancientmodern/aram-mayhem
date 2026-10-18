@@ -73,62 +73,6 @@ class LFx:
 					n.queue_free())
 
 
-# ===================================================================== shared visuals
-class Fx:
-	static var _shaders := {}
-
-	const ARC_CODE := """
-shader_type spatial;
-render_mode unshaded, blend_add, depth_draw_never, cull_disabled%DEPTH%;
-uniform vec4 color : source_color = vec4(1.0, 0.1, 0.05, 1.0);
-uniform vec4 edge_color : source_color = vec4(1.0, 0.85, 0.75, 1.0);
-uniform float energy = 2.5;
-uniform float inner = 0.45;
-uniform float head = 0.0;
-uniform float tail = 3.0;
-uniform float fade = 1.0;
-uniform float flat_tail = 0.0;
-void fragment() {
-	vec2 p = UV * 2.0 - 1.0;
-	float r = length(p);
-	float band = smoothstep(inner - 0.04, inner + 0.02, r) * (1.0 - smoothstep(0.95, 1.0, r));
-	float ang = atan(p.y, p.x);
-	float d = mod(head - ang + 12.566370, 6.283185);
-	float g = clamp(1.0 - d / max(tail, 0.001), 0.0, 1.0);
-	g = mix(g * g, step(d, tail) * 0.75, flat_tail);
-	float rim = smoothstep(0.78, 0.96, r);
-	vec3 col = mix(color.rgb, edge_color.rgb, rim * g);
-	float a = band * g * (0.35 + 0.65 * rim) * fade;
-	ALBEDO = col * energy;
-	ALPHA = clamp(a, 0.0, 1.0);
-}
-"""
-
-	static func shader(key: String, code: String) -> Shader:
-		if not _shaders.has(key):
-			var s := Shader.new()
-			s.code = code
-			_shaders[key] = s
-		return _shaders[key]
-
-	static func arc_mat(col: Color, edge: Color, inner: float, ground: bool) -> ShaderMaterial:
-		var mat := ShaderMaterial.new()
-		mat.shader = shader("arc_g" if ground else "arc", ARC_CODE.replace("%DEPTH%", ", depth_test_disabled" if ground else ""))
-		mat.set_shader_parameter("color", col)
-		mat.set_shader_parameter("edge_color", edge)
-		mat.set_shader_parameter("inner", inner)
-		return mat
-
-	static func plane(size: float, mat: Material) -> MeshInstance3D:
-		var mi := MeshInstance3D.new()
-		var pm := PlaneMesh.new()
-		pm.size = Vector2(size, size)
-		mi.mesh = pm
-		mi.material_override = mat
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		return mi
-
-
 # ===================================================================== helpers
 ## Bots never spend points after spawning (core gap): level abilities on their behalf.
 class BotLeveler extends Effect:
@@ -239,11 +183,15 @@ class Hemorrhage extends Effect:
 		var m = owner.match_ref
 		# League: enrage nova, then the Noxian Might aura and glowing axe for the buff's duration
 		LolVfx.spawn(m, "Darius_Base_P_nova", owner.global_position, {"dir": owner.facing})
-		var aura := LolVfx.attach(owner, "Darius_Base_P_enraged", {"loop": true, "height": 1.0})
-		var axe := LolVfx.attach(owner, "Darius_Base_P_axe_tip", {"loop": true, "height": 1.4})
+		var aura := K.attach_fx(owner, {"lol": "Darius_Base_P_enraged", "height": 1.0})
+		var axe := K.attach_fx(owner, {"lol": "Darius_Base_P_axe_tip", "bone": "BuffBone_Glb_Weapon_1"})
+		var shl := K.attach_fx(owner, {"lol": "Darius_Base_P_enraged_shoulder_L", "bone": "L_Shoulder"})
+		var shr := K.attach_fx(owner, {"lol": "Darius_Base_P_enraged_shoulder_R", "bone": "R_Shoulder"})
 		mb.on_expire = func(_b):
 			LFx.stop(aura)
 			LFx.stop(axe)
+			LFx.stop(shl)
+			LFx.stop(shr)
 		if m.camera_rig != null and owner == G.player:
 			m.camera_rig.shake(0.2)
 
@@ -280,11 +228,15 @@ class HemoBuff extends K.FxBuff:
 		shown = n
 		var nm := "darius_Base_hemo_counter_0%d%s" % [n, "" if u.kind == G.Kind.CHAMPION else "Minion"]
 		vfx = LolVfx.attach(u, nm, {"loop": true, "height": u.height + 0.45})
+		# five stacks on a champion: the overhead max-stack icon (the Noxian Might trigger) joins the drops
+		if n >= 5 and u.kind == G.Kind.CHAMPION and extra_fx.is_empty():
+			var ic := K.attach_fx(u, {"lol": "darius_Base_passive_overhead_max_stack", "bone": "C_BuffBone_Glb_Overhead_Loc"})
+			if ic != null:
+				extra_fx.append(ic)
 
 
 # ===================================================================== Q
 class Decimate extends DAbility:
-	var tele: VfxNode = null
 	var windup_fx: LolVfx = null
 	var ring_fx: LolVfx = null
 
@@ -316,26 +268,11 @@ class Decimate extends DAbility:
 		var p: Vector3 = o.global_position
 		windup_fx = LolVfx.spawn(m, "Darius_Base_Q_Ring_Windup", p, {"dir": o.facing, "height": 0.08})
 		ring_fx = LolVfx.spawn(m, "Darius_Base_Q_Ring", p, {"dir": o.facing, "height": 0.1})
-		# readability backup: faint fill of the blade annulus (League's windup ring is very subtle on this map)
-		tele = VfxNode.new()
-		tele.lifetime = Q_WINDUP + 0.1
-		o.add_child(tele)
-		tele.position.y = 0.12
-		var mat := Fx.arc_mat(Color(0.8, 0.05, 0.03, 0.6), RED, Q_INNER / Q_OUTER, true)
-		mat.set_shader_parameter("tail", TAU + 0.1)
-		mat.set_shader_parameter("flat_tail", 1.0)
-		mat.set_shader_parameter("energy", 0.7)
-		tele.add_child(Fx.plane(Q_OUTER * G.U * 2.0, mat))
-		var tw := tele.create_tween()
-		tw.tween_method(func(v): mat.set_shader_parameter("fade", v), 0.1, 0.4, Q_WINDUP)
 		notify_cast(t)
 
 	func channel_end(_ch: Dictionary, interrupted: bool) -> void:
 		var o = owner
 		o.channel_disarm = false
-		if tele != null and is_instance_valid(tele):
-			tele.detach_and_fade()
-		tele = null
 		if interrupted or o.dead:
 			# cancel the pending swing ring (its emitters only start after the 0.75 s delay)
 			LFx.kill(windup_fx, 0.05)
@@ -439,7 +376,7 @@ class CripplingStrike extends DAbility:
 		empowered_until = now() + 4.0
 		# League: charged axe glow until the empowered attack lands or the window ends
 		LFx.kill(fx, 0.1)
-		fx = LolVfx.attach(o, "darius_Base_W_weapon_01", {"loop": true, "height": 1.4, "dir": o.facing})
+		fx = K.attach_fx(o, {"lol": "darius_Base_W_weapon_01", "bone": "BuffBone_Glb_Weapon_1"})
 		notify_cast(t)
 
 	func is_empowered() -> bool:
@@ -544,7 +481,7 @@ class Apprehend extends DAbility:
 			if dist > keep:
 				u.pull_to(origin + G.flat_dir(origin, up) * keep, 0.28, o)
 				var trail := LolVfx.attach(u, "darius_Base_E_tar_unit_trail", {"loop": true, "height": u.height * 0.5, "dir": to_me})
-				m.after(0.28, func(): LFx.stop(trail))
+				K.stop_later(m, 0.28, trail)
 			K.slow(u, dv("SlowPercent", 40.0) / 100.0, dv("SlowDuration", 1.0) + 0.28, o, false, "darius_e_slow")
 		notify_cast(t)
 
@@ -652,8 +589,8 @@ class NoxianGuillotine extends DAbility:
 					unit.face_toward(u.global_position, 100.0),
 			"on_arrive": func(_unit): self_ref._impact(u)})
 		# League: blazing axe trail during the leap (R cast flash via R_cas)
-		var trail := LolVfx.attach(o, "Darius_Base_P_axe_tip", {"loop": true, "height": 1.6})
-		m.after(leap, func(): LFx.stop(trail))
+		var trail := K.attach_fx(o, {"lol": "Darius_Base_P_axe_tip", "bone": "BuffBone_Glb_Weapon_1"})
+		K.stop_later(m, leap, trail)
 		notify_cast(t)
 
 	func _impact(u) -> void:
