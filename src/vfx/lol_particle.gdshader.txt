@@ -1,0 +1,50 @@
+shader_type spatial;
+render_mode unshaded, cull_disabled, depth_draw_never, shadows_disabled, specular_disabled, __BLEND__;
+// League particle material: texture * particle color, billboard modes, flipbooks, uv scroll.
+uniform sampler2D tex : source_color, filter_linear_mipmap, repeat_enable;
+uniform vec2 texdiv = vec2(1.0, 1.0);
+uniform float total_frames = 1.0;
+uniform int billboard = 1;          // 0 = particle transform, 1 = camera facing, 2 = axis (particle Y), 3 = ground
+uniform vec2 uv_scroll = vec2(0.0);
+uniform float alpha_ref = 0.0;
+uniform float intensity = 1.0;
+varying vec4 v_color;
+
+void vertex() {
+	if (billboard == 1) {
+		mat4 mw = mat4(normalize(INV_VIEW_MATRIX[0]), normalize(INV_VIEW_MATRIX[1]), normalize(INV_VIEW_MATRIX[2]), MODEL_MATRIX[3]);
+		float a = INSTANCE_CUSTOM.x;
+		mw = mw * mat4(vec4(cos(a), -sin(a), 0.0, 0.0), vec4(sin(a), cos(a), 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
+		mw = mw * mat4(vec4(length(MODEL_MATRIX[0].xyz), 0.0, 0.0, 0.0), vec4(0.0, length(MODEL_MATRIX[1].xyz), 0.0, 0.0),
+				vec4(0.0, 0.0, length(MODEL_MATRIX[2].xyz), 0.0), vec4(0.0, 0.0, 0.0, 1.0));
+		MODELVIEW_MATRIX = VIEW_MATRIX * mw;
+		MODELVIEW_NORMAL_MATRIX = mat3(MODELVIEW_MATRIX);
+	} else if (billboard == 2) {
+		vec3 y = MODEL_MATRIX[1].xyz;
+		float ly = max(length(y), 0.0001);
+		y /= ly;
+		vec3 to_cam = normalize(INV_VIEW_MATRIX[3].xyz - MODEL_MATRIX[3].xyz);
+		vec3 x = normalize(cross(y, to_cam));
+		vec3 z = cross(x, y);
+		mat4 mw = mat4(vec4(x * length(MODEL_MATRIX[0].xyz), 0.0), vec4(y * ly, 0.0), vec4(z, 0.0), MODEL_MATRIX[3]);
+		MODELVIEW_MATRIX = VIEW_MATRIX * mw;
+		MODELVIEW_NORMAL_MATRIX = mat3(MODELVIEW_MATRIX);
+	}
+	if (total_frames > 1.0) {
+		float frame = mod(floor(INSTANCE_CUSTOM.z * total_frames), total_frames);
+		UV /= texdiv;
+		UV += vec2(mod(frame, texdiv.x) / texdiv.x, floor((frame + 0.5) / texdiv.x) / texdiv.y);
+	}
+	UV += uv_scroll * INSTANCE_CUSTOM.y;
+	v_color = COLOR;
+}
+
+void fragment() {
+	vec4 t = texture(tex, UV);
+	vec4 c = v_color * t;
+	if (c.a < alpha_ref) {
+		discard;
+	}
+	ALBEDO = c.rgb * intensity;
+	ALPHA = clamp(c.a, 0.0, 1.0);
+}
