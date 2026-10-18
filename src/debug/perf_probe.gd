@@ -8,6 +8,7 @@ var main = null
 var _acc := 0.0
 var _frames := 0
 var _worst := 0.0
+var _pc_last := 0.0
 var _gpu := 0.0
 var _cpu_r := 0.0
 var _proc := 0.0
@@ -163,6 +164,15 @@ func _process(delta: float) -> void:
 	_acc += delta
 	_frames += 1
 	_worst = maxf(_worst, delta)
+	# hitch attribution: pipeline compiles (first use of a shader variant / vertex format) vs everything else
+	var pc := 0.0
+	for m in [Performance.PIPELINE_COMPILATIONS_CANVAS, Performance.PIPELINE_COMPILATIONS_MESH,
+			Performance.PIPELINE_COMPILATIONS_SURFACE, Performance.PIPELINE_COMPILATIONS_DRAW,
+			Performance.PIPELINE_COMPILATIONS_SPECIALIZATION]:
+		pc += Performance.get_monitor(m)
+	if delta > 0.05:
+		print("HITCH t=%.2f %.1fms pipeline_compiles_total=%d (+%d since last hitch check)" % [_t, delta * 1000.0, int(pc), int(pc - _pc_last)])
+	_pc_last = pc
 	if delta > 1.0 / 60.0 + 0.0005:
 		_slow += 1
 	_gpu += RenderingServer.viewport_get_measured_render_time_gpu(_vp_rid)
