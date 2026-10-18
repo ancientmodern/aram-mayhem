@@ -82,6 +82,8 @@ func _process(delta: float) -> void:
 	if paused:
 		return
 	G.beat += 1
+	if G.beat % 30 == 0:
+		LolVfx._ensure_hub()   # the VFX hub also runs the background effect builder
 	Combat.depth = 0
 	Combat.frame_events = 0
 	_fx_frame = 0
