@@ -136,7 +136,8 @@ static func delayed_circle(ab: Ability, pos: Vector3, radius_units: float, delay
 static func _cc(target: Unit, id: String, name: String, flags: int, duration: float, src) -> Buff:
 	if target == null or target.dead or duration <= 0.0:
 		return null
-	var b := Buff.new(id, duration)
+	# FxBuff: the CC indicator (LOC_Stun etc. carry 5-15 s particles) disappears with the CC
+	var b := FxBuff.new(id, duration)
 	b.display_name = name
 	b.cc = flags
 	b.is_debuff = true
@@ -221,7 +222,7 @@ static func knockup(target: Unit, duration: float, src) -> Buff:
 static func slow(target: Unit, amount: float, duration: float, src, decays: bool = false, id: String = "") -> Buff:
 	if target == null or target.dead:
 		return null
-	var b := Buff.new(id if id != "" else "slow_" + str(src.get_instance_id() if src != null else 0), duration)
+	var b := FxBuff.new(id if id != "" else "slow_" + str(src.get_instance_id() if src != null else 0), duration)
 	b.display_name = "Slowed"
 	b.slow_amount = amount
 	b.slow_decays = decays
@@ -234,10 +235,11 @@ static func slow(target: Unit, amount: float, duration: float, src, decays: bool
 
 
 ## Generic timed stat buff (positive unless is_debuff).
+## opts "kill_fx": the buff's vfx is removed immediately when the buff ends (see FxBuff).
 static func buff(target: Unit, id: String, duration: float, stats: Dictionary, src = null, opts: Dictionary = {}) -> Buff:
 	if target == null or target.dead:
 		return null
-	var b := Buff.new(id, duration)
+	var b: Buff = FxBuff.new(id, duration) if opts.get("kill_fx", false) else Buff.new(id, duration)
 	b.display_name = opts.get("name", id)
 	b.stats = stats
 	b.is_debuff = opts.get("debuff", false)
@@ -264,8 +266,57 @@ static func haste(target: Unit, amount: float, duration: float, src = null, deca
 static func shield(src: Unit, target: Unit, amount: float, duration: float, color: Color = Color(0.9, 0.9, 1.0), sid: String = "") -> void:
 	if target == null or target.dead:
 		return
-	Combat.shield(src, target, amount, duration, {"id": sid})
-	Vfx.shield_bubble(target, color, minf(duration, 3.0), maxf(0.9, target.radius * 1.6))
+	var s: Dictionary = Combat.shield(src, target, amount, duration, {"id": sid})
+	var bub := Vfx.shield_bubble(target, color, duration, maxf(0.9, target.radius * 1.6))
+	track_shield_fx(target, s, bub)
+
+
+## Remove `fx` as soon as shield `s` is broken / expires / its owner dies (instead of a fixed lifetime).
+static func track_shield_fx(target: Unit, s: Dictionary, fx: Node) -> void:
+	if fx == null:
+		return
+	if s.is_empty() or target.match_ref == null:
+		kill_fx(fx, 0.0)
+		return
+	target.match_ref.add_ticker(maxf(float(s.get("remaining", 30.0)), 0.1) + 0.1, func(_dt: float) -> bool:
+		if not is_instance_valid(fx):
+			return false
+		if not is_instance_valid(target) or target.dead or not _has_shield(target, s):
+			kill_fx(fx, 0.0)
+			return false
+		return true)
+
+
+static func _has_shield(target: Unit, s: Dictionary) -> bool:
+	for x in target.shields:
+		if is_same(x, s):
+			return x.amount > 0.5
+	return false
+
+
+## Remove an attached effect now. LolVfx.stop() only stops emitting, so long-lived particles that were already
+## emitted (Ezreal's 4 s W orb, LOC_Stun's 5 s stars...) would hang on for up to 2.5 s after the state ended;
+## League kills buff-bound particles together with the buff. `fade` = seconds of emission-stopped fade first.
+static func kill_fx(n, fade: float = 0.1) -> void:
+	if n == null or not is_instance_valid(n):
+		return
+	if n.has_method("stop"):
+		n.stop()
+	if fade <= 0.0 or not n.is_inside_tree():
+		n.queue_free()
+		return
+	n.get_tree().create_timer(fade, false).timeout.connect(n.queue_free)
+
+
+## Buff whose attached vfx is killed (not just stopped) when the buff ends: expiry, removal, cleanse, death.
+class FxBuff extends Buff:
+	var kill_fade := 0.1
+
+	func on_removed(u) -> void:
+		var n = vfx
+		vfx = null
+		super(u)
+		K.kill_fx(n, kill_fade)
 
 
 static func grievous(target: Unit, duration: float, src, amount: float = 0.4) -> void:

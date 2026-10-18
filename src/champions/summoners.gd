@@ -105,8 +105,19 @@ class MarkSpell extends Ability:
 				base *= e.snowball_damage_mult()
 		return base
 
+	## The mark ends early when the marked unit dies or becomes untargetable (no dash target left).
+	func on_tick(_dt: float) -> void:
+		if recast_window > 0.0 and (marked == null or not is_instance_valid(marked) or marked.dead or not marked.is_targetable_by(owner.team)):
+			recast_window = 0.0
+			on_recast_expired()
+
 	func execute(t: Dictionary) -> void:
 		var m = owner.match_ref
+		if recast_window > 0.0 and (marked == null or not is_instance_valid(marked) or marked.dead):
+			# recast but the target is gone: the mark is spent (it used to throw a free second snowball)
+			recast_window = 0.0
+			on_recast_expired()
+			return
 		if recast_window > 0.0 and marked != null and is_instance_valid(marked) and not marked.dead:
 			recast_window = 0.0
 			var tgt = marked
@@ -114,6 +125,11 @@ class MarkSpell extends Ability:
 			if tag_fx != null and is_instance_valid(tag_fx):
 				tag_fx.stop()
 			var dash_fx := LolVfx.attach(owner, "Summoner_Snowball_Dash", {"loop": true, "dir": G.flat_dir(owner.global_position, tgt.global_position)})
+			# the dash can be cut short (knockback / stun clears it without on_arrive): never leave the trail looping
+			var dfx_ref := weakref(dash_fx) if dash_fx != null else null
+			if dfx_ref != null:
+				m.after(G.flat_dist(owner.global_position, tgt.global_position) / 18.0 + 0.3, func():
+					K.kill_fx(dfx_ref.get_ref(), 0.3))
 			LolVfx.spawn(m, "Summoner_Snowball_Dash_Cast", owner.global_position)
 			owner.start_dash(tgt.global_position, {"speed": 18.0, "on_arrive": func(_u):
 				for e in owner.effects.duplicate():
@@ -181,7 +197,8 @@ class GhostSpell extends Ability:
 		cast_time = 0.0
 
 	func execute(t: Dictionary) -> void:
-		var b := Buff.new("ghost", 10.0)
+		var b := K.FxBuff.new("ghost", 10.0)
+		b.kill_fade = 0.3
 		b.display_name = "Ghost"
 		b.cc = Buff.CC.GHOSTED
 		b.stats = {"ms%": 0.24 + 0.24 * (owner.level - 1) / 17.0}
@@ -220,7 +237,8 @@ class HealSpell extends Ability:
 			targets.append(best)
 		for u in targets:
 			Combat.heal(owner, u, amt)
-			var b := Buff.new("heal_ms", 1.0)
+			# League Heal: 30% move speed for 2 s
+			var b := Buff.new("heal_ms", 2.0)
 			b.stats = {"ms%": 0.3}
 			b.display_name = "Heal"
 			u.add_buff(b, owner)
@@ -245,8 +263,9 @@ class BarrierSpell extends Ability:
 
 	func execute(t: Dictionary) -> void:
 		var amt: float = 105.0 + 18.0 * (owner.level - 1)
-		Combat.shield(owner, owner, amt, 2.5)
-		Vfx.shield_bubble(owner, Color(1.0, 0.9, 0.5), 2.5, 1.1)
+		var sh: Dictionary = Combat.shield(owner, owner, amt, 2.5)
+		# the bubble disappears when the barrier breaks (it used to stay the full 2.5 s)
+		K.track_shield_fx(owner, sh, Vfx.shield_bubble(owner, Color(1.0, 0.9, 0.5), 2.5, 1.1))
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -266,6 +285,11 @@ class CleanseSpell extends Ability:
 
 	func execute(t: Dictionary) -> void:
 		owner.cleanse()
+		# League Cleanse also removes summoner spell debuffs (Ignite and its Grievous Wounds)
+		owner.remove_buffs_by_id("ignite")
+		for gb in owner.buffs.duplicate():
+			if gb.id == "grievous" and gb.has_meta("ignite"):
+				owner.remove_buff(gb)
 		var b := Buff.new("cleanse", 3.0)
 		b.stats = {"tenacity": 0.65}
 		owner.add_buff(b, owner)
@@ -293,20 +317,29 @@ class IgniteSpell extends Ability:
 	func execute(t: Dictionary) -> void:
 		var u = t.unit
 		var total: float = 70.0 + 20.0 * (owner.level - 1)
-		var b := Buff.new("ignite", 5.0)
+		if u == null or not is_instance_valid(u) or u.dead:
+			return
+		var src = owner
+		var b := K.FxBuff.new("ignite", 5.0)
 		b.is_debuff = true
 		b.display_name = "Ignite"
 		b.tick_interval = 1.0
 		b.on_interval = func(bb):
-			Combat.deal(owner, u, total / 5.0, G.DmgType.TRUE, {"is_dot": true, "is_proc": true, "tag": "burn"})
-		u.add_buff(b, owner)
-		var gw := Buff.new("grievous", 5.0)
+			if is_instance_valid(src) and is_instance_valid(bb.owner) and not bb.owner.dead:
+				Combat.deal(src, bb.owner, total / 5.0, G.DmgType.TRUE, {"is_dot": true, "is_proc": true, "tag": "burn"})
+		# a second Ignite refreshes the first one: only the live buff may own the burning effect (the effect used
+		# to be attached to the discarded new buff and burned forever)
+		var got: Buff = u.add_buff(b, owner)
+		var gw := Buff.new("grievous", 5.0)   # the core reads Grievous Wounds by this id
+		gw.set_meta("ignite", true)
 		gw.stats = {"_gw": 0.4}
 		gw.is_debuff = true
+		gw.display_name = "Grievous Wounds"
 		u.add_buff(gw, owner)
-		b.vfx = LolVfx.attach(u, "Global_SS_Ignite", {"loop": true})
-		if b.vfx == null:
-			Vfx.rising(u, Color(1.0, 0.5, 0.15), 5.0, 25, 0.4)
+		if got != null and (got.vfx == null or not is_instance_valid(got.vfx)):
+			got.vfx = LolVfx.attach(u, "Global_SS_Ignite", {"loop": true})
+			if got.vfx == null:
+				got.vfx = Vfx.rising(u, Color(1.0, 0.5, 0.15), 5.0, 25, 0.4)
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
