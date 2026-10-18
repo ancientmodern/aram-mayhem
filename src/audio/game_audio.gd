@@ -10,6 +10,7 @@ const POOL_2D := 16
 var m = null
 var events := {}                 ## event name -> Array of res:// paths
 var _streams := {}               ## path -> AudioStream
+var _requested := {}             ## path -> true (background load requested, not collected yet)
 var _p3: Array = []
 var _p2: Array = []
 var _listener: AudioListener3D
@@ -29,6 +30,7 @@ func setup(p_match) -> void:
 	for c in m.champions:
 		_load_map("res://data/audio/%s.json" % c.alias.to_lower())
 		_index_champion(c.alias)
+	prefetch_all()
 
 
 func _ready() -> void:
@@ -82,9 +84,30 @@ func has(ev: String) -> bool:
 	return events.has(ev)
 
 
+## Every stream this match can play is requested on background threads at setup (during the loading
+## screen), so playback never loads/decodes from disk on the main thread (that caused 20-60 ms hitches).
+func prefetch_all() -> void:
+	for ev in events:
+		var list = events[ev]
+		if not (list is Array):
+			continue
+		for path in list:
+			if path is String and not _streams.has(path) and not _requested.has(path) and ResourceLoader.exists(path):
+				if ResourceLoader.load_threaded_request(path, "", false) == OK:
+					_requested[path] = true
+
+
 func _stream(path: String) -> AudioStream:
 	if _streams.has(path):
 		return _streams[path]
+	if _requested.has(path):
+		var st := ResourceLoader.load_threaded_get_status(path)
+		if st == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			return null   # still loading in the background: skip this one play rather than stall the frame
+		_requested.erase(path)
+		var r: AudioStream = ResourceLoader.load_threaded_get(path) if st == ResourceLoader.THREAD_LOAD_LOADED else null
+		_streams[path] = r
+		return r
 	var s: AudioStream = load(path) if ResourceLoader.exists(path) else null
 	_streams[path] = s
 	return s
@@ -107,6 +130,12 @@ func _rate_ok(key: String, ms: int) -> bool:
 
 ## Play a League sound event. pos = null plays it in 2D.
 func play(ev: String, pos = null, volume_db: float = 0.0, pitch_var: float = 0.03) -> void:
+	var pa := Prof.t0()
+	_play(ev, pos, volume_db, pitch_var)
+	Prof.add("audio.play", pa)
+
+
+func _play(ev: String, pos, volume_db: float, pitch_var: float) -> void:
 	if ev == "" or not events.has(ev) or not _rate_ok(ev, 40):
 		return
 	var s := _pick(ev)
