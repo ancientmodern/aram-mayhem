@@ -397,7 +397,9 @@ func _prune_damage_log() -> void:
 
 
 func on_damaged(info: DamageInfo) -> void:
-	if info.final > 0.0 or info.absorbed > 0.0:
+	# [motion3] League has no hit-flash on champions / structures (hit feedback is VFX + sound only); minions get
+	# a very subtle, very brief tint. A dying unit never keeps a flash (a dead unit no longer runs _update_visual).
+	if (info.final > 0.0 or info.absorbed > 0.0) and kind == G.Kind.MINION and not dead:
 		hit_flash = 1.0
 
 
@@ -1159,6 +1161,12 @@ func die(killer, info = null) -> void:
 	if G.debug_sites: G.crumb("die " + display_name)
 	dead = true
 	hp = 0.0
+	hit_flash = 0.0   # [motion3] corpses keep normal shading (no stuck white flash)
+	if _flash_shown > 0.0:
+		_flash_shown = 0.0
+		for mi in _meshes:
+			if is_instance_valid(mi):
+				(mi as GeometryInstance3D).set_instance_shader_parameter("flash", 0.0)
 	cancel_windup()
 	casting = {}
 	pending_cast = {}
@@ -1491,7 +1499,37 @@ func set_anim_graph(g: AnimGraph) -> void:
 func _calibrate_strides() -> void:
 	if anim_player != null and _skel != null:
 		_strides = _cap_fast_strides(Assets.run_strides(anim_player, _skel))
+		_setup_weapon_hold()
 		cur_anim = ""
+
+
+## [motion3] hand-held weapon bones per champion (lower case). The WeaponHold modifier keeps them in the hand
+## wherever a cast clip keys them away (see core/weapon_hold.gd).
+const _WEAPON_BONES := {
+	"darius": ["weapon"], "garen": ["weapon"], "leona": ["weapon"], "lux": ["weapon"], "sona": ["weapon"],
+	"veigar": ["weapon"], "missfortune": ["l_weapon", "r_weapon"],
+	# (Yasuo / Master Yi sheathe their blades on the back in some clips: left to the clips' own keys)
+}
+const _WeaponHold := preload("res://src/core/weapon_hold.gd")
+var _weapon_hold: Node = null
+var _idle_t := 0.0            ## [motion3] time spent in the looping idle (fidget timer)
+var _idle_next := 6.0
+const SPELL_RECOVERY_MAX := 0.3   ## [motion3] longest a spell pose is held after its cast completes
+const _WH_OFF := ["death", "dance", "taunt", "laugh", "joke", "respawn", "recall"]
+
+
+func _setup_weapon_hold() -> void:
+	if _weapon_hold != null or graph == null or _skel == null or not _WEAPON_BONES.has(graph.alias.to_lower()):
+		return
+	var items: Array = Assets.weapon_hold_calibrate(anim_player, _skel, _WEAPON_BONES[graph.alias.to_lower()])
+	if items.is_empty():
+		return
+	var wh = _WeaponHold.new()
+	wh.name = "WeaponHold"
+	wh.skel = _skel
+	wh.items = items
+	_skel.add_child(wh)
+	_weapon_hold = wh
 
 
 ## Faster run variants (League run_haste / run_fast / homeguard sprints) are authored as long bounding
@@ -1739,6 +1777,11 @@ func play_spell_anim(logical: String, lock: float = 0.4, speed: float = 1.0) -> 
 
 
 func _update_visual(dt: float) -> void:
+	if _weapon_hold != null:
+		# [motion3] expressive clips (taunt / dance / death...) may legitimately drop or swing the weapon
+		var wh_on := not dead and not (cur_anim in _WH_OFF)
+		if _weapon_hold.active != wh_on:
+			_weapon_hold.active = wh_on
 	if model != null:
 		# only touch the transform when it changes (a set re-propagates through every mesh / bone socket)
 		var my := airborne_height + _airborne_offset()
@@ -1746,12 +1789,12 @@ func _update_visual(dt: float) -> void:
 			_model_y = my
 			model.position.y = my
 	if hit_flash > 0.0 or _flash_shown > 0.0:
-		hit_flash = maxf(0.0, hit_flash - dt * 6.0)
+		hit_flash = maxf(0.0, hit_flash - dt * 12.0)   # [motion3] ~80 ms
 		# "flash" is a per-instance uniform: set it on the mesh instances, not the shared materials
 		_flash_shown = hit_flash
 		for mi in _meshes:
 			if is_instance_valid(mi):
-				(mi as GeometryInstance3D).set_instance_shader_parameter("flash", hit_flash * 0.55)
+				(mi as GeometryInstance3D).set_instance_shader_parameter("flash", hit_flash * 0.12)   # [motion3] subtle (was 0.55 = bleached white)
 	_update_transparency(dt)
 	if anim_player == null:
 		return
@@ -1762,7 +1805,16 @@ func _update_visual(dt: float) -> void:
 		if _attack_anim and windup_timer < 0.0 and (_g_hold or moving and dash.is_empty()):
 			anim_lock = 0.0
 		else:
-			return
+			# [motion3] League: a cast clip ends at its recovery frame and returns to idle / run (blend table);
+			# once the cast itself is over a finished clip releases at once, a move order cancels the rest,
+			# and the held recovery never outlasts SPELL_RECOVERY_MAX (kits set generous locks)
+			if not _attack_anim and casting.is_empty() and channel.is_empty() and windup_timer < 0.0 and dash.is_empty() 					and _g_top != "":
+				if _g_hold or (moving and (cc & Buff.BLOCK_MOVE) == 0):
+					anim_lock = 0.0
+				else:
+					anim_lock = minf(anim_lock, SPELL_RECOVERY_MAX)
+			if anim_lock > 0.0:
+				return
 	_attack_anim = false
 	var want := "idle"
 	if not dash.is_empty():
@@ -1775,6 +1827,20 @@ func _update_visual(dt: float) -> void:
 		want = "run"
 	elif not channel.is_empty() and has_anim("channel"):
 		want = "channel"
+	# [motion3] League idles on a looping Idle1 and now and then plays a one-shot fidget (Idle2/3/4), then returns
+	if cur_anim == "idle_var" and want == "idle" and not _g_hold:
+		return
+	if want == "idle" and cur_anim == "idle" and _g_top != "" and not dead:
+		_idle_t += dt
+		if _idle_t >= _idle_next:
+			_idle_t = 0.0
+			_idle_next = 7.0 + G.rng.randf() * 7.0
+			var fids := ["Idle2", "Idle3", "Idle4"]
+			var fid := graph.find_clip([fids[G.rng.randi() % 3]] + fids)
+			if fid != "" and _g_play("idle_var", fid, 1.0, -1.0):
+				return
+	elif want != "idle":
+		_idle_t = 0.0
 	if want != cur_anim or _g_hold or (_g_top == "" and not anim_player.is_playing()):
 		play_anim(want, 1.0, -1.0)
 		_g_recheck = 0.25
