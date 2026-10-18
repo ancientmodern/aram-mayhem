@@ -23,6 +23,8 @@ func _ready() -> void:
 			bot_player = false
 		elif a.begins_with("--every="):
 			report_every = float(a.substr(8))
+		elif a.begins_with("--shotdir="):
+			shot_dir = "user://" + a.substr(10)
 	G.champion_killed.connect(func(v, k, ass): _log("KILL %s -> %s (+%d assists)" % [
 			k.display_name if k != null and is_instance_valid(k) else "?", v.display_name, ass.size()]))
 	G.structure_destroyed.connect(func(s, k): _log("STRUCTURE %s %s destroyed" % [G.TEAM_NAMES[s.team], s.display_name]))
