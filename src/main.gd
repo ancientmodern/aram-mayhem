@@ -39,6 +39,9 @@ func _ready() -> void:
 			add_child(mon)
 	else:
 		show_menu()
+	if "--ctrltest" in args:
+		var ct := ControlTest.new()
+		add_child(ct)
 	if "--uitest" in args:
 		var ut := UITest.new()
 		ut.main = self

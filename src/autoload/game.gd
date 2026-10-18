@@ -44,7 +44,7 @@ var time_scale_target := 1.0
 
 # ---------------------------------------------------------------- settings
 var settings := {
-	"quick_cast": true,          # cast on key press/release at cursor
+	"cast_mode": 0,              # 0 quick cast (press), 1 quick cast with indicator (release), 2 normal (click)
 	"camera_locked": true,
 	"edge_pan": true,
 	"show_all_damage_numbers": false,
@@ -105,6 +105,37 @@ func apply_window_mode() -> void:
 var _trace_file: FileAccess = null
 var ctx := ""          ## debug: current frame phase (read by the sim watchdog)
 var ctx_unit := ""
+var ctx2 := ""         ## debug: timer / missile creation site
+var ctx3 := ""         ## debug: last damage event
+var debug_sites := false
+var _ring := []
+var _ri := 0
+
+
+## Debug breadcrumb (sims only): keeps the last 64 operations for the hang watchdog.
+func crumb(s: String) -> void:
+	if _ring.size() < 64:
+		_ring.append(s)
+	else:
+		_ring[_ri % 64] = s
+	_ri += 1
+
+
+func crumbs() -> Array:
+	var out := []
+	var n := _ring.size()
+	for i in n:
+		out.append(_ring[(_ri - n + i) % 64] if n == 64 else _ring[i])
+	return out
+
+
+## "file:line function" of the code that called the caller (debug builds only).
+func caller_site(depth: int = 2) -> String:
+	var st := get_stack()
+	var out := []
+	for i in range(depth, mini(depth + 3, st.size())):
+		out.append("%s:%d" % [str(st[i].source).get_file(), st[i].line])
+	return ",".join(out)
 var beat := 0
 
 

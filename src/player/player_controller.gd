@@ -42,7 +42,7 @@ func _process(_delta: float) -> void:
 	if _rmb_held and not champ.dead:
 		_rmb_timer -= _delta
 		if _rmb_timer <= 0.0:
-			_rmb_timer = 0.12
+			_rmb_timer = 0.09
 			if hovered == null or not _is_enemy_target(hovered):
 				champ.issue_move(mouse_ground)
 	_update_indicator()
@@ -127,14 +127,15 @@ func _unhandled_input(event: InputEvent) -> void:
 				_rmb_timer = 0.25
 			get_viewport().set_input_as_handled()
 		elif mb.button_index == MOUSE_BUTTON_LEFT and mb.pressed:
-			if aiming >= 0 and not G.settings.quick_cast:
+			if aiming >= 0 and _cast_mode() == 2:
 				_cast_slot(aiming)
 				_cancel_aim()
 				get_viewport().set_input_as_handled()
 			elif attack_move_armed:
 				attack_move_armed = false
-				if hovered != null and _is_enemy_target(hovered):
-					champ.issue_attack(hovered)
+				var t := hovered if hovered != null and _is_enemy_target(hovered) else _attack_move_target()
+				if t != null:
+					champ.issue_attack(t)
 				else:
 					champ.issue_attack_move(mouse_ground)
 				_click_marker(mouse_ground, true)
@@ -154,11 +155,16 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return
 			if k.pressed:
-				_begin_aim(i)
+				if _cast_mode() == 0:
+					_cancel_aim()
+					if _can_begin(i):
+						_cast_slot(i)
+				else:
+					_begin_aim(i)
 			get_viewport().set_input_as_handled()
 			return
 		if (event.is_action_released(act) or (not k.pressed and k.physical_keycode == [KEY_Q, KEY_W, KEY_E, KEY_R][i])) and aiming == i:
-			if G.settings.quick_cast:
+			if _cast_mode() == 1:
 				_cast_slot(i)
 				_cancel_aim()
 			get_viewport().set_input_as_handled()
@@ -214,12 +220,36 @@ func ability_for_slot(slot: int) -> Ability:
 	return champ.ability(slot)
 
 
-func _begin_aim(slot: int) -> void:
+func _cast_mode() -> int:
+	return int(G.settings.get("cast_mode", 0))
+
+
+func _can_begin(slot: int) -> bool:
 	var ab := ability_for_slot(slot)
 	if ab == null:
-		return
+		return false
 	if ab.level <= 0:
 		champ.on_cast_failed(ab, "not learned")
+		return false
+	return true
+
+
+## A-click: the enemy closest to the cursor among those already in attack range (League behaviour).
+func _attack_move_target() -> Unit:
+	var best: Unit = null
+	var bd := INF
+	for u in match_ref.units_in_radius(champ.global_position, champ.attack_range_m() + champ.radius + 1.0, G.enemy_team(champ.team)):
+		if not _is_enemy_target(u) or not champ.in_attack_range(u):
+			continue
+		var d := G.flat_dist(u.global_position, mouse_ground)
+		if d < bd:
+			bd = d
+			best = u
+	return best
+
+
+func _begin_aim(slot: int) -> void:
+	if not _can_begin(slot):
 		return
 	aiming = slot
 
@@ -266,6 +296,14 @@ func _use_item(i: int) -> void:
 
 
 func _update_indicator() -> void:
+	if attack_move_armed and aiming < 0 and not champ.dead:
+		var o0 := champ.global_position
+		var ar := champ.attack_range_m() + champ.radius
+		_ind_range.visible = true
+		_ind_range.global_position = Vector3(o0.x, o0.y + 0.12, o0.z)
+		_ind_range.scale = Vector3(ar * 2.0, 1, ar * 2.0)
+		_ind_range.material_override.set_shader_parameter("color", Color(1.0, 0.35, 0.3, 0.4))
+		return
 	if aiming < 0 or champ.dead:
 		if _ind_main.visible or _ind_range.visible or _ind_area.visible:
 			_cancel_aim()

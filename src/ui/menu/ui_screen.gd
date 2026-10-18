@@ -337,7 +337,16 @@ func draw_settings(r: Rect2) -> void:
 	for i in 4:
 		pill("set:diff:%d" % i, Rect2(x + 220 + i * pw, y, pw - 6, 30), DIFFS[i], int(G.settings.difficulty) == i)
 	y += 52
-	var toggles := [["set:quick", "Quick cast (cast on key press)", "quick_cast"], ["set:edge", "Screen edge camera pan", "edge_pan"],
+	text("Ability casting", Vector2(x, y + 18), 17, C_TEXT, f_semi)
+	var modes := ["Quick", "Indicator", "Normal"]
+	var mw := (w - 220) / 3.0
+	for i in 3:
+		pill("set:cast:%d" % i, Rect2(x + 220 + i * mw, y, mw - 6, 30), modes[i], int(G.settings.get("cast_mode", 0)) == i)
+	set_tip("set:cast:0", "Quick cast", "Abilities cast instantly at the cursor when the key is pressed.")
+	set_tip("set:cast:1", "Quick cast with indicator", "Hold the key to see the indicator, release to cast.")
+	set_tip("set:cast:2", "Normal cast", "Press the key to show the indicator, left-click to cast, right-click to cancel.")
+	y += 52
+	var toggles := [["set:edge", "Screen edge camera pan", "edge_pan"],
 			["set:lock", "Camera locked to champion", "camera_locked"], ["set:fs", "Fullscreen", "fullscreen"],
 			["set:dmg", "Show all damage numbers", "show_all_damage_numbers"]]
 	for tg in toggles:
@@ -361,8 +370,8 @@ func handle_settings_action(id: String) -> bool:
 	match parts[1]:
 		"diff":
 			G.settings.difficulty = int(parts[2])
-		"quick":
-			G.settings.quick_cast = parts[2] == "0"
+		"cast":
+			G.settings.cast_mode = int(parts[2])
 		"edge":
 			G.settings.edge_pan = parts[2] == "0"
 		"lock":

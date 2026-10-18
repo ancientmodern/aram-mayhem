@@ -62,10 +62,21 @@ func _ready() -> void:
 
 
 # ===================================================================== loop
+func _update_death_gray(delta: float) -> void:
+	if death_gray == null or G.player == null:
+		return
+	var want := 1.0 if G.player.dead and not over else 0.0
+	_gray = move_toward(_gray, want, delta * (1.5 if want > _gray else 4.0))
+	death_gray.visible = _gray > 0.001
+	if death_gray.visible:
+		(death_gray.material as ShaderMaterial).set_shader_parameter("amount", _gray)
+
+
 func _process(delta: float) -> void:
 	if paused:
 		return
 	G.beat += 1
+	_update_death_gray(delta)
 	var dt := minf(delta, 0.05) * game_speed
 	time += dt
 	G.ctx = "timers"
@@ -81,13 +92,18 @@ func _process(delta: float) -> void:
 	G.ctx = "missiles"
 	for mi in missiles.duplicate():
 		if is_instance_valid(mi) and mi.alive:
+			if G.debug_sites:
+				G.ctx2 = "%s %s %s" % [mi.source.display_name if is_instance_valid(mi.source) else "?", mi.ability.display_name if mi.ability != null and is_instance_valid(mi.ability) else "-", mi.site]
 			mi.tick(dt, self)
 	G.ctx = "rest"
 	missiles = missiles.filter(func(x): return is_instance_valid(x) and x.alive)
 	if not tickers.is_empty():
 		var keep := []
+		G.ctx = "tickers"
 		for tk in tickers:
 			if time <= tk.until and tk.fn.is_valid():
+				G.ctx2 = tk.site
+				if G.debug_sites: G.crumb("ticker " + str(tk.site))
 				var r = tk.fn.call(dt)
 				if r != false:
 					keep.append(tk)
@@ -105,12 +121,12 @@ func _process(delta: float) -> void:
 
 
 func after(seconds: float, fn: Callable) -> void:
-	_timers.append([time + seconds, fn])
+	_timers.append([time + seconds, fn, G.caller_site() if G.debug_sites else ""])
 
 
 ## Call fn(dt) every frame for `duration` seconds (return false from fn to stop early).
 func add_ticker(duration: float, fn: Callable) -> void:
-	tickers.append({"fn": fn, "until": time + duration})
+	tickers.append({"fn": fn, "until": time + duration, "site": G.caller_site() if G.debug_sites else ""})
 
 
 ## Add a wall that destroys enemy projectiles crossing segment a-b (e.g. Wind Wall).
@@ -142,6 +158,8 @@ func _run_timers() -> void:
 	_timers = keep
 	for t in due:
 		if t[1].is_valid():
+			G.ctx2 = t[2]
+			if G.debug_sites: G.crumb("timer " + str(t[2]))
 			t[1].call()
 
 
@@ -408,6 +426,7 @@ func spawn_attack_missile(src: Unit, tgt: Unit, crit: bool) -> Missile:
 
 # ===================================================================== death / economy
 func on_unit_died(u: Unit, killer, info) -> void:
+	if G.debug_sites: G.crumb("on_unit_died " + u.display_name)
 	G.unit_died.emit(u, killer)
 	var killer_champ = _owner_champion(killer)
 	match u.kind:
@@ -808,7 +827,19 @@ func _spawn_champion(alias: String, team: int, skin: int, is_player: bool, idx: 
 
 
 var cfg_summoners: Array = []
+var _team_ai := {}
+
+
+## Shared tactical state for a team's bots.
+func team_ai(team: int) -> TeamAI:
+	if not _team_ai.has(team):
+		var t := TeamAI.new()
+		t.setup(team, self)
+		_team_ai[team] = t
+	return _team_ai[team]
 var menu_layer: CanvasLayer = null
+var death_gray: ColorRect = null
+var _gray := 0.0
 var pause_menu: PauseMenu = null
 var end_screen: EndScreen = null
 
@@ -835,6 +866,18 @@ func _setup_view() -> void:
 	add_child(player_controller)
 	snow = MapBuilder.build_snow(camera_rig)
 	snow.position = Vector3(0, -6, -10)
+	var gray_layer := CanvasLayer.new()
+	gray_layer.name = "DeathGrayLayer"
+	gray_layer.layer = 0
+	add_child(gray_layer)
+	death_gray = ColorRect.new()
+	death_gray.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	death_gray.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var gm := ShaderMaterial.new()
+	gm.shader = load("res://src/vfx/death_gray.gdshader")
+	death_gray.material = gm
+	death_gray.visible = false
+	gray_layer.add_child(death_gray)
 	var layer := CanvasLayer.new()
 	layer.name = "OverlayLayer"
 	layer.layer = 1
@@ -879,6 +922,7 @@ func _roll_augment_tiers() -> void:
 
 ## Queue an augment screen for a champion who reached an augment level.
 func offer_augment(c: Champion) -> void:
+	if G.debug_sites: G.crumb("offer_augment " + c.display_name)
 	c.augments_pending += 1
 	G.augment_offer_ready.emit(c)
 
@@ -952,6 +996,7 @@ func grant_augment(c: Champion, aid: String) -> Augment:
 
 
 func bot_choose_augment(c: Champion) -> void:
+	if G.debug_sites: G.crumb("bot_choose_augment " + c.display_name)
 	if c.augments_pending <= 0:
 		return
 	if not (c.dead or c.in_fountain):
@@ -969,6 +1014,7 @@ func bot_choose_augment(c: Champion) -> void:
 
 # ===================================================================== shopping
 func bot_shop(c: Champion) -> void:
+	if G.debug_sites: G.crumb("bot_shop " + c.display_name)
 	if not c.can_shop():
 		return
 	var guard := 0

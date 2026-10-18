@@ -4,6 +4,7 @@ tools/extracted/
 __pycache__/
 *.pyc
 .claude/
+tools/vgmstream/
 
 # League of Legends game assets are extracted locally from your own install (tools/lol) and never committed
 assets/*
