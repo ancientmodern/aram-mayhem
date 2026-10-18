@@ -60,6 +60,7 @@ var attack_target: Unit = null
 var attack_timer := 0.0       ## until next attack may start
 var windup_timer := -1.0      ## >=0 while winding up
 var windup_pct := 0.25
+var windup_mod := 1.0         ## League mAttackDelayCastOffsetPercentAttackSpeedRatio (windup modifier)
 var attack_missile_speed := 0.0   ## 0 = melee/instant
 var attack_count := 0
 var attack_move_goal := Vector3.ZERO
@@ -599,13 +600,25 @@ func find_auto_target(range_m: float, around = null) -> Unit:
 func _start_attack(t: Unit) -> void:
 	var period := stats.attack_period()
 	attack_timer = period
-	windup_timer = period * windup_pct
+	windup_timer = attack_windup(period)
 	_windup_target = t
 	_pending_crit = G.rng.randf() < stats.crit_chance
 	attack_count += 1
 	play_attack_anim(_pending_crit, period)
 	if match_ref != null and match_ref.audio != null:
 		match_ref.audio.attack_start(self, _pending_crit)
+
+
+## League attack windup: base_windup + (period * windup% - base_windup) * windupModifier,
+## where base_windup = windup% / base attack speed.
+func attack_windup(period: float) -> float:
+	var w := period * windup_pct
+	if absf(windup_mod - 1.0) > 0.001:
+		var base_as := float(stats.base.get("attack_speed", 0.0))
+		if base_as > 0.0:
+			var bw := windup_pct / base_as
+			w = bw + (w - bw) * windup_mod
+	return minf(w, period)
 
 
 func _launch_attack(t: Unit) -> void:
@@ -742,9 +755,14 @@ func _update_movement(dt: float) -> void:
 			path_i += 1
 		else:
 			var dir := to / d
-			pos += dir * step
+			var sd := _steer_dir(pos, dir, path_i == path.size() - 1, d)
+			if sd == Vector3.ZERO:
+				# the goal is occupied by a unit that holds its ground: arrive here (League body block)
+				path_i = path.size()
+				break
+			pos += sd * step
 			step = 0.0
-			face_toward(pos + dir, dt)
+			face_toward(pos + sd, dt)
 	set_ground_pos(pos)
 	if path_i >= path.size():
 		moving = false
@@ -881,14 +899,123 @@ func set_ground_pos(p: Vector3) -> void:
 		in_brush = match_ref.nav.brush_id(p)
 
 
+## League turns units very quickly (no wide arcs): exponential approach plus a minimum angular
+## speed so even 180 degree turns finish in ~0.15 s. dt >= 50 snaps.
+const TURN_RATE := 22.0        ## 1/s exponential approach
+const TURN_MIN_SPEED := 18.0   ## rad/s
+
+
 func face_toward(p: Vector3, dt: float) -> void:
 	var d := Vector3(p.x - global_position.x, 0.0, p.z - global_position.z)
 	if d.length_squared() < 0.0001:
 		return
 	d = d.normalized()
-	facing = facing.slerp(d, clampf(dt * 18.0, 0.0, 1.0)).normalized() if dt < 50.0 else d
+	if dt >= 50.0:
+		facing = d
+	else:
+		var cur := atan2(facing.x, facing.z)
+		var diff := wrapf(atan2(d.x, d.z) - cur, -PI, PI)
+		var stp := diff * (1.0 - exp(-dt * TURN_RATE))
+		var mn := minf(absf(diff), TURN_MIN_SPEED * dt)
+		if absf(stp) < mn:
+			stp = signf(diff) * mn
+		cur += stp
+		facing = Vector3(sin(cur), 0.0, cos(cur))
 	if model != null:
 		model.rotation.y = atan2(-facing.x, -facing.z)
+
+
+# ===================================================================== unit collision / steering
+## Local steering around units that hold their ground (League pathing treats units as obstacles:
+## champions route around minions, minion waves spread instead of stacking).
+## Returns ZERO when the final waypoint is occupied and we are close enough to call it arrived.
+func _steer_dir(pos: Vector3, dir: Vector3, last_leg: bool, dist_left: float) -> Vector3:
+	if match_ref == null or (cc & Buff.CC.GHOSTED) != 0 or kind == G.Kind.TURRET:
+		return dir
+	var out := dir
+	var my_spd := stats.move_speed * G.U
+	for u in match_ref.units_in_radius(pos, path_radius + 1.0):
+		if u == self or u.dead or not u.dash.is_empty() or (u.cc & Buff.CC.GHOSTED) != 0:
+			continue
+		if u.kind in [G.Kind.INHIBITOR, G.Kind.NEXUS]:
+			continue
+		var to := Vector3(u.global_position.x - pos.x, 0.0, u.global_position.z - pos.z)
+		var dist := to.length()
+		var rr: float = path_radius + float(u.path_radius)
+		if dist < 0.001 or dist > rr + 0.45:
+			continue
+		var fwd := to.dot(dir)
+		if fwd <= 0.0:
+			continue
+		# only units that are not moving along with us block (a wave walking together does not weave)
+		if u.moving and u.velocity.dot(dir) > my_spd * 0.6:
+			continue
+		var lat_v := to - dir * fwd
+		var lat := lat_v.length()
+		if lat >= rr:
+			continue
+		if last_leg and dist_left <= fwd + rr * 0.5:
+			# the goal lies inside / just behind this unit
+			if dist_left < rr + 0.6:
+				return Vector3.ZERO
+		var tangent: Vector3
+		if lat > 0.01:
+			tangent = -lat_v / lat
+		else:
+			tangent = dir.cross(Vector3.UP) * (1.0 if (uid + u.uid) % 2 == 0 else -1.0)
+		var w: float = clampf(1.0 - (dist - rr) / 0.45, 0.0, 1.0) * (1.0 - lat / rr * 0.5)
+		out += tangent * w * 2.0
+	if out.length_squared() < 0.0001:
+		return dir
+	out = out.normalized()
+	# never steer backwards
+	if out.dot(dir) < 0.0:
+		out = (out - dir * out.dot(dir)).normalized()
+	return out
+
+
+## Resolve overlap of two units (called by Match for neighbouring pairs).
+## League: units that hold their ground (attacking/standing) are not shoved by units walking into
+## them; walkers are deflected (champions are body-blocked by minions and vice versa).
+static func resolve_pair(a: Unit, b: Unit, nav) -> void:
+	var ap := a.global_position
+	var bp := b.global_position
+	var dx := bp.x - ap.x
+	var dz := bp.z - ap.z
+	var rr := a.path_radius + b.path_radius
+	var d2 := dx * dx + dz * dz
+	if d2 >= rr * rr:
+		return
+	var d := sqrt(d2)
+	if d < 0.001:
+		dx = 0.01 * (1 if a.uid % 2 == 0 else -1)
+		dz = 0.01
+		d = 0.0141
+	var overlap := rr - d
+	var nx := dx / d
+	var nz := dz / d
+	var wa := 0.5
+	if b.mass <= 0.0:
+		wa = 1.0
+	elif a.mass <= 0.0:
+		wa = 0.0
+	elif a.moving and not b.moving:
+		wa = 1.0
+	elif b.moving and not a.moving:
+		wa = 0.0
+	else:
+		wa = b.mass / maxf(a.mass + b.mass, 0.001)
+	var wb := 1.0 - wa
+	# soften so crowds settle over a few frames instead of popping
+	var push := overlap * 0.85
+	if wa > 0.0:
+		var na := Vector3(ap.x - nx * push * wa, ap.y, ap.z - nz * push * wa)
+		if nav == null or nav.is_walkable(na):
+			a.set_ground_pos(na)
+	if wb > 0.0:
+		var nb := Vector3(bp.x + nx * push * wb, bp.y, bp.z + nz * push * wb)
+		if nav == null or nav.is_walkable(nb):
+			b.set_ground_pos(nb)
 
 
 func teleport(p: Vector3) -> void:
@@ -922,7 +1049,7 @@ func die(killer, info = null) -> void:
 	if killer != null and is_instance_valid(killer):
 		for e in killer.effects.duplicate():
 			e.on_kill(self)
-	play_anim("death", 1.0, 0.1)
+	play_anim("death", 1.0, -1.0 if graph != null else 0.1)
 	died.emit(self, killer)
 	if match_ref != null:
 		match_ref.on_unit_died(self, killer, info)
@@ -939,10 +1066,177 @@ func set_model(m: Node3D) -> void:
 		model.queue_free()
 	model = m
 	add_child(m)
+	for k in _sockets:
+		var s = _sockets[k]
+		if is_instance_valid(s) and s.get_parent() == self:
+			s.queue_free()
+	_sockets.clear()
+	_raw_clips.clear()
+	_index_bones()
 	anim_player = _find_anim_player(m)
 	materials.clear()
+	_meshes.clear()
 	_collect_materials(m)
+	_alpha = -1.0
 	recompute_stats()
+
+
+# ===================================================================== sockets (bone attachments)
+var _sockets := {}            ## lower-case request -> Node3D
+var _skel: Skeleton3D = null
+var _bone_lc := {}            ## normalized bone name -> bone index
+var attack_bone := ""         ## League mStartBoneName of the current basic attack (from data/anim)
+var attack_bones := {}        ## attack clip/spell name (lower) -> start bone
+
+
+static func _norm_bone(s: String) -> String:
+	var t := s.to_lower().replace("bufbone", "buffbone").replace("ablility", "ability")
+	var out := ""
+	for ch in t:
+		if (ch >= "a" and ch <= "z") or (ch >= "0" and ch <= "9"):
+			out += ch
+	return out
+
+
+func _index_bones() -> void:
+	_bone_lc.clear()
+	_skel = Assets.find_skeleton(model) if model != null else null
+	if _skel == null:
+		return
+	for i in _skel.get_bone_count():
+		var n := _norm_bone(_skel.get_bone_name(i))
+		if not _bone_lc.has(n):
+			_bone_lc[n] = i
+
+
+## Bone index for a League bone name (case-insensitive, tolerant of C_/L_/R_ prefixes). -1 = none.
+func _find_bone(name: String) -> int:
+	if _skel == null:
+		return -1
+	var n := _norm_bone(name)
+	if _bone_lc.has(n):
+		return _bone_lc[n]
+	# "C_BUFFBONE_GLB_CHEST_LOC" <-> "BUFFBONE_GLB_CHEST_LOC"
+	for p in ["c", "l", "r"]:
+		if n.begins_with(p + "buffbone") and _bone_lc.has(n.substr(1)):
+			return _bone_lc[n.substr(1)]
+		if n.begins_with("buffbone") and _bone_lc.has(p + n):
+			return _bone_lc[p + n]
+	# "Cstm_Buffbone_X" <-> "Buffbone_Cstm_X"
+	if n.begins_with("cstmbuffbone"):
+		var alt := "buffbonecstm" + n.substr(12)
+		if _bone_lc.has(alt):
+			return _bone_lc[alt]
+	elif n.begins_with("buffbonecstm"):
+		var alt2 := "cstmbuffbone" + n.substr(12)
+		if _bone_lc.has(alt2):
+			return _bone_lc[alt2]
+	return -1
+
+
+func _first_bone(cands: Array) -> int:
+	for c in cands:
+		var i := _find_bone(c)
+		if i >= 0:
+			return i
+	return -1
+
+
+## Fallback chain by bone category: weapon -> hand -> chest -> root.
+func _fallback_bone(name: String) -> int:
+	var n := _norm_bone(name)
+	var side := "r"
+	if n.begins_with("l") and not n.begins_with("layout"):
+		side = "l"
+	var weapon := ["buffbone_glb_weapon_1", "buffbone_cstm_weapon_1", "weapon", side + "_weapon", "sword", "staff",
+			side + "_staff"]
+	var hand := [side + "_buffbone_glb_hand_loc", side + "_hand", "r_buffbone_glb_hand_loc", "r_hand",
+			"l_buffbone_glb_hand_loc", "l_hand"]
+	var chest := ["c_buffbone_glb_chest_loc", "chest", "spine2", "spine1", "spine", "c_chest",
+			"c_buffbone_glb_center_loc"]
+	var overhead := ["c_buffbone_glb_overhead_loc", "buffbone_cstm_healthbar", "c_buffbone_glb_head_loc", "head"]
+	var head := ["c_buffbone_glb_head_loc", "head", "c_head"]
+	var center := ["c_buffbone_glb_center_loc", "c_buffbone_glb_chest_loc", "spine1", "spine"]
+	var foot := [side + "_buffbone_glb_foot_loc", "buffbone_glb_ground_loc"]
+	var root := ["root", "c_root", "root_minion"]
+	var chain: Array = []
+	if n.contains("weapon") or n.contains("wpn") or n.contains("sword") or n.contains("staff") or n.contains("gun") \
+			or n.contains("barrel") or n.contains("missile") or n.contains("cannon") or n.contains("pistol"):
+		chain = weapon + hand + chest + root
+	elif n.contains("hand") or n.contains("ability") or n.contains("finger") or n.contains("wrist"):
+		chain = hand + chest + root
+	elif n.contains("overhead") or n.contains("healthbar"):
+		chain = overhead + chest + root
+	elif n.contains("head"):
+		chain = head + chest + root
+	elif n.contains("center") or n.contains("channel"):
+		chain = center + chest + root
+	elif n.contains("foot") or n.contains("ground") or n.contains("layout"):
+		chain = foot + root
+	else:
+		chain = chest + root
+	return _first_bone(chain)
+
+
+## A Node3D that follows a League bone (BoneAttachment3D, created lazily and cached).
+## Case-insensitive; falls back weapon -> hand -> chest -> root. "ground" = the unit's feet.
+## Units without a skeleton get fixed-height markers.
+func socket(bone: String) -> Node3D:
+	var key := bone.to_lower()
+	var cached = _sockets.get(key)
+	if cached != null and is_instance_valid(cached):
+		return cached
+	var n: Node3D = null
+	var nb := _norm_bone(bone)
+	if key == "ground" or key == "feet" or key == "" or nb == "buffboneglbgroundloc" or nb == "buffboneglblayoutloc" \
+			or nb == "cbuffboneglblayoutloc":
+		n = Node3D.new()
+		n.name = "Socket_ground"
+		add_child(n)
+	else:
+		if _skel == null and model != null:
+			_index_bones()
+		var bi := _find_bone(bone)
+		if bi < 0:
+			bi = _fallback_bone(bone)
+		if bi >= 0:
+			var ba := BoneAttachment3D.new()
+			ba.name = "Socket_" + nb
+			_skel.add_child(ba)
+			ba.bone_idx = bi
+			n = ba
+		else:
+			n = Node3D.new()
+			n.name = "Socket_" + nb
+			var h := height * 0.55
+			if nb.contains("overhead") or nb.contains("healthbar"):
+				h = height
+			elif nb.contains("head"):
+				h = height * 0.85
+			elif nb.contains("foot"):
+				h = 0.0
+			n.position = Vector3(0, h, 0)
+			if model != null:
+				model.add_child(n)
+			else:
+				add_child(n)
+	_sockets[key] = n
+	return n
+
+
+## World position where this unit's basic-attack missile starts (League mStartBoneName of the
+## attack spell's missile spec, e.g. Ezreal "L_hand"; falls back to the weapon/hand chain).
+func missile_origin() -> Vector3:
+	var b := attack_bone
+	if b == "":
+		b = "BUFFBONE_GLB_WEAPON_1"
+	if model != null and (attack_bone != "" or _find_bone(b) >= 0):
+		var s := socket(b)
+		if s != null and s.is_inside_tree():
+			var p := s.global_position
+			if p.is_finite() and G.flat_dist(p, global_position) < 4.0 + radius and p.y - global_position.y > 0.2:
+				return p
+	return global_position + Vector3(0, height * 0.55, 0) + facing * radius
 
 
 func _find_anim_player(n: Node) -> AnimationPlayer:
@@ -958,6 +1252,7 @@ func _find_anim_player(n: Node) -> AnimationPlayer:
 func _collect_materials(n: Node) -> void:
 	if n is MeshInstance3D:
 		var mi := n as MeshInstance3D
+		_meshes.append(mi)
 		for i in mi.get_surface_override_material_count():
 			var mat := mi.get_surface_override_material(i)
 			if mat == null and mi.mesh != null:
@@ -969,6 +1264,8 @@ func _collect_materials(n: Node) -> void:
 
 
 func has_anim(logical: String) -> bool:
+	if _graph_clip(logical) != "":
+		return true
 	return (anim_map.has(logical) and not anim_map[logical].is_empty()) or _raw_clip(logical) != ""
 
 
@@ -985,19 +1282,208 @@ func _raw_clip(n: String) -> String:
 	return _raw_clips.get(n.to_lower(), "")
 
 
+# ===================================================================== League animation graph driver
+## Logical animation -> League AnimationGraph clip names (first existing wins).
+const _LOGICAL_CLIPS := {
+	"idle": ["Idle1", "Idle_Base", "Idle1_Base", "Idle"],
+	"run": ["Run", "Run_Base", "Run1"],
+	"run_fast": ["Run_Fast", "Run_Haste"],
+	"death": ["Death", "Death_Base"],
+	"respawn": ["Respawn"],
+	"recall": ["Recall"],
+	"dance": ["Dance"],
+	"taunt": ["Taunt"],
+	"laugh": ["Laugh"],
+	"joke": ["Joke"],
+	"channel": ["Channel"],
+	"stunned": ["Stunned", "Stun"],
+	"knockup": ["KnockUp"],
+	"crit": ["Crit"],
+	"attack": ["Attack1", "Attack"],
+}
+## States that keep playing (re-resolving selectors) until something else is wanted.
+const _CYCLIC := {"idle": true, "run": true, "run_fast": true, "channel": true, "stunned": true, "knockup": true,
+		"recall": true, "dance": true}
+
+var graph: AnimGraph = null
+var _anim_base := {}          ## anim_map snapshot: a kit changing an entry overrides the graph for it
+var _g_logical := ""
+var _g_top := ""              ## League clip being played ("" = legacy clip playback)
+var _g_steps: Array = []
+var _g_i := 0
+var _g_t := 0.0               ## clip time left in the current step (INF = looping)
+var _g_atomic := ""
+var _g_speed := 1.0
+var _g_hold := false
+var _g_recheck := 0.0
+var _attack_anim := false     ## current anim is a basic attack (backswing is cancellable)
+var _strides := {}            ## glb run clip -> skeleton-space ground speed (from foot bones)
+
+
+## Attach the League animation graph (call after anim_map is built).
+func set_anim_graph(g: AnimGraph) -> void:
+	graph = g
+	_anim_base = {}
+	for k in anim_map:
+		_anim_base[k] = anim_map[k].duplicate()
+	_strides = {}
+	if g != null and anim_player != null:
+		Assets.merge_extra_clips(anim_player, g.alias)
+	if g != null and anim_player != null and _skel != null:
+		# the pose only evaluates inside the tree: measure once the unit has entered it
+		if is_inside_tree():
+			_calibrate_strides()
+		elif not ready.is_connected(_calibrate_strides):
+			ready.connect(_calibrate_strides, CONNECT_ONE_SHOT)
+	var wp := g.windup_percent() if g != null else -1.0
+	if wp > 0.0:
+		windup_pct = clampf(wp, 0.05, 0.8)
+		windup_mod = g.windup_modifier()
+	if g != null:
+		for a in g.attacks:
+			if String(a.get("start_bone", "")) != "":
+				attack_bone = String(a.start_bone)
+				break
+
+
+func _calibrate_strides() -> void:
+	if anim_player != null and _skel != null:
+		_strides = Assets.run_strides(anim_player, _skel)
+		cur_anim = ""
+
+
+func _kit_override(logical: String) -> bool:
+	return anim_map.has(logical) and _anim_base.has(logical) and anim_map[logical] != _anim_base[logical]
+
+
+func _graph_clip(logical: String) -> String:
+	if graph == null or anim_player == null or _kit_override(logical):
+		return ""
+	if logical.length() == 6 and logical.begins_with("spell"):
+		var sd := graph.spell_for_slot(int(logical.substr(5)) - 1)
+		return graph.find_clip([String(sd.get("clip", logical)), logical])
+	var c = _LOGICAL_CLIPS.get(logical)
+	if c == null:
+		return ""
+	return graph.find_clip(c)
+
+
+func _anim_ctx() -> Dictionary:
+	var ang := 0.0
+	if not casting.is_empty() and casting.get("target", {}).has("pos"):
+		var to := G.flat(casting.target.pos - global_position)
+		if to.length() > 0.01:
+			ang = rad_to_deg(facing.signed_angle_to(to.normalized(), Vector3.UP))
+	return {"MoveSpeed": stats.move_speed, "IsMoving": moving, "IsAlly": G.player == null or G.player.team == team,
+		"IsHomeguard": false, "LookAtSpellTargetAngle": ang, "Facing": 0.0, "IsInTerrain": false}
+
+
+func _g_play(logical: String, top: String, speed: float, blend: float, duration: float = 0.0) -> bool:
+	var steps: Array = graph.resolve(top, _anim_ctx()).filter(func(s): return anim_player.has_animation(s.anim))
+	if steps.is_empty():
+		return false
+	var b := blend
+	if b < 0.0:
+		var bb = graph.blend(_g_atomic, _g_top, steps[0].clip, top)
+		if bb is String:
+			# League TransitionClipBlendData: play the transition clip (e.g. Spell1_To_Run) first
+			var tr: Array = graph.resolve(bb, {}).filter(func(s): return anim_player.has_animation(s.anim))
+			if not tr.is_empty() and _CYCLIC.has(logical):
+				steps = tr + steps
+			b = 0.05 if not tr.is_empty() else AnimGraph.DEFAULT_BLEND
+		else:
+			b = float(bb)
+	_g_logical = logical
+	_g_top = top
+	_g_steps = steps
+	_g_i = 0
+	_g_hold = false
+	var spd := speed
+	if duration > 0.0:
+		var tot := 0.0
+		for s in steps:
+			tot += anim_player.get_animation(s.anim).length
+		spd = maxf(tot / duration, 0.05)
+	_g_speed = spd
+	_g_start_step(b)
+	cur_anim = logical
+	return true
+
+
+func _g_start_step(blend: float) -> void:
+	var s: Dictionary = _g_steps[_g_i]
+	var a := anim_player.get_animation(s.anim)
+	var last := _g_i == _g_steps.size() - 1
+	var cyc := _CYCLIC.has(_g_logical)
+	var restart_seq := cyc and _g_steps.size() > 1 and graph.loops(_g_top)
+	if last and cyc and not restart_seq:
+		a.loop_mode = Animation.LOOP_LINEAR
+		_g_t = INF
+	else:
+		a.loop_mode = Animation.LOOP_NONE
+		_g_t = a.length
+	_g_atomic = String(s.clip)
+	if String(anim_player.current_animation) == String(s.anim) and anim_player.is_playing():
+		anim_player.seek(0.0, true)   # replaying the same clip (idle cycles, attack chains)
+	else:
+		anim_player.play(s.anim, maxf(blend, 0.0), 1.0)
+	anim_player.speed_scale = _safe_speed(_g_speed)
+
+
+func _g_tick(dt: float) -> void:
+	if _g_top == "" or _g_hold or _g_t == INF:
+		return
+	_g_t -= dt * _g_speed
+	if _g_t > 0.0:
+		return
+	if _g_i < _g_steps.size() - 1:
+		var prev := _g_atomic
+		_g_i += 1
+		var bb = graph.blend(prev, _g_top, String(_g_steps[_g_i].clip), _g_top, 0.1)
+		_g_start_step(float(bb) if not (bb is String) else 0.1)
+	elif _CYCLIC.has(_g_logical):
+		_g_play(_g_logical, _g_top, _g_speed, -1.0)
+	else:
+		_g_hold = true
+
+
+## Non-finite playback speed would put the mixer at a NaN time (unnormalized quaternions).
+static func _safe_speed(v: float) -> float:
+	return clampf(v, 0.01, 20.0) if is_finite(v) else 1.0
+
+
+func _skel_scale() -> float:
+	if _skel != null and _skel.is_inside_tree():
+		return maxf(_skel.global_basis.get_scale().x, 0.001)
+	return 1.0
+
+
+## Run playback rate so the planted foot moves at exactly the unit's move speed (no foot sliding).
+func _run_rate(anim: String) -> float:
+	var st: float = _strides.get(anim, 0.0)
+	if not is_finite(stats.move_speed):
+		return 1.0
+	var spd := stats.move_speed / base_run_speed()
+	if st > 0.05:
+		spd = stats.move_speed * G.U / (st * _skel_scale())
+	return clampf(spd, 0.35, 3.0)
+
+
 ## Play a logical animation. duration > 0 scales playback to fit that time.
+## blend < 0 = League blend table (graph) / 0.12 (legacy).
 func play_anim(logical: String, speed: float = 1.0, blend: float = 0.12, duration: float = 0.0) -> void:
 	if anim_player == null:
 		return
 	if G.debug_sites: G.crumb("anim %s %s" % [display_name, logical])
+	var top := _graph_clip(logical)
+	if top != "" and _g_play(logical, top, speed, blend, duration):
+		return
 	var names: Array = anim_map.get(logical, [])
 	if names.is_empty():
 		var raw := _raw_clip(logical)
 		if raw == "":
 			return
 		names = [raw]
-	if names.is_empty():
-		return
 	var n: String = names[0] if names.size() == 1 else names[G.rng.randi() % names.size()]
 	if not anim_player.has_animation(n):
 		return
@@ -1005,42 +1491,91 @@ func play_anim(logical: String, speed: float = 1.0, blend: float = 0.12, duratio
 	if duration > 0.0:
 		var length := anim_player.get_animation(n).length
 		spd = maxf(length / duration, 0.05)
-	anim_player.play(n, blend, spd)
+	anim_player.speed_scale = 1.0
+	anim_player.play(n, blend if blend >= 0.0 else 0.12, _safe_speed(spd))
 	cur_anim = logical
+	_g_top = ""
+	_g_atomic = ""
 
 
 func play_attack_anim(crit: bool, period: float) -> void:
+	_attack_anim = false
+	if anim_player == null:
+		return
 	var key := "crit" if crit and has_anim("crit") else "attack"
-	if anim_player == null or not has_anim(key):
+	if graph != null and not _kit_override("attack") and not (crit and _kit_override("crit")):
+		var a: Dictionary = graph.pick_attack(crit)
+		if String(a.get("start_bone", "")) != "":
+			attack_bone = String(a.start_bone)
+		var top := graph.attack_clip(a, crit)
+		if top != "" and _g_play(key, top, 1.0, -1.0):
+			var length := anim_player.get_animation(_g_steps[0].anim).length
+			# League: the attack clip is time-scaled so its castFrame lands exactly on the windup end
+			var cast_t := float(a.get("cast_frame", 0.0)) / AnimGraph.CAST_FPS
+			var spd := maxf(1.0, length / maxf(period, 0.05))
+			if cast_t > 0.0:
+				spd = clampf(cast_t / maxf(windup_timer, 0.02), 0.2, 10.0)
+			_g_speed = spd
+			anim_player.speed_scale = _safe_speed(spd)
+			_g_t = length
+			anim_lock = minf(length / spd, period)
+			_attack_anim = true
+			return
+	if not anim_map.has(key) or anim_map[key].is_empty():
 		return
 	var names: Array = anim_map[key]
 	var n: String = names[attack_count % names.size()]
-	var length := anim_player.get_animation(n).length
+	if not anim_player.has_animation(n):
+		return
+	var length2 := anim_player.get_animation(n).length
 	# League scales attack animations to the attack time when attack speed is high
-	var spd := maxf(1.0, length / maxf(period, 0.05))
-	anim_player.play(n, 0.05, spd)
+	var spd2 := maxf(1.0, length2 / maxf(period, 0.05))
+	anim_player.speed_scale = 1.0
+	anim_player.play(n, 0.05, spd2)
 	cur_anim = key
-	anim_lock = minf(length / spd, period)
+	_g_top = ""
+	anim_lock = minf(length2 / spd2, period)
+	_attack_anim = true
 
 
 func play_spell_anim(logical: String, lock: float = 0.4, speed: float = 1.0) -> void:
-	if has_anim(logical):
-		play_anim(logical, speed, 0.05)
-		anim_lock = lock
+	if not has_anim(logical):
+		return
+	var top := _graph_clip(logical)
+	var spd := speed
+	if top != "" and absf(speed - 1.0) < 0.001 and not casting.is_empty() and float(casting.get("total", 0.0)) > 0.05:
+		# League: the cast animation's castFrame (30 fps) lands on the end of the cast time
+		var sd: Dictionary = graph.spell_for_slot(int(logical.substr(5)) - 1) if logical.begins_with("spell") 				and logical.length() == 6 else graph.spell_for_clip(top)
+		var cf := float(sd.get("cast_frame", 0.0))
+		if cf > 0.0:
+			spd = clampf(cf / AnimGraph.CAST_FPS / float(casting.total), 0.75, 2.0)
+	play_anim(logical, spd, -1.0 if top != "" else 0.05)
+	anim_lock = lock
+	_attack_anim = false
 
 
 func _update_visual(dt: float) -> void:
 	if model != null:
 		model.position.y = airborne_height + _airborne_offset()
-	if hit_flash > 0.0:
+	if hit_flash > 0.0 or _flash_shown > 0.0:
 		hit_flash = maxf(0.0, hit_flash - dt * 6.0)
-	for mat in materials:
-		mat.set_shader_parameter("flash", hit_flash * 0.55)
-	if anim_lock > 0.0:
-		anim_lock -= dt
-		return
+		# "flash" is a per-instance uniform: set it on the mesh instances, not the shared materials
+		_flash_shown = hit_flash
+		for mi in _meshes:
+			if is_instance_valid(mi):
+				(mi as GeometryInstance3D).set_instance_shader_parameter("flash", hit_flash * 0.55)
+	_update_transparency(dt)
 	if anim_player == null:
 		return
+	_g_tick(dt)
+	if anim_lock > 0.0:
+		anim_lock -= dt
+		# League: once the attack has launched, a move order cancels the backswing at once
+		if _attack_anim and windup_timer < 0.0 and moving and dash.is_empty():
+			anim_lock = 0.0
+		else:
+			return
+	_attack_anim = false
 	var want := "idle"
 	if not dash.is_empty():
 		return
@@ -1052,20 +1587,76 @@ func _update_visual(dt: float) -> void:
 		want = "run"
 	elif not channel.is_empty() and has_anim("channel"):
 		want = "channel"
-	if want != cur_anim or not anim_player.is_playing():
-		var spd := 1.0
-		if want == "run":
-			spd = clampf(stats.move_speed / base_run_speed(), 0.6, 2.2)
-		play_anim(want, spd, 0.15)
-	elif want == "run":
+	if want != cur_anim or _g_hold or (_g_top == "" and not anim_player.is_playing()):
+		play_anim(want, 1.0, -1.0)
+		_g_recheck = 0.25
+	if want != "run" or cur_anim != "run":
+		return
+	if _g_top != "":
+		# League ConditionFloat(MoveSpeed) run/haste switch mid-play (intros are skipped when switching)
+		_g_recheck -= dt
+		if _g_recheck <= 0.0:
+			_g_recheck = 0.25
+			var steps: Array = graph.resolve(_g_top, _anim_ctx())
+			if not steps.is_empty() and String(steps[-1].anim) != String(_g_steps[-1].anim) \
+					and anim_player.has_animation(steps[-1].anim):
+				var prev := _g_atomic
+				_g_steps = [steps[-1]]
+				_g_i = 0
+				var bb = graph.blend(prev, _g_top, String(steps[-1].clip), _g_top, 0.15)
+				_g_start_step(float(bb) if not (bb is String) else 0.15)
+		_g_speed = _run_rate(String(_g_steps[_g_i].anim))
+		anim_player.speed_scale = _safe_speed(_g_speed)
+	else:
+		var spd2 := _run_rate(String(anim_player.current_animation))
 		anim_player.speed_scale = 1.0
-		var spd2 := clampf(stats.move_speed / base_run_speed(), 0.6, 2.2)
 		if absf(anim_player.get_playing_speed() - spd2) > 0.05:
 			anim_player.play(anim_player.current_animation, 0.0, spd2)
 
 
 func base_run_speed() -> float:
 	return 340.0
+
+
+# ===================================================================== transparency (brush / stealth / corpse fade)
+var _meshes: Array = []       ## MeshInstance3D of the model
+var _flash_shown := 0.0
+var _alpha := -1.0            ## current GeometryInstance3D.transparency (-1 = not applied yet)
+var corpse_fade := 0.0        ## 0..1 extra transparency (minion corpse fade-out)
+const BRUSH_TRANSPARENCY := 0.45
+
+
+func _target_transparency() -> float:
+	var want := corpse_fade
+	# League: a unit standing in brush is drawn semi-transparent for its own team
+	if in_brush > 0 and not dead and G.player != null and is_instance_valid(G.player) and G.player.team == team 			and kind in [G.Kind.CHAMPION, G.Kind.MINION, G.Kind.SUMMON]:
+		want = maxf(want, BRUSH_TRANSPARENCY)
+	if not _meshes.is_empty() and is_instance_valid(_meshes[0]):
+		var st = (_meshes[0] as GeometryInstance3D).get_instance_shader_parameter("stealth")
+		if st != null and float(st) > 0.0:
+			want = maxf(want, float(st) * 0.7)
+	return clampf(want, 0.0, 1.0)
+
+
+func _update_transparency(dt: float) -> void:
+	var want := _target_transparency()
+	if _alpha < 0.0:
+		_alpha = want
+		_apply_transparency(_alpha)
+		return
+	if absf(_alpha - want) < 0.001:
+		return
+	_alpha = move_toward(_alpha, want, dt * 3.0)
+	_apply_transparency(_alpha)
+
+
+func _apply_transparency(a: float) -> void:
+	for mi in _meshes:
+		if is_instance_valid(mi):
+			var gi := mi as GeometryInstance3D
+			gi.transparency = a
+			# the ink hull would show through a see-through body
+			gi.set_instance_shader_parameter("ink", 1.0 if a < 0.02 else 0.0)
 
 
 func _airborne_offset() -> float:

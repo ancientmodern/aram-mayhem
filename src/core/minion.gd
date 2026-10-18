@@ -69,6 +69,15 @@ func setup(p_team: int, t: int, upgrades: int, lane_points: Array, ms: float) ->
 	set_model(m)
 	anim_map = Assets.build_anim_map(anim_player, {})
 	display_scale = 1.0
+	# League minion graph + attack timing (windup = mAttackCastTime / mAttackTotalTime, missile bone)
+	var g := AnimGraph.load_for(model_name)
+	set_anim_graph(g)
+	# League minions keep apart by their gameplay radius (overrideGameplayCollisionRadius 48 for
+	# melee/caster): waves spread out instead of stacking
+	if g != null:
+		var gr := float(g.stats.get("overrideGameplayCollisionRadius", 0.0))
+		if gr > 0.0:
+			path_radius = gr * G.U * 0.95
 
 
 func sight_range() -> float:
@@ -154,8 +163,18 @@ func _choose_target() -> Unit:
 
 
 func on_died(_killer) -> void:
+	# League: the minion plays its death clip, the corpse lies briefly, then fades out while sinking
+	var death_len := 1.0
+	if anim_player != null and anim_player.current_animation != "":
+		death_len = anim_player.current_animation_length / maxf(absf(anim_player.get_playing_speed()), 0.05)
 	var tw := create_tween()
-	tw.tween_interval(1.6)
+	tw.tween_interval(clampf(death_len, 0.5, 2.5) + 0.35)
+	var fade_fn := func(v: float) -> void:
+		corpse_fade = v
+		_apply_transparency(v)
+		if model != null:
+			model.position.y = -0.35 * v
+	tw.tween_method(fade_fn, 0.0, 1.0, 0.7)
 	tw.tween_callback(func():
 		if match_ref != null:
 			match_ref.remove_unit(self)

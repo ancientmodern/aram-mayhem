@@ -90,6 +90,10 @@ func setup(p_alias: String, p_team: int, p_skin: int = 0) -> void:
 	kit = ChampionDB.make_kit(alias)
 	if kit != null:
 		kit.build(self)
+	if s.has("pathfindingCollisionRadius"):
+		path_radius = float(s.pathfindingCollisionRadius) * G.U
+	# League AnimationGraphData + attack timing/bones (data/anim/<alias>.json)
+	set_anim_graph(AnimGraph.load_for(alias))
 	recompute_stats()
 	hp = stats.max_hp
 	mana = stats.max_mana
@@ -172,6 +176,7 @@ func respawn() -> void:
 	teleport(spawn_point)
 	cmd = Cmd.IDLE
 	attack_target = null
+	anim_lock = 0.0
 	play_anim("idle", 1.0, 0.0)
 	cur_anim = "idle"
 	for e in effects.duplicate():
