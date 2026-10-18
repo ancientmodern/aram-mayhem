@@ -27,12 +27,43 @@ func _shot(n: String) -> void:
 	print("WUI SHOT ", n, " cursor=", pc._cursor_state, " hovered=", pc.hovered.display_name if pc.hovered else "-")
 
 
+func _crop(n: String, u: Unit) -> void:
+	var img := Image.load_from_file(ProjectSettings.globalize_path("%s/%s.png" % [shot_dir, n]))
+	var sp := pc.rig.cam.unproject_position(u.global_position) * (Vector2(img.get_size()) / get_viewport().get_visible_rect().size)
+	var r := Rect2i(Vector2i(sp) - Vector2i(200, 220), Vector2i(400, 300)).intersection(Rect2i(Vector2i.ZERO, img.get_size()))
+	var c := img.get_region(r)
+	c.resize(r.size.x * 2, r.size.y * 2, Image.INTERPOLATE_NEAREST)
+	c.save_png("%s/%s_zoom.png" % [shot_dir, n])
+
+
 func _mouse_to(p: Vector3) -> void:
 	var ev := InputEventMouseMotion.new()
 	ev.position = get_viewport().get_final_transform() * pc.rig.cam.unproject_position(p)
 	ev.global_position = ev.position
-	Input.parse_input_event(ev)
-	Input.warp_mouse(ev.position)
+	Input.parse_input_event(ev)   # PlayerController tracks the cursor from events (never warp the real mouse)
+
+
+func _outlined(u: Unit) -> String:
+	var found := [""]
+	var stack: Array = [u.model]
+	while not stack.is_empty():
+		var n = stack.pop_back()
+		if n == null:
+			continue
+		stack.append_array(n.get_children())
+		if n is MeshInstance3D and n.material_overlay != null:
+			found[0] = "enemy" if n.material_overlay == pc._outline_enemy else ("ally" if n.material_overlay == pc._outline_ally else "other")
+	return found[0]
+
+
+## Real hover: inject a mouse-motion event over `u`, let PlayerController pick/outline/cursor it, report.
+func _hover_check(u: Unit, label: String, want_cursor: String, want_outline: String) -> void:
+	_mouse_to(u.global_position + Vector3(0, u.height * 0.5, 0))
+	await get_tree().process_frame
+	await get_tree().process_frame
+	var ok := pc.hovered == u and pc._cursor_state == want_cursor and _outlined(u) == want_outline
+	print("WUI HOVER %s %s visible=%s hovered=%s cursor=%s outline=%s (want %s/%s)" % ["PASS" if ok else "FAIL", label, u.visible_to[G.player.team],
+			pc.hovered.display_name if pc.hovered else "-", pc._cursor_state, _outlined(u), want_cursor, want_outline])
 
 
 func _nearest(kind: int, enemy: bool) -> Unit:
@@ -61,13 +92,16 @@ func _run() -> void:
 	if al != null and en != null:
 		en.teleport(match_ref.nav.nearest_walkable(c.global_position + Vector3(2.5, 0, -1.5)))
 		al.teleport(match_ref.nav.nearest_walkable(c.global_position + Vector3(-2.5, 0, 1.0)))
-		await _wait(0.1)
-		PlayerController.set_unit_outline(en, pc._outline_enemy)
-		PlayerController.set_unit_outline(al, pc._outline_ally)
-		await _wait(0.1)
-		await _shot("h_outlines")
-		PlayerController.set_unit_outline(en, null)
-		PlayerController.set_unit_outline(al, null)
+		await _wait(0.8)   # vision refresh before the teleported enemy can be hovered
+		await _hover_check(en, "fountain_enemy", "hover_enemy", "enemy")
+		await _shot("h_hover_enemy")
+		await _hover_check(al, "fountain_ally", "hover_ally", "ally")
+		print("WUI HOVER enemy outline cleared=", _outlined(en) == "")
+		await _shot("h_hover_ally")
+		_mouse_to(c.global_position + Vector3(4, 0, 4))
+		await get_tree().process_frame
+		await get_tree().process_frame
+		print("WUI HOVER %s ground cursor=%s ally_outline_cleared=%s" % ["PASS" if pc._cursor_state == "hand" and _outlined(al) == "" else "FAIL", pc._cursor_state, _outlined(al) == ""])
 	# let the lanes meet
 	Engine.time_scale = 6.0
 	await _wait(32.0)
@@ -100,12 +134,7 @@ func _run() -> void:
 	var h := _nearest(G.Kind.CHAMPION, true)
 	if h == null or G.flat_dist(h.global_position, c.global_position) > 18.0:
 		h = victim
-	_mouse_to(h.global_position + Vector3(0, 1.0, 0))
-	await _wait(0.15)
-	PlayerController.set_unit_outline(h, pc._outline_enemy)
-	var ally := _nearest(G.Kind.MINION, false)
-	if ally != null:
-		PlayerController.set_unit_outline(ally, pc._outline_ally)
+	await _hover_check(h, "lane_enemy", "hover_enemy", "enemy")
 	await _shot("a_bars_text_hover")
 	await _wait(0.25)
 	await _shot("a2_text_later")
@@ -128,14 +157,15 @@ func _run() -> void:
 	await _shot("c_cone_indicator")
 	ab.indicator = Ability.Ind.CIRCLE
 	ab.ind_radius = 250.0
+	_mouse_to(h.global_position)   # AoE circle right under the enemy: it must stand ON the decal
 	await _wait(0.15)
 	await _shot("d_circle_indicator")
+	_crop("d_circle_indicator", h)
 	ab.indicator = old_ind
 	pc._cancel_aim()
 	# attack range (A armed)
 	pc.attack_move_armed = true
-	_mouse_to(h.global_position + Vector3(0, 1.0, 0))
-	await _wait(0.15)
+	await _hover_check(h, "attack_move_enemy", "target_enemy", "enemy")
 	await _shot("e_attack_range")
 	pc.attack_move_armed = false
 	# turret range: just outside, then inside an enemy turret's range
