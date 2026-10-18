@@ -1,0 +1,570 @@
+{
+ "vo": {
+  "Play_vo_Announcer_Female1_AceBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_aceblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_AceEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_aceenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_aceenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_Acepurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_acepurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_AceRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_acered_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_AceYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_aceenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_aceenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_ChampionDoubleKillpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_championdoublekillpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_ChampionPentaKillpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_championpentakillpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_ChampionQuadraKillpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_championquadrakillpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_ChampionTripleKillpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_championtriplekillpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_ChampionUnrealKillblue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_championunrealkillblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_ChampionUnrealKillpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_championunrealkillpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_ChampionUnrealKillred": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_championunrealkillred_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DampenerDiepurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_dampenerdiepurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DampenerRespawnpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_dampenerrespawnpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DampenerRespawnSoonpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_dampenerrespawnsoonpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DampenerUnderAttackBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_dampenerunderattackblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DampenerUnderAttackpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_dampenerunderattackpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DampenerUnderAttackRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_dampenerunderattackred_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DominatingHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_dominatingheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DominatingHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_dominatingheroenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DominatingHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_dominatingheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DominatingHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_dominatingheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DominatingYouYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_dominatingheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DoubleKillHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_doublekillheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DoubleKillHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_doublekillheroenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_doublekillheroenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_DoubleKillHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_doublekillherored_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_DoubleKillHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_doublekillheroyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_doublekillheroyourteam_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_doublekillheroyourteam_3.wav"
+  ],
+  "Play_vo_Announcer_Female1_DoubleKillYouYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_doublekillheroyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_doublekillheroyourteam_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_doublekillheroyourteam_3.wav"
+  ],
+  "Play_vo_Announcer_Female1_FirstBloodHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_firstbloodheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_FirstBloodHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_firstbloodheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_FirstBloodHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_firstbloodheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_FirstBloodHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_firstbloodheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_FirstBloodYouYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_firstbloodheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_GodlikeHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_godlikeheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_godlikeheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_GodlikeHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_godlikeheroenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_godlikeheroenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_GodlikeHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_godlikeheroblue_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_godlikeheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_GodlikeHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_godlikeheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_godlikeheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_GodlikeYouYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_godlikeheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_godlikeheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_InhibitorLostBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorlostblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_InhibitorLostEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorlostenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorlostenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_InhibitorLostRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorlostred_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_InhibitorLostYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorlostyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorlostyourteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_InhibitorRespawnBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorrespawnblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_InhibitorRespawnEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorrespawnenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorrespawnenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_InhibitorRespawnRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorrespawnred_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_InhibitorRespawnSoonBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorrespawnsoonblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_InhibitorRespawnSoonEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorrespawnsoonenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorrespawnsoonenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_InhibitorRespawnSoonRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorrespawnsoonred_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_InhibitorRespawnSoonYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorrespawnsoonyourteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_InhibitorRespawnYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_inhibitorrespawnyourteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillChampionHeroHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroheroblue_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroheroblue_3.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillChampionHeroHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroheroenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroheroenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillChampionHeroHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroheroblue_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroheroblue_3.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillChampionHeroHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroheroyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroheroyourteam_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroheroyourteam_3.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillChampionHeroYouEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroyouenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionheroyouenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillChampionMinionHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionminionheroenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillChampionMinionHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionminionheroenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillChampionMinionYouEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionminionheroenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillChampionTurretHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionminionheroenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillChampionTurretHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionminionheroenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillChampionTurretYouEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionminionheroenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillChampionYouHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionyouheroyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionyouheroyourteam_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killchampionyouheroyourteam_3.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillDragonBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killdragonblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillDragonpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killdragonpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillDragonRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killdragonred_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillingSpreeHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillingSpreeHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeheroenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeheroenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillingSpreeHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillingSpreeHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillingSpreeSet1purple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillingSpreeSet2purple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset2purple_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset2purple_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillingSpreeSet3purple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset3purple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillingSpreeSet4purple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_dominatingheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillingSpreeSet5purple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_godlikeheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_godlikeheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillingSpreeSet6purple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_3.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillingSpreeYouYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillWormBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killwormblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillWormpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killwormpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_KillWormRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killwormred_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_LegendaryHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_3.wav"
+  ],
+  "Play_vo_Announcer_Female1_LegendaryHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_legendaryheroenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_legendaryheroenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_LegendaryHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_3.wav"
+  ],
+  "Play_vo_Announcer_Female1_LegendaryHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_3.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_LegendaryYouYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_3.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset6purple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_MinionSpawn": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_minionspawn_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_NexusUnderAttackBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_nexusunderattackblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_NexusUnderAttackpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_nexusunderattackpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_NexusUnderAttackRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_nexusunderattackred_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_OnLeave": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onleave_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onleave_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_OnLeaveEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onleaveenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_OnLeaveYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onleaveyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onleaveyourteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_OnQuitEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onquitenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_OnQuitEnemyTeamAlt": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onquitenemyteamalt_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onquitenemyteamalt_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_OnQuitYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onquityourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onquityourteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_OnQuitYourTeamAlt": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onquityourteamalt_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onquityourteamalt_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_OnReconnectEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onreconnectenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onreconnectenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_OnReconnectYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_onreconnectyourteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_PentaKillHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_pentakillheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_PentaKillHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_pentakillheroenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_pentakillheroenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_PentaKillHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_pentakillherored_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_PentaKillHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_pentakillheroyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_pentakillheroyourteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_PentaKillYouYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_pentakillheroyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_pentakillheroyourteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_PlayerDisconnectYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_playerdisconnectyourteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_PlayerReconnectYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_playerreconnectyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_playerreconnectyourteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_QuadraKillHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_quadrakillheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_QuadraKillHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_quadrakillheroenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_QuadraKillHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_quadrakillherored_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_QuadraKillHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_quadrakillheroyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_quadrakillheroyourteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_QuadraKillYouYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_quadrakillheroyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_quadrakillheroyourteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_RampageHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset2purple_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset2purple_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_RampageHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_rampageheroenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_RampageHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset2purple_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset2purple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_RampageHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset2purple_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset2purple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_RampageYouYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset2purple_2.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset2purple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_ShutdownHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_shutdownheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_shutdownheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_ShutdownHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_shutdownheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_shutdownheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_ShutdownHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_shutdownheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_shutdownheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_ShutdownHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_shutdownheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_shutdownheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_ShutdownYouYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_shutdownheroblue_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_shutdownheroblue_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_StartGameMessage1Map11": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_startgamemessage1map11_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_StartGameMessage2Map11": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_startgamemessage2map11_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_StartGameMessage2Map12": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_startgamemessage2map12_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_startgamemessage2map12_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_SurrenderBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_surrenderblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_Surrenderpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_surrenderpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_SurrenderRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_surrenderred_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_TripleKillHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_triplekillheroblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_TripleKillHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_triplekillheroenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_triplekillheroenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_TripleKillHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_triplekillherored_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_TripleKillHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_triplekillheroyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_triplekillheroyourteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_TripleKillYouYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_triplekillheroyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_triplekillheroyourteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_TurretDiepurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretdiepurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_TurretLostBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretlostblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_TurretLostEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretlostenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_TurretLostFirstBloodEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretlostenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_TurretLostFirstBloodYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretlostfirstbloodyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretlostfirstbloodyourteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_TurretLostRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretlostred_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_TurretLostYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretlostfirstbloodyourteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretlostfirstbloodyourteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_TurretPlatingFall30Seconds": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretplatingfall30seconds_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretplatingfall30seconds_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_TurretPlatingFallOff": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretplatingfalloff_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_TurretUnderAttackBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretunderattackblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_TurretUnderAttackpurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretunderattackpurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_TurretUnderAttackRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_turretunderattackred_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_UnstoppableHeroBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset3purple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_UnstoppableHeroEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_unstoppableheroenemyteam_1.wav",
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_unstoppableheroenemyteam_2.wav"
+  ],
+  "Play_vo_Announcer_Female1_UnstoppableHeroRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset3purple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_UnstoppableHeroYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset3purple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_UnstoppableYouYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_killingspreeset3purple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_VictoryBlue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_victoryblue_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_Victorypurple": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_victorypurple_1.wav"
+  ],
+  "Play_vo_Announcer_Female1_VictoryRed": [
+   "res://assets/audio/game/announcer/play_vo_announcer_female1_victoryred_1.wav"
+  ],
+  "Play_vo_Announcer_Global_Female1_OnChampionHexaKillblue": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_female1_onchampionhexakillblue_1.wav"
+  ],
+  "Play_vo_Announcer_Global_Female1_OnChampionHexaKillEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_female1_onchampionhexakillenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Global_Female1_OnChampionHexaKillred": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_female1_onchampionhexakillred_1.wav"
+  ],
+  "Play_vo_Announcer_Global_Female1_OnChampionHexaKillYou": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_female1_onchampionhexakillyou_1.wav"
+  ],
+  "Play_vo_Announcer_Global_Female1_OnChampionHexaKillYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_female1_onchampionhexakillyou_1.wav"
+  ],
+  "Play_vo_Announcer_Global_Female1_OnDefeat": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_female1_ondefeat_1.wav"
+  ],
+  "Play_vo_Announcer_Global_Female1_OnVictory": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_female1_onvictory_1.wav"
+  ],
+  "Play_vo_Announcer_Global_OnPointEnemyTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_onpointenemyteam_1.wav"
+  ],
+  "Play_vo_Announcer_Global_OnPointYou": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_onpointyou_1.wav"
+  ],
+  "Play_vo_Announcer_Global_OnPointYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_onpointyourteam_1.wav"
+  ],
+  "Play_vo_Announcer_Global_OnStartGameMessage1ModeSnowdowShowdown": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_onstartgamemessage1modesnowdowshowdown_1.wav"
+  ],
+  "Play_vo_Announcer_Global_OnVictoryAlmostEnemy": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_onvictoryalmostenemy_1.wav"
+  ],
+  "Play_vo_Announcer_Global_OnVictoryAlmostYou": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_onvictoryalmostyou_1.wav"
+  ],
+  "Play_vo_Announcer_Global_OnVictoryAlmostYourTeam": [
+   "res://assets/audio/game/announcer/play_vo_announcer_global_onvictoryalmostyourteam_1.wav"
+  ]
+ }
+}

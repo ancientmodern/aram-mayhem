@@ -1,0 +1,1039 @@
+{
+ "sfx": {
+  "Play_sfx_Challenger_Recall_buffactivate": [
+   "res://assets/audio/game/shared/play_sfx_challenger_recall_buffactivate_1.wav",
+   "res://assets/audio/game/shared/play_sfx_challenger_recall_buffactivate_2.wav"
+  ],
+  "Play_sfx_Challenger_Recall_buffactivate_aram": [
+   "res://assets/audio/game/shared/play_sfx_challenger_recall_buffactivate_aram_1.wav"
+  ],
+  "Play_sfx_Death_Self": [
+   "res://assets/audio/game/shared/play_sfx_death_self_1.wav"
+  ],
+  "Play_sfx_deathexplo_Death": [
+   "res://assets/audio/game/shared/play_sfx_deathexplo_death_1.wav"
+  ],
+  "Play_sfx_GoldAquisition_P_cast": [
+   "res://assets/audio/game/shared/play_sfx_goldaquisition_p_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_goldaquisition_p_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_goldaquisition_p_cast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_goldaquisition_p_cast_4.wav",
+   "res://assets/audio/game/shared/play_sfx_goldaquisition_p_cast_5.wav"
+  ],
+  "Play_sfx_Honor_Recall_buffactivate": [
+   "res://assets/audio/game/shared/play_sfx_honor_recall_buffactivate_1.wav",
+   "res://assets/audio/game/shared/play_sfx_challenger_recall_buffactivate_2.wav"
+  ],
+  "Play_sfx_Honor_Recall_buffactivate_aram": [
+   "res://assets/audio/game/shared/play_sfx_honor_recall_buffactivate_aram_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_with_debt": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_item_with_debt_1.wav"
+  ],
+  "Play_sfx_levelup_levelup": [
+   "res://assets/audio/game/shared/play_sfx_levelup_levelup_1.wav"
+  ],
+  "Play_sfx_Misc_Gameplay_Shield_Break": [
+   "res://assets/audio/game/shared/play_sfx_misc_gameplay_shield_break_1.wav"
+  ],
+  "Play_sfx_Recall_return": [
+   "res://assets/audio/game/shared/play_sfx_recall_return_1.wav"
+  ],
+  "Play_sfx_Recall_Shared_buffactivate": [
+   "res://assets/audio/game/shared/play_sfx_challenger_recall_buffactivate_2.wav"
+  ],
+  "Play_sfx_RecallImproved_OnBuffActivate": [
+   "res://assets/audio/game/shared/play_sfx_recallimproved_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Respawn_respawn": [
+   "res://assets/audio/game/shared/play_sfx_respawn_respawn_1.wav"
+  ],
+  "Play_sfx_SnowballFollowupCast_hit": [
+   "res://assets/audio/game/shared/play_sfx_snowballfollowupcast_hit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_snowballfollowupcast_hit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_snowballfollowupcast_hit_3.wav"
+  ],
+  "Play_sfx_SnowballFollowupCast_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_snowballfollowupcast_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_snowballfollowupcast_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_snowballfollowupcast_oncast_3.wav"
+  ],
+  "Play_sfx_Spawn_Base_buffactivate": [
+   "res://assets/audio/game/shared/play_sfx_spawn_base_buffactivate_1.wav",
+   "res://assets/audio/game/shared/play_sfx_spawn_base_buffactivate_2.wav",
+   "res://assets/audio/game/shared/play_sfx_spawn_base_buffactivate_3.wav"
+  ],
+  "Play_sfx_SummonerBacktrack_cast": [
+   "res://assets/audio/game/shared/play_sfx_summonerbacktrack_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerbacktrack_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerbacktrack_cast_3.wav"
+  ],
+  "Play_sfx_SummonerBacktrack_cast_self": [
+   "res://assets/audio/game/shared/play_sfx_summonerbacktrack_cast_self_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerbacktrack_cast_self_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerbacktrack_cast_self_3.wav"
+  ],
+  "Play_sfx_SummonerBacktrack_missilelaunch": [
+   "res://assets/audio/game/shared/play_sfx_summonerbacktrack_missilelaunch_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerbacktrack_missilelaunch_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerbacktrack_missilelaunch_3.wav"
+  ],
+  "Play_sfx_SummonerBarrier_OnBuffActivate": [
+   "res://assets/audio/game/shared/play_sfx_summonerbarrier_onbuffactivate_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerbarrier_onbuffactivate_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerbarrier_onbuffactivate_3.wav"
+  ],
+  "Play_sfx_SummonerBarrier_OnBuffDeactivate": [
+   "res://assets/audio/game/shared/play_sfx_summonerbarrier_onbuffdeactivate_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerbarrier_onbuffdeactivate_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerbarrier_onbuffdeactivate_3.wav"
+  ],
+  "Play_sfx_SummonerBarrier_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_summonerbarrier_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerbarrier_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerbarrier_oncast_3.wav"
+  ],
+  "Play_sfx_SummonerBoost_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_summonerboost_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerboost_oncast_2.wav"
+  ],
+  "Play_sfx_SummonerClairvoyance_place": [
+   "res://assets/audio/game/shared/play_sfx_summonerclairvoyance_place_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerclairvoyance_place_2.wav"
+  ],
+  "Play_sfx_SummonerDot_OnBuffActivate": [
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onbuffactivate_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onbuffactivate_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onbuffactivate_3.wav"
+  ],
+  "Play_sfx_SummonerDot_OnBuffActivate_stereo": [
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onbuffactivate_stereo_1.wav"
+  ],
+  "Play_sfx_SummonerDot_OnBuffDeactivate": [
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onbuffdeactivate_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onbuffdeactivate_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onbuffdeactivate_3.wav"
+  ],
+  "Play_sfx_SummonerDot_OnBuffDeactivate_stereo": [
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onbuffdeactivate_stereo_1.wav"
+  ],
+  "Play_sfx_SummonerDot_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onhit_3.wav"
+  ],
+  "Play_sfx_SummonerDot_OnHit_stereo": [
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onhit_stereo_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerdot_onbuffactivate_stereo_1.wav"
+  ],
+  "Play_sfx_SummonerExhaust_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_summonerexhaust_onhit_1.wav"
+  ],
+  "Play_sfx_SummonerExhaustSlow_OnBuffActivate": [
+   "res://assets/audio/game/shared/play_sfx_summonerexhaustslow_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_SummonerExhaustSlow_OnBuffActivate_stereo": [
+   "res://assets/audio/game/shared/play_sfx_summonerexhaustslow_onbuffactivate_stereo_1.wav"
+  ],
+  "Play_sfx_SummonerFlash5scd_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_summonerflash5scd_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerflash5scd_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerflash5scd_oncast_3.wav"
+  ],
+  "Play_sfx_SummonerFlash_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_summonerflash5scd_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerflash5scd_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerflash5scd_oncast_3.wav"
+  ],
+  "Play_sfx_SummonerFlash_return": [
+   "res://assets/audio/game/shared/play_sfx_summonerflash_return_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerflash_return_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerflash_return_3.wav"
+  ],
+  "Play_sfx_SummonerHaste_OnBuffActivate": [
+   "res://assets/audio/game/shared/play_sfx_summonerhaste_onbuffactivate_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerhaste_onbuffactivate_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerhaste_onbuffactivate_3.wav"
+  ],
+  "Play_sfx_SummonerHaste_OnBuffDeactivate": [
+   "res://assets/audio/game/shared/play_sfx_summonerhaste_onbuffdeactivate_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerhaste_onbuffdeactivate_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerhaste_onbuffdeactivate_3.wav"
+  ],
+  "Play_sfx_SummonerHaste_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_summonerhaste_oncast_1.wav"
+  ],
+  "Play_sfx_SummonerHeal_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_summonerheal_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerheal_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerheal_oncast_3.wav"
+  ],
+  "Play_sfx_SummonerMana_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_summonermana_oncast_1.wav"
+  ],
+  "Play_sfx_SummonerSmite_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_summonersmite_onhit_1.wav"
+  ],
+  "Play_sfx_SummonerSnowball_hit": [
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_hit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_hit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_hit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_hit_4.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_hit_5.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_hit_6.wav"
+  ],
+  "Play_sfx_SummonerSnowball_miss": [
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_miss_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_miss_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_miss_3.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_miss_4.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_miss_5.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_miss_6.wav"
+  ],
+  "Play_sfx_SummonerSnowball_missilelaunch": [
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_missilelaunch_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_missilelaunch_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_missilelaunch_3.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_missilelaunch_4.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_missilelaunch_5.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_missilelaunch_6.wav"
+  ],
+  "Play_sfx_SummonerSnowball_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_oncast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_oncast_4.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_oncast_5.wav",
+   "res://assets/audio/game/shared/play_sfx_summonersnowball_oncast_6.wav"
+  ],
+  "Play_sfx_SummonerTeledash_buffactivate": [
+   "res://assets/audio/game/shared/play_sfx_summonerteledash_buffactivate_1.wav"
+  ],
+  "Play_sfx_SummonerTeledash_marker_buffactivate": [
+   "res://assets/audio/game/shared/play_sfx_summonerteledash_marker_buffactivate_1.wav"
+  ],
+  "Play_sfx_SummonerTeledash_travel_buffactivate": [
+   "res://assets/audio/game/shared/play_sfx_summonerteledash_travel_buffactivate_1.wav"
+  ],
+  "Play_sfx_SummonerTeledash_travel_loop": [
+   "res://assets/audio/game/shared/play_sfx_summonerteledash_travel_loop_1.wav"
+  ],
+  "Play_sfx_SummonerTeleport_buffactivate": [
+   "res://assets/audio/game/shared/play_sfx_summonerteleport_buffactivate_1.wav"
+  ],
+  "Play_sfx_SummonerTeleport_marker": [
+   "res://assets/audio/game/shared/play_sfx_summonerteleport_marker_1.wav"
+  ],
+  "Play_sfx_SummonerTeleport_return": [
+   "res://assets/audio/game/shared/play_sfx_summonerteleport_return_1.wav"
+  ],
+  "Play_sfx_SummonerTeleport_upgrade_transform": [
+   "res://assets/audio/game/shared/play_sfx_summonerteleport_upgrade_transform_1.wav",
+   "res://assets/audio/game/shared/play_sfx_summonerteleport_upgrade_transform_2.wav"
+  ],
+  "Play_sfx_SuperRecall_return": [
+   "res://assets/audio/game/shared/play_sfx_superrecall_return_1.wav"
+  ],
+  "Play_sfx_SuperRecall_Shared_buffactivate": [
+   "res://assets/audio/game/shared/play_sfx_superrecall_shared_buffactivate_1.wav"
+  ],
+  "Play_sfx_SuperRecallImproved_OnBuffActivate": [
+   "res://assets/audio/game/shared/play_sfx_superrecallimproved_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_hud_base_AttackFail_Disarm": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_attackfail_disarm_1.wav"
+  ],
+  "Play_sfx_hud_base_button": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav"
+  ],
+  "Play_sfx_hud_base_champ_stats_close": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav"
+  ],
+  "Play_sfx_hud_base_champ_stats_open": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav"
+  ],
+  "Play_sfx_hud_base_Chat_All": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_chat_all_1.wav"
+  ],
+  "Play_sfx_hud_base_Chat_Team": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_chat_team_1.wav"
+  ],
+  "Play_sfx_hud_base_Generic_button": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav"
+  ],
+  "Play_sfx_hud_base_Generic_button_click": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav"
+  ],
+  "Play_sfx_hud_base_generic_click": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav"
+  ],
+  "Play_sfx_hud_base_item_slot_drop": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_item_slot_drop_1.wav"
+  ],
+  "Play_sfx_hud_base_item_slot_grab": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_item_slot_grab_1.wav"
+  ],
+  "Play_sfx_hud_base_LevelUp_click": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_levelup_click_1.wav"
+  ],
+  "Play_sfx_hud_base_LevelUp_layer": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_levelup_layer_1.wav"
+  ],
+  "Play_sfx_hud_base_LevelUp_release": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_levelup_release_1.wav"
+  ],
+  "Play_sfx_hud_base_Map_Close": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_map_close_1.wav"
+  ],
+  "Play_sfx_hud_base_Map_Open": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_map_open_1.wav"
+  ],
+  "Play_sfx_hud_base_menu_close": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_menu_close_1.wav"
+  ],
+  "Play_sfx_hud_base_menu_open": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_menu_open_1.wav"
+  ],
+  "Play_sfx_hud_base_Pings_AreaIsWarded": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_areaiswarded_1.wav",
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_areaiswarded_2.wav"
+  ],
+  "Play_sfx_hud_base_Pings_Attack": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_attack_1.wav"
+  ],
+  "Play_sfx_hud_base_Pings_Base": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_base_1.wav"
+  ],
+  "Play_sfx_hud_base_Pings_button": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav"
+  ],
+  "Play_sfx_hud_base_Pings_Click": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav"
+  ],
+  "Play_sfx_hud_base_Pings_ComeHere": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_comehere_1.wav",
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_comehere_2.wav"
+  ],
+  "Play_sfx_hud_base_Pings_Danger": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_danger_1.wav",
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_danger_2.wav"
+  ],
+  "Play_sfx_hud_base_Pings_Defend": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_defend_1.wav"
+  ],
+  "Play_sfx_hud_base_Pings_GetBack": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_getback_1.wav",
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_getback_2.wav"
+  ],
+  "Play_sfx_hud_base_Pings_MIA": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_mia_1.wav"
+  ],
+  "Play_sfx_hud_base_Pings_OnMyWay": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_onmyway_1.wav"
+  ],
+  "Play_sfx_hud_base_Pings_OnMyWay_caster": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_onmyway_caster_1.wav"
+  ],
+  "Play_sfx_hud_base_Pings_OnMyWay_Close": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_onmyway_caster_1.wav"
+  ],
+  "Play_sfx_hud_base_Pings_OnMyWay_Far": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_onmyway_far_1.wav"
+  ],
+  "Play_sfx_hud_base_Pings_OnMyWay_recipient": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_onmyway_caster_1.wav",
+   "res://assets/audio/game/shared/play_sfx_hud_base_pings_onmyway_far_1.wav"
+  ],
+  "Play_sfx_hud_base_Recall_Select": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav"
+  ],
+  "Play_sfx_hud_base_Score_Open": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_score_open_1.wav"
+  ],
+  "Play_sfx_hud_base_spell_generic_use": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_spell_generic_use_1.wav"
+  ],
+  "Play_sfx_hud_base_spell_levelup": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_spell_levelup_1.wav"
+  ],
+  "Play_sfx_hud_base_spell_summoner_use": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_spell_summoner_use_1.wav"
+  ],
+  "Play_sfx_hud_base_spell_upgrade": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_spell_upgrade_1.wav"
+  ],
+  "Play_sfx_hud_base_SpellFail_Cooldown": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_attackfail_disarm_1.wav"
+  ],
+  "Play_sfx_hud_base_SpellFail_Grounded": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_spellfail_grounded_1.wav"
+  ],
+  "Play_sfx_hud_base_SpellFail_NoMana": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_spellfail_nomana_1.wav"
+  ],
+  "Play_sfx_hud_base_SpellFail_Silence": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_attackfail_disarm_1.wav"
+  ],
+  "Play_sfx_hud_base_Store_Click": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav"
+  ],
+  "Play_sfx_hud_base_store_expand_open": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_expand_open_1.wav"
+  ],
+  "Play_sfx_hud_base_store_filter_invert": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_filter_invert_1.wav"
+  ],
+  "Play_sfx_hud_base_store_filter_remove": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_filter_invert_1.wav"
+  ],
+  "Play_sfx_hud_base_store_filter_select": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_filter_select_1.wav"
+  ],
+  "Play_sfx_hud_base_store_filter_stat_select": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_filter_select_1.wav"
+  ],
+  "Play_sfx_hud_base_store_generic_close": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_generic_close_1.wav"
+  ],
+  "Play_sfx_hud_base_store_generic_open": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_generic_open_1.wav"
+  ],
+  "Play_sfx_hud_base_store_inventorytab_close": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_inventorytab_close_1.wav"
+  ],
+  "Play_sfx_hud_base_store_inventorytab_open": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_inventorytab_open_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_buy_basic": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_item_buy_basic_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_buy_components": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_item_buy_components_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_buy_legendary": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_item_buy_legendary_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_buy_upgrade": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_item_buy_upgrade_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_hover_blue": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_item_hover_blue_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_hover_mythic": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_item_hover_mythic_1.wav"
+  ],
+  "Play_sfx_hud_base_store_item_sell": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_item_sell_1.wav"
+  ],
+  "Play_sfx_hud_base_store_quicktab_close": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_inventorytab_close_1.wav"
+  ],
+  "Play_sfx_hud_base_store_quicktab_open": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_inventorytab_open_1.wav"
+  ],
+  "Play_sfx_hud_base_store_quicktab_open_highlight": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_quicktab_open_highlight_1.wav"
+  ],
+  "Play_sfx_hud_base_store_quicktab_pin": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav"
+  ],
+  "Play_sfx_hud_base_store_rec_select": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_rec_select_1.wav"
+  ],
+  "Play_sfx_hud_base_Store_Select": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav"
+  ],
+  "Play_sfx_hud_base_store_tab_select": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_tab_select_1.wav"
+  ],
+  "Play_sfx_hud_base_Store_Undo": [
+   "res://assets/audio/game/shared/play_sfx_hud_base_store_undo_1.wav"
+  ],
+  "Play_sfx_hud_Store_Buy": [
+   "res://assets/audio/game/shared/play_sfx_hud_store_buy_1.wav"
+  ],
+  "Play_sfx_hud_Turret_targetingwarning": [
+   "res://assets/audio/game/shared/play_sfx_hud_turret_targetingwarning_1.wav"
+  ],
+  "Play_ui_hud_base_levelup_release_02": [
+   "res://assets/audio/game/shared/play_ui_hud_base_levelup_release_02_1.wav"
+  ],
+  "Play_sfx_ElixirOfIron_OnBuffCast": [
+   "res://assets/audio/game/shared/play_sfx_elixirofiron_onbuffcast_1.wav"
+  ],
+  "Play_sfx_ElixirOfSorcery_OnBuffCast": [
+   "res://assets/audio/game/shared/play_sfx_elixirofsorcery_onbuffcast_1.wav"
+  ],
+  "Play_sfx_ElixirOfWrath_OnBuffCast": [
+   "res://assets/audio/game/shared/play_sfx_elixirofwrath_onbuffcast_1.wav"
+  ],
+  "Play_sfx_Item2003_OnBuffActivate": [
+   "res://assets/audio/game/shared/play_sfx_item2003_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_Item2003_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_item2003_oncast_1.wav"
+  ],
+  "Play_sfx_ItemCrystalFlask_OnBuffActivate": [
+   "res://assets/audio/game/shared/play_sfx_item2003_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_ItemCrystalFlask_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_item2003_oncast_1.wav"
+  ],
+  "Play_sfx_ItemMiniRegenPotion_OnBuffActivate": [
+   "res://assets/audio/game/shared/play_sfx_item2003_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_ItemMiniRegenPotion_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_itemminiregenpotion_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_item2003_oncast_1.wav"
+  ],
+  "Play_sfx_ItemPoroSnack_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_itemporosnack_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_itemporosnack_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_itemporosnack_oncast_3.wav"
+  ],
+  "Play_sfx_LootedOracleElixirSight_OnBuffActivate": [
+   "res://assets/audio/game/shared/play_sfx_lootedoracleelixirsight_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_OracleElixirSight_OnBuffActivate": [
+   "res://assets/audio/game/shared/play_sfx_lootedoracleelixirsight_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_QuicksilverSash_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_quicksilversash_oncast_1.wav"
+  ],
+  "Play_sfx_RelicGreaterLantern_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_3.wav"
+  ],
+  "Play_sfx_RelicGreaterSpotter_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_3.wav"
+  ],
+  "Play_sfx_RelicLantern_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_3.wav"
+  ],
+  "Play_sfx_RelicMinorSpotter_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_3.wav"
+  ],
+  "Play_sfx_RelicSmallLantern_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_3.wav"
+  ],
+  "Play_sfx_RelicSpotter_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_3.wav"
+  ],
+  "Play_sfx_RelicVisionLantern_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_relicgreaterlantern_oncast_3.wav"
+  ],
+  "Play_sfx_ZhonyasHourglass_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_zhonyashourglass_oncast_1.wav"
+  ],
+  "Play_sfx_ZhonyasRingShield_OnBuffActivate": [
+   "res://assets/audio/game/shared/play_sfx_zhonyasringshield_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_ZhonyasRingShield_OnBuffDeactivate": [
+   "res://assets/audio/game/shared/play_sfx_zhonyasringshield_onbuffdeactivate_1.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionMeleeBasicAttack2_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack2_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack2_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack2_oncast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionMeleeBasicAttack2_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionMeleeBasicAttack3_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack3_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack3_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack3_oncast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack3_oncast_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionMeleeBasicAttack3_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack3_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack3_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack3_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack3_onhit_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionMeleeBasicAttack_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack_oncast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack_oncast_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionMeleeBasicAttack_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionmeleebasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionRangedBasicAttack2_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionRangedBasicAttack2_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionRangedBasicAttack3_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionRangedBasicAttack3_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionRangedBasicAttack_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionRangedBasicAttack_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionrangedbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionSiegeBasicAttack_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsiegebasicattack_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsiegebasicattack_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsiegebasicattack_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsiegebasicattack_onhit_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionSiegeBasicAttack_OnMissileCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsiegebasicattack_onmissilecast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsiegebasicattack_onmissilecast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsiegebasicattack_onmissilecast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsiegebasicattack_onmissilecast_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionSuperBasicAttack2_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack2_oncast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionSuperBasicAttack2_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionSuperBasicAttack_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack_oncast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack_oncast_4.wav"
+  ],
+  "Play_sfx_HA_ChaosMinionSuperBasicAttack_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_chaosminionsuperbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionMeleeBasicAttack2_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack2_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack2_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack2_oncast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionMeleeBasicAttack2_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionMeleeBasicAttack3_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack3_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack3_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack3_oncast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack3_oncast_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionMeleeBasicAttack3_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack3_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack3_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack3_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack3_onhit_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionMeleeBasicAttack_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack_oncast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack_oncast_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionMeleeBasicAttack_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionmeleebasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionRangedBasicAttack2_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_HA_OrderMinionRangedBasicAttack2_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionRangedBasicAttack_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_oncast_3.wav"
+  ],
+  "Play_sfx_HA_OrderMinionRangedBasicAttack_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionrangedbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionSiegeBasicAttack_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsiegebasicattack_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsiegebasicattack_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsiegebasicattack_oncast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsiegebasicattack_oncast_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionSiegeBasicAttack_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsiegebasicattack_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsiegebasicattack_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsiegebasicattack_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsiegebasicattack_onhit_4.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsiegebasicattack_onhit_5.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsiegebasicattack_onhit_6.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsiegebasicattack_onhit_7.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsiegebasicattack_onhit_8.wav"
+  ],
+  "Play_sfx_HA_OrderMinionSuperBasicAttack2_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack2_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack2_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack2_oncast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack2_oncast_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionSuperBasicAttack2_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionSuperBasicAttack_OnCast": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack_oncast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack_oncast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack_oncast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack_oncast_4.wav"
+  ],
+  "Play_sfx_HA_OrderMinionSuperBasicAttack_OnHit": [
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack2_onhit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack2_onhit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack2_onhit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_ha_orderminionsuperbasicattack2_onhit_4.wav"
+  ],
+  "Play_sfx_SRU_Spawn_MinionsSpawn_cast": [
+   "res://assets/audio/game/shared/play_sfx_sru_spawn_minionsspawn_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_sru_spawn_minionsspawn_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_sru_spawn_minionsspawn_cast_3.wav"
+  ],
+  "Play_sfx_ENV_ChaosTurret_break01": [
+   "res://assets/audio/game/shared/play_sfx_env_chaosturret_break01_1.wav"
+  ],
+  "Play_sfx_ENV_ChaosTurret_break02": [
+   "res://assets/audio/game/shared/play_sfx_env_chaosturret_break02_1.wav"
+  ],
+  "Play_sfx_ENV_ChaosTurret_break03": [
+   "res://assets/audio/game/shared/play_sfx_env_chaosturret_break03_1.wav"
+  ],
+  "Play_sfx_Env_ChaosTurretActivation_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_chaosturretactivation_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_chaosturretactivation_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_chaosturretactivation_cast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_chaosturretactivation_cast_4.wav",
+   "res://assets/audio/game/shared/play_sfx_env_chaosturretactivation_cast_5.wav",
+   "res://assets/audio/game/shared/play_sfx_env_chaosturretactivation_cast_6.wav"
+  ],
+  "Play_sfx_Env_map11_ChaosTurretBeam_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretbeam_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretbeam_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretbeam_cast_3.wav"
+  ],
+  "Play_sfx_Env_map11_ChaosTurretBeam_hit": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretbeam_hit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretbeam_hit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretbeam_hit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretbeam_hit_4.wav"
+  ],
+  "Play_sfx_Env_map11_ChaosTurretBeam_missilelaunch_lvl1": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretbeam_missilelaunch_lvl1_1.wav"
+  ],
+  "Play_sfx_Env_map11_ChaosTurretBeam_missilelaunch_lvl3": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretbeam_missilelaunch_lvl3_1.wav"
+  ],
+  "Play_sfx_Env_map11_ChaosTurretBeam_missilelaunch_lvl4": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretbeam_missilelaunch_lvl4_1.wav"
+  ],
+  "Play_sfx_Env_map11_ChaosTurretChampionBasicAttack_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_cast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_cast_4.wav"
+  ],
+  "Play_sfx_Env_map11_ChaosTurretChampionBasicAttack_hit": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_hit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_hit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_hit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_hit_4.wav"
+  ],
+  "Play_sfx_Env_map11_ChaosTurretChampionBasicAttack_missilelaunch": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_missilelaunch_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_missilelaunch_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_missilelaunch_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_missilelaunch_4.wav"
+  ],
+  "Play_sfx_Env_map11_ChaosTurretMinionBasicAttack_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_cast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_cast_4.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretchampionbasicattack_cast_2.wav"
+  ],
+  "Play_sfx_Env_map11_ChaosTurretMinionBasicAttack_hit": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretminionbasicattack_hit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretminionbasicattack_hit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretminionbasicattack_hit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretminionbasicattack_hit_4.wav"
+  ],
+  "Play_sfx_Env_map11_ChaosTurretMinionBasicAttack_missilelaunch": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretminionbasicattack_missilelaunch_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretminionbasicattack_missilelaunch_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretminionbasicattack_missilelaunch_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_chaosturretminionbasicattack_missilelaunch_4.wav"
+  ],
+  "Play_sfx_Env_map11_OrderTurretBeam_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretbeam_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretbeam_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretbeam_cast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretbeam_cast_4.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretbeam_cast_5.wav"
+  ],
+  "Play_sfx_Env_map11_OrderTurretBeam_hit": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretbeam_hit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretbeam_hit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretbeam_hit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretbeam_hit_4.wav"
+  ],
+  "Play_sfx_Env_map11_OrderTurretBeam_missilelaunch_lvl1": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretbeam_missilelaunch_lvl1_1.wav"
+  ],
+  "Play_sfx_Env_map11_OrderTurretBeam_missilelaunch_lvl3": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretbeam_missilelaunch_lvl3_1.wav"
+  ],
+  "Play_sfx_Env_map11_OrderTurretBeam_missilelaunch_lvl4": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretbeam_missilelaunch_lvl4_1.wav"
+  ],
+  "Play_sfx_Env_map11_OrderTurretChampionBasicAttack_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretchampionbasicattack_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretchampionbasicattack_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretchampionbasicattack_cast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretchampionbasicattack_cast_4.wav"
+  ],
+  "Play_sfx_Env_map11_OrderTurretChampionBasicAttack_hit": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretchampionbasicattack_hit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretchampionbasicattack_hit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretchampionbasicattack_hit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretchampionbasicattack_hit_4.wav"
+  ],
+  "Play_sfx_Env_map11_OrderTurretChampionBasicAttack_missilelaunch": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretchampionbasicattack_missilelaunch_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretchampionbasicattack_missilelaunch_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretchampionbasicattack_missilelaunch_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretchampionbasicattack_missilelaunch_4.wav"
+  ],
+  "Play_sfx_Env_map11_OrderTurretMinionBasicAttack_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretminionbasicattack_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretminionbasicattack_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretminionbasicattack_cast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretminionbasicattack_cast_4.wav"
+  ],
+  "Play_sfx_Env_map11_OrderTurretMinionBasicAttack_hit": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretminionbasicattack_hit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretminionbasicattack_hit_2.wav"
+  ],
+  "Play_sfx_Env_map11_OrderTurretMinionBasicAttack_missilelaunch": [
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretminionbasicattack_missilelaunch_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretminionbasicattack_missilelaunch_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_map11_orderturretminionbasicattack_missilelaunch_3.wav"
+  ],
+  "Play_sfx_ENV_OrderTurret_break01": [
+   "res://assets/audio/game/shared/play_sfx_env_orderturret_break01_1.wav"
+  ],
+  "Play_sfx_ENV_OrderTurret_break02": [
+   "res://assets/audio/game/shared/play_sfx_env_orderturret_break02_1.wav"
+  ],
+  "Play_sfx_ENV_OrderTurret_break03": [
+   "res://assets/audio/game/shared/play_sfx_env_orderturret_break03_1.wav"
+  ],
+  "Play_sfx_Env_OrderTurretActivation_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_orderturretactivation_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_orderturretactivation_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_orderturretactivation_cast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_orderturretactivation_cast_4.wav",
+   "res://assets/audio/game/shared/play_sfx_env_orderturretactivation_cast_5.wav",
+   "res://assets/audio/game/shared/play_sfx_env_orderturretactivation_cast_6.wav",
+   "res://assets/audio/game/shared/play_sfx_env_orderturretactivation_cast_7.wav"
+  ],
+  "Play_sfx_Env_sruap_chaos_inhibitor_activation_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_chaos_inhibitor_activation_cast_1.wav"
+  ],
+  "Play_sfx_Env_sruap_chaos_inhibitor_alive_loop": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_chaos_inhibitor_alive_loop_1.wav"
+  ],
+  "Play_sfx_Env_sruap_chaos_inhibitor_dead": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_chaos_inhibitor_dead_1.wav"
+  ],
+  "Play_sfx_Env_sruap_chaos_inhibitor_respawn_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_chaos_inhibitor_respawn_cast_1.wav"
+  ],
+  "Play_sfx_Env_sruap_chaos_inhibitor_spawn": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_chaos_inhibitor_spawn_1.wav"
+  ],
+  "Play_sfx_Env_sruap_chaos_nexus_alive_loop": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_chaos_nexus_alive_loop_1.wav"
+  ],
+  "Play_sfx_Env_sruap_chaos_nexus_spawn": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_chaos_nexus_spawn_1.wav"
+  ],
+  "Play_sfx_Env_sruap_order_inhibitor_activation_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_order_inhibitor_activation_cast_1.wav"
+  ],
+  "Play_sfx_Env_sruap_order_inhibitor_alive_loop": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_order_inhibitor_alive_loop_1.wav"
+  ],
+  "Play_sfx_Env_sruap_order_inhibitor_dead": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_order_inhibitor_dead_1.wav"
+  ],
+  "Play_sfx_Env_sruap_order_inhibitor_respawn_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_order_inhibitor_respawn_cast_1.wav"
+  ],
+  "Play_sfx_Env_sruap_order_inhibitor_spawn": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_order_inhibitor_spawn_1.wav"
+  ],
+  "Play_sfx_Env_sruap_order_nexus_alive_loop": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_order_nexus_alive_loop_1.wav"
+  ],
+  "Play_sfx_Env_sruap_order_nexus_spawn": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_order_nexus_spawn_1.wav"
+  ],
+  "Play_sfx_Env_SRUAP_OrderInhibitor_death_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_orderinhibitor_death_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_sruap_orderinhibitor_death_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_sruap_orderinhibitor_death_cast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_sruap_orderinhibitor_death_cast_4.wav"
+  ],
+  "Play_sfx_Env_srup_chaos_Inhibitor_death_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_srup_chaos_inhibitor_death_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_srup_chaos_inhibitor_death_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_srup_chaos_inhibitor_death_cast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_srup_chaos_inhibitor_death_cast_4.wav"
+  ],
+  "Play_sfx_Env_Turret_Death3D": [
+   "res://assets/audio/game/shared/play_sfx_env_turret_death3d_1.wav"
+  ],
+  "Play_sfx_Env_Turret_Destroyed": [
+   "res://assets/audio/game/shared/play_sfx_env_turret_destroyed_1.wav"
+  ],
+  "Play_sfx_Env_Turret_explosion": [
+   "res://assets/audio/game/shared/play_sfx_env_turret_explosion_1.wav"
+  ],
+  "Play_sfx_Env_Turret_shatter": [
+   "res://assets/audio/game/shared/play_sfx_env_turret_shatter_1.wav"
+  ],
+  "Play_sfx_Env_Turret_shatter2": [
+   "res://assets/audio/game/shared/play_sfx_env_turret_shatter2_1.wav"
+  ],
+  "Play_sfx_Env_TurretBasicAttack_hit": [
+   "res://assets/audio/game/shared/play_sfx_env_turretbasicattack_hit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretbasicattack_hit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretbasicattack_hit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretbasicattack_hit_4.wav"
+  ],
+  "Play_sfx_Env_TurretBasicAttack_missilelaunch": [
+   "res://assets/audio/game/shared/play_sfx_env_turretbasicattack_missilelaunch_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretbasicattack_missilelaunch_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretbasicattack_missilelaunch_3.wav"
+  ],
+  "Play_sfx_Env_TurretChampionBasicAttack_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_turretchampionbasicattack_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretchampionbasicattack_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretchampionbasicattack_cast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretchampionbasicattack_cast_4.wav"
+  ],
+  "Play_sfx_Env_TurretChampionBasicAttack_hit": [
+   "res://assets/audio/game/shared/play_sfx_env_turretchampionbasicattack_hit_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretchampionbasicattack_hit_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretchampionbasicattack_hit_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretchampionbasicattack_hit_4.wav"
+  ],
+  "Play_sfx_Env_TurretChampionBasicAttack_missilelaunch": [
+   "res://assets/audio/game/shared/play_sfx_env_turretchampionbasicattack_missilelaunch_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretchampionbasicattack_missilelaunch_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretchampionbasicattack_missilelaunch_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_turretchampionbasicattack_missilelaunch_4.wav"
+  ],
+  "Play_sfx_Env_Global_EoG_ChaosNexus_death_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_global_eog_chaosnexus_death_cast_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_eog_chaosnexus_death_cast_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_eog_chaosnexus_death_cast_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_eog_chaosnexus_death_cast_4.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_eog_chaosnexus_death_cast_5.wav"
+  ],
+  "Play_sfx_Env_Global_EoG_OrderNexus_death_oc": [
+   "res://assets/audio/game/shared/play_sfx_env_global_eog_ordernexus_death_oc_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_eog_ordernexus_death_oc_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_eog_ordernexus_death_oc_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_eog_ordernexus_death_oc_4.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_eog_chaosnexus_death_cast_3.wav"
+  ],
+  "Play_sfx_Env_SRUAP_Victory_Banner": [
+   "res://assets/audio/game/shared/play_sfx_env_sruap_victory_banner_1.wav"
+  ],
+  "Play_sfx_Evn_SRUAP_Defeat_Banner": [
+   "res://assets/audio/game/shared/play_sfx_evn_sruap_defeat_banner_1.wav"
+  ],
+  "Play_sfx_Env_Global_Emitter_Brush_OnMovement": [
+   "res://assets/audio/game/shared/play_sfx_env_global_emitter_brush_onmovement_1.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_emitter_brush_onmovement_2.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_emitter_brush_onmovement_3.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_emitter_brush_onmovement_4.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_emitter_brush_onmovement_5.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_emitter_brush_onmovement_6.wav",
+   "res://assets/audio/game/shared/play_sfx_env_global_emitter_brush_onmovement_7.wav"
+  ],
+  "Play_sfx_Env_Map12_Crepe_healthpickup_cast": [
+   "res://assets/audio/game/shared/play_sfx_env_map12_crepe_healthpickup_cast_1.wav"
+  ]
+ },
+ "music": {
+  "mus_global_health_dead_select": [
+   "res://assets/audio/game/shared/mus_global_health_dead_select_1.wav",
+   "res://assets/audio/game/shared/mus_global_health_dead_select_2.wav",
+   "res://assets/audio/game/shared/mus_global_health_dead_select_3.wav"
+  ]
+ }
+}

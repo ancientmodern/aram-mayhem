@@ -1,0 +1,289 @@
+{
+ "sfx": {
+  "Play_sfx_Env_Map12_Ambience_base": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ambience_base_1.wav"
+  ],
+  "Play_sfx_Env_map12_Chaos_Barriers": [
+   "res://assets/audio/game/map/play_sfx_env_map12_chaos_barriers_1.wav"
+  ],
+  "Play_sfx_Env_map12_chaos_inhibitor_alive_loop": [
+   "res://assets/audio/game/map/play_sfx_env_map12_chaos_inhibitor_alive_loop_1.wav"
+  ],
+  "Play_sfx_Env_map12_chaos_inhibitor_death_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_chaos_inhibitor_death_cast_1.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_chaos_inhibitor_death_cast_2.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_chaos_inhibitor_death_cast_3.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_chaos_inhibitor_death_cast_4.wav"
+  ],
+  "Play_sfx_Env_map12_chaos_nexus_alive_loop": [
+   "res://assets/audio/game/map/play_sfx_env_map12_chaos_nexus_alive_loop_1.wav"
+  ],
+  "Play_sfx_Env_map12_fire_big": [
+   "res://assets/audio/game/map/play_sfx_env_map12_fire_big_1.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_fire_big_2.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_fire_big_3.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_fire_big_4.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_fire_big_5.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_fire_big_6.wav"
+  ],
+  "Play_sfx_Env_map12_fire_med_big": [
+   "res://assets/audio/game/map/play_sfx_env_map12_fire_big_3.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_fire_big_4.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_fire_big_5.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_fire_big_6.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_bannermidbridge_highwind": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_bannermidbridge_highwind_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_bannermidbridge_lowwind": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_bannermidbridge_lowwind_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_bridgelanestatues_shatter": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_bridgelanestatues_shatter_1.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_bridgelanestatues_shatter_2.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_bridgelanestatues_shatter_ne": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_bridgelanestatues_shatter_ne_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_bridgelanestatues_shatter_se": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_bridgelanestatues_shatter_se_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_chains_fallleft": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_chains_fallleft_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_chains_fallright": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_chains_fallright_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_chains_windlow": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_chains_windlow_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_chains_windstrong": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_chains_windstrong_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_chains_windstrong_left": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_chains_windstrong_left_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_chains_windstrong_right": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_chains_windstrong_right_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_cloth": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_cloth_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_cutaway_break": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_cutaway_break_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_annoyed": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_annoyed_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_door_close": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_door_close_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_door_open": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_door_open_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_entering": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_entering_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_fire": [
+   "res://assets/audio/game/map/play_sfx_env_map12_fire_big_2.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_fire_big_1.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_fire_3.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_fire_4.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_fire_5.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_fire_6.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_idle1": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_idle1_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_idle1_leadin": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_idle1_leadin_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_idle2_fidget": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_idle2_fidget_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_idle2_leadin": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_idle2_leadin_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_idle2_pointing": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_idle2_pointing_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_idle2_readvara": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_idle2_readvara_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_idle2_readvarb": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_idle2_readvarb_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_idle2_underbench": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_idle2_underbench_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_leaving1": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_leaving1_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermit_selling2": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermit_selling2_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermitrobot_annoyed": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermitrobot_annoyed_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermitrobot_entering1": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermitrobot_entering1_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermitrobot_idle1": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermitrobot_idle1_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermitrobot_idle2": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermitrobot_idle2_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermitrobot_idle3": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermitrobot_idle3_1.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermitrobot_idle2_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermitrobot_idle4": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermitrobot_idle4_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_hermitrobot_leaving1": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_hermitrobot_leaving1_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_herotower_break": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_herotower_break_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_periphbridge_break": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_periphbridge_break_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_poro_base_jump": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_poro_base_jump_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_poro_explosion": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_poro_explosion_1.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_poro_explosion_2.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_shop_lantern": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_shop_lantern_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_viking_shop_aura": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_viking_shop_aura_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_viking_shop_close": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_viking_shop_close_1.wav"
+  ],
+  "Play_sfx_env_map12_ha_ap_viking_shop_open": [
+   "res://assets/audio/game/map/play_sfx_env_map12_ha_ap_viking_shop_open_1.wav"
+  ],
+  "Play_sfx_env_map12_heavywind_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_heavywind_cast_1.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_heavywind_cast_2.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_heavywind_cast_3.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_heavywind_cast_4.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_heavywind_cast_5.wav"
+  ],
+  "Play_sfx_Env_map12_Order_Barriers": [
+   "res://assets/audio/game/map/play_sfx_env_map12_order_barriers_1.wav"
+  ],
+  "Play_sfx_Env_map12_order_inhibitor_alive_loop": [
+   "res://assets/audio/game/map/play_sfx_env_map12_order_inhibitor_alive_loop_1.wav"
+  ],
+  "Play_sfx_Env_map12_order_inhibitor_death_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_order_inhibitor_death_cast_1.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_order_inhibitor_death_cast_2.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_order_inhibitor_death_cast_3.wav",
+   "res://assets/audio/game/map/play_sfx_env_map12_order_inhibitor_death_cast_4.wav"
+  ],
+  "Play_sfx_Env_map12_order_nexus_alive_loop": [
+   "res://assets/audio/game/map/play_sfx_env_map12_order_nexus_alive_loop_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Ally_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_ally_cast_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Enemy_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_enemy_cast_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Hexgate_Ally_buffactivate": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_hexgate_ally_buffactivate_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Hexgate_buffdeactivate": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_hexgate_buffdeactivate_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Hexgate_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_hexgate_cast_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Hexgate_Click_Ally_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_hexgate_click_ally_cast_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Hexgate_Click_Enemy_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_hexgate_click_enemy_cast_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Hexgate_Directional_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_hexgate_directional_cast_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Hexgate_Directional_Owner_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_hexgate_directional_cast_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Hexgate_Enemy_buffactivate": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_hexgate_enemy_buffactivate_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Hexgate_Enter_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_hexgate_enter_cast_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Hexgate_Land_hit": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_hexgate_land_hit_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Portal_Ally_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_portal_ally_cast_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Portal_Enemy_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_portal_ally_cast_1.wav"
+  ],
+  "Play_sfx_Env_Map12_SRX_Hextech_Spawn_cast": [
+   "res://assets/audio/game/map/play_sfx_env_map12_srx_hextech_spawn_cast_1.wav"
+  ],
+  "Play_sfx_Env_Map12_Turret_Shatter_buffactivate": [
+   "res://assets/audio/game/map/play_sfx_env_map12_turret_shatter_buffactivate_1.wav"
+  ],
+  "Play_sfx_Env_Turret_map12_ChaosTurret_break01": [
+   "res://assets/audio/game/map/play_sfx_env_turret_map12_chaosturret_break01_1.wav"
+  ],
+  "Play_sfx_Env_Turret_map12_ChaosTurret_break02": [
+   "res://assets/audio/game/map/play_sfx_env_turret_map12_chaosturret_break02_1.wav"
+  ],
+  "Play_sfx_Env_Turret_map12_ChaosTurret_break03": [
+   "res://assets/audio/game/map/play_sfx_env_turret_map12_chaosturret_break03_1.wav"
+  ],
+  "Play_sfx_Env_Turret_map12_OrderTurret_break01": [
+   "res://assets/audio/game/map/play_sfx_env_turret_map12_orderturret_break01_1.wav"
+  ],
+  "Play_sfx_Env_Turret_map12_OrderTurret_break02": [
+   "res://assets/audio/game/map/play_sfx_env_turret_map12_orderturret_break02_1.wav"
+  ],
+  "Play_sfx_Env_Turret_map12_OrderTurret_break03": [
+   "res://assets/audio/game/map/play_sfx_env_turret_map12_orderturret_break03_1.wav"
+  ],
+  "Play_sfx_AramSpeedShrine_AramSpeedShrineBuff_OnBuffActivate": [
+   "res://assets/audio/game/map/play_sfx_aramspeedshrine_aramspeedshrinebuff_onbuffactivate_1.wav",
+   "res://assets/audio/game/map/play_sfx_aramspeedshrine_aramspeedshrinebuff_onbuffactivate_2.wav",
+   "res://assets/audio/game/map/play_sfx_aramspeedshrine_aramspeedshrinebuff_onbuffactivate_3.wav",
+   "res://assets/audio/game/map/play_sfx_aramspeedshrine_aramspeedshrinebuff_onbuffactivate_4.wav"
+  ],
+  "Play_sfx_EggActivate": [
+   "res://assets/audio/game/map/play_sfx_eggactivate_1.wav"
+  ],
+  "Play_sfx_ShowdownRecall_OnBuffActivate": [
+   "res://assets/audio/game/map/play_sfx_showdownrecall_onbuffactivate_1.wav"
+  ],
+  "Play_sfx_ShowdownRecallImproved_OnBuffActivate": [
+   "res://assets/audio/game/map/play_sfx_showdownrecallimproved_onbuffactivate_1.wav"
+  ]
+ },
+ "music": {
+  "mus_map12_defeat": [
+   "res://assets/audio/game/map/mus_map12_defeat_1.wav"
+  ],
+  "mus_map12_phase_select": [
+   "res://assets/audio/game/map/mus_map12_phase_select_1.wav",
+   "res://assets/audio/game/map/mus_map12_phase_select_2.wav",
+   "res://assets/audio/game/map/mus_map12_phase_select_3.wav"
+  ],
+  "mus_map12_victory": [
+   "res://assets/audio/game/map/mus_map12_victory_1.wav"
+  ]
+ }
+}
