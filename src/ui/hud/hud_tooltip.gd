@@ -27,7 +27,7 @@ static func clean(s: String) -> String:
 
 static func item(id: int, champ = null, owned = null) -> Dictionary:
 	var t := {"key": "item%d" % id, "title": ItemDB.name_of(id), "icon": Assets.item_icon(id) if id != 9999 else Assets.augment_icon("ARAM_Stats"),
-		"cost": ItemDB.cost_of(id), "lines": []}
+		"cost": ItemDB.cost_of(id), "lines": [], "item_id": id, "owned": owned}   # [shop] item_id/owned -> ItemTip draws League's own text
 	if champ != null and owned == null:
 		var p := ItemDB.price_for(champ, id)
 		t.cost = p[0]
@@ -105,6 +105,9 @@ static func _num(v: float) -> String:
 ## Draw `t` above (or below) `anchor` (screen rect of the hovered element), clamped to the viewport.
 static func draw(ci: CanvasItem, t: Dictionary, anchor: Rect2, vs: Vector2, k: float, above := true) -> void:
 	if t.is_empty():
+		return
+	if t.has("item_id") and ItemDB.has(int(t.item_id)):   # [shop] rich League item tooltip (src/items/item_tip.gd)
+		ItemTip.draw(ci, int(t.item_id), G.player, anchor, vs, k, t.get("owned"), above)
 		return
 	var f_title := Assets.font("beaufort", "Bold")
 	var f_body := Assets.font("spiegel", "Regular")
