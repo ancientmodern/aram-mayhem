@@ -205,7 +205,7 @@ static func on_cast(ab, t: Dictionary) -> void:
 	var nm := champ_fx(o, k + "_cas")
 	if nm != "":
 		var dir: Vector3 = t.get("dir", o.facing)
-		attach(o, nm, {"dir": dir, "center": o.height * 0.35})
+		attach(o, nm, {"dir": dir, "center": o.height * 0.35, "max_life": 3.0})
 
 
 ## Spell damage landing on a target (rate limited per ability and target).

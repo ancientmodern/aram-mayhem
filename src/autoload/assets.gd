@@ -79,15 +79,32 @@ static func _instance_model(path: String, self_illum: float) -> Node3D:
 static func _apply_materials(n: Node, self_illum: float) -> void:
 	if n is MeshInstance3D:
 		var mi := n as MeshInstance3D
-		if mi.name.begins_with("HIDDEN__"):
+		if mi.name.begins_with("HIDDEN__") or String(mi.name).contains("Rubble"):
 			mi.visible = false
 		if mi.mesh != null:
 			for i in mi.mesh.get_surface_count():
 				var src := mi.mesh.surface_get_material(i)
+				# turret rubble submeshes are placement-specific in League (hidden on the Abyss)
+				if src != null and src.resource_name.contains("Rubble"):
+					mi.set_surface_override_material(i, _hidden_material())
+					continue
 				mi.set_surface_override_material(i, _champion_material(src, self_illum))
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	for c in n.get_children():
 		_apply_materials(c, self_illum)
+
+
+static var _hidden_mat: Material = null
+
+
+static func _hidden_material() -> Material:
+	if _hidden_mat == null:
+		var sm := StandardMaterial3D.new()
+		sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		sm.albedo_color = Color(0, 0, 0, 0)
+		sm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		_hidden_mat = sm
+	return _hidden_mat
 
 
 static func _champion_material(src: Material, self_illum: float) -> Material:

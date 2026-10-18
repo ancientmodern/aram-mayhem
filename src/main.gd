@@ -34,7 +34,7 @@ func _ready() -> void:
 		elif a.begins_with("--seed="):
 			G.rng.seed = int(a.substr(7))
 			seed(int(a.substr(7)))
-	if "--sim" in args:
+	if "--sim" in args or args.any(func(x): return x.begins_with("--harness=")):
 		direct = true
 	if "--menu" in args or "--uitest" in args:
 		direct = false
@@ -49,6 +49,16 @@ func _ready() -> void:
 	for a in args:
 		if a.begins_with("--vfxtest"):
 			add_child(VfxTest.new())
+		elif a.begins_with("--harness="):
+			# generic test harness: a Node script; gets `main` and `match_ref` (if it declares them)
+			var hs = load(a.substr(10))
+			if hs != null:
+				var hn: Node = hs.new()
+				if "main" in hn:
+					hn.set("main", self)
+				if "match_ref" in hn:
+					hn.set("match_ref", current)
+				add_child(hn)
 	if "--ctrltest" in args:
 		var ct := ControlTest.new()
 		add_child(ct)

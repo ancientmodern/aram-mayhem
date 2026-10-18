@@ -75,7 +75,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("shop"):
 		toggle_shop()
 		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("augments"):
+	elif Rules.AUGMENTS_ENABLED and event.is_action_pressed("augments"):
 		augment_panel.toggle()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("toggle_fps"):
@@ -381,7 +381,8 @@ func _draw_bottom_panel(vs: Vector2) -> void:
 	draw_circle(gr.position + Vector2(22, 14), 7, G.COLOR_GOLD)
 	_slot_rects["shop"] = gr
 	# augments row above the panel
-	_draw_augment_row(Vector2(base.x + 30, base.y - 44))
+	if Rules.AUGMENTS_ENABLED:
+		_draw_augment_row(Vector2(base.x + 30, base.y - 44))
 	# buffs row
 	_draw_buffs(Vector2(base.x + 260, base.y - 40))
 
