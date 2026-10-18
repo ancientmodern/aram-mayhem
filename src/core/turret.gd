@@ -53,6 +53,10 @@ func setup(p_team: int, p_tier: int) -> void:
 		m = Assets.placeholder_model(team, 5.0, 1.0)
 	set_model(m)
 	anim_map = Assets.build_anim_map(anim_player, {})
+	_index_turret_meshes()
+	# League ships Left/Right collapse variants per turret; alternate them so the two nexus turrets differ
+	_nexus_count += 1 if p_tier == Tier.NEXUS else 0
+	rubble_side = "right" if p_tier == Tier.INHIBITOR or (p_tier == Tier.NEXUS and _nexus_count % 2 == 0) else "left"
 	if p_tier == Tier.FOUNTAIN:
 		invulnerable_count = 1
 		height = 4.0
@@ -179,18 +183,196 @@ func on_died(_killer) -> void:
 	if match_ref != null:
 		match_ref.on_structure_fell(self)
 	if match_ref != null:
-		var col := Color(1.0, 0.7, 0.4) if team == G.Team.CHAOS else Color(0.55, 0.8, 1.0)
-		Vfx.burst(match_ref, global_position + Vector3(0, 3.0, 0), col, 3.0, {"sparks": 70})
-		Vfx.ring(match_ref, global_position, col, 6.0, 0.7, 0.12, 0.25)
 		if match_ref.camera_rig != null and G.flat_dist(match_ref.camera_rig.focus, global_position) < 30.0:
 			match_ref.camera_rig.shake(0.45)
-	if model != null:
-		var tw := create_tween()
-		tw.tween_property(model, "position:y", -4.0, 2.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
-		tw.tween_callback(func(): model.visible = false)
+	_start_collapse()
+
+
+# ===================================================================== visuals [env]
+# League (DATA/Characters/Turret/Animations/Skin28.bin): the turret mesh has BaseState + State1-3 submeshes.
+# Damage transitions swap the visible state and fire an animated-mesh "shatter" particle (chunks breaking off,
+# HA_AP_<Team>_Turret_Shatter_01/02). On death State3 shows while Shatter_03_Left/Right plays the collapse; at
+# frame 39 (1.3 s) the stump is replaced by a rubble submesh (MedRubble_Left / MedRubble_Right) and the fallen
+# chunks rest in their *_Idle pose. The graph has no HP numbers; thresholds at 2/3 and 1/3 HP are our choice.
+const SHATTER_DIR := "res://assets/structures/"
+var _state_meshes: Array = []        ## [BaseState, State1, State2, State3]
+var _rubble := {}                    ## submesh name -> MeshInstance3D
+var _dmg_state := 0
+var _collapse_t := -1.0
+var _shatter: Node3D = null
+static var _nexus_count := 0
+var rubble_side := "left"            ## which way this turret falls (set per placement by tier)
+
+
+func _index_turret_meshes() -> void:
+	_state_meshes = [null, null, null, null]
+	_rubble.clear()
+	if model == null:
+		return
+	var stack: Array = [model]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		stack.append_array(n.get_children())
+		if not (n is MeshInstance3D):
+			continue
+		var nm := String(n.name).replace("HIDDEN__", "")
+		var idx := ["BaseState", "State1", "State2", "State3"].find(nm)
+		if idx >= 0:
+			_state_meshes[idx] = n
+		elif nm.contains("Rubble"):
+			_rubble[nm] = n
+	_show_state(0)
+
+
+func _show_state(i: int) -> void:
+	for k in _state_meshes.size():
+		if _state_meshes[k] != null:
+			_state_meshes[k].visible = k == i
+	if i >= 0:
+		for r in _rubble.values():
+			r.visible = false
+
+
+func _team_key() -> String:
+	return "order" if team == G.Team.ORDER else "chaos"
+
+
+## Animated debris mesh (League Temp_MeshAnim particle) placed in the turret's frame, using its material.
+func _spawn_shatter(file: String, clip: String, life: float, fade_at: float) -> Node3D:
+	var path := SHATTER_DIR + file + ".glb"
+	if model == null or not ResourceLoader.exists(path) or _state_meshes[0] == null:
+		return null
+	var inst: Node3D = (load(path) as PackedScene).instantiate()
+	var holder := Node3D.new()
+	holder.add_child(inst)
+	var base_inst: Node3D = _state_meshes[0].get_parent()
+	while base_inst != null and base_inst.get_parent() != model:
+		base_inst = base_inst.get_parent()
+	holder.transform = base_inst.transform if base_inst != null else Transform3D.IDENTITY
+	holder.rotate_object_local(Vector3.UP, PI)     # League particle birthRotation (0, 180, 0)
+	model.add_child(holder)
+	var src_mi: MeshInstance3D = _state_meshes[0]
+	var mat: Material = src_mi.get_surface_override_material(0)
+	var meshes: Array = []
+	var stack: Array = [inst]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		stack.append_array(n.get_children())
+		if n is MeshInstance3D:
+			var mi := n as MeshInstance3D
+			for si in mi.mesh.get_surface_count():
+				mi.set_surface_override_material(si, mat)
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+			meshes.append(mi)
+	var ap := Assets._find_anim(inst)
+	if ap != null and ap.has_animation(clip):
+		var a := ap.get_animation(clip)
+		a.loop_mode = Animation.LOOP_LINEAR if clip.ends_with("idle") else Animation.LOOP_NONE
+		ap.play(clip)
+	if life > 0.0:
+		var tw := holder.create_tween()
+		tw.tween_interval(fade_at)
+		tw.tween_method(func(v: float):
+			for mi in meshes:
+				if is_instance_valid(mi):
+					mi.set_instance_shader_parameter("fade", v), 1.0, 0.0, maxf(0.1, life - fade_at))
+		tw.tween_callback(holder.queue_free)
+	return holder
+
+
+func _update_damage_state() -> void:
+	if _state_meshes.is_empty() or dead or tier == Tier.FOUNTAIN:
+		return
+	var r := hp_ratio()
+	var want := 0 if r > 2.0 / 3.0 else (1 if r > 1.0 / 3.0 else 2)
+	if want == _dmg_state:
+		return
+	var up := want > _dmg_state
+	_dmg_state = want
+	_show_state(want)
+	if up:
+		# Shatter_01 / _02: chunks break off and fade (League colour curve fades out by 30% of 6.2 s)
+		_spawn_shatter("turret_shatter_%s_%d" % [_team_key(), want], "shatter", 2.2, 1.2)
+		if match_ref != null and match_ref.camera_rig != null 				and G.flat_dist(match_ref.camera_rig.focus, global_position) < 25.0:
+			match_ref.camera_rig.shake(0.15)
+
+
+func _start_collapse() -> void:
+	_collapse_t = 0.0
+	_dmg_state = 3
+	_show_state(3)
+	var file := "turret_shatter_%s_3" % _team_key()
+	_shatter = _spawn_shatter(file, rubble_side, 0.0, 0.0)
+	# the particle half of League's Shatter_03 system (dust, ground flash, debris); the mesh half is the glb above
+	LolVfx.load_set("map12")
+	_shatter_fx(_shatter_name(), false)
+
+
+func _shatter_name() -> String:
+	var tn := "Order" if team == G.Team.ORDER else "Chaos"
+	var nm := "HA_AP_%s_Turret_Shatter_03_%s" % [tn, "Left" if rubble_side == "left" else "Right"]
+	if not LolVfx.has(nm):
+		nm = "HA_AP_%s_Turret_Shatter_03_Left" % tn
+	return nm
+
+
+func _shatter_fx(nm: String, loop: bool) -> void:
+	if not LolVfx.has(nm) or model == null:
+		return
+	var fx := LolVfx.make(nm, {"loop": loop, "max_life": 8.0})
+	if fx != null:
+		add_child(fx)
+		fx.global_position = global_position
+		fx.global_basis = model.global_basis.orthonormalized().rotated(Vector3.UP, PI)
+
+
+func tick_dead(dt: float) -> void:
+	if _collapse_t < 0.0:
+		return
+	var prev := _collapse_t
+	_collapse_t += dt
+	if prev < 1.3 and _collapse_t >= 1.3:
+		# frame 39: the stump becomes rubble
+		_show_state(-1)
+		for k in _state_meshes.size():
+			if _state_meshes[k] != null:
+				_state_meshes[k].visible = false
+		var nm := "MedRubble_Left" if rubble_side == "left" else "MedRubble_Right"
+		_show_rubble(nm)
+	if prev < 4.0 and _collapse_t >= 4.0 and _shatter != null and is_instance_valid(_shatter):
+		var ap := Assets._find_anim(_shatter)
+		var idle := rubble_side + "_idle"
+		if ap != null and ap.has_animation(idle):
+			ap.get_animation(idle).loop_mode = Animation.LOOP_LINEAR
+			ap.play(idle, 0.2)
+		_shatter_fx(_shatter_name() + "_Idle", true)   # smouldering rubble
+		_collapse_t = -1.0
+
+
+func _show_rubble(nm: String) -> void:
+	var mi: MeshInstance3D = _rubble.get(nm)
+	if mi == null:
+		return
+	# Assets hides rubble surfaces with an invisible material; restore the real textured one
+	for si in mi.mesh.get_surface_count():
+		var src := mi.mesh.surface_get_material(si)
+		if src != null:
+			mi.set_surface_override_material(si, Assets._champion_material(src, 0.0))
+	mi.visible = true
+
+
+## League attack windup: the crystal charges up (SRU_<Team>_Turret_BA_Cas_Champ_0N on champion shots).
+func _start_attack(t: Unit) -> void:
+	super._start_attack(t)
+	if t != null and is_instance_valid(t) and t.kind == G.Kind.CHAMPION and tier != Tier.FOUNTAIN:
+		LolVfx.load_set("map12")
+		var nm := "SRU_%s_Turret_BA_Cas_Champ_%02d" % ["Order" if team == G.Team.ORDER else "Chaos", clampi(ramp + 1, 1, 4)]
+		var fx := LolVfx.make(nm, {})
+		if fx != null:
+			add_child(fx)
+			fx.global_position = missile_origin()
 
 
 func _update_visual(dt: float) -> void:
-	if model != null and not dead:
-		pass
+	_update_damage_state()
 	super._update_visual(dt)

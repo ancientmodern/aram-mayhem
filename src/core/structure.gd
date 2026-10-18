@@ -50,6 +50,7 @@ func setup(p_team: int, inhibitor: bool) -> void:
 		m = Assets.placeholder_model(team, 2.5 if inhibitor else 4.0, 2.0)
 	set_model(m)
 	anim_map = Assets.build_anim_map(anim_player, {})
+	_set_destroyed_meshes(false)
 	LolVfx.load_set("shared")
 	_idle_fx = LolVfx.attach(self, "HA_%s_%s_Idle" % ["Order" if team == G.Team.ORDER else "Chaos", "Inhibitor" if inhibitor else "Nexus"], {"loop": true})
 
@@ -93,7 +94,20 @@ func on_died(_killer) -> void:
 	if is_inhibitor:
 		_timer_fx = LolVfx.attach(self, "HA_%s_Inhibitor_runeTimer" % tname, {"loop": true})
 		LolVfx.attach(self, "HA_%s_Inhibitor_Rubble_dust" % tname)
-	if has_anim("death"):
+	# League animation graphs (Inhibitor/Animations/Skin22.bin, Nexus/Animations/Root/Skin24.bin): the death clip
+	# swaps the intact submeshes for the "Destroyed" ones at frame 0; the inhibitor then loops its rubble idle.
+	_set_destroyed_meshes(true)
+	_respawn_anim_started = false
+	if is_inhibitor and has_anim("death_in"):
+		_play_once("death_in")
+		var loop_at := _clip_len("death_in")
+		m.after(loop_at, func():
+			if dead and not _respawn_anim_started and anim_player != null:
+				var nm := _raw_clip("death")
+				if nm != "" and anim_player.has_animation(nm):
+					anim_player.get_animation(nm).loop_mode = Animation.LOOP_LINEAR
+					anim_player.play(nm, 0.2))
+	elif has_anim("death"):
 		_play_once("death")
 	elif model != null:
 		create_tween().tween_property(model, "scale", model.scale * Vector3(1.0, 0.25, 1.0), 1.5)
@@ -120,20 +134,57 @@ func _play_once(logical: String) -> void:
 	anim_lock = 9999.0
 
 
+const RESPAWN_SWAP := 290.0 / 30.0   ## respawn_in frame where League shows the intact inhibitor again
+var _respawn_anim_started := false
+
+
+func _clip_len(logical: String) -> float:
+	var nm := _raw_clip(logical)
+	if nm == "" or anim_player == null or not anim_player.has_animation(nm):
+		return 0.0
+	return anim_player.get_animation(nm).length
+
+
+## Intact vs destroyed submeshes. The exporter split League's initialSubmeshToHide on spaces, so "Destroyed,"
+## stayed visible on the inhibitor; drive visibility here from the names instead.
+func _set_destroyed_meshes(destroyed: bool) -> void:
+	if model == null:
+		return
+	var stack: Array = [model]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		stack.append_array(n.get_children())
+		if n is MeshInstance3D:
+			var nm := String(n.name).replace("HIDDEN__", "").to_lower()
+			var is_destroyed := nm.contains("destroyed")
+			n.visible = is_destroyed == destroyed
+			if is_destroyed and destroyed:
+				# Assets left hidden meshes without a usable material: make sure it has the textured one
+				for si in n.mesh.get_surface_count():
+					var src: Material = n.mesh.surface_get_material(si)
+					if src != null and n.get_surface_override_material(si) == null:
+						n.set_surface_override_material(si, Assets._champion_material(src, 0.0))
+
+
 func tick_dead(_dt: float) -> void:
+	if is_inhibitor and respawn_at > 0.0 and match_ref != null and not _respawn_anim_started 			and has_anim("respawn_in") and match_ref.time >= respawn_at - RESPAWN_SWAP:
+		_respawn_anim_started = true
+		_play_once("respawn_in")
 	if is_inhibitor and respawn_at > 0.0 and match_ref != null and match_ref.time >= respawn_at:
 		dead = false
 		respawn_at = -1.0
 		hp = stats.max_hp
+		_set_destroyed_meshes(false)
 		if model != null:
 			model.scale = Vector3.ONE * stats.size * display_scale
-		anim_lock = 0.0
 		if _timer_fx != null and is_instance_valid(_timer_fx):
 			_timer_fx.stop()
 		_idle_fx = LolVfx.attach(self, "HA_%s_Inhibitor_Idle" % ("Order" if team == G.Team.ORDER else "Chaos"), {"loop": true})
-		if has_anim("respawn_in"):
-			_play_once("respawn_in")
-			anim_lock = 1.5
+		if _respawn_anim_started:
+			# let the rest of respawn_in finish, then idle
+			anim_lock = maxf(0.1, _clip_len("respawn_in") - RESPAWN_SWAP)
 		else:
+			anim_lock = 0.0
 			play_anim("idle", 1.0, 0.0)
+		_respawn_anim_started = false
 		G.announce("Inhibitor respawned", "", G.COLOR_ALLY if team == G.player.team else G.COLOR_ENEMY)
