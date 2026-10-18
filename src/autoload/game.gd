@@ -46,7 +46,7 @@ var time_scale_target := 1.0
 # ---------------------------------------------------------------- settings
 var settings := {
 	"cast_mode": 0,              # 0 quick cast (press), 1 quick cast with indicator (release), 2 normal (click)
-	"camera_locked": true,
+	"camera_locked": false,      # League default feel: free camera + edge pan (Y toggles lock, Space centers)
 	"edge_pan": true,
 	"show_all_damage_numbers": false,
 	"master_volume": 0.8,
@@ -89,6 +89,8 @@ func load_settings() -> void:
 
 
 func save_settings() -> void:
+	if test_mode:
+		return   # automated tests / previews must never overwrite the player's settings
 	var cf := ConfigFile.new()
 	for k in settings.keys():
 		cf.set_value("settings", k, settings[k])
@@ -168,6 +170,7 @@ func trace(a = "", b = "", c = "", d = "") -> void:
 ## Test runs (headless, --sim, --harness, --offscreen, ...) get a hard in-process memory cap so a runaway
 ## loop can never grow the pagefile and fill the disk. Normal play is unaffected.
 const MEM_CAP_MB := 3072
+var test_mode := false   ## set for headless / --sim / --harness / --offscreen runs
 var _mem_thread: Thread = null
 var _mem_stop := false
 
@@ -180,6 +183,7 @@ func _start_mem_guard() -> void:
 			test = true
 	if not test:
 		return
+	test_mode = true
 	_mem_thread = Thread.new()
 	_mem_thread.start(_mem_guard_loop)
 
