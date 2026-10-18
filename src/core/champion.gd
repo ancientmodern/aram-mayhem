@@ -17,6 +17,7 @@ var abilities: Array = [null, null, null, null]
 var summoners: Array = [null, null]
 var passive: Effect = null
 var items: Array = []               ## Item effects (max 6)
+var anvils: Array = []              ## consumed Stat Bonus shards
 var augments: Array = []            ## Augment effects
 var gold := 0.0
 var total_gold := 0.0
@@ -126,7 +127,9 @@ func tick(dt: float) -> void:
 			sm.tick(dt)
 	if not dead and match_ref != null:
 		_fountain(dt)
-		gold += Rules.PASSIVE_GOLD_PER_SEC * (1.0 + stats.gold_gen) * dt if match_ref.time > Rules.PASSIVE_GOLD_START else 0.0
+		if match_ref.time > Rules.PASSIVE_GOLD_START:
+			gold += Rules.PASSIVE_GOLD_PER_SEC * (1.0 + stats.gold_gen) * dt
+		gain_xp(Rules.PASSIVE_XP_PER_SEC * dt)
 	super.tick(dt)
 
 
@@ -198,6 +201,8 @@ func level_up() -> void:
 		e.on_level_up(level)
 	leveled_up.emit(level)
 	G.level_up.emit(self, level)
+	if controller is BotBrain:
+		auto_level_abilities()
 	if Rules.AUGMENT_LEVELS.has(level) and match_ref != null and match_ref.has_method("offer_augment"):
 		match_ref.offer_augment(self)
 	if match_ref != null and match_ref.overlay != null:

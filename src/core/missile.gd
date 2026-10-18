@@ -96,6 +96,10 @@ func tick(dt: float, m) -> void:
 		return
 	speed = clampf(speed + accel * dt, min_speed, max_speed)
 	var prev := global_position
+	if not prev.is_finite() or not is_finite(speed) or (mode == Mode.ARC and not target_pos.is_finite()):
+		push_warning("Missile with invalid state removed (%s)" % [ability.get("name") if ability != null else "?"])
+		finish(start if start.is_finite() else Vector3.ZERO)
+		return
 	var gp := Vector3(prev.x, 0.0, prev.z)
 	match mode:
 		Mode.LINEAR:

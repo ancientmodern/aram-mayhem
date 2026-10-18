@@ -263,6 +263,8 @@ func in_cast_range(t: Dictionary) -> bool:
 # ---------------------------------------------------------------- casting flow
 ## Entry point from controllers. Returns true if the cast started or was queued.
 func try_cast(t: Dictionary) -> bool:
+	if t.has("pos") and not (t.pos as Vector3).is_finite():
+		return false
 	var reason := cast_block_reason()
 	if reason != "":
 		if reason == "casting" or (reason == "cc" and false):
@@ -376,8 +378,10 @@ func allies_in_radius(center: Vector3, r_units: float, champs_only: bool = true)
 # ---------------------------------------------------------------- AI
 ## Bot hint. Return a target dictionary to cast, or {} to skip.
 ## `ctx` is provided by BotBrain (see bot_brain.gd).
+## Bot usage. Return a target dict to cast, {} to skip, or {"_default": true} (base) to let
+## BotBrain.default_consider decide from the targeting metadata.
 func ai_consider(_ctx) -> Dictionary:
-	return {}
+	return {"_default": true}
 
 
 func tooltip_text() -> String:

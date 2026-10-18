@@ -171,6 +171,8 @@ func height_at(p: Vector3) -> float:
 
 
 func nearest_walkable(p: Vector3, max_r: int = 30) -> Vector3:
+	if not p.is_finite():
+		return Vector3.ZERO
 	var c := to_cell(p)
 	if in_bounds(c) and walk[c.y * w + c.x] == 1:
 		return p
@@ -194,7 +196,9 @@ func nearest_walkable(p: Vector3, max_r: int = 30) -> Vector3:
 
 ## True if the straight segment a->b stays on walkable cells.
 func line_walkable(a: Vector3, b: Vector3) -> bool:
-	var d := G.flat_dist(a, b)
+	if not a.is_finite() or not b.is_finite():
+		return false
+	var d := minf(G.flat_dist(a, b), 400.0)
 	var steps := int(ceil(d / (cell * 0.5)))
 	for s in range(steps + 1):
 		var t := float(s) / maxf(steps, 1)
@@ -206,9 +210,12 @@ func line_walkable(a: Vector3, b: Vector3) -> bool:
 ## Furthest walkable point along a->b (for dashes into walls). If `b` is walkable but the
 ## path crosses a thin wall, dashing over it is allowed (League lets dashes cross walls).
 func clamp_walkable(a: Vector3, b: Vector3) -> Vector3:
+	if not b.is_finite():
+		G.bad_vector("clamp_walkable", b)
+		return a
 	if is_walkable(b):
 		return b
-	var d := G.flat_dist(a, b)
+	var d := minf(G.flat_dist(a, b), 400.0)
 	var steps := int(ceil(d / (cell * 0.5)))
 	var last := a
 	for s in range(steps + 1):
@@ -221,6 +228,9 @@ func clamp_walkable(a: Vector3, b: Vector3) -> Vector3:
 
 func find_path(from: Vector3, to: Vector3) -> PackedVector3Array:
 	var out := PackedVector3Array()
+	if not from.is_finite() or not to.is_finite():
+		G.bad_vector("find_path", to)
+		return out
 	if w == 0:
 		out.append(to)
 		return out

@@ -388,10 +388,15 @@ func tick(dt: float) -> void:
 			e.on_tick(self, dt)
 	if dead:
 		return
+	G.ctx = "think"
 	think(dt)
+	G.ctx = "cast"
 	_update_cast(dt)
+	G.ctx = "attack"
 	_update_attack(dt)
+	G.ctx = "move"
 	_update_movement(dt)
+	G.ctx = "visual"
 	_update_visual(dt)
 	var gp := global_position
 	if _prev_pos != Vector3.INF and dt > 0.0:
@@ -430,6 +435,8 @@ func issue_move(pos: Vector3) -> void:
 	if dead:
 		return
 	pending_cast = {}
+	if not channel.is_empty() and not channel.ability.can_move_while_channeling:
+		interrupt_channel()
 	if windup_timer >= 0.0:
 		cancel_windup()
 	attack_target = null
@@ -660,10 +667,11 @@ func _update_cast(dt: float) -> void:
 				queued_cast = {}
 				q.ability.try_cast(q.target)
 	if not channel.is_empty():
-		channel.t -= dt
-		channel.ability.channel_tick(dt, channel)
-		if channel.t <= 0.0:
-			var ch := channel
+		var ch: Dictionary = channel
+		ch.t -= dt
+		ch.ability.channel_tick(dt, ch)
+		# channel_tick may have interrupted / replaced the channel
+		if channel == ch and ch.t <= 0.0:
 			channel = {}
 			ch.ability.channel_end(ch, false)
 	if not pending_cast.is_empty():
@@ -771,6 +779,9 @@ func _forced_move(dt: float) -> void:
 ## on_tick(Callable(unit, progress)), unstoppable(bool), forced(bool: displacement by enemy),
 ## can_cast(bool), stop_at_walls(bool), anim(String)
 func start_dash(to: Vector3, opts: Dictionary = {}) -> void:
+	if not to.is_finite():
+		G.bad_vector("start_dash", to)
+		return
 	var from := global_position
 	var dest := to
 	if match_ref != null and match_ref.nav != null:
@@ -809,6 +820,10 @@ func _update_dash(dt: float) -> void:
 		airborne_height = 0.0
 		if d.on_arrive.is_valid():
 			d.on_arrive.call(self)
+		if dash.is_empty() and not queued_cast.is_empty() and not dead:
+			var q := queued_cast
+			queued_cast = {}
+			q.ability.try_cast(q.target)
 
 
 ## Knock this unit back (displacement) away from `from_pos` by distance (m).
@@ -848,6 +863,9 @@ func knockup(duration: float, src = null) -> Buff:
 
 
 func set_ground_pos(p: Vector3) -> void:
+	if not p.is_finite():
+		G.bad_vector("set_ground_pos", p)
+		return
 	var y := 0.0
 	if match_ref != null and match_ref.nav != null:
 		y = match_ref.nav.height_at(p)
