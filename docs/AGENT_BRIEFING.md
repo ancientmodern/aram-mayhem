@@ -25,7 +25,8 @@ feels like a "rough demo" or a "pile of free assets". The bar is **identical to 
 - **Godot:** `"D:\SteamLibrary\steamapps\common\Godot Engine\godot.windows.opt.tools.64.exe"`.
 - **Headless error check:** `tools/check.sh <frames> -- <game args>`. After adding a `class_name`, run Godot once with
   `--headless --path . --import`.
-- **Visual runs:** ONLY through `tools/preview.sh <timeout> -- <game args>`. It is serialized, silent and off-screen.
+- **Visual runs:** ONLY through `tools/preview.sh <timeout> -- <game args>`. It is silent and off-screen; up to 3 previews
+  run at once, and runs using perf_probe (or `PREVIEW_EXCLUSIVE=1`) run alone so fps numbers stay valid.
   Never open a Godot window any other way. Never run non-headless Godot without `--audio-driver Dummy`.
 - **Useful game args:**
   - `--champ=Ezreal`: player champion.
