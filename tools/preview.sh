@@ -17,4 +17,4 @@ until mkdir "$LOCK" 2>/dev/null; do
   sleep 2; waited=$((waited + 2))
 done
 trap 'rm -rf "$LOCK"' EXIT
-timeout "$T" "$GODOT" --path . --windowed --position -3000,-3000 --resolution 1280x720 -- --windowed --offscreen "$@"
+timeout "$T" "$GODOT" --path . --audio-driver Dummy --windowed --position -3000,-3000 --resolution 1280x720 -- --windowed --offscreen "$@"

@@ -18,18 +18,37 @@ var _ind_area: MeshInstance3D
 var _hover_prev: Unit = null
 var ui_blocking := false            ## HUD panels (shop) grabbing input
 const CAST_ACTIONS := ["cast_q", "cast_w", "cast_e", "cast_r"]
+# [world-ui] League hover outline, hardware cursors and targeter textures (tools/lol/extract_world_ui.py)
+const OUTLINE_SHADER := preload("res://src/ui/world/hover_outline.gdshader")
+const _IND_LINE := preload("res://assets/ui/world/ind_locallinemissilebase.png")
+const _IND_CONE := preload("res://assets/ui/world/ind_conicrangeindicator.png")
+const IND_TINT := Color(1.0, 1.0, 1.0, 0.95)          ## League targeter textures are already coloured
+const IND_TINT_UNAVAILABLE := Color(0.5, 0.5, 0.55, 0.55)
+var _outline_enemy: ShaderMaterial
+var _outline_ally: ShaderMaterial
+var _cursor_state := ""
+var _cursors := {}
+var _show_range_key := false        ## League: hold C to show the attack range
 
 
 func _ready() -> void:
 	_indicator_root = Node3D.new()
 	_indicator_root.name = "Indicators"
 	match_ref.add_child(_indicator_root)
-	_ind_range = Vfx.indicator_mesh(3, Color(0.35, 0.75, 1.0, 0.55))
-	_ind_main = Vfx.indicator_mesh(1, Color(0.35, 0.75, 1.0, 0.45))
-	_ind_area = Vfx.indicator_mesh(0, Color(0.35, 0.75, 1.0, 0.5))
+	_ind_range = Vfx.indicator_mesh(3, IND_TINT)
+	_ind_main = Vfx.indicator_mesh(1, IND_TINT)
+	_ind_area = Vfx.indicator_mesh(0, IND_TINT)
 	for n in [_ind_range, _ind_main, _ind_area]:
 		_indicator_root.add_child(n)
 		n.visible = false
+	_outline_enemy = ShaderMaterial.new()
+	_outline_enemy.shader = OUTLINE_SHADER
+	_outline_enemy.set_shader_parameter("outline_color", Color(1.0, 0.16, 0.1, 0.95))
+	_outline_ally = ShaderMaterial.new()
+	_outline_ally.shader = OUTLINE_SHADER
+	_outline_ally.set_shader_parameter("outline_color", Color(0.2, 0.62, 1.0, 0.95))
+	_load_cursors()
+	_set_cursor("hand")
 
 
 func _process(_delta: float) -> void:
@@ -39,6 +58,9 @@ func _process(_delta: float) -> void:
 	mouse_ground = rig.screen_to_ground(mp, match_ref.nav)
 	hovered = pick_unit(mp)
 	_update_hover_glow()
+	var focus := get_viewport().gui_get_focus_owner()
+	_show_range_key = Input.is_physical_key_pressed(KEY_C) and not (focus is LineEdit or focus is TextEdit)
+	_update_cursor()
 	if _rmb_held and not champ.dead:
 		_rmb_timer -= _delta
 		if _rmb_timer <= 0.0:
@@ -84,19 +106,75 @@ func pick_unit(mp: Vector2) -> Unit:
 	return best
 
 
+## League hover feedback: red silhouette outline on enemies, blue on allies (inverted hull overlay).
 func _update_hover_glow() -> void:
 	if _hover_prev == hovered:
 		return
 	if _hover_prev != null and is_instance_valid(_hover_prev):
-		set_unit_glow(_hover_prev, Color(0, 0, 0, 0))
+		set_unit_outline(_hover_prev, null)
 	if hovered != null and hovered != champ:
-		var c := Color(1.0, 0.2, 0.15, 0.9) if hovered.team != champ.team else Color(0.25, 0.6, 1.0, 0.8)
-		set_unit_glow(hovered, c)
+		set_unit_outline(hovered, _outline_enemy if hovered.team != champ.team else _outline_ally)
 	_hover_prev = hovered
-	var shape := Input.CURSOR_ARROW
-	if hovered != null and _is_enemy_target(hovered):
-		shape = Input.CURSOR_CROSS
-	Input.set_default_cursor_shape(shape)
+
+
+static func set_unit_outline(u: Unit, mat: Material) -> void:
+	if u.model != null:
+		_set_outline_rec(u.model, mat)
+
+
+static func _set_outline_rec(n: Node, mat: Material) -> void:
+	if n is LolVfx or n is VfxNode or n is GPUParticles3D or n is CPUParticles3D:
+		return
+	if n is MeshInstance3D:
+		(n as MeshInstance3D).material_overlay = mat
+	for ch in n.get_children():
+		_set_outline_rec(ch, mat)
+
+
+# ------------------------------------------------------------------ cursors
+## League's classic CursorConfig: gauntlet, red sword on enemies, blue sword on allies, targeting reticles
+## while aiming a spell / attack-move (blue; red over enemies; green over allies).
+func _load_cursors() -> void:
+	var hot := {}
+	var hp := "res://assets/ui/world/cursor_hotspots.json"
+	if FileAccess.file_exists(hp):
+		hot = JSON.parse_string(FileAccess.get_file_as_string(hp))
+	for k in [["hand", "Hand1"], ["hover_enemy", "HoverEnemy"], ["hover_ally", "HoverFriendly"],
+			["target", "SingleTarget"], ["target_enemy", "SingleTargetEnemy"], ["target_ally", "SingleTargetAlly"],
+			["enemy_cannot_attack", "SingleTargetEnemyCannoyAttack"]]:
+		var path := "res://assets/ui/world/cursor_%s.png" % k[0]
+		if ResourceLoader.exists(path):
+			var h: Array = hot.get(k[1], [0, 0])
+			_cursors[k[0]] = [load(path), Vector2(h[0], h[1])]
+
+
+func _set_cursor(st: String) -> void:
+	if st == _cursor_state or not _cursors.has(st):
+		return
+	_cursor_state = st
+	var c: Array = _cursors[st]
+	Input.set_custom_mouse_cursor(c[0], Input.CURSOR_ARROW, c[1])
+	if st == "hand":
+		Input.set_custom_mouse_cursor(c[0], Input.CURSOR_POINTING_HAND, c[1])
+
+
+func _update_cursor() -> void:
+	var targeting := (aiming >= 0 or attack_move_armed) and not champ.dead
+	var st := "target" if targeting else "hand"
+	if hovered != null and hovered != champ and not ui_blocking:
+		if hovered.team != champ.team:
+			if targeting:
+				st = "target_enemy"
+			else:
+				st = "hover_enemy" if hovered.is_targetable_by(champ.team) else "enemy_cannot_attack"
+		else:
+			st = "target_ally" if targeting else "hover_ally"
+	_set_cursor(st)
+
+
+func _exit_tree() -> void:
+	Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
+	Input.set_custom_mouse_cursor(null, Input.CURSOR_POINTING_HAND)
 
 
 static func set_unit_glow(u: Unit, c: Color) -> void:
@@ -305,13 +383,16 @@ func _use_item(i: int) -> void:
 
 
 func _update_indicator() -> void:
-	if attack_move_armed and aiming < 0 and not champ.dead:
+	if (attack_move_armed or _show_range_key) and aiming < 0 and not champ.dead:
+		# League attack-range ring (A armed / C held): circularrangeindicator.tex at range + bounding radius
 		var o0 := champ.global_position
 		var ar := champ.attack_range_m() + champ.radius
 		_ind_range.visible = true
 		_ind_range.global_position = Vector3(o0.x, o0.y + 0.12, o0.z)
 		_ind_range.scale = Vector3(ar * 2.0, 1, ar * 2.0)
-		_ind_range.material_override.set_shader_parameter("color", Color(1.0, 0.35, 0.3, 0.4))
+		_ind_range.material_override.set_shader_parameter("color", IND_TINT)
+		_ind_main.visible = false
+		_ind_area.visible = false
 		return
 	if aiming < 0 or champ.dead:
 		if _ind_main.visible or _ind_range.visible or _ind_area.visible:
@@ -322,16 +403,16 @@ func _update_indicator() -> void:
 		return
 	var o := champ.global_position
 	var y := o.y + 0.12
-	var col := Color(0.35, 0.75, 1.0, 0.55)
+	var col := IND_TINT
 	if not ab.is_ready() or not ab.can_afford():
-		col = Color(0.7, 0.7, 0.7, 0.35)
+		col = IND_TINT_UNAVAILABLE
 	# range ring
 	var rr := ab.range_m()
 	_ind_range.visible = rr > 0.5
 	if _ind_range.visible:
 		_ind_range.global_position = Vector3(o.x, y, o.z)
 		_ind_range.scale = Vector3(rr * 2.0 + champ.radius * 2.0, 1, rr * 2.0 + champ.radius * 2.0)
-		_ind_range.material_override.set_shader_parameter("color", Color(col.r, col.g, col.b, 0.35))
+		_ind_range.material_override.set_shader_parameter("color", Color(col.r, col.g, col.b, col.a * 0.8))
 	var dir := G.flat_dir(o, mouse_ground)
 	_ind_main.visible = false
 	_ind_area.visible = false
@@ -341,17 +422,20 @@ func _update_indicator() -> void:
 			var w := ab.ind_width * G.U
 			_ind_main.visible = true
 			_ind_main.material_override.set_shader_parameter("shape", 1)
+			_ind_main.material_override.set_shader_parameter("tex_main", _IND_LINE)
+			_ind_main.material_override.set_shader_parameter("tip_frac", clampf(w / maxf(length, 0.01), 0.0, 0.5))
 			_ind_main.material_override.set_shader_parameter("color", col)
 			_ind_main.global_position = Vector3(o.x, y, o.z) + dir * length * 0.5
-			_ind_main.global_basis = Basis(Vector3.UP, atan2(dir.x, dir.z)).scaled(Vector3(w, 1, length))
+			_ind_main.global_basis = Basis(Vector3.UP, atan2(dir.x, dir.z)) * Basis.from_scale(Vector3(w, 1, length))
 		Ability.Ind.CONE:
 			var length2 := (ab.ind_length if ab.ind_length > 0.0 else ab.cast_range) * G.U
 			_ind_main.visible = true
 			_ind_main.material_override.set_shader_parameter("shape", 2)
+			_ind_main.material_override.set_shader_parameter("tex_main", _IND_CONE)
 			_ind_main.material_override.set_shader_parameter("cone_half", deg_to_rad(ab.ind_angle * 0.5))
 			_ind_main.material_override.set_shader_parameter("color", col)
 			_ind_main.global_position = Vector3(o.x, y, o.z) + dir * length2 * 0.5
-			_ind_main.global_basis = Basis(Vector3.UP, atan2(dir.x, dir.z)).scaled(Vector3(length2 * 2.0, 1, length2))
+			_ind_main.global_basis = Basis(Vector3.UP, atan2(dir.x, dir.z)) * Basis.from_scale(Vector3(length2 * 2.0, 1, length2))
 		Ability.Ind.CIRCLE:
 			var t := ab.make_target(mouse_ground, hovered)
 			var p: Vector3 = t.pos

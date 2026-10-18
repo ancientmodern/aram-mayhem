@@ -14,6 +14,9 @@ func _ready() -> void:
 	add_child(ui_layer)
 	G.flow_request.connect(_on_flow)
 	var args := OS.get_cmdline_user_args()
+	if "--offscreen" in args or "--sim" in args or "--mute" in args:
+		# tests / previews are silent
+		AudioServer.set_bus_mute(0, true)
 	if "--offscreen" in args and DisplayServer.get_name() != "headless":
 		# test previews: never steal focus, stay off-screen (tools/preview.sh)
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_NO_FOCUS, true)
@@ -34,7 +37,7 @@ func _ready() -> void:
 		elif a.begins_with("--seed="):
 			G.rng.seed = int(a.substr(7))
 			seed(int(a.substr(7)))
-	if "--sim" in args or args.any(func(x): return x.begins_with("--harness=")):
+	if "--sim" in args or Array(args).any(func(x): return x.begins_with("--harness=")):  # [world-ui] PackedStringArray has no any()
 		direct = true
 	if "--menu" in args or "--uitest" in args:
 		direct = false

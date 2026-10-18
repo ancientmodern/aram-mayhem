@@ -33,6 +33,11 @@ var _dodged := {}                ## missile -> true (decided once per missile)
 var _chase_since := -1.0
 var _strafe_dir := 1.0
 var _strafe_t := 0.0
+var _kite_cycle := -1
+var _mode_since := 0.0
+var _retreat_until := -1.0
+var _kite_target: Unit = null
+var _kite_goal := Vector3.INF
 
 
 func setup(champ: Champion, p_match) -> void:
@@ -91,20 +96,43 @@ func think(dt: float) -> void:
 		if it.has_active() and it.active_left <= 0.0 and it.ai_should_activate(self):
 			var tp: Vector3 = focus.global_position if focus != null and is_instance_valid(focus) else c.global_position + c.facing * 3.0
 			it.activate(tp, focus)
-	if _should_retreat():
-		mode = "retreat"
+	# decisions commit for a moment (players don't flip between advancing and backing off every few
+	# hundred ms): a retreat lasts a while once started, a fresh engage isn't dropped on a whim
+	var want_retreat := _should_retreat()
+	if mode == "retreat" and not want_retreat and m.time < _retreat_until:
+		want_retreat = true
+	elif mode == "fight" and want_retreat and m.time - _mode_since < 0.9 and not _must_retreat():
+		want_retreat = false
+	if want_retreat:
+		if mode != "retreat":
+			_set_mode("retreat")
+			_retreat_until = m.time + G.rng.randf_range(1.4, 2.2)
 		_retreat()
 		return
 	var t := _pick_fight_target()
+	# just stopped retreating: don't turn straight back into a fight unless it comes to us
+	if t != null and mode == "retreat" and G.flat_dist(t.global_position, c.global_position) > c.attack_range_m() + c.radius + 0.5 			and m.time < _retreat_until + 0.8:
+		t = null
 	if t != null:
 		if mode != "fight" or t != focus:
 			_chase_since = m.time
-		mode = "fight"
+		_set_mode("fight")
 		focus = t
 		_fight(t)
 		return
-	mode = "lane"
+	_set_mode("lane")
 	_lane()
+
+
+func _set_mode(md: String) -> void:
+	if md != mode:
+		mode = md
+		_mode_since = m.time
+
+
+## Retreat reasons that override any commitment.
+func _must_retreat() -> bool:
+	return c.hp_ratio() < 0.15 or (_turret_targeting_me() and not _minions_tanking(enemy_turret))
 
 
 func think_dead(_dt: float) -> void:
@@ -309,13 +337,34 @@ func _fight(t: Unit) -> void:
 	if not is_ranged:
 		_attack(t)
 		return
-	# ranged: orb-walk at max range — attack when ready, otherwise keep spacing and strafe
-	var in_range := c.in_attack_range(t)
+	# ranged: orb-walk like a player. Attack when ready; between attacks take ONE deliberate step
+	# (kite back from threats, close distance, or a short reposition) and then wait for the next attack.
 	if c.windup_timer >= 0.0:
 		return
-	if not in_range or c.attack_timer <= 0.05:
+	if not c.in_attack_range(t) or c.attack_timer <= 0.05:
 		_attack(t)
 		return
+	if _kite_cycle != c.attack_count or _kite_target != t:
+		_kite_cycle = c.attack_count
+		_kite_target = t
+		_kite_goal = _pick_kite_goal(t)
+	if _kite_goal == Vector3.INF:
+		# holding position: cancel the attack order so we don't walk in, but stay put
+		if c.moving:
+			c.issue_stop()
+		return
+	if G.flat_dist(p, _kite_goal) > 0.25:
+		_move(_kite_goal)
+
+
+## One kiting step for the time until the next attack is ready (INF = hold still).
+func _pick_kite_goal(t: Unit) -> Vector3:
+	var p := c.global_position
+	var spd: float = c.stats.move_speed * G.U
+	# how far we can walk and still turn back to attack on time
+	var budget := clampf(spd * c.attack_timer * 0.75, 0.0, 3.0)
+	if budget < 0.35:
+		return Vector3.INF
 	var threat: Unit = null
 	var td := INF
 	for e in enemies:
@@ -324,22 +373,32 @@ func _fight(t: Unit) -> void:
 		if d < their_reach + 1.2 and d < td:
 			td = d
 			threat = e
-	var want := c.attack_range_m() + c.radius + t.radius - 0.5
+	var want := c.attack_range_m() + c.radius + t.radius - 0.4
+	var dist := G.flat_dist(t.global_position, p)
 	var away := G.flat_dir(t.global_position, p)
-	var side := Vector3(-away.z, 0, away.x)
-	_strafe_t -= reaction
-	if _strafe_t <= 0.0:
-		_strafe_t = G.rng.randf_range(0.5, 1.1)
-		_strafe_dir = -_strafe_dir
-	var goal := p
-	if threat != null and td < want - 0.5:
-		goal = p + G.flat_dir(threat.global_position, p) * 2.5 + side * _strafe_dir * 0.8
-	else:
-		var dist := G.flat_dist(t.global_position, p)
-		goal = p + away * clampf(want - dist, -1.5, 1.5) + side * _strafe_dir * 1.2
+	var back := -team_ai.lane_dir
+	var goal := Vector3.INF
+	if threat != null:
+		# kite: away from the threat, biased toward our side of the lane
+		var dir := (G.flat_dir(threat.global_position, p) * 0.7 + back * 0.3).normalized()
+		goal = p + dir * budget
+	elif dist > want - 0.2:
+		goal = p - away * minf(dist - want + 0.6, budget)
+	elif dist < want - 1.6:
+		goal = p + away * minf(want - 0.6 - dist, budget)
+	elif G.rng.randf() < 0.45:
+		# short reposition step, usually continuing the previous side
+		if G.rng.randf() < 0.3:
+			_strafe_dir = -_strafe_dir
+		var side := Vector3(-away.z, 0, away.x) * _strafe_dir
+		goal = p + side * minf(G.rng.randf_range(0.6, 1.2), budget)
+	if goal == Vector3.INF:
+		return goal
 	if _under_enemy_turret(goal) and not _under_enemy_turret(p):
-		goal = p - team_ai.lane_dir * 1.5
-	_move(goal, true)
+		goal = p + back * minf(1.5, budget)
+	if not m.nav.is_walkable(goal):
+		goal = m.nav.nearest_walkable(goal)
+	return goal
 
 
 func _lane() -> void:

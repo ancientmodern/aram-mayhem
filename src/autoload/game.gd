@@ -77,6 +77,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_setup_input()
 	load_settings()
+	_start_mem_guard()
 
 
 func load_settings() -> void:
@@ -162,7 +163,38 @@ func trace(a = "", b = "", c = "", d = "") -> void:
 	_trace_file.flush()
 
 
+## Test runs (headless, --sim, --harness, --offscreen, ...) get a hard in-process memory cap so a runaway
+## loop can never grow the pagefile and fill the disk. Normal play is unaffected.
+const MEM_CAP_MB := 3072
+var _mem_thread: Thread = null
+var _mem_stop := false
+
+
+func _start_mem_guard() -> void:
+	var args := OS.get_cmdline_user_args()
+	var test := DisplayServer.get_name() == "headless"
+	for a in args:
+		if a in ["--sim", "--offscreen", "--uitest", "--ctrltest", "--mute"] or a.begins_with("--harness") or a.begins_with("--vfxtest"):
+			test = true
+	if not test:
+		return
+	_mem_thread = Thread.new()
+	_mem_thread.start(_mem_guard_loop)
+
+
+func _mem_guard_loop() -> void:
+	while not _mem_stop:
+		var mb := OS.get_static_memory_usage() / 1048576
+		if mb > MEM_CAP_MB:
+			printerr("MEMGUARD: %d MB > %d MB cap, killing test process (ctx=%s %s)" % [mb, MEM_CAP_MB, ctx, ctx3])
+			OS.kill(OS.get_process_id())
+		OS.delay_msec(250)
+
+
 func _exit_tree() -> void:
+	if _mem_thread != null:
+		_mem_stop = true
+		_mem_thread.wait_to_finish()
 	# release static caches before the engine shuts down (avoids a crash on exit)
 	Assets._scene_cache.clear()
 	Assets._mat_cache.clear()
