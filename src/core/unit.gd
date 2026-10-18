@@ -564,7 +564,10 @@ func _update_attack(dt: float) -> void:
 		face_toward(_windup_target.global_position, dt * 3.0)
 		windup_timer -= dt
 		if windup_timer < 0.0:
+			var pat := Prof.t0()
 			_launch_attack(_windup_target)
+			if Prof.enabled:
+				Prof.slow("atk.launch", pat, display_name)
 		return
 	if not casting.is_empty() or not channel.is_empty() or not dash.is_empty():
 		return
@@ -591,7 +594,10 @@ func _update_attack(dt: float) -> void:
 			stop_moving()
 			face_toward(attack_target.global_position, dt)
 			if attack_timer <= 0.0 and can_attack():
+				var pat := Prof.t0()
 				_start_attack(attack_target)
+				if Prof.enabled:
+					Prof.slow("atk.start", pat, display_name)
 	elif cmd == Cmd.ATTACK or cmd == Cmd.ATTACK_MOVE or (cmd == Cmd.IDLE and auto_attacks_when_idle() and is_bot):
 		_repath_timer -= dt
 		if _repath_timer <= 0.0 or not moving:
