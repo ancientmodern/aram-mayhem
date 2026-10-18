@@ -346,6 +346,37 @@ static func dot(ab: Ability, target: Unit, total: float, duration: float, type: 
 
 # ===================================================================== tooltips
 ## Resolve @Value@ placeholders in a League tooltip with the ability's current numbers.
+## League "ByCharLevelBreakpointsCalculationPart": value at `level` = level1 + per-level bonus summed over levels
+## 2..level, where `breakpoints` = [[from_level, bonus_per_level_at_and_after], ...] (ascending).
+## e.g. Darius Noxian Might: level_breakpoints(lvl, 30, 5, [[11, 10], [14, 25]]) -> 30..230.
+static func level_breakpoints(level: int, level1: float, initial_per_level: float, breakpoints: Array = []) -> float:
+	var v := level1
+	for l in range(2, level + 1):
+		var per := initial_per_level
+		for bp in breakpoints:
+			if l >= int(bp[0]):
+				per = float(bp[1])
+		v += per
+	return v
+
+
+## ARAM map overrides from the game files (CommunityDragon <alias>.bin.json, `DataValuesModeOverride.ARAM` and the
+## per-mode cooldown override `{f9c2333e}.ARAM`). `cd7` / data arrays use League's 7-long layout (index = rank).
+## Call from build_kit() after init_ability(); pass ult = true for R (is_ult is only set after build_kit).
+static func aram_cooldowns(ab: Ability, cd7: Array, ult: bool = false) -> void:
+	var n := 3 if ult else 5
+	var out: Array = []
+	for i in range(1, n + 1):
+		out.append(float(cd7[mini(i, cd7.size() - 1)]))
+	ab.cooldowns = out
+
+
+static func aram_data(ab: Ability, values: Dictionary) -> void:
+	ab.data = ab.data.duplicate()   # the json dict is shared through ChampionDB
+	for k in values:
+		ab.data[k] = values[k]
+
+
 static func resolve_tooltip(ab: Ability, text: String) -> String:
 	var re := RegEx.create_from_string("@([A-Za-z0-9_\\.]+)(\\*[\\-0-9\\.]+)?@")
 	var out := text

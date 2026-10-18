@@ -42,6 +42,21 @@ static func set_spell(c, slot_index: int, name: String) -> void:
 	c.summoners[slot_index] = a
 
 
+## League particle systems for Flash / Barrier, extracted into data/vfx/shared.json by the vfx pipeline
+## (tools/lol/extract_vfx.py). Candidate names in League's naming; the first one present is used, otherwise the
+## procedural fallback. TODO(vfx): if the extracted names differ, add them to these lists.
+const FLASH_DEPART_VFX := ["Global_SS_Flash", "Summoner_Flash", "Global_SS_Flash_01"]
+const FLASH_ARRIVE_VFX := ["Global_SS_Flash_02", "Summoner_Flash_Arrival", "Global_SS_Flash_Arrive"]
+const BARRIER_VFX := ["Global_SS_Barrier", "Summoner_Barrier", "Global_SS_Barrier_Shield"]
+
+
+static func lol_vfx_name(candidates: Array) -> String:
+	for n in candidates:
+		if LolVfx.has(n):
+			return n
+	return ""
+
+
 class FlashSpell extends Ability:
 	func _init(p_owner) -> void:
 		super._init(p_owner)
@@ -65,11 +80,16 @@ class FlashSpell extends Ability:
 		dest = m.nav.clamp_walkable(o, dest)
 		if not m.nav.is_walkable(dest):
 			dest = m.nav.nearest_walkable(dest)
-		Vfx.burst(m, o + Vector3(0, 0.8, 0), Color(1.0, 0.9, 0.4), 0.9, {"ring": false, "sparks": 16})
+		var fdir := G.flat_dir(o, t.pos)
+		var dep := Summoners.lol_vfx_name(Summoners.FLASH_DEPART_VFX)
+		if dep == "" or LolVfx.spawn(m, dep, o, {"dir": fdir}) == null:
+			Vfx.burst(m, o + Vector3(0, 0.8, 0), Color(1.0, 0.9, 0.4), 0.9, {"ring": false, "sparks": 16})
 		owner.teleport(dest)
 		owner.cancel_windup()
-		owner.face_toward(o + G.flat_dir(o, t.pos) * 10.0, 100.0)
-		Vfx.burst(m, dest + Vector3(0, 0.8, 0), Color(1.0, 0.9, 0.4), 0.9, {"ring": false, "sparks": 16})
+		owner.face_toward(o + fdir * 10.0, 100.0)
+		var arr := Summoners.lol_vfx_name(Summoners.FLASH_ARRIVE_VFX)
+		if arr == "" or LolVfx.attach(owner, arr, {"dir": fdir}) == null:
+			Vfx.burst(m, dest + Vector3(0, 0.8, 0), Color(1.0, 0.9, 0.4), 0.9, {"ring": false, "sparks": 16})
 		for e in owner.effects.duplicate():
 			e.on_dash(o, dest)
 			e.on_summoner_cast(self)
@@ -265,7 +285,11 @@ class BarrierSpell extends Ability:
 		var amt: float = 105.0 + 18.0 * (owner.level - 1)
 		var sh: Dictionary = Combat.shield(owner, owner, amt, 2.5)
 		# the bubble disappears when the barrier breaks (it used to stay the full 2.5 s)
-		K.track_shield_fx(owner, sh, Vfx.shield_bubble(owner, Color(1.0, 0.9, 0.5), 2.5, 1.1))
+		var nm := Summoners.lol_vfx_name(Summoners.BARRIER_VFX)
+		var fx: Node = LolVfx.attach(owner, nm, {"loop": true}) if nm != "" else null
+		if fx == null:
+			fx = Vfx.shield_bubble(owner, Color(1.0, 0.9, 0.5), 2.5, 1.1)
+		K.track_shield_fx(owner, sh, fx)
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
