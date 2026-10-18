@@ -834,8 +834,10 @@ def extract_champion(alias):
 SHARED_PATTERNS = [
     r"^Cursor_Moveto$", r"^Summoner_Snowball_", r"^Global_SS_Ignite", r"^Global_Haste$", r"^Jade_Summoner_Cleanse$",
     r"^Monster_Heal_Impact$", r"^Item_Redemption_Hit_Heal$", r"^Global_Slow$", r"^ARAMHealthPickup_",
-    r"^Turret_Skin24_", r"^HA_(Order|Chaos)_(Inhibitor|Nexus)_", r"^SRU_(Order|Chaos)Minion(Ranged|Siege)_Base_",
+    r"^Turret_Skin2[45]_", r"^HA_(Order|Chaos)_(Inhibitor|Nexus)_", r"^SRU_(Order|Chaos)Minion(Ranged|Siege)_Base_",
     r"^ARAM_Hexgate_Base_(OpenLoop|PortalGroundLoop)", r"^LOC_(Stun|Silence|Taunt)$",
+    # Howling Abyss relic pickup / heal, turret weapon glows
+    r"^HowlingAbyss_HealthPickup_", r"^HA_Health", r"^HA_(Order|Chaos)_Turret_Weapon_Glow$",
 ]
 
 

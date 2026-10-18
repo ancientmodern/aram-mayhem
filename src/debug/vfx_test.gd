@@ -13,6 +13,7 @@ var shot_dir := "user://vfxtest"
 var times: Array = [0.12, 0.35, 0.7, 1.4]
 var dist := 15.0
 var solo := false
+var sweep: Array = []   ## --vfxall=Ahri,Lux,shared: every system of these sets, solo, fast (dark-quad sweep)
 
 
 func _ready() -> void:
@@ -31,6 +32,9 @@ func _ready() -> void:
 			dist = float(a.substr(10))
 		elif a == "--vfxsolo":
 			solo = true
+		elif a.begins_with("--vfxall="):
+			sweep = Array(a.substr(9).split(","))
+			solo = true
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(shot_dir))
 	_run()
 
@@ -48,7 +52,7 @@ func _shot(n: String) -> void:
 
 func _spawn(m, c, n: String, pos: Vector3) -> void:
 	var low := n.to_lower()
-	if low.contains("_mis") or low.ends_with("_ba1"):
+	if low.contains("_mis") or low.ends_with("_ba1") or low == "turret_skin24_ba" or low.begins_with("turret_skin24_ba_champ_0"):
 		# moving carrier so trails show (League missile speed ~1500-2000 u/s)
 		var carrier := Node3D.new()
 		m.fx_root.add_child(carrier)
@@ -92,6 +96,16 @@ func _run() -> void:
 	LolVfx.load_set(c.alias)
 	LolVfx.load_set("shared")
 	LolVfx.load_set("map12")
+	if not sweep.is_empty():
+		names = []
+		for f in sweep:
+			LolVfx.load_set(f)
+			var path := "res://data/vfx/%s.json" % String(f).to_lower()
+			var d = JSON.parse_string(FileAccess.get_file_as_string(path)) if FileAccess.file_exists(path) else null
+			if d is Dictionary:
+				for k in d:
+					if not String(k).begins_with("_"):
+						names.append(k)
 	if names.is_empty():
 		var p := "%s_Base_" % c.alias
 		names = [p + "BA_mis", p + "BA_tar", p + "Q_mis", p + "Q_tar", p + "W_cas", p + "E_mis", p + "R_cas", p + "Q_cas"]
@@ -103,6 +117,8 @@ func _run() -> void:
 	m.camera_rig.target_distance = dist
 	await _wait(0.5)
 	m.paused = true
+	if not sweep.is_empty():
+		await _shot("base")
 	var groups: Array = []
 	if solo:
 		for n in names:
@@ -128,8 +144,18 @@ func _run() -> void:
 			await _wait(maxf(t - prev, 0.0))
 			prev = t
 			var pre := ("%02d_" % gi) if solo else ""
+			if not sweep.is_empty():
+				pre = "%04d_" % gi
 			await _shot("%svfx_%04d" % [pre, int(t * 1000)])
-		if solo:
+		if not sweep.is_empty():
+			print("VFXSWEEP %04d %s" % [gi, g[0]])
+			for fx in m.fx_root.get_children():
+				fx.queue_free()
+			for ch in c.get_children():
+				if ch is LolVfx:
+					ch.queue_free()
+			await _wait(0.15)
+		elif solo:
 			await _wait(2.5)   # let the previous system clear
 		gi += 1
 	print("VFXTEST DONE")
