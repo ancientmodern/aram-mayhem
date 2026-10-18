@@ -373,10 +373,27 @@ func record_damage(src, amount: float) -> void:
 func recent_attackers(window: float = Combat.ASSIST_WINDOW) -> Array:
 	var out := []
 	var t: float = match_ref.time if match_ref != null else 0.0
-	for u in damage_log:
-		if is_instance_valid(u) and t - damage_log[u] <= window:
+	# Iterate a key snapshot: once an attacker (e.g. a minion) is freed its key's hash changes, and
+	# `for u in dict` then restarts from the first key forever (the long-match freeze, with runaway memory).
+	var stale := false
+	for u in damage_log.keys():
+		if not is_instance_valid(u):
+			stale = true
+			continue
+		if t - damage_log[u] <= window:
 			out.append(u)
+	if stale:
+		_prune_damage_log()
 	return out
+
+
+## Rebuild without freed keys (erase() can't find a freed key once its hash changed).
+func _prune_damage_log() -> void:
+	var fresh := {}
+	for u in damage_log.keys():
+		if is_instance_valid(u):
+			fresh[u] = damage_log[u]
+	damage_log = fresh
 
 
 func on_damaged(info: DamageInfo) -> void:
