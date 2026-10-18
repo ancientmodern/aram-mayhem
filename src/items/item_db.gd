@@ -143,8 +143,112 @@ const STAT_NAMES := {"ad": "Attack Damage", "ap": "Ability Power", "hp": "Health
 	"summoner_haste": "Summoner Spell Haste", "slow_resist": "Slow Resist", "ult_ah": "Ultimate Haste"}
 
 
+# ------------------------------------------------------------------ UI-facing data (shop)
+## League's shop stat filters (ItemShop statfilters, top to bottom) -> stat keys / tags that match.
+const STAT_FILTERS := [
+	["PhysicalDamage", "Attack Damage", ["ad", "base_ad%"]],
+	["CriticalStrike", "Critical Strike", ["crit", "crit_dmg"]],
+	["AttackSpeed", "Attack Speed", ["as"]],
+	["OnHit", "On-Hit Effects", ["#onhit"]],
+	["ArmorPen", "Armor Penetration", ["lethality", "armor_pen%"]],
+	["AbilityPower", "Ability Power", ["ap", "ap%"]],
+	["Mana", "Mana & Regeneration", ["mana", "mana_regen"]],
+	["MagicPen", "Magic Penetration", ["magic_pen", "magic_pen%"]],
+	["Health", "Health & Regeneration", ["hp", "hp_regen"]],
+	["Armor", "Armor", ["armor"]],
+	["MagicResist", "Magic Resist", ["mr"]],
+	["AbilityHaste", "Ability Haste", ["ah", "ult_ah", "summoner_haste"]],
+	["Movespeed", "Movement", ["ms", "ms%"]],
+	["Vamp", "Life Steal & Vamp", ["lifesteal", "omnivamp"]],
+]
+
+## Short League-style blurbs for the recommended-item cards, by primary tag.
+const ROLE_BLURB := {"mage": "Ability power and burst", "marksman": "Attack damage and crits", "fighter": "Damage and durability",
+	"tank": "Durability and crowd control", "support": "Utility for allies", "assassin": "Lethality and burst",
+	"onhit": "On-hit damage", "crit": "Critical strike damage", "boots": "Movement speed", "starter": "Starting item"}
+
+
 static func has(item_id: int) -> bool:
 	return CAT.has(item_id)
+
+
+## League shop tier: "Starter", "Boots", "Basic", "Epic" or "Legendary".
+static func tier_of(item_id: int) -> String:
+	var tags := tags_of(item_id)
+	if "starter" in tags:
+		return "Starter"
+	if "boots" in tags:
+		return "Boots"
+	if "consumable" in tags:
+		return "Consumable"
+	if "basic" in tags:
+		return "Basic" if components_of(item_id).is_empty() else "Epic"
+	return "Legendary"
+
+
+## Items in the catalogue that use `item_id` as a direct component (League's "Builds Into").
+static func builds_into(item_id: int) -> Array:
+	var out := []
+	for id in CAT:
+		if item_id in components_of(id):
+			out.append(id)
+	out.sort_custom(func(a, b): return cost_of(a) < cost_of(b))
+	return out
+
+
+static func matches_stat_filter(item_id: int, filter_idx: int) -> bool:
+	if filter_idx < 0 or filter_idx >= STAT_FILTERS.size():
+		return true
+	var st: Dictionary = CAT[item_id][2] if CAT.has(item_id) else {}
+	for k in STAT_FILTERS[filter_idx][2]:
+		if k.begins_with("#"):
+			if k.substr(1) in tags_of(item_id):
+				return true
+		elif st.has(k):
+			return true
+	return false
+
+
+## Case-insensitive name / stat search used by the shop search box.
+static func matches_search(item_id: int, q: String) -> bool:
+	if q == "":
+		return true
+	q = q.to_lower()
+	if name_of(item_id).to_lower().contains(q):
+		return true
+	# initials ("ie" -> Infinity Edge) like League's search
+	var initials := ""
+	for w in name_of(item_id).split(" "):
+		if w != "":
+			initials += w[0].to_lower()
+	if initials.begins_with(q):
+		return true
+	for k in (CAT[item_id][2] as Dictionary):
+		if String(STAT_NAMES.get(k, k)).to_lower().contains(q):
+			return true
+	return false
+
+
+## League's recommended page for a champion: {"starter": [...], "boots": [...], "core": [...]}.
+static func recommended(alias: String) -> Dictionary:
+	var build: Array = BUILDS.get(alias, [3177, 3047, 3071, 3053, 6333, 3742])
+	var out := {"starter": [], "boots": [], "core": []}
+	for id in build:
+		var t := tier_of(id)
+		if t == "Starter":
+			out.starter.append(id)
+		elif t == "Boots":
+			out.boots.append(id)
+		else:
+			out.core.append(id)
+	return out
+
+
+static func blurb(item_id: int) -> String:
+	for t in tags_of(item_id):
+		if ROLE_BLURB.has(t) and t != "basic":
+			return ROLE_BLURB[t]
+	return ""
 
 
 static func name_of(item_id: int) -> String:
