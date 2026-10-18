@@ -1,0 +1,5216 @@
+{
+ "structures": [
+  {
+   "key": "#120cec6c",
+   "class": "ad65d8c4",
+   "name": "Barracks_T2_C1",
+   "pos": [
+    9696.27,
+    -190.0,
+    9544.85
+   ],
+   "fwd": [
+    -0.0349,
+    0.0,
+    -0.9994
+   ],
+   "strings": [
+    "Characters/Inhibitor/CharacterRecords/HA_Chaos",
+    "Characters/Inhibitor/Skins/Skin23"
+   ]
+  },
+  {
+   "key": "#cc789acd",
+   "class": "ad65d8c4",
+   "name": "#2801a50d",
+   "pos": [
+    7885.14,
+    -159.0,
+    7773.9
+   ],
+   "fwd": [
+    -0.7193,
+    0.0,
+    -0.6947
+   ],
+   "strings": [
+    "Characters/Turret/CharacterRecords/HA_Outer",
+    "Characters/Turret/Skins/Skin29"
+   ]
+  },
+  {
+   "key": "#f028c8b0",
+   "class": "ad65d8c4",
+   "name": "#be9bf051",
+   "pos": [
+    10936.0,
+    -180.0,
+    10720.97
+   ],
+   "fwd": [
+    -0.9897,
+    0.0,
+    0.143
+   ],
+   "strings": [
+    "Characters/Nexus/CharacterRecords/Root",
+    "Characters/Nexus/Skins/Skin25"
+   ]
+  },
+  {
+   "key": "#6874be90",
+   "class": "ad65d8c4",
+   "name": "#23019d2e",
+   "pos": [
+    10337.77,
+    -177.0,
+    10574.24
+   ],
+   "fwd": [
+    -0.7234,
+    0.0,
+    -0.6904
+   ],
+   "strings": [
+    "Characters/Turret/CharacterRecords/HA_Nexus",
+    "Characters/Turret/Skins/Skin29"
+   ]
+  },
+  {
+   "key": "#8c015182",
+   "class": "ad65d8c4",
+   "name": "#2601a1e7",
+   "pos": [
+    10784.19,
+    -169.0,
+    10109.64
+   ],
+   "fwd": [
+    -0.712,
+    -0.0,
+    -0.7021
+   ],
+   "strings": [
+    "Characters/Turret/CharacterRecords/HA_Nexus",
+    "Characters/Turret/Skins/Skin29"
+   ]
+  },
+  {
+   "key": "#9117fe96",
+   "class": "ad65d8c4",
+   "name": "#2501a054",
+   "pos": [
+    9002.63,
+    -161.0,
+    8850.95
+   ],
+   "fwd": [
+    -0.7193,
+    0.0,
+    -0.6947
+   ],
+   "strings": [
+    "Characters/Turret/CharacterRecords/HA_Inhibitor",
+    "Characters/Turret/Skins/Skin29"
+   ]
+  },
+  {
+   "key": "#052f87a6",
+   "class": "ad65d8c4",
+   "name": "#8722639d",
+   "pos": [
+    2506.4,
+    -182.0,
+    2110.88
+   ],
+   "fwd": [
+    0.728,
+    0.0,
+    0.6856
+   ],
+   "strings": [
+    "Characters/Turret/CharacterRecords/HA_Nexus",
+    "Characters/Turret/Skins/Skin28"
+   ]
+  },
+  {
+   "key": "#aae895bb",
+   "class": "ad65d8c4",
+   "name": "#8622620a",
+   "pos": [
+    4943.0,
+    -159.0,
+    4929.0
+   ],
+   "fwd": [
+    0.7193,
+    -0.0,
+    0.6947
+   ],
+   "strings": [
+    "Characters/Turret/CharacterRecords/HA_Outer",
+    "Characters/Turret/Skins/Skin28"
+   ]
+  },
+  {
+   "key": "#f015915d",
+   "class": "ad65d8c4",
+   "name": "#79224d93",
+   "pos": [
+    3827.28,
+    -155.0,
+    3841.04
+   ],
+   "fwd": [
+    0.7193,
+    -0.0,
+    0.6947
+   ],
+   "strings": [
+    "Characters/Turret/CharacterRecords/HA_Inhibitor",
+    "Characters/Turret/Skins/Skin28"
+   ]
+  },
+  {
+   "key": "#581e2793",
+   "class": "ad65d8c4",
+   "name": "Barracks_T1_C1",
+   "pos": [
+    3099.0,
+    -201.0,
+    3196.0
+   ],
+   "fwd": [
+    0.0175,
+    0.0,
+    0.9998
+   ],
+   "strings": [
+    "Characters/Inhibitor/CharacterRecords/HA_Order",
+    "Characters/Inhibitor/Skins/Skin22"
+   ]
+  },
+  {
+   "key": "#6c362bb8",
+   "class": "ad65d8c4",
+   "name": "#bb9beb98",
+   "pos": [
+    1867.0,
+    -180.0,
+    1981.0
+   ],
+   "fwd": [
+    -0.2419,
+    0.0,
+    0.9703
+   ],
+   "strings": [
+    "Characters/Nexus/CharacterRecords/Root",
+    "Characters/Nexus/Skins/Skin24"
+   ]
+  },
+  {
+   "key": "#6bab1cf3",
+   "class": "ad65d8c4",
+   "name": "#580f486f",
+   "pos": [
+    2061.63,
+    -179.0,
+    2575.79
+   ],
+   "fwd": [
+    0.7071,
+    0.0,
+    0.7071
+   ],
+   "strings": [
+    "Characters/Turret/CharacterRecords/HA_Nexus",
+    "Characters/Turret/Skins/Skin28"
+   ]
+  },
+  {
+   "key": "#ce429fd5",
+   "class": "ad65d8c4",
+   "name": "#2905f6e5",
+   "pos": [
+    648.0,
+    -150.0,
+    764.0
+   ],
+   "fwd": [
+    -0.766,
+    0.0,
+    -0.6428
+   ],
+   "strings": [
+    "Characters/HA_AP_OrderShrineTurret/CharacterRecords/Root",
+    "Characters/Turret/Skins/Skin28"
+   ]
+  },
+  {
+   "key": "#26ba9047",
+   "class": "ad65d8c4",
+   "name": "#28a945a5",
+   "pos": [
+    12183.0,
+    27.0,
+    11844.0
+   ],
+   "fwd": [
+    0.7193,
+    0.0,
+    0.6947
+   ],
+   "strings": [
+    "Characters/HA_AP_ChaosTurretShrine/CharacterRecords/Root",
+    "Characters/Turret/Skins/Skin31"
+   ]
+  }
+ ],
+ "spawns": [
+  {
+   "key": "#f2e5e481",
+   "class": "da9e5c0c",
+   "name": "__Spawn_T1",
+   "pos": [
+    936.0,
+    -106.0,
+    1060.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__Spawn_T1"
+   ]
+  },
+  {
+   "key": "#ab661f31",
+   "class": "da9e5c0c",
+   "name": "__Spawn_T2",
+   "pos": [
+    11860.0,
+    -114.0,
+    11596.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__Spawn_T2"
+   ]
+  }
+ ],
+ "relics": [
+  {
+   "key": "#20204976",
+   "class": "ad65d8c4",
+   "name": "#289d93af",
+   "pos": [
+    5929.7,
+    -194.0,
+    5190.9
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Characters/HA_AP_HealthRelic/CharacterRecords/Root",
+    "Characters/HA_AP_HealthRelic/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#be9b16bd",
+   "class": "d178749c",
+   "name": "#fd199781",
+   "pos": [
+    5929.7,
+    -194.0,
+    5190.9
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HealthPack"
+   ]
+  },
+  {
+   "key": "#99f040f4",
+   "class": "ad65d8c4",
+   "name": "#c57e3f14",
+   "pos": [
+    4790.2,
+    -188.5,
+    3934.3
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Characters/HA_AP_HealthRelic/CharacterRecords/Root",
+    "Characters/HA_AP_HealthRelic/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#5f8a6f62",
+   "class": "d178749c",
+   "name": "#cdb3bcae",
+   "pos": [
+    4790.2,
+    -188.5,
+    3934.3
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HealthPack"
+   ]
+  },
+  {
+   "key": "#ef1b388b",
+   "class": "d178749c",
+   "name": "#9b4cfd76",
+   "pos": [
+    8893.9,
+    -187.7,
+    7889.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HealthPack"
+   ]
+  },
+  {
+   "key": "#66514f0e",
+   "class": "ad65d8c4",
+   "name": "#b5aa5fcc",
+   "pos": [
+    8893.9,
+    -187.7,
+    7889.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Characters/HA_AP_HealthRelic/CharacterRecords/Root",
+    "Characters/HA_AP_HealthRelic/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#07767a2f",
+   "class": "ad65d8c4",
+   "name": "#9c410027",
+   "pos": [
+    7585.32,
+    -193.8,
+    6798.56
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Characters/HA_AP_HealthRelic/CharacterRecords/Root",
+    "Characters/HA_AP_HealthRelic/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#93a5b561",
+   "class": "d178749c",
+   "name": "#c3c64429",
+   "pos": [
+    7585.32,
+    -193.8,
+    6798.56
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HealthPack"
+   ]
+  },
+  {
+   "key": "#cf062a2b",
+   "class": "ad65d8c4",
+   "name": "#cc323c1a",
+   "pos": [
+    7585.32,
+    -193.8,
+    6798.56
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Characters/HA_FB_HealthRelic/CharacterRecords/Root",
+    "Characters/HA_FB_HealthRelic/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#c29cef3e",
+   "class": "d178749c",
+   "name": "#b4ec4154",
+   "pos": [
+    7585.32,
+    -193.8,
+    6798.56
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HealthPack"
+   ]
+  },
+  {
+   "key": "#6adf9dc2",
+   "class": "ad65d8c4",
+   "name": "#600a766a",
+   "pos": [
+    5929.7,
+    -194.0,
+    5190.9
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Characters/HA_FB_HealthRelic/CharacterRecords/Root",
+    "Characters/HA_FB_HealthRelic/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#6e869637",
+   "class": "d178749c",
+   "name": "#f0840984",
+   "pos": [
+    5929.7,
+    -194.0,
+    5190.9
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HealthPack"
+   ]
+  },
+  {
+   "key": "#6a084d00",
+   "class": "f3726d48",
+   "name": "FirstBloodOnly_HealthRelics",
+   "pos": [
+    6757.51,
+    -193.9,
+    5994.73
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "FirstBloodOnly_HealthRelics"
+   ]
+  },
+  {
+   "key": "#1bf1c1ae",
+   "class": "f3726d48",
+   "name": "HealthRelics",
+   "pos": [
+    6799.78,
+    -191.0,
+    5953.19
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HealthRelics"
+   ]
+  },
+  {
+   "key": "#d3a79225",
+   "class": "da9e5c0c",
+   "name": "Info_HealthPack2",
+   "pos": [
+    7166.72,
+    -193.0,
+    6956.8
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    -0.8294
+   ],
+   "strings": [
+    "Info_HealthPack2"
+   ]
+  },
+  {
+   "key": "#1f1258d0",
+   "class": "da9e5c0c",
+   "name": "Info_HealthPack4",
+   "pos": [
+    4790.0,
+    -188.0,
+    3934.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    -0.8294
+   ],
+   "strings": [
+    "Info_HealthPack4"
+   ]
+  },
+  {
+   "key": "#2e452e7f",
+   "class": "da9e5c0c",
+   "name": "Info_HealthPack1",
+   "pos": [
+    8763.19,
+    -187.0,
+    7537.96
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    -0.8294
+   ],
+   "strings": [
+    "Info_HealthPack1"
+   ]
+  },
+  {
+   "key": "#b75411ce",
+   "class": "da9e5c0c",
+   "name": "Info_HealthPack3",
+   "pos": [
+    5929.0,
+    -193.0,
+    5190.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    -0.8294
+   ],
+   "strings": [
+    "Info_HealthPack3"
+   ]
+  }
+ ],
+ "nav": [
+  {
+   "key": "#60a72dbe",
+   "class": "da9e5c0c",
+   "name": "__NAV_C04",
+   "pos": [
+    3663.0,
+    -154.0,
+    4127.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C04"
+   ]
+  },
+  {
+   "key": "#1d3f3497",
+   "class": "da9e5c0c",
+   "name": "__NAV_C010",
+   "pos": [
+    6690.04,
+    -160.0,
+    6831.78
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C010"
+   ]
+  },
+  {
+   "key": "#128a336e",
+   "class": "da9e5c0c",
+   "name": "__NAV_C013",
+   "pos": [
+    8133.0,
+    -174.0,
+    8372.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C013"
+   ]
+  },
+  {
+   "key": "#3f07604c",
+   "class": "da9e5c0c",
+   "name": "__NAV_C014",
+   "pos": [
+    8743.0,
+    -174.0,
+    8985.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C014"
+   ]
+  },
+  {
+   "key": "#a1adc0b6",
+   "class": "da9e5c0c",
+   "name": "__NAV_C07",
+   "pos": [
+    5240.88,
+    -160.0,
+    5334.77
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C07"
+   ]
+  },
+  {
+   "key": "#7c7d61b3",
+   "class": "da9e5c0c",
+   "name": "__NAV_C011",
+   "pos": [
+    7202.0,
+    -160.0,
+    7295.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C011"
+   ]
+  },
+  {
+   "key": "#b9a18657",
+   "class": "da9e5c0c",
+   "name": "__NAV_C016",
+   "pos": [
+    10187.0,
+    -174.0,
+    10271.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C016"
+   ]
+  },
+  {
+   "key": "#8952b945",
+   "class": "da9e5c0c",
+   "name": "__NAV_C012",
+   "pos": [
+    7595.0,
+    -174.0,
+    7579.64
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C012"
+   ]
+  },
+  {
+   "key": "#f19dda56",
+   "class": "da9e5c0c",
+   "name": "__NAV_C02",
+   "pos": [
+    2343.79,
+    -162.0,
+    2756.63
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C02"
+   ]
+  },
+  {
+   "key": "#01fc9a4c",
+   "class": "da9e5c0c",
+   "name": "__NAV_C06",
+   "pos": [
+    4764.0,
+    -154.0,
+    5066.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C06"
+   ]
+  },
+  {
+   "key": "#5062ca7d",
+   "class": "da9e5c0c",
+   "name": "__NAV_C08",
+   "pos": [
+    5906.0,
+    -160.0,
+    5869.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C08"
+   ]
+  },
+  {
+   "key": "#2f8738b6",
+   "class": "da9e5c0c",
+   "name": "__NAV_C09",
+   "pos": [
+    6364.17,
+    -160.0,
+    6375.48
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C09"
+   ]
+  },
+  {
+   "key": "#8a63cf0b",
+   "class": "da9e5c0c",
+   "name": "__NAV_C03",
+   "pos": [
+    2903.0,
+    -155.0,
+    3411.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C03"
+   ]
+  },
+  {
+   "key": "#af7218d7",
+   "class": "da9e5c0c",
+   "name": "__NAV_C015",
+   "pos": [
+    9460.0,
+    -174.0,
+    9721.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "__NAV_C015"
+   ]
+  }
+ ],
+ "barracks": [
+  {
+   "key": "#c3159eba",
+   "class": "f3726d48",
+   "name": "Barracks_T1_C1",
+   "pos": [
+    3099.23,
+    -200.34,
+    3195.08
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Barracks_T1_C1"
+   ]
+  },
+  {
+   "key": "#31c23091",
+   "class": "f3726d48",
+   "name": "Barracks_T2_C1",
+   "pos": [
+    9693.08,
+    -190.37,
+    9530.45
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Barracks_T2_C1"
+   ]
+  }
+ ],
+ "props": [
+  {
+   "key": "#83ea9234",
+   "class": "25e3f5d0",
+   "name": "#c2600930",
+   "pos": [
+    515.0,
+    -96.0,
+    1918.0
+   ],
+   "fwd": [
+    0.766,
+    0.0,
+    -0.6428
+   ],
+   "strings": [
+    "Characters/HA_AP_Viking/CharacterRecords/Root",
+    "Characters/HA_AP_Viking/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#697070c6",
+   "class": "25e3f5d0",
+   "name": "#bbf2fb18",
+   "pos": [
+    11217.0,
+    -163.0,
+    12037.0
+   ],
+   "fwd": [
+    0.6947,
+    0.0,
+    -0.7193
+   ],
+   "strings": [
+    "Characters/HA_AP_Hermit/CharacterRecords/Root",
+    "Characters/HA_AP_Hermit/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#a73faa3b",
+   "class": "ad65d8c4",
+   "name": "#8c8acf97",
+   "pos": [
+    1530.64,
+    -184.22,
+    1599.84
+   ],
+   "fwd": [
+    -0.7163,
+    0.0,
+    -0.6978
+   ],
+   "strings": [
+    "Characters/HA_Hexgate/CharacterRecords/Root",
+    "Characters/HA_Hexgate/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#47bda3ea",
+   "class": "ad65d8c4",
+   "name": "#591fcfd7",
+   "pos": [
+    5095.62,
+    -184.22,
+    5085.54
+   ],
+   "fwd": [
+    0.7265,
+    0.0,
+    0.6871
+   ],
+   "strings": [
+    "Characters/HA_Hexgate_Exit/CharacterRecords/Root",
+    "Characters/HA_Hexgate_Exit/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#74d1b4f9",
+   "class": "ad65d8c4",
+   "name": "#a512bac5",
+   "pos": [
+    3969.43,
+    -184.22,
+    3994.24
+   ],
+   "fwd": [
+    0.738,
+    0.0,
+    0.6748
+   ],
+   "strings": [
+    "Characters/HA_Hexgate_Exit/CharacterRecords/Root",
+    "Characters/HA_Hexgate_Exit/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#2c6e45f7",
+   "class": "ad65d8c4",
+   "name": "#8c2a098f",
+   "pos": [
+    7744.61,
+    -184.22,
+    7645.99
+   ],
+   "fwd": [
+    -0.7521,
+    0.0,
+    -0.659
+   ],
+   "strings": [
+    "Characters/HA_Hexgate_Exit/CharacterRecords/Root",
+    "Characters/HA_Hexgate_Exit/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#2af85f3a",
+   "class": "ad65d8c4",
+   "name": "#12f6dc0f",
+   "pos": [
+    11171.23,
+    -184.22,
+    10987.77
+   ],
+   "fwd": [
+    0.7618,
+    0.0,
+    0.6478
+   ],
+   "strings": [
+    "Characters/HA_Hexgate/CharacterRecords/Root",
+    "Characters/HA_Hexgate/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#879365df",
+   "class": "ad65d8c4",
+   "name": "#2a9465cd",
+   "pos": [
+    8876.29,
+    -184.22,
+    8738.33
+   ],
+   "fwd": [
+    -0.7521,
+    0.0,
+    -0.659
+   ],
+   "strings": [
+    "Characters/HA_Hexgate_Exit/CharacterRecords/Root",
+    "Characters/HA_Hexgate_Exit/Skins/Skin0"
+   ]
+  },
+  {
+   "key": "#fd50ab53",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Poro_Large",
+   "pos": [
+    6837.0,
+    29.0,
+    5486.0
+   ],
+   "fwd": [
+    -0.9956,
+    -0.0934,
+    -0.0013
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Poro_Large"
+   ]
+  },
+  {
+   "key": "#abdad6b6",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Chains1",
+   "pos": [
+    3930.0,
+    88.0,
+    6102.0
+   ],
+   "fwd": [
+    -0.7193,
+    0.0,
+    0.6947
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Chains1"
+   ]
+  },
+  {
+   "key": "#ea97f127",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Poro5",
+   "pos": [
+    12843.0,
+    -902.0,
+    9700.0
+   ],
+   "fwd": [
+    -0.7351,
+    0.0,
+    -0.678
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Poro5"
+   ]
+  },
+  {
+   "key": "#54e6352f",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_PeriphBridge",
+   "pos": [
+    -501.0,
+    -8218.0,
+    17370.0
+   ],
+   "fwd": [
+    -0.4384,
+    0.0,
+    0.8988
+   ],
+   "strings": [
+    "LevelProp_HA_AP_PeriphBridge"
+   ]
+  },
+  {
+   "key": "#8024d8d2",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_BridgeLaneStatue3",
+   "pos": [
+    7776.0,
+    84.0,
+    6377.0
+   ],
+   "fwd": [
+    0.6947,
+    0.0,
+    -0.7193
+   ],
+   "strings": [
+    "LevelProp_HA_AP_BridgeLaneStatue3"
+   ]
+  },
+  {
+   "key": "#eeca6b84",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_ShpNorth",
+   "pos": [
+    10810.0,
+    -217.0,
+    11977.0
+   ],
+   "fwd": [
+    -0.9272,
+    0.0,
+    0.3746
+   ],
+   "strings": [
+    "LevelProp_HA_AP_ShpNorth"
+   ]
+  },
+  {
+   "key": "#fa5a1d2f",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Chains5",
+   "pos": [
+    8958.0,
+    88.0,
+    6577.0
+   ],
+   "fwd": [
+    -0.6947,
+    0.0,
+    0.7193
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Chains5"
+   ]
+  },
+  {
+   "key": "#adb6bc5a",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_BridgeLaneStatue5",
+   "pos": [
+    7918.0,
+    78.0,
+    9123.0
+   ],
+   "fwd": [
+    -0.6947,
+    0.0,
+    0.7193
+   ],
+   "strings": [
+    "LevelProp_HA_AP_BridgeLaneStatue5"
+   ]
+  },
+  {
+   "key": "#6da38c26",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Chains3",
+   "pos": [
+    6770.0,
+    66.0,
+    8887.0
+   ],
+   "fwd": [
+    -0.6947,
+    0.0,
+    0.7193
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Chains3"
+   ]
+  },
+  {
+   "key": "#55dcf159",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Hermit_Robot1",
+   "pos": [
+    11195.0,
+    -208.0,
+    12129.0
+   ],
+   "fwd": [
+    0.342,
+    0.0,
+    -0.9397
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Hermit_Robot1"
+   ]
+  },
+  {
+   "key": "#f725334e",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Chains_Long",
+   "pos": [
+    2883.0,
+    86.0,
+    5173.0
+   ],
+   "fwd": [
+    -0.5878,
+    0.0,
+    0.809
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Chains_Long"
+   ]
+  },
+  {
+   "key": "#392a70df",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Chains2",
+   "pos": [
+    5465.31,
+    77.0,
+    7567.35
+   ],
+   "fwd": [
+    -0.6947,
+    0.0,
+    0.7193
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Chains2"
+   ]
+  },
+  {
+   "key": "#181dd3a7",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Cutaway",
+   "pos": [
+    7814.0,
+    -221.0,
+    7517.0
+   ],
+   "fwd": [
+    -0.7193,
+    0.0,
+    0.6947
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Cutaway"
+   ]
+  },
+  {
+   "key": "#92933e48",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_ShpSouth",
+   "pos": [
+    520.0,
+    -185.0,
+    1912.0
+   ],
+   "fwd": [
+    -0.6947,
+    0.0,
+    0.7193
+   ],
+   "strings": [
+    "LevelProp_HA_AP_ShpSouth"
+   ]
+  },
+  {
+   "key": "#533313cd",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Chains6",
+   "pos": [
+    6074.0,
+    88.0,
+    3867.0
+   ],
+   "fwd": [
+    -0.6691,
+    0.0,
+    0.7431
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Chains6"
+   ]
+  },
+  {
+   "key": "#48174e63",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Chains4",
+   "pos": [
+    7491.0,
+    77.0,
+    5249.0
+   ],
+   "fwd": [
+    -0.6428,
+    0.0,
+    0.766
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Chains4"
+   ]
+  },
+  {
+   "key": "#e39a0aea",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Chains_Long3",
+   "pos": [
+    7723.0,
+    86.0,
+    9868.0
+   ],
+   "fwd": [
+    -0.7193,
+    0.0,
+    0.6947
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Chains_Long3"
+   ]
+  },
+  {
+   "key": "#972c947d",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_BannerMidBridge",
+   "pos": [
+    7205.31,
+    -756.0,
+    5667.35
+   ],
+   "fwd": [
+    -0.6947,
+    0.0,
+    0.7193
+   ],
+   "strings": [
+    "LevelProp_HA_AP_BannerMidBridge"
+   ]
+  },
+  {
+   "key": "#9b191a3c",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Chains_Long2",
+   "pos": [
+    5139.0,
+    97.0,
+    2800.0
+   ],
+   "fwd": [
+    -0.7193,
+    0.0,
+    0.6947
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Chains_Long2"
+   ]
+  },
+  {
+   "key": "#6286c917",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Poro_Small",
+   "pos": [
+    10392.0,
+    -384.0,
+    8395.0
+   ],
+   "fwd": [
+    0.2511,
+    0.0,
+    -0.968
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Poro_Small"
+   ]
+  },
+  {
+   "key": "#0e4fedbd",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_BridgeLaneStatue6",
+   "pos": [
+    6488.0,
+    88.0,
+    7745.0
+   ],
+   "fwd": [
+    -0.6947,
+    0.0,
+    0.7193
+   ],
+   "strings": [
+    "LevelProp_HA_AP_BridgeLaneStatue6"
+   ]
+  },
+  {
+   "key": "#19de1bb0",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Chains_Long1",
+   "pos": [
+    9939.0,
+    70.0,
+    7627.0
+   ],
+   "fwd": [
+    -0.6428,
+    0.0,
+    0.766
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Chains_Long1"
+   ]
+  },
+  {
+   "key": "#459a7bc5",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_BridgeLaneStatue2",
+   "pos": [
+    6321.0,
+    89.0,
+    5004.0
+   ],
+   "fwd": [
+    0.7193,
+    0.0,
+    -0.6947
+   ],
+   "strings": [
+    "LevelProp_HA_AP_BridgeLaneStatue2"
+   ]
+  },
+  {
+   "key": "#f9cce6da",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_BridgeLaneStatue4",
+   "pos": [
+    9188.0,
+    80.0,
+    7740.0
+   ],
+   "fwd": [
+    0.7193,
+    0.0,
+    -0.6947
+   ],
+   "strings": [
+    "LevelProp_HA_AP_BridgeLaneStatue4"
+   ]
+  },
+  {
+   "key": "#5355f5f4",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Poro2",
+   "pos": [
+    5892.0,
+    -742.0,
+    7636.0
+   ],
+   "fwd": [
+    -0.7071,
+    0.0,
+    -0.7071
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Poro2"
+   ]
+  },
+  {
+   "key": "#60ec77f5",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Poro4",
+   "pos": [
+    10538.0,
+    -385.0,
+    8395.0
+   ],
+   "fwd": [
+    -0.5286,
+    0.0,
+    -0.8488
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Poro4"
+   ]
+  },
+  {
+   "key": "#49a275a5",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Poro1",
+   "pos": [
+    2151.0,
+    -116.0,
+    4355.0
+   ],
+   "fwd": [
+    -0.117,
+    0.0,
+    -0.9931
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Poro1"
+   ]
+  },
+  {
+   "key": "#cdb5d18e",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Poro",
+   "pos": [
+    437.0,
+    726.0,
+    570.0
+   ],
+   "fwd": [
+    0.6983,
+    0.1315,
+    -0.7037
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Poro"
+   ]
+  },
+  {
+   "key": "#a6b994d7",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_Poro3",
+   "pos": [
+    11110.0,
+    -781.0,
+    12578.0
+   ],
+   "fwd": [
+    -0.2078,
+    0.0,
+    -0.9782
+   ],
+   "strings": [
+    "LevelProp_HA_AP_Poro3"
+   ]
+  },
+  {
+   "key": "#1e275206",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_BridgeLaneStatue7",
+   "pos": [
+    5076.64,
+    86.0,
+    6352.0
+   ],
+   "fwd": [
+    -0.6691,
+    0.0,
+    0.7431
+   ],
+   "strings": [
+    "LevelProp_HA_AP_BridgeLaneStatue7"
+   ]
+  },
+  {
+   "key": "#b6f3dc5b",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_BridgeLaneStatue8",
+   "pos": [
+    3653.64,
+    87.0,
+    4998.0
+   ],
+   "fwd": [
+    -0.6947,
+    0.0,
+    0.7193
+   ],
+   "strings": [
+    "LevelProp_HA_AP_BridgeLaneStatue8"
+   ]
+  },
+  {
+   "key": "#37b2e2ff",
+   "class": "da9e5c0c",
+   "name": "LevelProp_HA_AP_BridgeLaneStatue1",
+   "pos": [
+    4924.64,
+    92.0,
+    3607.0
+   ],
+   "fwd": [
+    0.7193,
+    0.0,
+    -0.6947
+   ],
+   "strings": [
+    "LevelProp_HA_AP_BridgeLaneStatue1"
+   ]
+  }
+ ],
+ "other": [
+  {
+   "key": "#dd6b6692",
+   "class": "f3726d48",
+   "name": "RSBot",
+   "pos": [
+    6141.26,
+    -96.2,
+    6714.01
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "RSBot"
+   ]
+  },
+  {
+   "key": "#913e2669",
+   "class": "a844df61",
+   "name": " Locator_RSBot_Chaos2",
+   "pos": [
+    6559.28,
+    -204.61,
+    7282.25
+   ],
+   "fwd": [
+    -0.2497,
+    0.0,
+    -0.9683
+   ],
+   "strings": [
+    " Locator_RSBot_Chaos2"
+   ]
+  },
+  {
+   "key": "#d4ef7659",
+   "class": "a844df61",
+   "name": " Locator_RSBot_Order1",
+   "pos": [
+    5818.78,
+    -208.87,
+    6518.6
+   ],
+   "fwd": [
+    0.8616,
+    0.0,
+    0.5076
+   ],
+   "strings": [
+    " Locator_RSBot_Order1"
+   ]
+  },
+  {
+   "key": "#02917469",
+   "class": "a844df61",
+   "name": " Locator_RSBot_Chaos1",
+   "pos": [
+    6406.78,
+    -204.61,
+    6973.83
+   ],
+   "fwd": [
+    -0.2497,
+    0.0,
+    -0.9683
+   ],
+   "strings": [
+    " Locator_RSBot_Chaos1"
+   ]
+  },
+  {
+   "key": "#fa98aff3",
+   "class": "a844df61",
+   "name": " Locator_RSBot_Order2",
+   "pos": [
+    5444.24,
+    -204.11,
+    6297.93
+   ],
+   "fwd": [
+    0.9863,
+    0.0,
+    0.1649
+   ],
+   "strings": [
+    " Locator_RSBot_Order2"
+   ]
+  },
+  {
+   "key": "#b543eeb7",
+   "class": "ba138ae3",
+   "name": "#c42ce45e",
+   "pos": [
+    10644.0,
+    -182.0,
+    10499.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "KIWI"
+   ]
+  },
+  {
+   "key": "#1751c4b1",
+   "class": "ba138ae3",
+   "name": "#e8471ece",
+   "pos": [
+    2148.0,
+    -182.0,
+    2221.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": [
+    "KIWI"
+   ]
+  },
+  {
+   "key": "#82fe4561",
+   "class": "1f1f50f2",
+   "name": "#cf283dad",
+   "pos": [
+    3099.45,
+    -199.67,
+    3194.16
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": []
+  },
+  {
+   "key": "#c5fb8b61",
+   "class": "1f1f50f2",
+   "name": "#428a9f0a",
+   "pos": [
+    9689.88,
+    -190.74,
+    9516.04
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": []
+  },
+  {
+   "key": "#6e0109d1",
+   "class": "4cf74021",
+   "name": "#bad31f8b",
+   "pos": [
+    936.0,
+    -106.0,
+    1060.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": []
+  },
+  {
+   "key": "#b6f4de5b",
+   "class": "f3726d48",
+   "name": "OrderShop",
+   "pos": [
+    829.18,
+    738.23,
+    2860.17
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "OrderShop"
+   ]
+  },
+  {
+   "key": "#6eb4b940",
+   "class": "f3726d48",
+   "name": "ChaosShop",
+   "pos": [
+    2612.9,
+    738.23,
+    2860.17
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "ChaosShop"
+   ]
+  },
+  {
+   "key": "#ce916e8b",
+   "class": "4cf74021",
+   "name": "#91561a33",
+   "pos": [
+    11860.0,
+    -114.0,
+    11596.0
+   ],
+   "fwd": [
+    0.7096,
+    0.0,
+    0.7046
+   ],
+   "strings": []
+  },
+  {
+   "key": "#0654f0f7",
+   "class": "eb997689",
+   "name": "#c1b1d3dd",
+   "pos": [
+    4707.93,
+    -219.82,
+    4600.45
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": []
+  },
+  {
+   "key": "#7b63801d",
+   "class": "eb997689",
+   "name": "#524491be",
+   "pos": [
+    7492.14,
+    890.98,
+    6209.61
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": []
+  },
+  {
+   "key": "#55ffce73",
+   "class": "da9e5c0c",
+   "name": "Info_OrderRandomThingy02",
+   "pos": [
+    3151.0,
+    -265.0,
+    1418.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    -0.8294
+   ],
+   "strings": [
+    "Info_OrderRandomThingy02"
+   ]
+  },
+  {
+   "key": "#e57435b3",
+   "class": "da9e5c0c",
+   "name": "Info_OrderRandomThingy01",
+   "pos": [
+    1501.0,
+    -265.0,
+    1620.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    -0.8294
+   ],
+   "strings": [
+    "Info_OrderRandomThingy01"
+   ]
+  },
+  {
+   "key": "#725cb108",
+   "class": "da9e5c0c",
+   "name": "Info_ChaosRandomThingy01",
+   "pos": [
+    11311.0,
+    -265.0,
+    11029.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    -0.8294
+   ],
+   "strings": [
+    "Info_ChaosRandomThingy01"
+   ]
+  },
+  {
+   "key": "#4651ebca",
+   "class": "a844df61",
+   "name": "FeeneyPult_Loc1",
+   "pos": [
+    1694.85,
+    -191.32,
+    928.21
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "FeeneyPult_Loc1"
+   ]
+  },
+  {
+   "key": "#0974c049",
+   "class": "a844df61",
+   "name": "FeeneyPult_Loc2",
+   "pos": [
+    11907.85,
+    -191.32,
+    10668.51
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "FeeneyPult_Loc2"
+   ]
+  },
+  {
+   "key": "#b0440d9a",
+   "class": "a844df61",
+   "name": "PoroSpwan2",
+   "pos": [
+    7466.0,
+    -184.0,
+    6643.0
+   ],
+   "fwd": [
+    0.7618,
+    0.0,
+    0.6478
+   ],
+   "strings": [
+    "PoroSpwan2"
+   ]
+  },
+  {
+   "key": "#48f0b300",
+   "class": "a844df61",
+   "name": "PoroSpwan4",
+   "pos": [
+    7674.0,
+    -192.0,
+    8591.0
+   ],
+   "fwd": [
+    0.7618,
+    0.0,
+    0.6478
+   ],
+   "strings": [
+    "PoroSpwan4"
+   ]
+  },
+  {
+   "key": "#7b2e15c9",
+   "class": "a844df61",
+   "name": "PoroSpwan6",
+   "pos": [
+    9759.33,
+    -192.0,
+    10528.59
+   ],
+   "fwd": [
+    0.7618,
+    0.0,
+    0.6478
+   ],
+   "strings": [
+    "PoroSpwan6"
+   ]
+  },
+  {
+   "key": "#7e63d8f9",
+   "class": "a844df61",
+   "name": "PoroSpwan9",
+   "pos": [
+    10325.69,
+    -150.0,
+    9243.83
+   ],
+   "fwd": [
+    0.7618,
+    0.0,
+    0.6478
+   ],
+   "strings": [
+    "PoroSpwan9"
+   ]
+  },
+  {
+   "key": "#abfa63d5",
+   "class": "a844df61",
+   "name": "PoroSpwan7",
+   "pos": [
+    4490.85,
+    -192.0,
+    3897.56
+   ],
+   "fwd": [
+    0.7618,
+    0.0,
+    0.6478
+   ],
+   "strings": [
+    "PoroSpwan7"
+   ]
+  },
+  {
+   "key": "#5c9a4390",
+   "class": "a844df61",
+   "name": "PoroSpwan5",
+   "pos": [
+    4381.07,
+    -192.0,
+    5365.91
+   ],
+   "fwd": [
+    0.7618,
+    0.0,
+    0.6478
+   ],
+   "strings": [
+    "PoroSpwan5"
+   ]
+  },
+  {
+   "key": "#56755268",
+   "class": "a844df61",
+   "name": "PoroSpwan3",
+   "pos": [
+    6018.22,
+    -192.0,
+    6880.46
+   ],
+   "fwd": [
+    0.7618,
+    0.0,
+    0.6478
+   ],
+   "strings": [
+    "PoroSpwan3"
+   ]
+  },
+  {
+   "key": "#ebe426f1",
+   "class": "a844df61",
+   "name": "PoroSpwan10",
+   "pos": [
+    2486.72,
+    -150.0,
+    3244.85
+   ],
+   "fwd": [
+    0.7618,
+    0.0,
+    0.6478
+   ],
+   "strings": [
+    "PoroSpwan10"
+   ]
+  },
+  {
+   "key": "#7658b405",
+   "class": "a844df61",
+   "name": "PoroSpwan1",
+   "pos": [
+    6116.0,
+    -189.0,
+    5343.0
+   ],
+   "fwd": [
+    0.7618,
+    0.0,
+    0.6478
+   ],
+   "strings": [
+    "PoroSpwan1"
+   ]
+  },
+  {
+   "key": "#9101de27",
+   "class": "a844df61",
+   "name": "PoroSpwan8",
+   "pos": [
+    9087.6,
+    -192.0,
+    8213.05
+   ],
+   "fwd": [
+    0.7618,
+    0.0,
+    0.6478
+   ],
+   "strings": [
+    "PoroSpwan8"
+   ]
+  },
+  {
+   "key": "#62d04ec3",
+   "class": "f3726d48",
+   "name": "group2",
+   "pos": [
+    6785.66,
+    -194.0,
+    5803.19
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "group2"
+   ]
+  },
+  {
+   "key": "#afbb758c",
+   "class": "a844df61",
+   "name": "RubbleLocator_Order_A",
+   "pos": [
+    5063.11,
+    -175.04,
+    4927.69
+   ],
+   "fwd": [
+    0.7071,
+    0.0,
+    0.7071
+   ],
+   "strings": [
+    "RubbleLocator_Order_A"
+   ]
+  },
+  {
+   "key": "#cf648eae",
+   "class": "a844df61",
+   "name": "RubbleLocator_Chaos_A",
+   "pos": [
+    8024.04,
+    -165.14,
+    7760.73
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "RubbleLocator_Chaos_A"
+   ]
+  },
+  {
+   "key": "#1d0a2ed5",
+   "class": "a844df61",
+   "name": "RubbleLocator_Chaos_B",
+   "pos": [
+    7734.26,
+    -165.14,
+    7769.06
+   ],
+   "fwd": [
+    -0.75,
+    0.0,
+    -0.6614
+   ],
+   "strings": [
+    "RubbleLocator_Chaos_B"
+   ]
+  },
+  {
+   "key": "#ab5bd0c4",
+   "class": "a844df61",
+   "name": "RubbleLocator_Order_B",
+   "pos": [
+    4783.13,
+    -184.06,
+    4938.28
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "RubbleLocator_Order_B"
+   ]
+  },
+  {
+   "key": "#9b2a4a22",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_02_10",
+   "pos": [
+    4329.06,
+    -192.15,
+    4966.66
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_02_10",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#da954017",
+   "class": "a844df61",
+   "name": "RubbleLocator_Chaos_Base",
+   "pos": [
+    7845.6,
+    -158.41,
+    7734.03
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "RubbleLocator_Chaos_Base"
+   ]
+  },
+  {
+   "key": "#dca180f2",
+   "class": "a844df61",
+   "name": "RubbleLocator_Order_Base",
+   "pos": [
+    4919.94,
+    -197.39,
+    4910.04
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "RubbleLocator_Order_Base"
+   ]
+  },
+  {
+   "key": "#690e1e81",
+   "class": "300333fc",
+   "name": "CubemapProbe1",
+   "pos": [
+    10113.46,
+    -110.12,
+    9893.76
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "CubemapProbe1"
+   ]
+  },
+  {
+   "key": "#3a0becfe",
+   "class": "300333fc",
+   "name": "CubemapProbe2",
+   "pos": [
+    6372.95,
+    -116.39,
+    6181.66
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "CubemapProbe2"
+   ]
+  },
+  {
+   "key": "#75199fdd",
+   "class": "300333fc",
+   "name": "CubemapProbe3",
+   "pos": [
+    2659.37,
+    -109.25,
+    2815.87
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "CubemapProbe3"
+   ]
+  },
+  {
+   "key": "#972c875b",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_34",
+   "pos": [
+    11412.2,
+    -179.29,
+    10293.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_34"
+   ]
+  },
+  {
+   "key": "#435f6808",
+   "class": "592ef6c3",
+   "name": "Env_MB_Snow_01_4",
+   "pos": [
+    11065.7,
+    -56.98,
+    5322.1
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_Snow_01_4",
+    "snow"
+   ]
+  },
+  {
+   "key": "#d75426da",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_15",
+   "pos": [
+    7413.74,
+    -179.18,
+    8196.67
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_15",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#70bd95d2",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_31",
+   "pos": [
+    4122.56,
+    -180.63,
+    3922.98
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_31"
+   ]
+  },
+  {
+   "key": "#14d2fde3",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_12",
+   "pos": [
+    8894.17,
+    -185.1,
+    10610.8
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_12"
+   ]
+  },
+  {
+   "key": "#03505b70",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_12",
+   "pos": [
+    9071.48,
+    -193.1,
+    10253.5
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_12",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#8016e779",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big4",
+   "pos": [
+    8728.4,
+    61.6,
+    10807.6
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big4"
+   ]
+  },
+  {
+   "key": "#cfaf5372",
+   "class": "592ef6c3",
+   "name": "Env_MB_Snow_01_2",
+   "pos": [
+    11110.2,
+    -180.68,
+    10213.4
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_Snow_01_2",
+    "snow"
+   ]
+  },
+  {
+   "key": "#1b4995bc",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_28",
+   "pos": [
+    1089.25,
+    -81.42,
+    623.63
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_28"
+   ]
+  },
+  {
+   "key": "#734b01b6",
+   "class": "592ef6c3",
+   "name": "Env_MB_lowWind_01_2",
+   "pos": [
+    4599.06,
+    -183.01,
+    3588.24
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_lowWind_01_2"
+   ]
+  },
+  {
+   "key": "#97e0dbf0",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_24",
+   "pos": [
+    3322.93,
+    -179.81,
+    1649.58
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_24"
+   ]
+  },
+  {
+   "key": "#820ea52f",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles7",
+   "pos": [
+    6487.76,
+    208.62,
+    7749.26
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles7"
+   ]
+  },
+  {
+   "key": "#1d986659",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big17",
+   "pos": [
+    1255.16,
+    -99.36,
+    3566.1
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big17"
+   ]
+  },
+  {
+   "key": "#f39c0751",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_5",
+   "pos": [
+    872.7,
+    -135.08,
+    2960.03
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_5"
+   ]
+  },
+  {
+   "key": "#05bdc471",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_45",
+   "pos": [
+    8970.8,
+    -184.91,
+    8616.93
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_45"
+   ]
+  },
+  {
+   "key": "#9b4b0d23",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big16",
+   "pos": [
+    2014.22,
+    1584.04,
+    3266.82
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big16"
+   ]
+  },
+  {
+   "key": "#c9adaad5",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big18",
+   "pos": [
+    5051.91,
+    14.65,
+    6374.02
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big18"
+   ]
+  },
+  {
+   "key": "#d3938337",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_11",
+   "pos": [
+    8790.36,
+    -194.18,
+    8950.94
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_11",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#681a769f",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_44",
+   "pos": [
+    259.68,
+    -14.09,
+    805.84
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_44"
+   ]
+  },
+  {
+   "key": "#8abd306e",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big10",
+   "pos": [
+    7946.29,
+    171.44,
+    9090.67
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big10"
+   ]
+  },
+  {
+   "key": "#4979be47",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small7",
+   "pos": [
+    9339.96,
+    -23.32,
+    11404.5
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small7"
+   ]
+  },
+  {
+   "key": "#5cf113cb",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireBig3",
+   "pos": [
+    7744.15,
+    71.05,
+    6349.68
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireBig3"
+   ]
+  },
+  {
+   "key": "#6e2f4a64",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small5",
+   "pos": [
+    4091.1,
+    14.26,
+    1902.93
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small5"
+   ]
+  },
+  {
+   "key": "#ef1a6402",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_02_9",
+   "pos": [
+    11839.7,
+    -191.71,
+    10624.5
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_02_9",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#cb6c7ac9",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_2",
+   "pos": [
+    3138.16,
+    -182.06,
+    4160.6
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_2"
+   ]
+  },
+  {
+   "key": "#02395008",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_42",
+   "pos": [
+    1297.03,
+    -192.55,
+    3352.74
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_42"
+   ]
+  },
+  {
+   "key": "#340dfc8d",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_19",
+   "pos": [
+    6201.68,
+    -178.34,
+    6488.23
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_19"
+   ]
+  },
+  {
+   "key": "#7e9b48cd",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_02_7",
+   "pos": [
+    7963.47,
+    -192.16,
+    7650.64
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_02_7",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#78d73033",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_43",
+   "pos": [
+    1478.26,
+    -144.58,
+    1016.01
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_43"
+   ]
+  },
+  {
+   "key": "#68c9822d",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_11",
+   "pos": [
+    8730.17,
+    -179.41,
+    9484.46
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_11"
+   ]
+  },
+  {
+   "key": "#fcdc8197",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_9",
+   "pos": [
+    7472.68,
+    -168.64,
+    8336.27
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_9"
+   ]
+  },
+  {
+   "key": "#c3ab877f",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_9",
+   "pos": [
+    6839.13,
+    -318.1,
+    5951.54
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_9",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#64d8cbd5",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles9",
+   "pos": [
+    9203.25,
+    210.37,
+    7743.66
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles9"
+   ]
+  },
+  {
+   "key": "#0e13f618",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles2",
+   "pos": [
+    4916.87,
+    221.47,
+    3617.64
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles2"
+   ]
+  },
+  {
+   "key": "#9243e8e6",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_01_1",
+   "pos": [
+    3330.91,
+    -194.18,
+    4143.27
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_01_1",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#474fab90",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_25",
+   "pos": [
+    9934.11,
+    -179.76,
+    10656.4
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_25"
+   ]
+  },
+  {
+   "key": "#d17e402f",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireBig1",
+   "pos": [
+    9961.75,
+    -135.1,
+    8586.23
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireBig1"
+   ]
+  },
+  {
+   "key": "#69d3837a",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_15",
+   "pos": [
+    6673.33,
+    -174.92,
+    7531.71
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_15"
+   ]
+  },
+  {
+   "key": "#e381451c",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_01_4",
+   "pos": [
+    9059.6,
+    -194.18,
+    8561.2
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_01_4",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#42816dfa",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_16",
+   "pos": [
+    6145.19,
+    -179.56,
+    6088.42
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_16"
+   ]
+  },
+  {
+   "key": "#9b877fa6",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_17",
+   "pos": [
+    10266.7,
+    -171.42,
+    8668.08
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_17"
+   ]
+  },
+  {
+   "key": "#e4763103",
+   "class": "592ef6c3",
+   "name": "HA_AP_godRays_01_1",
+   "pos": [
+    -294.79,
+    -26.41,
+    13755.1
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_AP_godRays_01_1"
+   ]
+  },
+  {
+   "key": "#39f5f449",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_46",
+   "pos": [
+    9470.05,
+    -118.19,
+    8299.54
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_46"
+   ]
+  },
+  {
+   "key": "#988b0414",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small9",
+   "pos": [
+    10926.7,
+    32.44,
+    8502.07
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small9"
+   ]
+  },
+  {
+   "key": "#a67b222f",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_Hermit_Fire1",
+   "pos": [
+    10883.0,
+    24.36,
+    11802.9
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_Hermit_Fire1"
+   ]
+  },
+  {
+   "key": "#304f4e31",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big9",
+   "pos": [
+    8705.48,
+    228.09,
+    9813.39
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big9"
+   ]
+  },
+  {
+   "key": "#58a06593",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big7",
+   "pos": [
+    12791.1,
+    190.91,
+    10285.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big7"
+   ]
+  },
+  {
+   "key": "#25f63c81",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles4",
+   "pos": [
+    3625.77,
+    201.17,
+    4993.11
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles4"
+   ]
+  },
+  {
+   "key": "#c2c331a5",
+   "class": "592ef6c3",
+   "name": "Env_MB_lowWind_01_3",
+   "pos": [
+    6939.67,
+    -134.24,
+    5840.7
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_lowWind_01_3"
+   ]
+  },
+  {
+   "key": "#28454d21",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big22",
+   "pos": [
+    3445.33,
+    -19.95,
+    1210.24
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big22"
+   ]
+  },
+  {
+   "key": "#64992716",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_27",
+   "pos": [
+    1436.98,
+    -171.23,
+    2324.92
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_27"
+   ]
+  },
+  {
+   "key": "#f6b9d532",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_39",
+   "pos": [
+    11216.0,
+    -190.61,
+    9292.01
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_39"
+   ]
+  },
+  {
+   "key": "#84cea337",
+   "class": "592ef6c3",
+   "name": "Env_MB_lowWind_01_1",
+   "pos": [
+    9519.91,
+    -131.68,
+    8300.43
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_lowWind_01_1"
+   ]
+  },
+  {
+   "key": "#44160933",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireBig2",
+   "pos": [
+    9167.95,
+    -27.67,
+    7730.81
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireBig2"
+   ]
+  },
+  {
+   "key": "#55b7d9aa",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big13",
+   "pos": [
+    3633.78,
+    34.61,
+    4994.18
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big13"
+   ]
+  },
+  {
+   "key": "#db6b44c9",
+   "class": "592ef6c3",
+   "name": "Env_MB_Snow_01_1",
+   "pos": [
+    1396.12,
+    -182.37,
+    1569.6
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_Snow_01_1"
+   ]
+  },
+  {
+   "key": "#4d315653",
+   "class": "592ef6c3",
+   "name": "Env_MB_highWind_belowBridge_01_1",
+   "pos": [
+    7432.68,
+    -192.48,
+    5533.08
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_highWind_belowBridge_01_1"
+   ]
+  },
+  {
+   "key": "#417dad97",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_7",
+   "pos": [
+    1991.37,
+    -179.13,
+    4069.14
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_7"
+   ]
+  },
+  {
+   "key": "#911aae69",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small13",
+   "pos": [
+    2237.41,
+    18.5,
+    69.17
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small13"
+   ]
+  },
+  {
+   "key": "#14b8dda8",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big3",
+   "pos": [
+    9348.29,
+    120.64,
+    11364.6
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big3"
+   ]
+  },
+  {
+   "key": "#be760dfc",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_47",
+   "pos": [
+    3658.22,
+    -182.06,
+    4703.81
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_47"
+   ]
+  },
+  {
+   "key": "#a0be0888",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small3",
+   "pos": [
+    3461.35,
+    25.1,
+    1272.13
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small3"
+   ]
+  },
+  {
+   "key": "#40f91edf",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big19",
+   "pos": [
+    2222.27,
+    106.21,
+    152.09
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big19"
+   ]
+  },
+  {
+   "key": "#be9dad99",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_4",
+   "pos": [
+    5646.95,
+    4.84,
+    4792.0
+   ],
+   "fwd": [
+    0.4446,
+    0.0,
+    1.2216
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_4",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#d731a469",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_10",
+   "pos": [
+    6503.36,
+    -185.38,
+    6860.59
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_10"
+   ]
+  },
+  {
+   "key": "#e3485ac7",
+   "class": "592ef6c3",
+   "name": "Env_Chimney_Smoke1",
+   "pos": [
+    10867.1,
+    473.74,
+    12026.8
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_Chimney_Smoke1"
+   ]
+  },
+  {
+   "key": "#7f794459",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_20",
+   "pos": [
+    4434.17,
+    -182.06,
+    5507.25
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_20"
+   ]
+  },
+  {
+   "key": "#cb5c56a2",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small6",
+   "pos": [
+    8718.73,
+    -1.78,
+    10792.7
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small6"
+   ]
+  },
+  {
+   "key": "#22987507",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_02_4",
+   "pos": [
+    6643.17,
+    -192.15,
+    7051.04
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_02_4",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#57f73cfb",
+   "class": "592ef6c3",
+   "name": "GemGlow_p1",
+   "pos": [
+    12280.0,
+    383.32,
+    11998.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "GemGlow_p1"
+   ]
+  },
+  {
+   "key": "#2a3e4346",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_6",
+   "pos": [
+    5742.83,
+    -184.85,
+    6267.16
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_6"
+   ]
+  },
+  {
+   "key": "#27f81f5e",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big5",
+   "pos": [
+    10932.7,
+    114.46,
+    8478.3
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big5"
+   ]
+  },
+  {
+   "key": "#65267685",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small14",
+   "pos": [
+    1886.82,
+    -14.71,
+    4186.97
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small14"
+   ]
+  },
+  {
+   "key": "#e7e0270f",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_1",
+   "pos": [
+    4089.4,
+    -194.18,
+    3326.66
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_1",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#14b88678",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small1",
+   "pos": [
+    625.82,
+    -12.77,
+    2944.02
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small1"
+   ]
+  },
+  {
+   "key": "#93d1f197",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_3",
+   "pos": [
+    2479.73,
+    -182.73,
+    4076.43
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_3"
+   ]
+  },
+  {
+   "key": "#36afcc38",
+   "class": "592ef6c3",
+   "name": "Env_MB_Snow_01_5",
+   "pos": [
+    6268.02,
+    -34977.8,
+    -402.63
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_Snow_01_5"
+   ]
+  },
+  {
+   "key": "#62e4ad66",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_Hermit_Cloth1",
+   "pos": [
+    10688.8,
+    17.18,
+    11776.1
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_Hermit_Cloth1"
+   ]
+  },
+  {
+   "key": "#f9d03776",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big12",
+   "pos": [
+    2820.5,
+    6.74,
+    4180.14
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big12"
+   ]
+  },
+  {
+   "key": "#5c24511e",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_3",
+   "pos": [
+    5302.0,
+    -192.16,
+    5566.87
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_3",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#8b403bb3",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles12",
+   "pos": [
+    9988.5,
+    159.59,
+    8521.89
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles12"
+   ]
+  },
+  {
+   "key": "#e79b83de",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_22",
+   "pos": [
+    2251.81,
+    -187.55,
+    471.46
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_22"
+   ]
+  },
+  {
+   "key": "#4046aedf",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles8",
+   "pos": [
+    7778.39,
+    209.24,
+    6363.25
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles8"
+   ]
+  },
+  {
+   "key": "#3e175765",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_02_1",
+   "pos": [
+    3134.85,
+    -194.18,
+    3161.78
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_02_1",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#cc073d67",
+   "class": "592ef6c3",
+   "name": "HA_Chaos_Inhibitor_Rubble_dust1",
+   "pos": [
+    9689.88,
+    -190.74,
+    9516.04
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Chaos_Inhibitor_Rubble_dust1",
+    "RUNETIMER_CHAOS"
+   ]
+  },
+  {
+   "key": "#c53e670b",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_26",
+   "pos": [
+    9798.26,
+    -179.78,
+    11616.5
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_26"
+   ]
+  },
+  {
+   "key": "#591319ed",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small10",
+   "pos": [
+    11565.2,
+    2.94,
+    9117.51
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small10"
+   ]
+  },
+  {
+   "key": "#ff8dde6e",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_35",
+   "pos": [
+    12429.9,
+    -189.97,
+    10276.7
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_35"
+   ]
+  },
+  {
+   "key": "#66a348d2",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big20",
+   "pos": [
+    4087.02,
+    -175.63,
+    1885.85
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big20"
+   ]
+  },
+  {
+   "key": "#32042c1e",
+   "class": "592ef6c3",
+   "name": "HA_Order_Inhibitor_Rubble_dust1",
+   "pos": [
+    3099.45,
+    -199.67,
+    3194.16
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Order_Inhibitor_Rubble_dust1",
+    "RUNETIMER_ORDER"
+   ]
+  },
+  {
+   "key": "#53d3602a",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles1",
+   "pos": [
+    2824.65,
+    149.15,
+    4178.64
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles1"
+   ]
+  },
+  {
+   "key": "#e2491d3d",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small12",
+   "pos": [
+    12817.2,
+    -3.8,
+    10342.5
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small12"
+   ]
+  },
+  {
+   "key": "#286e3a21",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small4",
+   "pos": [
+    2843.76,
+    9.74,
+    652.27
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small4"
+   ]
+  },
+  {
+   "key": "#1109b30a",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_29",
+   "pos": [
+    2219.29,
+    -167.58,
+    1557.88
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_29"
+   ]
+  },
+  {
+   "key": "#6bbed524",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_13",
+   "pos": [
+    8903.37,
+    -179.36,
+    10207.3
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_13"
+   ]
+  },
+  {
+   "key": "#e50e68be",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_14",
+   "pos": [
+    10643.2,
+    -176.72,
+    8673.33
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_14"
+   ]
+  },
+  {
+   "key": "#36862a98",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big15",
+   "pos": [
+    1875.2,
+    -170.48,
+    4191.31
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big15"
+   ]
+  },
+  {
+   "key": "#5f41746b",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_10",
+   "pos": [
+    9414.61,
+    -193.73,
+    8167.53
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_10",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#e8907a1b",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_21",
+   "pos": [
+    1493.4,
+    -174.95,
+    275.08
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_21"
+   ]
+  },
+  {
+   "key": "#23318eb3",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_02_6",
+   "pos": [
+    7028.77,
+    -192.16,
+    7230.93
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_02_6",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#33f83732",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big8",
+   "pos": [
+    11568.9,
+    131.58,
+    9074.68
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big8"
+   ]
+  },
+  {
+   "key": "#82844c06",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles5",
+   "pos": [
+    5054.1,
+    219.79,
+    6362.46
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles5"
+   ]
+  },
+  {
+   "key": "#2e20fa84",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_7",
+   "pos": [
+    7259.81,
+    -192.16,
+    6495.08
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_7",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#74b13fe5",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big21",
+   "pos": [
+    2824.47,
+    -94.07,
+    629.8
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big21"
+   ]
+  },
+  {
+   "key": "#be68337f",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_37",
+   "pos": [
+    12302.7,
+    -184.74,
+    11283.3
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_37"
+   ]
+  },
+  {
+   "key": "#c7073a4c",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small2",
+   "pos": [
+    1258.01,
+    -19.41,
+    3572.73
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small2"
+   ]
+  },
+  {
+   "key": "#1aa03383",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_36",
+   "pos": [
+    12209.1,
+    -122.53,
+    11991.1
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_36"
+   ]
+  },
+  {
+   "key": "#501a5576",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_8",
+   "pos": [
+    8007.14,
+    -178.08,
+    8861.28
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_8"
+   ]
+  },
+  {
+   "key": "#ac0bd04a",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_16",
+   "pos": [
+    8730.83,
+    -105.93,
+    9521.53
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_16",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#76b548f5",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_14",
+   "pos": [
+    4009.29,
+    -167.43,
+    3068.09
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_14",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#06934acf",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_41",
+   "pos": [
+    4369.35,
+    -181.08,
+    3382.24
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_41"
+   ]
+  },
+  {
+   "key": "#d0969c2f",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_13",
+   "pos": [
+    4794.27,
+    -192.16,
+    5858.98
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_13",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#0ced7484",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_02_11",
+   "pos": [
+    8020.8,
+    -180.88,
+    8348.98
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_02_11",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#4d7c985a",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_33",
+   "pos": [
+    3346.7,
+    -156.21,
+    3247.03
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_33"
+   ]
+  },
+  {
+   "key": "#5e873bbd",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireBig5",
+   "pos": [
+    4108.76,
+    -101.62,
+    2844.86
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireBig5"
+   ]
+  },
+  {
+   "key": "#b58b7874",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_18",
+   "pos": [
+    5136.33,
+    -181.09,
+    6185.69
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_18"
+   ]
+  },
+  {
+   "key": "#1fbc3bd7",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big6",
+   "pos": [
+    12209.4,
+    194.32,
+    9679.99
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big6"
+   ]
+  },
+  {
+   "key": "#2c00a0d3",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_02_8",
+   "pos": [
+    9736.39,
+    -193.27,
+    9432.11
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_02_8",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#dc6a15f1",
+   "class": "592ef6c3",
+   "name": "Env_MB_backgroundClouds_01_1",
+   "pos": [
+    1452.08,
+    -182.37,
+    11793.3
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_backgroundClouds_01_1"
+   ]
+  },
+  {
+   "key": "#2be1eb3f",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_02_3",
+   "pos": [
+    5045.23,
+    -205.75,
+    4762.71
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_02_3",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#6b55fd4a",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big11",
+   "pos": [
+    6497.55,
+    129.78,
+    7751.85
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big11"
+   ]
+  },
+  {
+   "key": "#bbfc6615",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles10",
+   "pos": [
+    7912.68,
+    210.56,
+    9124.95
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles10"
+   ]
+  },
+  {
+   "key": "#12ec7eb9",
+   "class": "592ef6c3",
+   "name": "Env_MB_Snow_01_3",
+   "pos": [
+    11462.0,
+    -132.43,
+    11258.5
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_Snow_01_3"
+   ]
+  },
+  {
+   "key": "#7e4d85e1",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles11",
+   "pos": [
+    8681.88,
+    135.91,
+    9848.58
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles11"
+   ]
+  },
+  {
+   "key": "#27db70c9",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_23",
+   "pos": [
+    3926.18,
+    -182.4,
+    2082.73
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_23"
+   ]
+  },
+  {
+   "key": "#facc0306",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_8",
+   "pos": [
+    6971.52,
+    -192.16,
+    6615.07
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_8",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#6dfb5ebe",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_01_2",
+   "pos": [
+    4869.1,
+    -191.05,
+    5439.34
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_01_2",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#e8c51c51",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_6",
+   "pos": [
+    4720.62,
+    -192.16,
+    4592.15
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_6",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#4f0d0cc6",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_01_3",
+   "pos": [
+    6161.33,
+    -192.15,
+    6368.67
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_01_3",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#9a52bf66",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_32",
+   "pos": [
+    3386.84,
+    -153.92,
+    4389.09
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_32"
+   ]
+  },
+  {
+   "key": "#ea1ddca6",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_4",
+   "pos": [
+    6567.06,
+    -171.4,
+    6383.83
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_4"
+   ]
+  },
+  {
+   "key": "#1ec60b7c",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_01_5",
+   "pos": [
+    9550.06,
+    -192.55,
+    10918.4
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_01_5",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#af2889a2",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small8",
+   "pos": [
+    9987.93,
+    -8.67,
+    12014.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small8"
+   ]
+  },
+  {
+   "key": "#1e67ee7b",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles3",
+   "pos": [
+    4113.06,
+    140.82,
+    2844.88
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles3"
+   ]
+  },
+  {
+   "key": "#2971b055",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_5",
+   "pos": [
+    4158.59,
+    -192.15,
+    5912.5
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_5",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#b6c49d05",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_38",
+   "pos": [
+    12597.4,
+    -190.65,
+    10659.7
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_38"
+   ]
+  },
+  {
+   "key": "#8775ac6d",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big1",
+   "pos": [
+    4909.88,
+    -2.96,
+    3608.42
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big1"
+   ]
+  },
+  {
+   "key": "#cbc77271",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_02_5",
+   "pos": [
+    6066.17,
+    -194.82,
+    6193.99
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_02_5",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#8a6af8f3",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireBig4",
+   "pos": [
+    6322.45,
+    59.69,
+    4984.73
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireBig4"
+   ]
+  },
+  {
+   "key": "#d006a104",
+   "class": "592ef6c3",
+   "name": "Env_MB_hightWind_01_2",
+   "pos": [
+    3128.71,
+    -192.12,
+    3550.04
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_hightWind_01_2",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#2684372c",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles_small11",
+   "pos": [
+    12215.8,
+    12.62,
+    9735.43
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles_small11"
+   ]
+  },
+  {
+   "key": "#d4447c99",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_30",
+   "pos": [
+    3907.82,
+    -175.8,
+    2602.03
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_30"
+   ]
+  },
+  {
+   "key": "#23dc207b",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big14",
+   "pos": [
+    612.34,
+    -203.68,
+    2963.64
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big14"
+   ]
+  },
+  {
+   "key": "#6ecbb524",
+   "class": "592ef6c3",
+   "name": "Env_MB_bridgeWind_SE_02_2",
+   "pos": [
+    3869.03,
+    -194.18,
+    4512.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_bridgeWind_SE_02_2",
+    "highWinds"
+   ]
+  },
+  {
+   "key": "#aae19022",
+   "class": "592ef6c3",
+   "name": "Env_MB_brazierFire_particles6",
+   "pos": [
+    6348.04,
+    204.89,
+    4983.41
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Env_MB_brazierFire_particles6"
+   ]
+  },
+  {
+   "key": "#6a06ed84",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_40",
+   "pos": [
+    8184.77,
+    -179.6,
+    7852.16
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_40"
+   ]
+  },
+  {
+   "key": "#e79cc486",
+   "class": "592ef6c3",
+   "name": "HA_Snow_Sparkle_01_1",
+   "pos": [
+    3916.21,
+    -182.06,
+    4840.05
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "HA_Snow_Sparkle_01_1"
+   ]
+  },
+  {
+   "key": "#003653f8",
+   "class": "592ef6c3",
+   "name": "Audio-Emitter_map12_FireMed-Big2",
+   "pos": [
+    9974.57,
+    73.94,
+    12021.0
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "Audio-Emitter_map12_FireMed-Big2"
+   ]
+  },
+  {
+   "key": "#e4da4bf7",
+   "class": "a844df61",
+   "name": "ShacoBoxSpawner1",
+   "pos": [
+    6452.34,
+    -191.67,
+    6363.55
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "ShacoBoxSpawner1"
+   ]
+  },
+  {
+   "key": "#a7b3e2ad",
+   "class": "a844df61",
+   "name": "ShacoBoxSpawner2",
+   "pos": [
+    5329.32,
+    -191.67,
+    5370.97
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "ShacoBoxSpawner2"
+   ]
+  },
+  {
+   "key": "#9614ee33",
+   "class": "a844df61",
+   "name": "ShacoBoxSpawner3",
+   "pos": [
+    2815.26,
+    -191.67,
+    2954.03
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "ShacoBoxSpawner3"
+   ]
+  },
+  {
+   "key": "#bf5ab47f",
+   "class": "a844df61",
+   "name": "ShacoBoxSpawner4",
+   "pos": [
+    7574.43,
+    -191.67,
+    7432.05
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "ShacoBoxSpawner4"
+   ]
+  },
+  {
+   "key": "#9255a502",
+   "class": "a844df61",
+   "name": "ShacoBoxSpawner5",
+   "pos": [
+    9986.73,
+    -191.67,
+    9916.11
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "ShacoBoxSpawner5"
+   ]
+  },
+  {
+   "key": "#56b1e409",
+   "class": "a844df61",
+   "name": "ShacoBoxSpawner6",
+   "pos": [
+    4296.95,
+    -191.67,
+    3887.07
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "ShacoBoxSpawner6"
+   ]
+  },
+  {
+   "key": "#a4277359",
+   "class": "a844df61",
+   "name": "ShacoBoxSpawner7",
+   "pos": [
+    9442.54,
+    -191.67,
+    8642.92
+   ],
+   "fwd": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "strings": [
+    "ShacoBoxSpawner7"
+   ]
+  }
+ ]
+}

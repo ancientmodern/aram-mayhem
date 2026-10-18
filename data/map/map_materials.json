@@ -1,0 +1,2434 @@
+[
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Base/Materials/Default/Wall_of_Grass",
+  "diffuse": "assets/map/textures/97614e2eed2a2f6b.png",
+  "blend": true,
+  "alpha_test": 0.0,
+  "tint": [
+   0.6363622546195984,
+   0.6408178806304932,
+   0.7227283120155334,
+   1.0
+  ],
+  "grass": true,
+  "no_lightmap": true,
+  "lightmap": null,
+  "gltf_name": "mapmat_000"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BKDF_Matte_Skybox1_inst",
+  "diffuse": "assets/map/textures/bee6724c67ce665d.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.501960813999176,
+   0.501960813999176,
+   0.501960813999176,
+   0.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_0.png",
+  "gltf_name": "mapmat_001"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BKDF_Matte_Skybox1_inst",
+  "diffuse": "assets/map/textures/bee6724c67ce665d.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.501960813999176,
+   0.501960813999176,
+   0.501960813999176,
+   0.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_1.png",
+  "gltf_name": "mapmat_002"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BKDF_Matte_Skybox1_inst",
+  "diffuse": "assets/map/textures/bee6724c67ce665d.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.501960813999176,
+   0.501960813999176,
+   0.501960813999176,
+   0.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_5.png",
+  "gltf_name": "mapmat_003"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_cliffer_inst",
+  "diffuse": "assets/map/textures/ac052d407d9cec14.png",
+  "blend": true,
+  "alpha_test": 0.0,
+  "tint": [
+   0.501960813999176,
+   0.501960813999176,
+   0.501960813999176,
+   0.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_3.png",
+  "gltf_name": "mapmat_004"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_cliffer_inst",
+  "diffuse": "assets/map/textures/ac052d407d9cec14.png",
+  "blend": true,
+  "alpha_test": 0.0,
+  "tint": [
+   0.501960813999176,
+   0.501960813999176,
+   0.501960813999176,
+   0.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_6.png",
+  "gltf_name": "mapmat_005"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_base_inst",
+  "diffuse": "assets/map/textures/2739b27504d5d216.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_006"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu1_inst",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": false,
+  "alpha_test": 0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_12.png",
+  "gltf_name": "mapmat_007"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu1_inst",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": false,
+  "alpha_test": 0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_4.png",
+  "gltf_name": "mapmat_008"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu1_inst",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": false,
+  "alpha_test": 0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_5.png",
+  "gltf_name": "mapmat_009"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu1_inst",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": false,
+  "alpha_test": 0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_7.png",
+  "gltf_name": "mapmat_010"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu1_inst",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": false,
+  "alpha_test": 0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_011"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu1_inst_blend",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": true,
+  "alpha_test": 0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_012"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu1_inst_blend",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": true,
+  "alpha_test": 0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_12.png",
+  "gltf_name": "mapmat_013"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu1_inst_blend",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": true,
+  "alpha_test": 0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_014"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu1_inst_blend",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": true,
+  "alpha_test": 0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_015"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu1_inst_blend",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": true,
+  "alpha_test": 0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_6.png",
+  "gltf_name": "mapmat_016"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu1_inst_blend",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": true,
+  "alpha_test": 0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_7.png",
+  "gltf_name": "mapmat_017"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu1_inst_blend",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": true,
+  "alpha_test": 0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_018"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/BK_periph_ice_cu2_inst",
+  "diffuse": "assets/map/textures/8c6e1ad88d11802c.png",
+  "blend": false,
+  "alpha_test": 0,
+  "tint": [
+   0.5000076293945312,
+   0.5000076293945312,
+   0.5000076293945312,
+   0.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_2.png",
+  "gltf_name": "mapmat_019"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/CRANE_inst",
+  "diffuse": "assets/map/textures/87c34076c30d2348.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_020"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/Keep_inst",
+  "diffuse": "assets/map/textures/65720a828fb738b0.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_021"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/Keep_inst",
+  "diffuse": "assets/map/textures/65720a828fb738b0.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_7.png",
+  "gltf_name": "mapmat_022"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/Keep_inst",
+  "diffuse": "assets/map/textures/65720a828fb738b0.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_8.png",
+  "gltf_name": "mapmat_023"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_Cutaway1_inst",
+  "diffuse": "assets/map/textures/2c2d20c2fa18a235.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_024"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_Cutaway1_inst",
+  "diffuse": "assets/map/textures/2c2d20c2fa18a235.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_025"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_Cutaway1_inst",
+  "diffuse": "assets/map/textures/2c2d20c2fa18a235.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_026"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_Cutaway1_inst",
+  "diffuse": "assets/map/textures/2c2d20c2fa18a235.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_027"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_Cutaway1_inst",
+  "diffuse": "assets/map/textures/2c2d20c2fa18a235.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_5.png",
+  "gltf_name": "mapmat_028"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_Cutaway2_inst",
+  "diffuse": "assets/map/textures/b41670833e9b69e1.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_6.png",
+  "gltf_name": "mapmat_029"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_Lane3_inst",
+  "diffuse": "assets/map/textures/559f234c439d8569.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_030"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_Lane3_inst",
+  "diffuse": "assets/map/textures/559f234c439d8569.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_031"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_Lane3_inst",
+  "diffuse": "assets/map/textures/559f234c439d8569.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_032"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_Lane3_inst",
+  "diffuse": "assets/map/textures/559f234c439d8569.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_033"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_SnowShelf_inst",
+  "diffuse": "assets/map/textures/31803acb7a3cf54f.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_12.png",
+  "gltf_name": "mapmat_034"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_Stairs_Lane_inst",
+  "diffuse": "assets/map/textures/1e8cae317c0e7ef1.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_12.png",
+  "gltf_name": "mapmat_035"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_Stairs_Lane_inst",
+  "diffuse": "assets/map/textures/1e8cae317c0e7ef1.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_036"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_ground_bracket_inst",
+  "diffuse": "assets/map/textures/f70aa380195f0fda.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_6.png",
+  "gltf_name": "mapmat_037"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_ground_bracket_inst",
+  "diffuse": "assets/map/textures/f70aa380195f0fda.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_7.png",
+  "gltf_name": "mapmat_038"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_ground_bracket_inst",
+  "diffuse": "assets/map/textures/f70aa380195f0fda.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_039"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_lambert168_inst",
+  "diffuse": "assets/map/textures/6180e4d458ed199f.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_8.png",
+  "gltf_name": "mapmat_040"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_lambert4099_inst",
+  "diffuse": "assets/map/textures/2d69bcf82558ddf8.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_6.png",
+  "gltf_name": "mapmat_041"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_polySurface172386_shader_inst",
+  "diffuse": "assets/map/textures/4c71fa55ecd6145a.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_12.png",
+  "gltf_name": "mapmat_042"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/LM_polySurface172386_shader_inst",
+  "diffuse": "assets/map/textures/4c71fa55ecd6145a.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_043"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/NE_Gate_inst",
+  "diffuse": "assets/map/textures/dc65003bb0a42e46.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_044"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/NE_SHOP_Items_inst",
+  "diffuse": "assets/map/textures/59c88e4aa704bf68.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_045"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_D1_inst",
+  "diffuse": "assets/map/textures/6817c6f529312175.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_046"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_D1_inst",
+  "diffuse": "assets/map/textures/6817c6f529312175.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_047"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_D1_inst",
+  "diffuse": "assets/map/textures/6817c6f529312175.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_048"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_D1_inst",
+  "diffuse": "assets/map/textures/6817c6f529312175.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_049"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_D1_inst",
+  "diffuse": "assets/map/textures/6817c6f529312175.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_050"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_D1_inst",
+  "diffuse": "assets/map/textures/6817c6f529312175.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_7.png",
+  "gltf_name": "mapmat_051"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_D1_inst",
+  "diffuse": "assets/map/textures/6817c6f529312175.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_052"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_E_inst",
+  "diffuse": "assets/map/textures/7b8b1daa649bac31.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_053"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_E_inst",
+  "diffuse": "assets/map/textures/7b8b1daa649bac31.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_054"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_E_inst",
+  "diffuse": "assets/map/textures/7b8b1daa649bac31.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_12.png",
+  "gltf_name": "mapmat_055"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_E_inst",
+  "diffuse": "assets/map/textures/7b8b1daa649bac31.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_056"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_E_inst",
+  "diffuse": "assets/map/textures/7b8b1daa649bac31.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_057"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_E_inst",
+  "diffuse": "assets/map/textures/7b8b1daa649bac31.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_058"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_E_inst",
+  "diffuse": "assets/map/textures/7b8b1daa649bac31.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_5.png",
+  "gltf_name": "mapmat_059"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_E_inst",
+  "diffuse": "assets/map/textures/7b8b1daa649bac31.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_7.png",
+  "gltf_name": "mapmat_060"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_E_inst",
+  "diffuse": "assets/map/textures/7b8b1daa649bac31.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_8.png",
+  "gltf_name": "mapmat_061"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_E_inst",
+  "diffuse": "assets/map/textures/7b8b1daa649bac31.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_062"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_F1_inst",
+  "diffuse": "assets/map/textures/b14b7a93b790e769.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_063"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_F1_inst",
+  "diffuse": "assets/map/textures/b14b7a93b790e769.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_064"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_F1_inst",
+  "diffuse": "assets/map/textures/b14b7a93b790e769.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_065"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_F1_inst",
+  "diffuse": "assets/map/textures/b14b7a93b790e769.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_066"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_F1_inst",
+  "diffuse": "assets/map/textures/b14b7a93b790e769.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_067"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_F1_inst",
+  "diffuse": "assets/map/textures/b14b7a93b790e769.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_16.png",
+  "gltf_name": "mapmat_068"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_F1_inst",
+  "diffuse": "assets/map/textures/b14b7a93b790e769.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_5.png",
+  "gltf_name": "mapmat_069"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_F1_inst",
+  "diffuse": "assets/map/textures/b14b7a93b790e769.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_7.png",
+  "gltf_name": "mapmat_070"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_F1_inst",
+  "diffuse": "assets/map/textures/b14b7a93b790e769.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_8.png",
+  "gltf_name": "mapmat_071"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SB_Wall_F1_inst",
+  "diffuse": "assets/map/textures/b14b7a93b790e769.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_072"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SHOP_CAVE_inst",
+  "diffuse": "assets/map/textures/85db050c1ed2a269.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_073"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SHOP_inst",
+  "diffuse": "assets/map/textures/fe54c8aeb5d3d1d1.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_074"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SW_ShopICE_alpha_inst",
+  "diffuse": "assets/map/textures/444ae956e5801237.png",
+  "blend": true,
+  "alpha_test": 0.004999999888241291,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_075"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/SWbase_cloth_alpha_inst",
+  "diffuse": "assets/map/textures/927ce14b4c9d87f1.png",
+  "blend": true,
+  "alpha_test": 0.8999999761581421,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_076"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/Statue_3_inst",
+  "diffuse": "assets/map/textures/604693771a6049a1.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_077"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/Statue_3_inst",
+  "diffuse": "assets/map/textures/604693771a6049a1.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_078"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/Statue_3_inst",
+  "diffuse": "assets/map/textures/604693771a6049a1.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_079"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/chain_base_plate_shader_inst",
+  "diffuse": "assets/map/textures/0593003cddf0e453.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_080"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/chain_base_plate_shader_inst",
+  "diffuse": "assets/map/textures/0593003cddf0e453.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_6.png",
+  "gltf_name": "mapmat_081"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/chain_base_plate_shader_inst",
+  "diffuse": "assets/map/textures/0593003cddf0e453.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_7.png",
+  "gltf_name": "mapmat_082"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/chain_base_plate_shader_inst",
+  "diffuse": "assets/map/textures/0593003cddf0e453.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_8.png",
+  "gltf_name": "mapmat_083"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/chain_base_plate_shader_inst",
+  "diffuse": "assets/map/textures/0593003cddf0e453.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_084"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/fj_jeremy_shop_north_ICICLES1_alpha_inst",
+  "diffuse": "assets/map/textures/37c5c26e0b630b66.png",
+  "blend": true,
+  "alpha_test": 0.8999999761581421,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_085"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/fj_jeremy_shop_north_ICICLES1_alpha_inst",
+  "diffuse": "assets/map/textures/37c5c26e0b630b66.png",
+  "blend": true,
+  "alpha_test": 0.8999999761581421,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_12.png",
+  "gltf_name": "mapmat_086"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/fj_jeremy_shop_north_ICICLES1_alpha_inst",
+  "diffuse": "assets/map/textures/37c5c26e0b630b66.png",
+  "blend": true,
+  "alpha_test": 0.8999999761581421,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_087"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/fj_jeremy_shop_north_ICICLES1_alpha_inst",
+  "diffuse": "assets/map/textures/37c5c26e0b630b66.png",
+  "blend": true,
+  "alpha_test": 0.8999999761581421,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_088"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/fj_jeremy_shop_north_ICICLES1_alpha_inst",
+  "diffuse": "assets/map/textures/37c5c26e0b630b66.png",
+  "blend": true,
+  "alpha_test": 0.8999999761581421,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_089"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/fj_jeremy_shop_north_ICICLES1_alpha_inst",
+  "diffuse": "assets/map/textures/37c5c26e0b630b66.png",
+  "blend": true,
+  "alpha_test": 0.8999999761581421,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_6.png",
+  "gltf_name": "mapmat_090"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/fj_jeremy_shop_north_ICICLES1_alpha_inst",
+  "diffuse": "assets/map/textures/37c5c26e0b630b66.png",
+  "blend": true,
+  "alpha_test": 0.8999999761581421,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_7.png",
+  "gltf_name": "mapmat_091"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/fj_jeremy_shop_north_ICICLES1_alpha_inst",
+  "diffuse": "assets/map/textures/37c5c26e0b630b66.png",
+  "blend": true,
+  "alpha_test": 0.8999999761581421,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_8.png",
+  "gltf_name": "mapmat_092"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/fj_jeremy_shop_north_ICICLES1_alpha_inst",
+  "diffuse": "assets/map/textures/37c5c26e0b630b66.png",
+  "blend": true,
+  "alpha_test": 0.8999999761581421,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_093"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/hero_emblemSG2_inst",
+  "diffuse": "assets/map/textures/4b2c3c4b72c369bb.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_094"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/ice_blocks_alpha_inst",
+  "diffuse": "assets/map/textures/4238d2c6c341088d.png",
+  "blend": true,
+  "alpha_test": 0.004999999888241291,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_095"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/ice_blocks_alpha_inst",
+  "diffuse": "assets/map/textures/4238d2c6c341088d.png",
+  "blend": true,
+  "alpha_test": 0.004999999888241291,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_096"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/ice_blocks_alpha_inst",
+  "diffuse": "assets/map/textures/4238d2c6c341088d.png",
+  "blend": true,
+  "alpha_test": 0.004999999888241291,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_097"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/ice_blocks_alpha_inst",
+  "diffuse": "assets/map/textures/4238d2c6c341088d.png",
+  "blend": true,
+  "alpha_test": 0.004999999888241291,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_098"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/ice_blocks_alpha_inst",
+  "diffuse": "assets/map/textures/4238d2c6c341088d.png",
+  "blend": true,
+  "alpha_test": 0.004999999888241291,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_099"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert233_inst",
+  "diffuse": "assets/map/textures/2b87640173b65806.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_100"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert233_inst",
+  "diffuse": "assets/map/textures/2b87640173b65806.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_101"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert233_inst",
+  "diffuse": "assets/map/textures/2b87640173b65806.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_102"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert233_inst",
+  "diffuse": "assets/map/textures/2b87640173b65806.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_103"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert233_inst",
+  "diffuse": "assets/map/textures/2b87640173b65806.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_5.png",
+  "gltf_name": "mapmat_104"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert233_inst",
+  "diffuse": "assets/map/textures/2b87640173b65806.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_7.png",
+  "gltf_name": "mapmat_105"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert233_inst",
+  "diffuse": "assets/map/textures/2b87640173b65806.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_8.png",
+  "gltf_name": "mapmat_106"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert233_inst",
+  "diffuse": "assets/map/textures/2b87640173b65806.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_107"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert250_inst",
+  "diffuse": "assets/map/textures/bcf30c9112eafe4a.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_108"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert2_inst",
+  "diffuse": "assets/map/textures/16c6ab4d7b86e8f2.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_109"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert2_inst",
+  "diffuse": "assets/map/textures/16c6ab4d7b86e8f2.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_110"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert3_inst",
+  "diffuse": "assets/map/textures/46a3eef66550de5a.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_111"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4104_inst",
+  "diffuse": "assets/map/textures/e88985088590d70b.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_112"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4104_inst",
+  "diffuse": "assets/map/textures/e88985088590d70b.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_113"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4104_inst",
+  "diffuse": "assets/map/textures/e88985088590d70b.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_6.png",
+  "gltf_name": "mapmat_114"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4104_inst",
+  "diffuse": "assets/map/textures/e88985088590d70b.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_115"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4165_inst",
+  "diffuse": "assets/map/textures/eed73537f4f96e66.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_116"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4166_inst",
+  "diffuse": "assets/map/textures/e91ad591c01183a6.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_117"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4166_inst",
+  "diffuse": "assets/map/textures/e91ad591c01183a6.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_118"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4166_inst",
+  "diffuse": "assets/map/textures/e91ad591c01183a6.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_119"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4181_inst",
+  "diffuse": "assets/map/textures/07b649a9716a2b69.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_120"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4181_inst",
+  "diffuse": "assets/map/textures/07b649a9716a2b69.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_121"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4190_inst",
+  "diffuse": "assets/map/textures/200bce99eb6d4724.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_122"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4190_inst",
+  "diffuse": "assets/map/textures/200bce99eb6d4724.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_5.png",
+  "gltf_name": "mapmat_123"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4190_inst",
+  "diffuse": "assets/map/textures/200bce99eb6d4724.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_124"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4191_inst",
+  "diffuse": "assets/map/textures/251c0d9c8d471367.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_125"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4191_inst",
+  "diffuse": "assets/map/textures/251c0d9c8d471367.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_126"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4191_inst",
+  "diffuse": "assets/map/textures/251c0d9c8d471367.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_127"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4191_inst",
+  "diffuse": "assets/map/textures/251c0d9c8d471367.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_128"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4191_inst",
+  "diffuse": "assets/map/textures/251c0d9c8d471367.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_7.png",
+  "gltf_name": "mapmat_129"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4191_inst",
+  "diffuse": "assets/map/textures/251c0d9c8d471367.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_8.png",
+  "gltf_name": "mapmat_130"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4197_inst",
+  "diffuse": "assets/map/textures/a3810cdeb439aa8e.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_131"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4197_inst",
+  "diffuse": "assets/map/textures/a3810cdeb439aa8e.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_132"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4197_inst",
+  "diffuse": "assets/map/textures/a3810cdeb439aa8e.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_12.png",
+  "gltf_name": "mapmat_133"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4197_inst",
+  "diffuse": "assets/map/textures/a3810cdeb439aa8e.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_134"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4197_inst",
+  "diffuse": "assets/map/textures/a3810cdeb439aa8e.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_135"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lambert4197_inst",
+  "diffuse": "assets/map/textures/a3810cdeb439aa8e.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_136"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lanewalls_inst",
+  "diffuse": "assets/map/textures/fc35d144e6b103f0.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_13.png",
+  "gltf_name": "mapmat_137"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lanewalls_inst",
+  "diffuse": "assets/map/textures/fc35d144e6b103f0.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_138"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lanewalls_inst",
+  "diffuse": "assets/map/textures/fc35d144e6b103f0.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_8.png",
+  "gltf_name": "mapmat_139"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/lanewalls_inst",
+  "diffuse": "assets/map/textures/fc35d144e6b103f0.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_140"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/p_healthpack_emmit_geo_alpha_inst",
+  "diffuse": "assets/map/textures/228d2ee78b723804.png",
+  "blend": true,
+  "alpha_test": 0.8999999761581421,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_10.png",
+  "gltf_name": "mapmat_141"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/p_healthpack_emmit_geo_alpha_inst",
+  "diffuse": "assets/map/textures/228d2ee78b723804.png",
+  "blend": true,
+  "alpha_test": 0.8999999761581421,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_142"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/periph_ice_closeup_alpha1_inst",
+  "diffuse": "assets/map/textures/104f7c4647de856c.png",
+  "blend": true,
+  "alpha_test": 0.004999999888241291,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_14.png",
+  "gltf_name": "mapmat_143"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/periph_ice_closeup_alpha1_inst",
+  "diffuse": "assets/map/textures/104f7c4647de856c.png",
+  "blend": true,
+  "alpha_test": 0.004999999888241291,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_6.png",
+  "gltf_name": "mapmat_144"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/periph_ice_closeup_alpha1_inst",
+  "diffuse": "assets/map/textures/104f7c4647de856c.png",
+  "blend": true,
+  "alpha_test": 0.004999999888241291,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_8.png",
+  "gltf_name": "mapmat_145"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/polySurface174029_shader_inst",
+  "diffuse": "assets/map/textures/084d723a19cdb50f.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_146"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/polySurface174029_shader_inst",
+  "diffuse": "assets/map/textures/084d723a19cdb50f.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_12.png",
+  "gltf_name": "mapmat_147"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/shelves1_inst",
+  "diffuse": "assets/map/textures/70823d503af5ba47.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_9.png",
+  "gltf_name": "mapmat_148"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/shouthshopice_alpha_inst",
+  "diffuse": "assets/map/textures/f2a1c522ca483cb8.png",
+  "blend": true,
+  "alpha_test": 0.004999999888241291,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_15.png",
+  "gltf_name": "mapmat_149"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/statue_14_breakable_inst",
+  "diffuse": "assets/map/textures/604693771a6049a1.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_11.png",
+  "gltf_name": "mapmat_150"
+ },
+ {
+  "name": "Maps/KitPieces/Howling_Abyss/Materials/statue_14_breakable_inst",
+  "diffuse": "assets/map/textures/604693771a6049a1.png",
+  "blend": false,
+  "alpha_test": 0.0,
+  "tint": [
+   0.5,
+   0.5,
+   0.5,
+   1.0
+  ],
+  "grass": false,
+  "no_lightmap": false,
+  "lightmap": "assets/map/lightmaps/lm_12.png",
+  "gltf_name": "mapmat_151"
+ }
+]
