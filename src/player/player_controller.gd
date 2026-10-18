@@ -71,6 +71,11 @@ func _process(_delta: float) -> void:
 			_rmb_timer = 0.09
 			if hovered == null or not _is_enemy_target(hovered):
 				champ.issue_move(mouse_ground)
+				# [juice] holding the button keeps re-issuing the order: League re-spawns the marker as the cursor moves
+				var hub = match_ref.get_meta("juice_cursor") if match_ref.has_meta("juice_cursor") else null
+				if hub != null and is_instance_valid(hub):
+					if G.flat_dist(hub.last_pos, mouse_ground) > 0.45 and Time.get_ticks_msec() * 0.001 - hub.last_time > 0.14:
+						_click_marker(mouse_ground, false)
 	_update_indicator()
 
 
@@ -307,12 +312,9 @@ func _right_click() -> void:
 			match_ref.audio.player_order("move")
 
 
+## [juice] League's Cursor_Moveto marker (green) / its red attack variant, see src/fx_moments/cursor_marker.gd.
 func _click_marker(pos: Vector3, attack: bool) -> void:
-	if not attack and LolVfx.has("Cursor_Moveto"):
-		LolVfx.spawn(match_ref, "Cursor_Moveto", pos + Vector3(0, 0.05, 0))
-		return
-	var col := Color(1.0, 0.25, 0.2) if attack else Color(0.35, 1.0, 0.45)
-	Vfx.ring(match_ref, pos, col, 0.55, 0.35, 0.2, 0.0)
+	CursorMarker.spawn(match_ref, pos, attack)
 
 
 # ------------------------------------------------------------------ casting
