@@ -222,9 +222,13 @@ func _lol_missile_visual(mi) -> void:
 
 
 func add_missile(mi: Missile, pos: Vector3) -> Missile:
+	var pm := Prof.t0()
 	if not mi.is_attack:
 		_lol_missile_visual(mi)
+	Prof.add("missile.visual", pm)
+	pm = Prof.t0()
 	missiles_root.add_child(mi)
+	Prof.add("missile.add", pm)
 	mi.global_position = pos
 	missiles.append(mi)
 	return mi
