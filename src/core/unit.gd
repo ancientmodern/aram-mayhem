@@ -388,6 +388,7 @@ func on_damaged(info: DamageInfo) -> void:
 func tick(dt: float) -> void:
 	if dead:
 		tick_dead(dt)
+		_anim_advance(dt)
 		return
 	var pt := Prof.t0()
 	_tick_buffs(dt)
@@ -423,6 +424,9 @@ func tick(dt: float) -> void:
 	pt = Prof.t0()
 	_update_visual(dt)
 	Prof.add("u.visual", pt)
+	pt = Prof.t0()
+	_anim_advance(dt)
+	Prof.add("u.anim", pt)
 	var gp := global_position
 	if _prev_pos != Vector3.INF and dt > 0.0:
 		velocity = velocity.lerp(Vector3(gp.x - _prev_pos.x, 0.0, gp.z - _prev_pos.z) / dt, 0.5)
@@ -703,7 +707,9 @@ func _update_cast(dt: float) -> void:
 		if casting.t <= 0.0:
 			var c := casting
 			casting = {}
+			var pe := Prof.t0()
 			ab.execute(c.target)
+			Prof.add("cast.exec", pe)
 			if not queued_cast.is_empty():
 				var q := queued_cast
 				queued_cast = {}
@@ -958,37 +964,31 @@ func _steer_dir(pos: Vector3, dir: Vector3, last_leg: bool, dist_left: float) ->
 		return dir
 	var out := dir
 	var my_spd := stats.move_speed * G.U
-	for u in match_ref.units_in_radius(pos, path_radius + 1.0):
-		if u == self or u.dead or not u.dash.is_empty() or (u.cc & Buff.CC.GHOSTED) != 0:
-			continue
-		if u.kind in [G.Kind.INHIBITOR, G.Kind.NEXUS]:
-			continue
-		var to := Vector3(u.global_position.x - pos.x, 0.0, u.global_position.z - pos.z)
-		var dist := to.length()
-		var rr: float = path_radius + float(u.path_radius)
-		if dist < 0.001 or dist > rr + 0.45:
-			continue
-		var fwd := to.dot(dir)
-		if fwd <= 0.0:
-			continue
-		# only units that are not moving along with us block (a wave walking together does not weave)
-		if u.moving and u.velocity.dot(dir) > my_spd * 0.6:
-			continue
-		var lat_v := to - dir * fwd
-		var lat := lat_v.length()
-		if lat >= rr:
-			continue
-		if last_leg and dist_left <= fwd + rr * 0.5:
-			# the goal lies inside / just behind this unit
-			if dist_left < rr + 0.6:
-				return Vector3.ZERO
-		var tangent: Vector3
-		if lat > 0.01:
-			tangent = -lat_v / lat
-		else:
-			tangent = dir.cross(Vector3.UP) * (1.0 if (uid + u.uid) % 2 == 0 else -1.0)
-		var w: float = clampf(1.0 - (dist - rr) / 0.45, 0.0, 1.0) * (1.0 - lat / rr * 0.5)
-		out += tangent * w * 2.0
+	# scan the 3x3 grid cells around pos directly (cells are 4 m; blockers are within ~2.5 m): no
+	# per-call query array, distance test before any other property access
+	var grid: Dictionary = match_ref._grid
+	var cx := int(floor(pos.x / 4.0))
+	var cz := int(floor(pos.z / 4.0))
+	for gj in range(cz - 1, cz + 2):
+		for gi in range(cx - 1, cx + 2):
+			var cell = grid.get(Vector2i(gi, gj))
+			if cell == null:
+				continue
+			for u in cell:
+				if u == self:
+					continue
+				var up: Vector3 = u.global_position
+				var to := Vector3(up.x - pos.x, 0.0, up.z - pos.z)
+				var rr: float = path_radius + float(u.path_radius)
+				var d2 := to.x * to.x + to.z * to.z
+				if d2 > (rr + 0.45) * (rr + 0.45) or d2 < 0.000001:
+					continue
+				if u.dead or u.kind == G.Kind.INHIBITOR or u.kind == G.Kind.NEXUS or (u.cc & Buff.CC.GHOSTED) != 0 or not u.dash.is_empty():
+					continue
+				var st := _steer_one(u, to, sqrt(d2), rr, dir, my_spd, last_leg, dist_left)
+				if st == Vector3.INF:
+					return Vector3.ZERO
+				out += st
 	if out.length_squared() < 0.0001:
 		return dir
 	out = out.normalized()
@@ -996,6 +996,87 @@ func _steer_dir(pos: Vector3, dir: Vector3, last_leg: bool, dist_left: float) ->
 	if out.dot(dir) < 0.0:
 		out = (out - dir * out.dot(dir)).normalized()
 	return out
+
+
+## Steering push away from one nearby unit (INF = the goal is occupied: arrive here).
+func _steer_one(u, to: Vector3, dist: float, rr: float, dir: Vector3, my_spd: float, last_leg: bool, dist_left: float) -> Vector3:
+	var fwd := to.dot(dir)
+	if fwd <= 0.0:
+		return Vector3.ZERO
+	# only units that are not moving along with us block (a wave walking together does not weave)
+	if u.moving and u.velocity.dot(dir) > my_spd * 0.6:
+		return Vector3.ZERO
+	var lat_v := to - dir * fwd
+	var lat := lat_v.length()
+	if lat >= rr:
+		return Vector3.ZERO
+	if last_leg and dist_left <= fwd + rr * 0.5:
+		# the goal lies inside / just behind this unit
+		if dist_left < rr + 0.6:
+			return Vector3.INF
+	var tangent: Vector3
+	if lat > 0.01:
+		tangent = -lat_v / lat
+	else:
+		tangent = dir.cross(Vector3.UP) * (1.0 if (uid + u.uid) % 2 == 0 else -1.0)
+	var w: float = clampf(1.0 - (dist - rr) / 0.45, 0.0, 1.0) * (1.0 - lat / rr * 0.5)
+	return tangent * w * 2.0
+
+
+## Soft collision for every unit pair in neighbouring grid cells (Match._resolve_collisions).
+## Solid units (alive, not dashing / ghosted) are gathered per cell once per frame, then each pair is
+## visited exactly once (own cell + the 4 forward cells) with a cheap distance test first. Immovable
+## units (mass 0: turrets, structures) push from every side.
+static var _solid := {}
+static var _solid_pool: Array = []
+
+
+static func resolve_collisions(grid: Dictionary, nav) -> void:
+	for k in _solid:
+		var arr: Array = _solid[k]
+		arr.clear()
+		_solid_pool.append(arr)
+	_solid.clear()
+	for key in grid:
+		var arr: Array = _solid_pool.pop_back() if not _solid_pool.is_empty() else []
+		for u in grid[key]:
+			if not u.dead and (u.cc & Buff.CC.GHOSTED) == 0 and u.dash.is_empty():
+				arr.append(u)
+		if arr.is_empty():
+			_solid_pool.append(arr)
+		else:
+			_solid[key] = arr
+	var empty: Array = []
+	for key in _solid:
+		var cell: Array = _solid[key]
+		var n0: Array = _solid.get(Vector2i(key.x + 1, key.y), empty)
+		var n1: Array = _solid.get(Vector2i(key.x - 1, key.y + 1), empty)
+		var n2: Array = _solid.get(Vector2i(key.x, key.y + 1), empty)
+		var n3: Array = _solid.get(Vector2i(key.x + 1, key.y + 1), empty)
+		var cn := cell.size()
+		for ia in cn:
+			var a: Unit = cell[ia]
+			for ib in range(ia + 1, cn):
+				_collide(a, cell[ib], nav)
+			for b in n0:
+				_collide(a, b, nav)
+			for b in n1:
+				_collide(a, b, nav)
+			for b in n2:
+				_collide(a, b, nav)
+			for b in n3:
+				_collide(a, b, nav)
+
+
+static func _collide(a: Unit, b: Unit, nav) -> void:
+	var ap := a.global_position
+	var bp := b.global_position
+	var rr := a.path_radius + b.path_radius
+	var dx := bp.x - ap.x
+	var dz := bp.z - ap.z
+	if dx * dx + dz * dz >= rr * rr or (a.mass <= 0.0 and b.mass <= 0.0):
+		return
+	resolve_pair(a, b, nav)
 
 
 ## Resolve overlap of two units (called by Match for neighbouring pairs).
@@ -1065,19 +1146,31 @@ func die(killer, info = null) -> void:
 	stop_moving()
 	attack_target = null
 	shields.clear()
+	var pd := Prof.t0()
 	for b in buffs.duplicate():
 		if not b.permanent:
 			remove_buff(b)
+	Prof.slow("death.buffs", pd, display_name)
+	pd = Prof.t0()
 	for e in effects.duplicate():
 		e.on_death(killer)
 	if killer != null and is_instance_valid(killer):
 		for e in killer.effects.duplicate():
 			e.on_kill(self)
+	Prof.slow("death.effects", pd, display_name)
+	pd = Prof.t0()
 	play_anim("death", 1.0, -1.0 if graph != null else 0.1)
+	Prof.slow("death.anim", pd, display_name)
+	pd = Prof.t0()
 	died.emit(self, killer)
+	Prof.slow("death.died_signal", pd, display_name)
+	pd = Prof.t0()
 	if match_ref != null:
 		match_ref.on_unit_died(self, killer, info)
+	Prof.slow("death.on_unit_died", pd, display_name)
+	pd = Prof.t0()
 	on_died(killer)
+	Prof.slow("death.on_died", pd, display_name)
 
 
 func on_died(_killer) -> void:
@@ -1102,6 +1195,7 @@ func set_model(m: Node3D) -> void:
 	_meshes.clear()
 	_collect_materials(m)
 	_alpha = -1.0
+	_model_y = INF
 	recompute_stats()
 
 
@@ -1353,6 +1447,7 @@ func set_anim_graph(g: AnimGraph) -> void:
 	_strides = {}
 	if g != null and anim_player != null:
 		Assets.merge_extra_clips(anim_player, g.alias)
+	_setup_anim_lod()
 	if g != null and anim_player != null and _skel != null:
 		# the pose only evaluates inside the tree: measure once the unit has entered it
 		if is_inside_tree():
@@ -1372,8 +1467,36 @@ func set_anim_graph(g: AnimGraph) -> void:
 
 func _calibrate_strides() -> void:
 	if anim_player != null and _skel != null:
-		_strides = Assets.run_strides(anim_player, _skel)
+		_strides = _cap_fast_strides(Assets.run_strides(anim_player, _skel))
 		cur_anim = ""
+
+
+## Faster run variants (League run_haste / run_fast / homeguard sprints) are authored as long bounding
+## strides with a short stance; matched to the foot exactly they play in slow motion (Ezreal's haste
+## run at 0.6x took 2.5 m per step). Cap their planted-foot speed at FAST_STRIDE_CAP x the base run's
+## so their cadence stays at least as quick as the normal run's (brief stance = little visible slide).
+const FAST_STRIDE_CAP := 1.5
+
+
+func _cap_fast_strides(st: Dictionary) -> Dictionary:
+	if graph == null or st.size() < 2:
+		return st
+	var top := _graph_clip("run")
+	if top == "":
+		return st
+	var steps: Array = graph.resolve(top, {"MoveSpeed": 0.0, "IsMoving": true, "IsAlly": true})
+	if steps.is_empty():
+		return st
+	var base: float = st.get(String(steps[-1].anim), 0.0)
+	if base <= 0.0:
+		return st
+	var out := st
+	for k in st:
+		if float(st[k]) > base * FAST_STRIDE_CAP:
+			if out == st:
+				out = st.duplicate()
+			out[k] = base * FAST_STRIDE_CAP
+	return out
 
 
 func _kit_override(logical: String) -> bool:
@@ -1392,18 +1515,30 @@ func _graph_clip(logical: String) -> String:
 	return graph.find_clip(c)
 
 
+var _ctx := {"MoveSpeed": 0.0, "IsMoving": false, "IsAlly": true, "IsHomeguard": false,
+		"LookAtSpellTargetAngle": 0.0, "Facing": 0.0, "IsInTerrain": false}
+var _g_branch := ""           ## AnimGraph.branch() of the run being played (MoveSpeed thresholds)
+
+
+## League graph updater values (one dictionary reused: resolve() only reads it).
 func _anim_ctx() -> Dictionary:
 	var ang := 0.0
 	if not casting.is_empty() and casting.get("target", {}).has("pos"):
 		var to := G.flat(casting.target.pos - global_position)
 		if to.length() > 0.01:
 			ang = rad_to_deg(facing.signed_angle_to(to.normalized(), Vector3.UP))
-	return {"MoveSpeed": stats.move_speed, "IsMoving": moving, "IsAlly": G.player == null or G.player.team == team,
-		"IsHomeguard": false, "LookAtSpellTargetAngle": ang, "Facing": 0.0, "IsInTerrain": false}
+	_ctx["MoveSpeed"] = stats.move_speed
+	_ctx["IsMoving"] = moving
+	_ctx["IsAlly"] = G.player == null or G.player.team == team
+	_ctx["LookAtSpellTargetAngle"] = ang
+	return _ctx
 
 
 func _g_play(logical: String, top: String, speed: float, blend: float, duration: float = 0.0) -> bool:
-	var steps: Array = graph.resolve(top, _anim_ctx()).filter(func(s): return anim_player.has_animation(s.anim))
+	var ctx := _anim_ctx()
+	var steps: Array = graph.resolve(top, ctx).filter(func(s): return anim_player.has_animation(s.anim))
+	if logical == "run":
+		_g_branch = graph.branch(top, ctx)
 	if steps.is_empty():
 		return false
 	var b := blend
@@ -1412,9 +1547,11 @@ func _g_play(logical: String, top: String, speed: float, blend: float, duration:
 		if bb is String:
 			# League TransitionClipBlendData: play the transition clip (e.g. Spell1_To_Run) first
 			var tr: Array = graph.resolve(bb, {}).filter(func(s): return anim_player.has_animation(s.anim))
-			if not tr.is_empty() and _CYCLIC.has(logical):
+			# (any target state except timed ones: an attack / spell clip must hit its cast frame on time)
+			var timed := logical == "attack" or logical == "crit" or logical.begins_with("spell")
+			if not tr.is_empty() and not timed:
 				steps = tr + steps
-			b = 0.05 if not tr.is_empty() else AnimGraph.DEFAULT_BLEND
+			b = 0.05 if not tr.is_empty() and not timed else AnimGraph.DEFAULT_BLEND
 		else:
 			b = float(bb)
 	_g_logical = logical
@@ -1458,7 +1595,7 @@ func _g_tick(dt: float) -> void:
 	if _g_top == "" or _g_hold or _g_t == INF:
 		return
 	_g_t -= dt * _g_speed
-	if _g_t > 0.0:
+	if _g_t > 0.004:   # the mixer reaches the clip end this frame too (avoid a stopped frame)
 		return
 	if _g_i < _g_steps.size() - 1:
 		var prev := _g_atomic
@@ -1580,7 +1717,11 @@ func play_spell_anim(logical: String, lock: float = 0.4, speed: float = 1.0) -> 
 
 func _update_visual(dt: float) -> void:
 	if model != null:
-		model.position.y = airborne_height + _airborne_offset()
+		# only touch the transform when it changes (a set re-propagates through every mesh / bone socket)
+		var my := airborne_height + _airborne_offset()
+		if my != _model_y:
+			_model_y = my
+			model.position.y = my
 	if hit_flash > 0.0 or _flash_shown > 0.0:
 		hit_flash = maxf(0.0, hit_flash - dt * 6.0)
 		# "flash" is a per-instance uniform: set it on the mesh instances, not the shared materials
@@ -1595,7 +1736,7 @@ func _update_visual(dt: float) -> void:
 	if anim_lock > 0.0:
 		anim_lock -= dt
 		# League: once the attack has launched, a move order cancels the backswing at once
-		if _attack_anim and windup_timer < 0.0 and moving and dash.is_empty():
+		if _attack_anim and windup_timer < 0.0 and (_g_hold or moving and dash.is_empty()):
 			anim_lock = 0.0
 		else:
 			return
@@ -1621,16 +1762,22 @@ func _update_visual(dt: float) -> void:
 		_g_recheck -= dt
 		if _g_recheck <= 0.0:
 			_g_recheck = 0.25
-			var steps: Array = graph.resolve(_g_top, _anim_ctx())
-			if not steps.is_empty() and String(steps[-1].anim) != String(_g_steps[-1].anim) \
-					and anim_player.has_animation(steps[-1].anim):
-				var prev := _g_atomic
-				_g_steps = [steps[-1]]
-				_g_i = 0
-				var bb = graph.blend(prev, _g_top, String(steps[-1].clip), _g_top, 0.15)
-				_g_start_step(float(bb) if not (bb is String) else 0.15)
-		_g_speed = _run_rate(String(_g_steps[_g_i].anim))
-		anim_player.speed_scale = _safe_speed(_g_speed)
+			var ctx := _anim_ctx()
+			var br := graph.branch(_g_top, ctx)
+			if br != _g_branch:
+				# only a MoveSpeed threshold crossing switches the loop (selector variants play out)
+				_g_branch = br
+				var steps: Array = graph.resolve(_g_top, ctx)
+				if not steps.is_empty() and String(steps[-1].anim) != String(_g_steps[-1].anim) 						and anim_player.has_animation(steps[-1].anim):
+					var prev := _g_atomic
+					_g_steps = [steps[-1]]
+					_g_i = 0
+					var bb = graph.blend(prev, _g_top, String(steps[-1].clip), _g_top, 0.15)
+					_g_start_step(float(bb) if not (bb is String) else 0.15)
+		var rs := _run_rate(String(_g_steps[_g_i].anim))
+		if absf(rs - _g_speed) > 0.005:
+			_g_speed = rs
+			anim_player.speed_scale = _safe_speed(rs)
 	else:
 		var spd2 := _run_rate(String(anim_player.current_animation))
 		anim_player.speed_scale = 1.0
@@ -1642,6 +1789,77 @@ func base_run_speed() -> float:
 	return 340.0
 
 
+# ===================================================================== animation LOD (manual mixer advance)
+## Champions and minions drive their AnimationPlayer by hand (callback mode MANUAL) from tick():
+## animation follows game time (pause / game speed), and units the player can't see (off screen or
+## hidden by fog of war) skip the mixer + skeleton update entirely, so they cost no pose evaluation
+## and no GPU skinning. The skipped time is applied in one step when the unit becomes visible again.
+var _model_y := INF
+var _manual_ap: AnimationPlayer = null
+var _anim_acc := 0.0
+var _on_screen := true
+var _vis_notifier: VisibleOnScreenNotifier3D = null
+var _anim_min_step := 0.0     ## minimum mixer step (minions: 60 Hz cap, champions: every frame)
+static var _headless := -1
+static var anim_lod := true    ## --animlod=0 disables the visibility skip / rate cap (A/B profiling)
+static var anim_stats := [0, 0]   ## [mixer advances, skipped] since last read (profiling)
+const ANIM_CATCHUP_MAX := 2.0
+const MINION_ANIM_STEP := 1.0 / 60.0
+
+
+func _setup_anim_lod() -> void:
+	if anim_player == null or _manual_ap == anim_player:
+		return
+	anim_player.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
+	_manual_ap = anim_player
+	_anim_acc = 0.0
+	if _headless < 0:
+		_headless = 1 if DisplayServer.get_name() == "headless" else 0
+		anim_lod = not ("--animlod=0" in OS.get_cmdline_user_args())
+	# minions are many and small on screen: their pose updates at most 60 times a second
+	_anim_min_step = MINION_ANIM_STEP if kind == G.Kind.MINION else 0.0
+	if _headless == 1 or _vis_notifier != null:
+		return
+	_vis_notifier = VisibleOnScreenNotifier3D.new()
+	var r := maxf(selection_radius, 1.0) * 1.6
+	_vis_notifier.aabb = AABB(Vector3(-r, -0.5, -r), Vector3(2.0 * r, height * 1.6 + 1.5, 2.0 * r))
+	_vis_notifier.screen_entered.connect(func(): _on_screen = true)
+	_vis_notifier.screen_exited.connect(func(): _on_screen = false)
+	add_child(_vis_notifier)
+	_on_screen = false
+	if is_inside_tree():
+		_on_screen = _vis_notifier.is_on_screen()
+
+
+func _anim_advance(dt: float) -> void:
+	if _manual_ap == null:
+		return
+	if _manual_ap != anim_player:
+		# the model was replaced: the new player runs on its own (idle callback) until re-setup
+		_manual_ap = null
+		return
+	if not anim_player.is_playing():
+		# a finished one-shot (held spell pose, death) keeps its last pose; advancing a stopped mixer
+		# costs ~1 ms per call (it re-evaluates every track with nothing to blend)
+		_anim_acc = 0.0
+		return
+	_anim_acc += dt
+	if anim_lod and (not _on_screen or not visible or _anim_acc < _anim_min_step * 0.75):
+		if _anim_acc > ANIM_CATCHUP_MAX:
+			_anim_acc = ANIM_CATCHUP_MAX
+		anim_stats[1] += 1
+		return
+	if _anim_acc > 0.1 and not dead and _g_top != "" and _g_t != INF and _g_t > 0.0:
+		# catching up after being skipped: the graph driver kept the clip clock (_g_t = clip time
+		# left), so jump the mixer there instead of overshooting past the end of a one-shot step
+		var ln := anim_player.current_animation_length
+		anim_player.seek(clampf(ln - _g_t, 0.0, ln), true)
+	else:
+		anim_player.advance(_anim_acc)
+	_anim_acc = 0.0
+	anim_stats[0] += 1
+
+
 # ===================================================================== transparency (brush / stealth / corpse fade)
 var _meshes: Array = []       ## MeshInstance3D of the model
 var _flash_shown := 0.0
@@ -1650,12 +1868,19 @@ var corpse_fade := 0.0        ## 0..1 extra transparency (minion corpse fade-out
 const BRUSH_TRANSPARENCY := 0.45
 
 
+var _fow_hidden := false       ## the player's team can't see this unit (League fog of war / brush)
+var _fow_kind := -1           ## 1 = champions / minions / summons hide in fog (lazy)
+const FOW_FADE_RATE := 8.0     ## alpha / s: units fade out / in over ~0.12 s when vision changes
+
+
 func _target_transparency() -> float:
+	if _fow_hidden:
+		return 1.0
 	var want := corpse_fade
 	# League: a unit standing in brush is drawn semi-transparent for its own team
-	if in_brush > 0 and not dead and G.player != null and is_instance_valid(G.player) and G.player.team == team 			and kind in [G.Kind.CHAMPION, G.Kind.MINION, G.Kind.SUMMON]:
+	if in_brush > 0 and _fow_kind == 1 and not dead and G.player != null and G.player.team == team:
 		want = maxf(want, BRUSH_TRANSPARENCY)
-	if not _meshes.is_empty() and is_instance_valid(_meshes[0]):
+	if (cc & Buff.CC.CAMOUFLAGE) != 0 and not _meshes.is_empty() and is_instance_valid(_meshes[0]):
 		var st = (_meshes[0] as GeometryInstance3D).get_instance_shader_parameter("stealth")
 		if st != null and float(st) > 0.0:
 			want = maxf(want, float(st) * 0.7)
@@ -1663,15 +1888,28 @@ func _target_transparency() -> float:
 
 
 func _update_transparency(dt: float) -> void:
+	if _fow_kind < 0:
+		_fow_kind = 1 if kind == G.Kind.CHAMPION or kind == G.Kind.MINION or kind == G.Kind.SUMMON else 0
+	# League fog of war: enemies the player's team can't see (brush, out of sight range) are not drawn
+	var pl = G.player
+	if _fow_kind == 1 and not dead:
+		_fow_hidden = pl != null and pl.team != team and pl.team < 2 and not visible_to[pl.team]
+	if not _fow_hidden and not visible:
+		visible = true
 	var want := _target_transparency()
 	if _alpha < 0.0:
 		_alpha = want
 		_apply_transparency(_alpha)
+		if _fow_hidden:
+			visible = false
 		return
 	if absf(_alpha - want) < 0.001:
 		return
-	_alpha = move_toward(_alpha, want, dt * 3.0)
+	var rate := FOW_FADE_RATE if _fow_hidden or _alpha > 0.75 else 3.0
+	_alpha = move_toward(_alpha, want, dt * rate)
 	_apply_transparency(_alpha)
+	if _fow_hidden and _alpha >= 0.999:
+		visible = false   # hides the model, attached VFX and bone sockets; skips skinning and drawing
 
 
 func _apply_transparency(a: float) -> void:

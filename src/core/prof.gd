@@ -22,6 +22,15 @@ static func add(section: String, start: int) -> void:
 
 
 ## Call once per frame (end of frame) to fold per-frame totals into peaks.
+## Log a single slow call (perf hunting): prints when one call exceeds 8 ms.
+static func slow(section: String, start: int, what: String) -> void:
+	if not enabled:
+		return
+	var d := Time.get_ticks_usec() - start
+	if d > (3000 if section.begins_with("death") else 8000):
+		print("SLOW %s %.1fms %s" % [section, d / 1000.0, what])
+
+
 static func end_frame() -> void:
 	for k in frame:
 		if frame[k] > peak.get(k, 0):

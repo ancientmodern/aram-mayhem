@@ -149,6 +149,50 @@ func _resolve(n: String, ctx: Dictionary, out: Array, depth: int) -> void:
 			_resolve(nm.to_lower(), ctx, out, depth + 1)
 
 
+## Deterministic signature of the condition branches (ConditionFloat / ConditionBool) a clip takes for
+## ctx, following sequencers to their looping tail; selectors are not rolled. Used to switch run <->
+## haste mid-play only when MoveSpeed crosses a League threshold (not on every random re-roll).
+func branch(n: String, ctx: Dictionary) -> String:
+	var out := ""
+	var cur := n.to_lower()
+	for depth in 8:
+		var node = clips.get(cur)
+		if node == null:
+			break
+		match String(node.get("type", "")):
+			"ConditionFloat":
+				var v := float(ctx.get(String(node.get("updater", "")), 0.0))
+				var pairs: Array = node.get("pairs", [])
+				if pairs.is_empty():
+					break
+				var pick: String = String(pairs[0][0])
+				for p in pairs:
+					if v >= float(p[1]):
+						pick = String(p[0])
+				out += pick + ";"
+				cur = pick.to_lower()
+			"ConditionBool":
+				var b := bool(ctx.get(String(node.get("updater", "")), false))
+				var nm := String(node.get("true" if b else "false", ""))
+				if nm == "" or not _playable(nm.to_lower(), 0):
+					nm = String(node.get("false" if b else "true", ""))
+				out += nm + ";"
+				cur = nm.to_lower()
+			"Sequencer":
+				var l: Array = node.get("list", [])
+				if l.is_empty():
+					break
+				cur = String(l[-1]).to_lower()
+			"Parallel":
+				var l2: Array = node.get("list", [])
+				if l2.is_empty():
+					break
+				cur = String(l2[0]).to_lower()
+			_:
+				break
+	return out
+
+
 func loops(n: String) -> bool:
 	var node = clips.get(n.to_lower())
 	return node != null and (int(node.get("flags", 0)) & 2) != 0

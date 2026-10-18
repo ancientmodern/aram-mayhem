@@ -323,6 +323,8 @@ func begin_cast(t: Dictionary) -> void:
 		var pe := Prof.t0()
 		execute(t)
 		Prof.add("cast.exec", pe)
+		if Prof.enabled:
+			Prof.slow("cast.exec", pe, "%s %s" % [owner.display_name, display_name])
 
 
 func anim_speed() -> float:
