@@ -5,5 +5,14 @@
  "width": 248,
  "height": 237,
  "brush_regions": 4,
- "source": "navgrid v7.1"
+ "source": "navgrid v7.1",
+ "floor": {
+  "origin_x": 4.034114074707031,
+  "origin_z": -121.63185066223144,
+  "dx": 0.24911781311035155,
+  "dz": 0.24987751007080078,
+  "width": 497,
+  "height": 475,
+  "source": "mesh floor snapped to ngrid sampled heights (tools/lol/bake_floor_height.py)"
+ }
 }
