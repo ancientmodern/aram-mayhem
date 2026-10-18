@@ -67,13 +67,16 @@ def save_tex(wad, key, name):
 # ---------------------------------------------------------------- floating health bars
 fib = load_bin(0x3db39d2f8cdb8a4c)
 ATLAS = "file:37b03fb998093e20"
+# [healthbar] bar-death flipbooks (DeathAnimAlly / DeathAnimEnemy of the champion and structure bars)
+DEATH_TEX = {"file:515f5bacb3a0cc50": "fhb_death_champ.png", "file:354dbb4a7402861d": "fhb_death_struct.png"}
 layout = {}
 for v in fib.values():
     nm = str(v.get("name", ""))
     if "/LoLFloatingInfoBars/UIBase/" not in nm:
         continue
     short = nm.split("/UIBase/")[1]
-    if not short.split("/")[0] in ("ChampBars", "FHBMinionSmall", "FHBMinionMed", "FHBMinionLarge", "FHBStructure", "FHBEpicStructure"):
+    if not short.split("/")[0] in ("ChampBars", "FHBMinionSmall", "FHBMinionMed", "FHBMinionLarge", "FHBStructure",
+                                   "FHBEpicStructure", "FHBObj"):
         continue
     pos = v.get("position", {})
     r = pos.get("3a8bfbed", {}) if isinstance(pos, dict) else {}
@@ -83,11 +86,100 @@ for v in fib.values():
     td = v.get("TextureData", {})
     if td.get("mTextureName") == ATLAS:
         e["uv"] = td.get("mTextureUV")
+    elif td.get("mTextureName") in DEATH_TEX:
+        # [healthbar] UiElementEffectAnimationData flipbook: FramesPerSecond / TotalNumberOfFrames /
+        # NumberOfFramesPerRowInAtlas (field names by FNV-1a); first frame = mTextureUV
+        e["uv"] = td.get("mTextureUV")
+        e["tex"] = DEATH_TEX[td.get("mTextureName")]
+        e["anim"] = [v.get(f"{fnv1a(f):08x}") for f in ("FramesPerSecond", "TotalNumberOfFrames",
+                                                        "NumberOfFramesPerRowInAtlas")]
     if "color" in v:
         e["color"] = bgra(v["color"])
     layout[short.split("/")[-1]] = e
 json.dump(layout, open(os.path.join(OUT, "fhb_layout.json"), "w"), indent=1, sort_keys=True)
 print("fhb elements", len(layout), "atlas", save_tex(ui, 0x37b03fb998093e20, "fhb_atlas.png"))
+for key, name in DEATH_TEX.items():
+    print(name, save_tex(ui, int(key[5:], 16), name))
+
+# ---------------------------------------------------------------- [healthbar] bar behaviour
+# FloatingInfoBarViewController (UI.wad bin 0x5b323b35842cc2a0, "ClientStates/Gameplay/UX/LoL/LoLFloatingInfoBars"):
+# InfoBarStyleSourceMap[unitHealthBarStyle] -> Hero/Unit/StructureFloatingInfoBarData. Values a bar does not set
+# fall back to the class defaults, which live in the client exe; they are taken from the per-patch meta dump in
+# github.com/LeagueToolkit/lol-meta-classes (db/database.py):
+#   HealthBarFadeData            fadeHoldTime 0.05  fadeSpeed 0.5  fadeAcceleration 5.0
+#   FloatingHealthBarBurstData   burstTimeWindow 0.1  burst/flash/shakeTriggerPercent 0.35  fadeHoldTime 0.2
+#                                fadeSpeed 0.05  fadeAcceleration 1.0  flashDuration 0.3  shakeDuration 0.4
+#                                shakeFrequency 10  shakeBox (8, 3.5)  shakeReferenceResolution (1024, 768)
+#   FloatingHealthBarBurstHealData  healTimeWindow 0.1  healTriggerPercent 0.1  healFadeDuration 0.2
+#   HealthBarTickStyleHero       HealthPerstandardTick 1000; MicroTicksPerStandardTickData minHealth 1000 / 9
+CLASS_DEFAULTS = {
+    "fade": {"fadeHoldTime": 0.05, "fadeSpeed": 0.5, "fadeAcceleration": 5.0},
+    "burst": {"burstTimeWindow": 0.1, "burstTriggerPercent": 0.35, "flashTriggerPercent": 0.35,
+              "shakeTriggerPercent": 0.35, "fadeHoldTime": 0.2, "fadeSpeed": 0.05, "fadeAcceleration": 1.0,
+              "flashDuration": 0.3, "shakeDuration": 0.4, "shakeFrequency": 10.0, "shakeBox": [8.0, 3.5],
+              "shakeReferenceResolution": [1024.0, 768.0]},
+    "heal": {"healTimeWindow": 0.1, "healTriggerPercent": 0.1, "healFadeDuration": 0.2},
+    "tick": {"HealthPerstandardTick": 1000.0, "minHealth": 1000.0, "microTicksBetween": 9},
+}
+BN = {fnv1a(f): f for f in """InfoBarStyleSourceMap Scene Healthbar fadeData fadeHoldTime fadeSpeed fadeAcceleration burstData
+burstHealData burstTimeWindow burstTriggerPercent flashTriggerPercent shakeTriggerPercent flashDuration shakeDuration
+shakeFrequency shakeBox shakeReferenceResolution healTimeWindow healTriggerPercent healFadeDuration TickStyle
+HealthPerstandardTick MicroTickPerStandardTickData minHealth microTicksBetween Borders LevelTextColorSelf
+LevelTextColorAlly LevelTextColorEnemy LevelTextColorSelfColorblind ExtraBars BurstFadeMeterSelf BurstFadeMeterOther
+BurstFadeMeter DamageFlashMeter mSelfColor mFriendlyColor mEnemyColor mNeutralColor mFriendlyLaneMinionBarColor
+mEnemyLaneMinionBarColor HeroFloatingInfoBarData StructureFloatingInfoBarData UnitFloatingInfoBarData
+HudColorData""".split()}
+for sc in ("ChampBars", "FHBCloneBar", "FHBMinionSmall", "FHBMinionMed", "FHBMinionLarge", "FHBStructure",
+           "FHBEpicStructure", "FHBObj", "FHBEpic", "NaafiriPackmate"):
+    BN[fnv1a("ClientStates/Gameplay/UX/LoL/LoLFloatingInfoBars/UIBase/" + sc)] = sc
+ctl_bin = BinFile(ui.read(0x5b323b35842cc2a0))
+ctl = {f"{k:08x}": to_py(v, BN) for k, v in ctl_bin.entries.items()}
+root = ctl.get(f"{fnv1a('ClientStates/Gameplay/UX/LoL/LoLFloatingInfoBars'):08x}", {})
+
+
+def merged(d, cls):
+    out = dict(CLASS_DEFAULTS[cls])
+    out.update({k: v for k, v in (d or {}).items() if k in out})
+    return out
+
+
+styles = {}
+for idx, link in root.get("InfoBarStyleSourceMap", {}).items():
+    b = ctl.get(str(link)[5:], {})
+    hb = b.get("Healthbar", {})
+    s = {"class": b.get("__class"), "scene": str(b.get("Scene", "")).replace("hash:", "")}
+    if isinstance(hb.get("fadeData"), dict):
+        s["fade"] = merged(hb["fadeData"], "fade")
+    if "burstData" in b or b.get("__class") in ("HeroFloatingInfoBarData", "StructureFloatingInfoBarData"):
+        s["burst"] = merged(b.get("burstData"), "burst")
+    if b.get("__class") == "HeroFloatingInfoBarData":
+        s["heal"] = merged(b.get("burstHealData"), "heal")
+        ts = hb.get("TickStyle", {})
+        s["ticks"] = {"per_standard": ts.get("HealthPerstandardTick", CLASS_DEFAULTS["tick"]["HealthPerstandardTick"]),
+                      "micro": sorted([[m.get("minHealth", 1000.0), m.get("microTicksBetween", 9)]
+                                       for m in ts.get("MicroTickPerStandardTickData", [])])}
+        bd = b.get("Borders", {})
+        s["level_text"] = {k: bgra(bd[k]) for k in ("LevelTextColorSelf", "LevelTextColorAlly", "LevelTextColorEnemy")
+                           if k in bd}
+    styles[str(idx)] = s
+# HudColorData (CursorConfig bin): team tints for the grey minion / structure bar textures
+hud = {}
+for v in BinFile(ui.read(0xaba32b154dd30ab2)).entries.values():
+    if v.cls == fnv1a("HudColorData") and not hud:
+        p = to_py(v, BN)
+        hud = {k: bgra(p[k]) for k in ("mSelfColor", "mFriendlyColor", "mEnemyColor", "mNeutralColor",
+                                       "mFriendlyLaneMinionBarColor", "mEnemyLaneMinionBarColor") if k in p}
+behaviour = {"styles": styles, "hud_colors": hud, "class_defaults": CLASS_DEFAULTS,
+             # CharacterRecord.healthBarHeight / healthBarFullParallax (Map12.wad character bins) and
+             # SkinCharacterDataProperties.HealthBarData.unitHealthBarStyle of the skins this map spawns
+             "units": {"HA_OrderMinionMelee": [42, False, 0], "HA_ChaosMinionMelee": [37, False, 0],
+                       "HA_OrderMinionRanged": [41, False, 0], "HA_ChaosMinionRanged": [33, False, 0],
+                       "HA_OrderMinionSiege": [52, False, 0], "HA_ChaosMinionSiege": [52, False, 0],
+                       "HA_OrderMinionSuper": [68, False, 1], "HA_ChaosMinionSuper": [71, False, 1],
+                       "Turret": [525, True, 8], "NexusTurret": [525, True, 8], "Inhibitor": [370, True, 3],
+                       "Nexus": [500, True, 8], "AnnieTibbers": [92, False, 5]}}
+json.dump(behaviour, open(os.path.join(OUT, "fhb_behaviour.json"), "w"), indent=1, sort_keys=True)
+print("fhb behaviour styles", sorted(styles))
 
 # ---------------------------------------------------------------- fonts + floating text
 fonts = load_bin(0x957ccb5182db61f8)
