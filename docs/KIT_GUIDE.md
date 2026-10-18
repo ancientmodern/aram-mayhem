@@ -118,7 +118,8 @@ for delayed effects, a big moment for the ultimate). Keep effects bright (additi
   player). Fix every SCRIPT ERROR. Add temporary `print()`s to confirm each ability actually executes in bot
   hands, then remove them.
 - Visual check: `"/d/SteamLibrary/steamapps/common/Godot Engine/godot.windows.opt.tools.64.exe" --path .
-  --fixed-fps 60 -- --sim --time=75 --every=100 --shots=62,66,70 --champ=<Alias>` writes screenshots to
-  `C:/Users/ancie/AppData/Roaming/Godot/app_userdata/ARAM- Mayhem/shots/` (open them with the Read tool).
+  --fixed-fps 60 -- --sim --time=75 --every=100 --shots=62,66,70 --champ=<Alias> --shotdir=<alias>` writes
+  screenshots to `C:/Users/ancie/AppData/Roaming/Godot/app_userdata/ARAM- Mayhem/<alias>/` (open them with the
+  Read tool). Always use your own --shotdir (other agents run in parallel).
   The first teamfight usually happens around 60-70s.
 - When done, commit in your worktree branch: `git add -A && git commit -m "Kit: <Alias>"`.
