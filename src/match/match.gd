@@ -981,6 +981,7 @@ func _setup_view() -> void:
 	for c in champions:
 		LolVfx.load_set(c.alias)
 	LolVfx.load_set("shared")
+	Vfx.prewarm(self, G.player.global_position if G.player != null else (champions[0].global_position if not champions.is_empty() else Vector3.ZERO))   # compile the procedural particle / billboard pipelines during loading, not mid-fight
 	audio = GameAudio.new()
 	audio.name = "Audio"
 	audio.setup(self)
