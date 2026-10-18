@@ -1,0 +1,526 @@
+{
+ "alias": "MissFortune",
+ "attacks": [
+  {
+   "name": "MissFortuneBasicAttack",
+   "prob": 1.0,
+   "cast_offset": -0.15199336409568787,
+   "cast_frame": 9.0,
+   "missile_speed": 2000.0,
+   "start_bone": "R_WEAPON",
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "MissFortuneBasicAttack2",
+   "clip": "Attack2",
+   "cast_frame": 9.0,
+   "missile_speed": 2000.0,
+   "start_bone": "L_Weapon",
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "crits": [
+  {
+   "name": "MissFortuneCritAttack",
+   "cast_offset": -0.15199336409568787,
+   "clip": "Crit",
+   "cast_frame": 9.0,
+   "missile_speed": 2000.0,
+   "start_bone": "R_WEAPON",
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "spells": [
+  {
+   "name": "MissFortuneRicochetShot",
+   "clip": "Spell1",
+   "cast_frame": 8.699999809265137,
+   "cast_time": 0.25,
+   "missile_speed": 1400.0,
+   "start_bone": "R_WEAPON",
+   "slot": 0
+  },
+  {
+   "name": "MissFortuneViciousStrikes",
+   "clip": "Spell1",
+   "cast_frame": 8.0,
+   "missile_speed": 1400.0,
+   "slot": 1
+  },
+  {
+   "name": "MissFortuneScattershot",
+   "clip": "Spell3",
+   "cast_frame": 10.0,
+   "cast_time": 0.25,
+   "slot": 2
+  },
+  {
+   "name": "MissFortuneBulletTime",
+   "clip": "",
+   "cast_frame": 7.849999904632568,
+   "cast_time": 0.0010000000474974513,
+   "missile_speed": 779.9000244140625,
+   "hit_bone": "C_BuffBone_Glb_Center_Loc",
+   "slot": 3
+  }
+ ],
+ "stats": {
+  "pathfindingCollisionRadius": 35.0,
+  "selectionRadius": 100.0,
+  "selectionHeight": 122.22219848632812
+ },
+ "clips": {
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1",
+   "file": "0e4f47e37edbeca6",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 6.0,
+     "end": 14.0,
+     "effect": "#6c3afa5c",
+     "bones": [
+      3902107307
+     ]
+    }
+   ]
+  },
+  "attack2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack2",
+   "file": "8208af23175c625c",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 7.0,
+     "end": 14.0,
+     "effect": "#7495d294",
+     "bones": [
+      3935662545
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "channel",
+   "file": "4a2c775e0dea9f2b"
+  },
+  "Channel_Wndup": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "channel_windup",
+   "file": "dcb4dee9d804a86b"
+  },
+  "crit": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "crit",
+   "file": "920fc8c184116d62",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 7.0,
+     "effect": "#7c0942a9",
+     "bones": [
+      3935662545
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 7.0,
+     "effect": "#7c0942a9",
+     "bones": [
+      3902107307
+     ]
+    }
+   ]
+  },
+  "dance": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "dance",
+   "file": "7a9175818164e99a"
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333333879709244,
+   "anim": "death",
+   "file": "9e92ceeb2c70dfec",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 22.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 22.0
+    }
+   ]
+  },
+  "idle1_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "2dfcb8c98ae0db72"
+  },
+  "idle3_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1_var3",
+   "file": "a1133851b0898c8a"
+  },
+  "joke": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "joke",
+   "file": "531e6245e28a15d7"
+  },
+  "laugh": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "laugh",
+   "file": "473e18720612e3db"
+  },
+  "Run_Base": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "run_var2",
+   "file": "b8e410089c7d2829"
+  },
+  "run2": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "run",
+   "file": "17ad39160b139f38"
+  },
+  "Spell1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell1",
+   "file": "28dfcacb07826b1b",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 5.0,
+     "effect": "#9c2a03a4",
+     "bones": [
+      3902107307
+     ]
+    }
+   ]
+  },
+  "spell2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell1",
+   "file": "28dfcacb07826b1b"
+  },
+  "spell3": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell3",
+   "file": "d7bd4b08cffd986d",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 8.0,
+     "effect": "#8e2be900",
+     "bones": [
+      3935662545
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 8.0,
+     "end": 14.0,
+     "effect": "#7495d294",
+     "bones": [
+      3935662545
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 15.0,
+     "effect": "#8e2be900",
+     "bones": [
+      3902107307
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 15.0,
+     "end": 21.0,
+     "effect": "#6c3afa5c",
+     "bones": [
+      3902107307
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 21.0,
+     "effect": "#8e2be900",
+     "bones": [
+      3935662545
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 21.0,
+     "end": 25.0,
+     "effect": "#7495d294",
+     "bones": [
+      3935662545
+     ]
+    }
+   ]
+  },
+  "spell4_windup": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "spell4_in",
+   "file": "1fd8ff98f7e8612f",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 4.0,
+     "effect": "#b5d8a829",
+     "bones": [
+      3902107307
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 12.0,
+     "effect": "#b5d8a829",
+     "bones": [
+      3935662545
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 19.0,
+     "effect": "#b5d8a829",
+     "bones": [
+      3902107307
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 27.0,
+     "effect": "#b5d8a829",
+     "bones": [
+      3935662545
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 35.0,
+     "effect": "#b5d8a829",
+     "bones": [
+      3902107307
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 43.0,
+     "effect": "#b5d8a829",
+     "bones": [
+      3935662545
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 51.0,
+     "effect": "#b5d8a829",
+     "bones": [
+      3902107307
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 59.0,
+     "effect": "#b5d8a829",
+     "bones": [
+      3935662545
+     ]
+    }
+   ]
+  },
+  "taunt": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "taunt",
+   "file": "b49adf9b52d25a87"
+  },
+  "#3279c7ac": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": null,
+   "xanim": "x/spell4_to_idle",
+   "file": "224d254bc1cd1822"
+  },
+  "Idle_In": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.02222222276031971,
+   "anim": null,
+   "xanim": "x/idle_in",
+   "file": "8666e6680b039d84"
+  },
+  "idle2_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1_var2",
+   "file": "05558f578ed60b04"
+  },
+  "idle1": {
+   "type": "Sequencer",
+   "flags": 2,
+   "list": [
+    "idle1_base",
+    "idle1_base",
+    "idle1_base",
+    "#914db254"
+   ]
+  },
+  "#914db254": {
+   "type": "Selector",
+   "pairs": [
+    [
+     "idle1_base",
+     50.0
+    ],
+    [
+     "idle2_base",
+     25.0
+    ],
+    [
+     "idle3_base",
+     25.0
+    ]
+   ]
+  },
+  "spell4_loop": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03030303120613098,
+   "anim": "spell4",
+   "file": "f24e458ed0c81d1a"
+  },
+  "spell4": {
+   "type": "Sequencer",
+   "list": [
+    "spell4_windup",
+    "spell4_loop"
+   ]
+  },
+  "recall": {
+   "type": "Sequencer",
+   "list": [
+    "idle3_base",
+    "idle2_base",
+    "idle1_base"
+   ]
+  },
+  "Recall_Winddown": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "respawn",
+   "file": "bd40b836f690357c"
+  },
+  "respawn": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "respawn",
+   "file": "bd40b836f690357c"
+  },
+  "#b87a3f27": {
+   "type": "ConditionBool",
+   "true": "Run_Base",
+   "false": "Run_Base",
+   "updater": "IsHomeguard",
+   "changeAnimationMidPlay": true
+  },
+  "run": {
+   "type": "ConditionBool",
+   "true": "run2",
+   "false": "#b87a3f27",
+   "updater": "LogicDriverBool",
+   "changeAnimationMidPlay": true
+  }
+ },
+ "blends": {
+  "channel>Spell1": 0.0,
+  "channel>death": 0.0,
+  "Run_Base>idle1_base": {
+   "clip": "Idle_In"
+  },
+  "Run_Base>Spell1": 0.0,
+  "Run_Base>death": 0.0,
+  "spell4_windup>Spell1": 0.0,
+  "spell4_windup>death": 0.0,
+  "attack1>crit": 0.4000000059604645,
+  "attack1>Spell1": 0.0,
+  "attack1>death": 0.0,
+  "run2>idle1_base": {
+   "clip": "Idle_In"
+  },
+  "run2>Spell1": 0.0,
+  "run2>death": 0.0,
+  "attack2>crit": 0.4000000059604645,
+  "attack2>Spell1": 0.0,
+  "attack2>death": 0.0,
+  "idle1_base>idle1_base": 0.0,
+  "idle1_base>Spell1": 0.0,
+  "idle1_base>death": 0.0,
+  "idle3_base>idle3_base": 0.0,
+  "idle3_base>Spell1": 0.0,
+  "idle3_base>death": 0.0,
+  "crit>attack1": 0.4000000059604645,
+  "crit>attack2": 0.4000000059604645,
+  "crit>Spell1": 0.0,
+  "crit>death": 0.0,
+  "Channel_Wndup>Spell1": 0.0,
+  "Channel_Wndup>death": 0.0,
+  "Spell1>Spell1": 0.0,
+  "Spell1>death": 0.0,
+  "spell3>Spell1": 0.0,
+  "spell3>death": 0.0,
+  "spell2>Spell1": 0.0,
+  "spell2>death": 0.0,
+  "laugh>Spell1": 0.0,
+  "laugh>death": 0.0,
+  "taunt>Spell1": 0.0,
+  "taunt>death": 0.0,
+  "death>Spell1": 0.0,
+  "death>death": 0.0,
+  "joke>Spell1": 0.0,
+  "joke>death": 0.0,
+  "idle2_base>idle2_base": 0.0,
+  "dance>Spell1": 0.0,
+  "dance>death": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

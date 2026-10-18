@@ -1,0 +1,321 @@
+{
+ "alias": "Malphite",
+ "attacks": [
+  {
+   "name": "MalphiteBasicAttack",
+   "prob": 0.5,
+   "cast_offset": -0.0503188781440258,
+   "cast_frame": 11.744999885559082,
+   "missile_speed": 1000.0,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "MalphiteBasicAttack2",
+   "prob": 0.5,
+   "clip": "Attack2",
+   "cast_frame": 11.569999694824219,
+   "missile_speed": 1000.0,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "crits": [
+  {
+   "name": "MalphiteCritAttack",
+   "cast_offset": -0.0503188781440258,
+   "clip": "Crit",
+   "cast_frame": 12.149999618530273,
+   "missile_speed": 1000.0,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "spells": [
+  {
+   "name": "SeismicShard",
+   "clip": "Spell2",
+   "cast_frame": 10.0,
+   "missile_speed": 1200.0,
+   "start_bone": "root",
+   "hit_bone": "BUFFBONE_GLB_GROUND_LOC",
+   "slot": 0
+  },
+  {
+   "name": "Obduracy",
+   "clip": "Spell1",
+   "cast_frame": 13.319999694824219,
+   "missile_speed": 0.0,
+   "hit_bone": "root",
+   "slot": 1
+  },
+  {
+   "name": "Landslide",
+   "clip": "Spell3",
+   "cast_frame": 7.5,
+   "cast_time": 0.2418999969959259,
+   "missile_speed": 0.0,
+   "hit_bone": "C_Buffbone_Glb_Chest_Loc",
+   "slot": 2
+  },
+  {
+   "name": "UFSlash",
+   "clip": "Spell4",
+   "cast_frame": 9.75,
+   "missile_speed": 700.0,
+   "hit_bone": "root",
+   "slot": 3
+  }
+ ],
+ "stats": {
+  "pathfindingCollisionRadius": 50.0,
+  "overrideGameplayCollisionRadius": 80.0,
+  "selectionRadius": 125.0,
+  "selectionHeight": 180.0,
+  "healthBarHeight": 115.0
+ },
+ "clips": {
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1",
+   "file": "752921e9295f6ea6",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 5.0,
+     "effect": "#266c4a14",
+     "bones": [
+      2528140958
+     ]
+    }
+   ]
+  },
+  "attack2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack2",
+   "file": "2230d02c5a05fe05",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 5.0,
+     "effect": "#296c4ecd",
+     "bones": [
+      2528140958
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "channel",
+   "file": "92c83dda59a6baca"
+  },
+  "Channel_Wndup": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "channel_windup",
+   "file": "adff0a3abd197f20"
+  },
+  "crit": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "crit",
+   "file": "d44f0f0d5108a799"
+  },
+  "dance": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "dance",
+   "file": "ee1204cc686c1013"
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "84811ce3e9627e6e"
+  },
+  "idle1": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "2057df09c38da745"
+  },
+  "idle2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle2",
+   "file": "8126d83511eb7c0b"
+  },
+  "idle3": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle3",
+   "file": "0dd0e765774b9114"
+  },
+  "idle4": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle3",
+   "file": "0dd0e765774b9114"
+  },
+  "laugh": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "laugh",
+   "file": "a7a6128012d44f53"
+  },
+  "run": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "run",
+   "file": "eda2e9c8f191f357"
+  },
+  "Spell1": {
+   "type": "Atomic",
+   "flags": 9,
+   "track": "Upper",
+   "mask": "Upper",
+   "anim": "spell1",
+   "file": "e097b0d414c9c06f"
+  },
+  "spell2": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.022222226485610008,
+   "anim": "spell2",
+   "file": "4923396efa3c51b2"
+  },
+  "Spell4": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "spell4",
+   "file": "f370938f635b8b06"
+  },
+  "taunt": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "taunt",
+   "file": "2a57e01de2f228d9"
+  },
+  "spell3": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.032258063554763794,
+   "anim": "spell3",
+   "file": "4546577759f3aef6",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 8.0,
+     "effect": "#cf086a21",
+     "bones": [
+      315212054
+     ]
+    }
+   ]
+  },
+  "recall": {
+   "type": "Sequencer",
+   "list": [
+    "#b4dcde19",
+    "#ec499dc6",
+    "idle1"
+   ]
+  },
+  "spell1_attack": {
+   "type": "Parallel",
+   "list": [
+    "#16467d0b",
+    "#46f5b28c"
+   ]
+  },
+  "#46f5b28c": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "crit",
+   "file": "d44f0f0d5108a799",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 6.0,
+     "effect": "#b6728fd6",
+     "bones": [
+      2528140958
+     ]
+    }
+   ]
+  },
+  "#16467d0b": {
+   "type": "Atomic",
+   "track": "Upper",
+   "mask": "Upper",
+   "anim": "crit",
+   "file": "d44f0f0d5108a799",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 6.0,
+     "effect": "#b6728fd6",
+     "bones": [
+      2528140958
+     ]
+    }
+   ]
+  },
+  "#b4dcde19": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "taunt",
+   "file": "2a57e01de2f228d9"
+  },
+  "#ec499dc6": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "laugh",
+   "file": "a7a6128012d44f53"
+  }
+ },
+ "blends": {
+  "channel>death": 0.0,
+  "run>death": 0.0,
+  "attack1>death": 0.0,
+  "attack2>death": 0.0,
+  "crit>death": 0.0,
+  "idle3>death": 0.0,
+  "idle2>death": 0.0,
+  "idle1>death": 0.0,
+  "idle4>death": 0.0,
+  "Channel_Wndup>death": 0.0,
+  "Spell1>death": 0.0,
+  "spell3>death": 0.0,
+  "spell2>death": 0.0,
+  "laugh>death": 0.0,
+  "Spell4>death": 0.0,
+  "taunt>death": 0.0,
+  "death>death": 0.0,
+  "dance>death": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": 1,
+   "blend_mode": null,
+   "weight": null
+  },
+  "Upper": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [
+  "Upper"
+ ],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

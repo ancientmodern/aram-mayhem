@@ -1,0 +1,267 @@
+{
+ "alias": "Lux",
+ "attacks": [
+  {
+   "name": "LuxBasicAttack",
+   "prob": 0.5,
+   "cast_offset": -0.14374999701976776,
+   "cast_frame": 7.5,
+   "missile_speed": 1600.0,
+   "start_bone": "r_hand",
+   "hit_bone": "C_BuffBone_Glb_Center_Loc"
+  },
+  {
+   "name": "LuxBasicAttack2",
+   "prob": 0.5,
+   "clip": "Attack2",
+   "cast_frame": 7.5,
+   "missile_speed": 1600.0,
+   "start_bone": "r_hand",
+   "hit_bone": "C_BuffBone_Glb_Center_Loc"
+  }
+ ],
+ "crits": [
+  {
+   "name": "LuxCritAttack",
+   "cast_offset": -0.14374999701976776,
+   "clip": "Crit",
+   "cast_frame": 7.5,
+   "missile_speed": 1600.0,
+   "start_bone": "R_hand",
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "spells": [
+  {
+   "name": "LuxLightBinding",
+   "clip": "Spell1",
+   "cast_frame": 7.5,
+   "missile_speed": 1200.0,
+   "slot": 0
+  },
+  {
+   "name": "LuxPrismaticWave",
+   "clip": "Spell2",
+   "cast_frame": 10.845000267028809,
+   "missile_speed": 1200.0,
+   "slot": 1
+  },
+  {
+   "name": "LuxLightStrikeKugel",
+   "clip": "Spell3",
+   "cast_frame": 7.5,
+   "missile_speed": 1300.0,
+   "start_bone": "root",
+   "slot": 2
+  },
+  {
+   "name": "LuxR",
+   "clip": "Spell4",
+   "cast_frame": 74.0,
+   "missile_speed": 3000.0,
+   "slot": 3
+  }
+ ],
+ "stats": {
+  "pathfindingCollisionRadius": 35.0,
+  "selectionRadius": 100.0,
+  "selectionHeight": 85.0
+ },
+ "clips": {
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1",
+   "file": "a0fd74002986bcf4"
+  },
+  "attack2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack2",
+   "file": "573829936871cd74"
+  },
+  "channel": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "channel",
+   "file": "5ac1d27d9fa653fa"
+  },
+  "Channel_Wndup": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "channel_windup",
+   "file": "40713f4f8c656dde"
+  },
+  "crit": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "crit",
+   "file": "f6f78ea8296e3b54"
+  },
+  "dance": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.01666666753590107,
+   "anim": "dance",
+   "file": "c32445dafa008877"
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "06e9154defc9468c",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 6.0,
+     "sound": "Play_sfx_Lux_Death3D_cast"
+    }
+   ]
+  },
+  "idle1": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "f38a5c366f2f5a47"
+  },
+  "idle2": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.01666666753590107,
+   "anim": "idle2",
+   "file": "cd1b42bf457f1fe5"
+  },
+  "idle3": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle3",
+   "file": "cc9a189b6b1c053d"
+  },
+  "idle4": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle4",
+   "file": "86ce85aa131a2fe0"
+  },
+  "joke": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "joke",
+   "file": "1f5a7b2d41fadbfe"
+  },
+  "laugh": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.01666666753590107,
+   "anim": "laugh",
+   "file": "0bc76ec256ebbc2e"
+  },
+  "Spell1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell1",
+   "file": "1821b450477f6625",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#8ef00470",
+     "bones": [
+      3985995402
+     ]
+    }
+   ]
+  },
+  "spell2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell2",
+   "file": "0cf8e36579c7eb83"
+  },
+  "spell3": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell3",
+   "file": "177d5c84adf85a42"
+  },
+  "taunt": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "taunt",
+   "file": "180cd449dca7b759"
+  },
+  "Spell4": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell4",
+   "file": "37ba660d1d724c06"
+  },
+  "recall": {
+   "type": "Sequencer",
+   "list": [
+    "idle3",
+    "#b4dcde19"
+   ]
+  },
+  "Recall_Winddown": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "respawn",
+   "file": "77163634744e96e9"
+  },
+  "respawn": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "respawn",
+   "file": "77163634744e96e9"
+  },
+  "run": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.032258063554763794,
+   "anim": "run",
+   "file": "27460d0cda6e23d6"
+  },
+  "#b4dcde19": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "taunt",
+   "file": "180cd449dca7b759"
+  }
+ },
+ "blends": {
+  "channel>death": 0.0,
+  "attack1>death": 0.0,
+  "attack2>death": 0.0,
+  "crit>death": 0.0,
+  "idle3>death": 0.0,
+  "idle2>death": 0.0,
+  "idle1>death": 0.0,
+  "idle4>death": 0.0,
+  "Channel_Wndup>death": 0.0,
+  "Spell1>death": 0.0,
+  "spell3>death": 0.0,
+  "spell2>death": 0.0,
+  "laugh>death": 0.0,
+  "Spell4>death": 0.0,
+  "taunt>death": 0.0,
+  "death>death": 0.0,
+  "joke>death": 0.0,
+  "dance>death": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

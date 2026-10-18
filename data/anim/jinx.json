@@ -1,0 +1,1823 @@
+{
+ "alias": "Jinx",
+ "attacks": [
+  {
+   "name": "JinxBasicAttack",
+   "prob": 1.0,
+   "total_time": 1.600000023841858,
+   "cast_time": 0.2833299934864044,
+   "cast_frame": 8.5,
+   "missile_speed": 2750.0,
+   "start_bone": "Buffbone_Glb_Weapon_1",
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "JinxBasicAttack2",
+   "clip": "Attack2",
+   "cast_frame": 8.5,
+   "missile_speed": 2750.0,
+   "start_bone": "Buffbone_Glb_Weapon_1",
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {},
+  {},
+  {},
+  {},
+  {
+   "name": "JinxQAttack2",
+   "total_time": 1.600000023841858,
+   "cast_time": 0.27000001072883606,
+   "clip": "Attack2",
+   "cast_frame": 7.0,
+   "missile_speed": 2000.0,
+   "start_bone": "Cstm_Buffbone_Rocket_Launcher",
+   "hit_bone": "R_hand"
+  },
+  {
+   "name": "JinxQAttack",
+   "total_time": 1.600000023841858,
+   "cast_time": 0.27000001072883606,
+   "cast_frame": 7.0,
+   "missile_speed": 2000.0,
+   "start_bone": "Cstm_Buffbone_Rocket_Launcher",
+   "hit_bone": "R_hand"
+  }
+ ],
+ "crits": [
+  {
+   "name": "JinxCritAttack",
+   "cast_frame": 8.5,
+   "missile_speed": 2750.0,
+   "start_bone": "Buffbone_Glb_Weapon_1",
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "JinxQCritAttack",
+   "total_time": 1.600000023841858,
+   "cast_time": 0.27000001072883606,
+   "cast_frame": 7.0,
+   "missile_speed": 2000.0,
+   "start_bone": "Cstm_Buffbone_Rocket_Launcher",
+   "hit_bone": "R_hand"
+  }
+ ],
+ "spells": [
+  {
+   "name": "JinxQ",
+   "clip": "Spell1",
+   "cast_frame": 22.604999542236328,
+   "cast_time": 0.25,
+   "missile_speed": 2000.0,
+   "slot": 0
+  },
+  {
+   "name": "JinxW",
+   "clip": "",
+   "cast_frame": 1.9800000190734863,
+   "cast_time": 0.25,
+   "missile_speed": 1200.0,
+   "hit_bone": "C_BUFFBONE_GLB_HEAD_LOC",
+   "slot": 1
+  },
+  {
+   "name": "JinxE",
+   "clip": "Spell3",
+   "cast_frame": 15.0,
+   "cast_time": 0.25,
+   "missile_speed": 1750.0,
+   "slot": 2
+  },
+  {
+   "name": "JinxR",
+   "clip": "Spell4",
+   "cast_frame": 7.5,
+   "cast_time": 0.6000000238418579,
+   "missile_speed": 1700.0,
+   "start_bone": "Rocket_Launcher_Mouth_Top",
+   "slot": 3
+  }
+ ],
+ "stats": {
+  "pathfindingCollisionRadius": 35.0,
+  "selectionRadius": 120.0,
+  "selectionHeight": 155.0
+ },
+ "clips": {
+  "death": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "death",
+   "file": "7fe577818670a2db",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Jinx_Death3D_cast"
+    }
+   ]
+  },
+  "idle1_base": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "idle1",
+   "file": "c98efd1f01d428ee"
+  },
+  "idle2_base": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "idle1_var2",
+   "file": "a59a883d178a4589"
+  },
+  "idle3_base": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "idle1_var3",
+   "file": "a8afb89261df11b4"
+  },
+  "Run_Base": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "run",
+   "file": "f388c751f47bb912",
+   "events": [
+    {
+     "type": "ConformToPath",
+     "start": 0.0
+    }
+   ]
+  },
+  "spell2": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "spell3",
+   "tick": 0.03333299979567528,
+   "anim": "spell2",
+   "file": "721a849669389518"
+  },
+  "r_run_base": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "r_run_base",
+   "file": "b5b93643a87dfdf1",
+   "events": [
+    {
+     "type": "ConformToPath",
+     "start": 0.0
+    }
+   ]
+  },
+  "Spell3_Run": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "spell3",
+   "mask": "#731cb44a",
+   "tick": 0.03333299979567528,
+   "anim": "spell3_run",
+   "file": "87bb486afed960ed"
+  },
+  "Spell4": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell4",
+   "file": "0ba502ca5e4a156b"
+  },
+  "Channel_Wndup": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "channel_windup",
+   "file": "a816c91e086ee5d5"
+  },
+  "attack1": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "#42395c08",
+   "tick": 0.03333299979567528,
+   "anim": "attack1",
+   "file": "0467734e00b1e4b0"
+  },
+  "attack2": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "#42395c08",
+   "tick": 0.03333299979567528,
+   "anim": "attack2",
+   "file": "46c2ce9a1b4bfb03"
+  },
+  "#a6f38079": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_734b59b8",
+   "file": "3a1a6f45734b59b8"
+  },
+  "#21237563": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_6ce87b53",
+   "file": "d4e4980d6ce87b53"
+  },
+  "#cceaa86e": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_237c5c7d",
+   "file": "c8c65872237c5c7d"
+  },
+  "#a7d08706": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_1afd0e77",
+   "file": "647bba241afd0e77",
+   "events": [
+    {
+     "type": "ConformToPath",
+     "start": 0.0
+    }
+   ]
+  },
+  "r_attack1": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "#42395c08",
+   "tick": 0.03333299979567528,
+   "anim": "r_attack1",
+   "file": "dc72b774e379ab11"
+  },
+  "r_attack2": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "#42395c08",
+   "tick": 0.03333299979567528,
+   "anim": "r_attack2",
+   "file": "9ab798aa40370ef6"
+  },
+  "r_death": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "r_death",
+   "file": "ca024bdc1d4e3f2f",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Jinx_Death3D_cast"
+    }
+   ]
+  },
+  "#bdaf4563": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "run_in",
+   "file": "8cdec544772e6585",
+   "events": [
+    {
+     "type": "ConformToPath",
+     "start": 7.0
+    }
+   ]
+  },
+  "run": {
+   "type": "Sequencer",
+   "list": [
+    "#bdaf4563",
+    "Run_Base"
+   ]
+  },
+  "#ea5ada43": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "idle1_in",
+   "file": "70367ff2e0ee6d30",
+   "events": [
+    {
+     "type": "ConformToPath",
+     "start": 0.0,
+     "end": 1.0
+    }
+   ]
+  },
+  "idle1": {
+   "type": "Sequencer",
+   "flags": 8,
+   "list": [
+    "#5d9ac533",
+    "idle1_base",
+    "idle1_base",
+    "idle1_base",
+    "#914db254"
+   ]
+  },
+  "#05808276": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_1be1d341",
+   "file": "7bd5d3f31be1d341",
+   "events": [
+    {
+     "type": "ConformToPath",
+     "start": 0.0,
+     "end": 1.0
+    }
+   ]
+  },
+  "r_idle1": {
+   "type": "Sequencer",
+   "flags": 2,
+   "list": [
+    "#05808276",
+    "#a6f38079",
+    "#a6f38079",
+    "#a6f38079",
+    "#6d50d37c"
+   ]
+  },
+  "#914db254": {
+   "type": "Selector",
+   "flags": 2,
+   "pairs": [
+    [
+     "idle1_base",
+     90.0
+    ],
+    [
+     "idle2_base",
+     5.0
+    ],
+    [
+     "idle3_base",
+     5.0
+    ]
+   ]
+  },
+  "#6d50d37c": {
+   "type": "Selector",
+   "flags": 2,
+   "pairs": [
+    [
+     "#a6f38079",
+     50.0
+    ],
+    [
+     "#cec76c2e",
+     25.0
+    ],
+    [
+     "#caf10417",
+     25.0
+    ]
+   ]
+  },
+  "#c6d33584": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_33347123",
+   "file": "08611ead33347123"
+  },
+  "#c4d3325e": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "spell3",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_e17752e2",
+   "file": "f38ecf77e17752e2"
+  },
+  "#5cfd20f5": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_37fb3b60",
+   "file": "b0d78c4437fb3b60"
+  },
+  "#f8a62a4b": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "spell3",
+   "mask": "#68d78255",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_37fb3b60",
+   "file": "b0d78c4437fb3b60"
+  },
+  "#adc1b4e7": {
+   "type": "Atomic",
+   "flags": 4,
+   "track": "#42395c08",
+   "mask": "#42395c08",
+   "tick": 0.03333299979567528,
+   "anim": "spell1_in",
+   "file": "c114eb6301bfe3d1"
+  },
+  "#1d39abef": {
+   "type": "Atomic",
+   "flags": 1,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell1",
+   "file": "ab8673b5dcda79e2"
+  },
+  "Spell1": {
+   "type": "Parallel",
+   "list": [
+    "#adc1b4e7",
+    "#1d39abef"
+   ]
+  },
+  "#c3d330cb": {
+   "type": "Parallel",
+   "list": [
+    "#0fd7fa17",
+    "#5316001f"
+   ]
+  },
+  "#0fd7fa17": {
+   "type": "Atomic",
+   "flags": 4,
+   "track": "#42395c08",
+   "mask": "#42395c08",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_92d71af4",
+   "file": "7d15270492d71af4"
+  },
+  "#5316001f": {
+   "type": "Atomic",
+   "flags": 1,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_aa040605",
+   "file": "a3d3fef3aa040605"
+  },
+  "attack3": {
+   "type": "Atomic",
+   "track": "#42395c08",
+   "tick": 0.03333299979567528,
+   "anim": "attack3",
+   "file": "e4f2a28ce9caa327"
+  },
+  "attack4": {
+   "type": "Atomic",
+   "track": "#42395c08",
+   "tick": 0.03333299979567528,
+   "anim": "attack4",
+   "file": "861416e1a21884fb"
+  },
+  "attack5": {
+   "type": "Atomic",
+   "track": "#42395c08",
+   "tick": 0.03333299979567528,
+   "anim": "minigun_attack2",
+   "file": "3d01363d85c7223d"
+  },
+  "#55b1e791": {
+   "type": "Atomic",
+   "track": "#42395c08",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_7ed02f50",
+   "file": "9129f9e97ed02f50"
+  },
+  "dance_loop": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "dance",
+   "file": "6f90d79fc8397823",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Jinx_Dance3D_loop"
+    }
+   ]
+  },
+  "#caa6e196": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "dance_in",
+   "file": "e2b3274f3663c754",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Jinx_Dance3D_buffactivate"
+    }
+   ]
+  },
+  "dance": {
+   "type": "Sequencer",
+   "list": [
+    "#caa6e196",
+    "dance_loop"
+   ]
+  },
+  "r_run": {
+   "type": "Sequencer",
+   "flags": 8,
+   "list": [
+    "#d003b624",
+    "r_run_base"
+   ]
+  },
+  "#d003b624": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_ea6af40b",
+   "file": "95f4d9deea6af40b",
+   "events": [
+    {
+     "type": "ConformToPath",
+     "start": 0.0
+    }
+   ]
+  },
+  "#1b1b305c": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "recall_in",
+   "file": "fe6651fe0682b9b6",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Jinx_Recall3D_buffactivate"
+    },
+    {
+     "type": "Particle",
+     "start": 45.0,
+     "effect": "#0a9f806c",
+     "bones": [
+      710597176
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 72.0,
+     "effect": "#0a9f806c",
+     "bones": [
+      710597176
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 90.0,
+     "effect": "#0a9f806c",
+     "bones": [
+      710597176
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 103.0,
+     "effect": "#0a9f806c",
+     "bones": [
+      710597176
+     ]
+    }
+   ]
+  },
+  "Recall_Leadout": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "recall_leadout",
+   "file": "52d0f3361213c0fa",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#b20facf0",
+     "bones": [
+      710597176
+     ]
+    }
+   ]
+  },
+  "recall_base": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "recall",
+   "file": "76148e2093a48348",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#1dc9cba7",
+     "bones": [
+      710597176
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#618b1f9c",
+     "bones": []
+    },
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Jinx_Recall3D_leadout"
+    }
+   ]
+  },
+  "recall": {
+   "type": "Sequencer",
+   "flags": 8,
+   "list": [
+    "#1b1b305c",
+    "recall_base"
+   ]
+  },
+  "#b849f242": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "taunt_in",
+   "file": "161c690ca29259d0"
+  },
+  "#5dadf217": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_1db92e08",
+   "file": "14d9980d1db92e08"
+  },
+  "#390c6e04": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "taunt_seq2",
+   "file": "d43433fb4ee1982f"
+  },
+  "#0320b469": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_fe4227f8",
+   "file": "dce11baafe4227f8"
+  },
+  "taunt_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "taunt_seq1",
+   "file": "e0e0f9bde00ee08f",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#228c331d",
+     "bones": []
+    },
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Jinx_Taunt3D_buffactivate"
+    }
+   ]
+  },
+  "taunt": {
+   "type": "Sequencer",
+   "list": [
+    "#b849f242",
+    "taunt_base",
+    "#390c6e04",
+    "#914db254"
+   ]
+  },
+  "#441e6f5d": {
+   "type": "Sequencer",
+   "flags": 8,
+   "list": [
+    "#b849f242",
+    "#909da5ab",
+    "#390c6e04",
+    "#914db254"
+   ]
+  },
+  "respawn": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "respawn",
+   "file": "c2d801dc498c0d53",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Jinx_Respawn3D_buffactivate"
+    },
+    {
+     "type": "JointSnap",
+     "start": 25.0
+    }
+   ]
+  },
+  "Recall_Winddown": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "respawn",
+   "file": "c2d801dc498c0d53",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Jinx_Winddown3D_buffactivate"
+    },
+    {
+     "type": "JointSnap",
+     "start": 25.0
+    }
+   ]
+  },
+  "#eb5adbd6": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "idle1_in_var2",
+   "file": "306780d5ec645a22",
+   "events": [
+    {
+     "type": "ConformToPath",
+     "start": 0.0,
+     "end": 1.0
+    }
+   ]
+  },
+  "#5d9ac533": {
+   "type": "Selector",
+   "flags": 8,
+   "pairs": [
+    [
+     "#ea5ada43",
+     50.0
+    ],
+    [
+     "#eb5adbd6",
+     50.0
+    ]
+   ]
+  },
+  "run_fast": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "run_fast",
+   "file": "e6a64948df54f22c",
+   "events": [
+    {
+     "type": "ConformToPath",
+     "start": 0.0
+    }
+   ]
+  },
+  "laugh": {
+   "type": "Sequencer",
+   "list": [
+    "#b849f242",
+    "laugh_in",
+    "#0488fc41"
+   ]
+  },
+  "#4aacc3f2": {
+   "type": "Sequencer",
+   "list": [
+    "#5dadf217",
+    "taunt_base",
+    "#0320b469",
+    "#6d50d37c"
+   ]
+  },
+  "#4df82740": {
+   "type": "Sequencer",
+   "list": [
+    "#5dadf217",
+    "#909da5ab",
+    "#0320b469",
+    "#6d50d37c"
+   ]
+  },
+  "joke_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "joke_seq1",
+   "file": "0d252ca1bc635046",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Jinx_Joke3D_buffactivate"
+    }
+   ]
+  },
+  "#267519f9": {
+   "type": "Sequencer",
+   "list": [
+    "#5dadf217",
+    "joke_base",
+    "#0320b469",
+    "#6d50d37c"
+   ]
+  },
+  "joke": {
+   "type": "Sequencer",
+   "list": [
+    "#b849f242",
+    "joke_base",
+    "#390c6e04",
+    "#914db254"
+   ]
+  },
+  "#4354dad7": {
+   "type": "Sequencer",
+   "list": [
+    "#5dadf217",
+    "laugh_in",
+    "#0488fc41"
+   ]
+  },
+  "laugh_in": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "laugh_seq1",
+   "file": "70b34a96ae9adb09",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#4b73542c",
+     "bones": []
+    }
+   ]
+  },
+  "laugh_loop": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.028570998460054398,
+   "anim": "laugh_in",
+   "file": "f288a26d997edad4",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#785a85cd",
+     "bones": []
+    }
+   ]
+  },
+  "channel": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "channel",
+   "file": "8f43c318b39e8845"
+  },
+  "#909da5ab": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_29a670a1",
+   "file": "9e2dfb3e29a670a1",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#703192a1",
+     "bones": []
+    },
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Jinx_Taunt23D_buffactivate"
+    }
+   ]
+  },
+  "#c5d333f1": {
+   "type": "Atomic",
+   "track": "spell3",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_37fb3b60",
+   "file": "b0d78c4437fb3b60"
+  },
+  "spell3": {
+   "type": "Atomic",
+   "track": "spell3",
+   "tick": 0.03333299979567528,
+   "anim": "spell3",
+   "file": "07f246a1b7dc16a2"
+  },
+  "stunned": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "stunned",
+   "file": "f9abb5cd64e446b4"
+  },
+  "#eabe175d": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03999999538064003,
+   "anim": "laugh",
+   "file": "36fa0e937025e9f1"
+  },
+  "#0488fc41": {
+   "type": "Sequencer",
+   "flags": 2,
+   "list": [
+    "laugh_loop",
+    "laugh_loop",
+    "laugh_loop",
+    "#eabe175d"
+   ]
+  },
+  "run_haste": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "run_haste",
+   "file": "89317774d5f6631f",
+   "events": [
+    {
+     "type": "ConformToPath",
+     "start": 0.0
+    }
+   ]
+  },
+  "#5a527c0b": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_164707ba",
+   "file": "947d6cd5164707ba",
+   "events": [
+    {
+     "type": "ConformToPath",
+     "start": 0.0
+    }
+   ]
+  },
+  "#cec76c2e": {
+   "type": "Sequencer",
+   "flags": 8,
+   "list": [
+    "#21237563",
+    "#a6f38079",
+    "#a6f38079",
+    "#a6f38079",
+    "#a6f38079"
+   ]
+  },
+  "#caf10417": {
+   "type": "Sequencer",
+   "list": [
+    "#cceaa86e",
+    "#a6f38079",
+    "#a6f38079",
+    "#a6f38079",
+    "#a6f38079"
+   ]
+  },
+  "#5f2e0306": {
+   "type": "Sequencer",
+   "flags": 8,
+   "list": [
+    "#fb7159de",
+    "#7715e3e6"
+   ]
+  },
+  "#7715e3e6": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_388b008e",
+   "file": "e18e61ad388b008e",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#1dc9cba7",
+     "bones": [
+      710597176
+     ]
+    }
+   ]
+  },
+  "#fb7159de": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_b1b09609",
+   "file": "bda5572db1b09609",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 25.0,
+     "effect": "#0a9f806c",
+     "bones": [
+      710597176
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 45.0,
+     "effect": "#0a9f806c",
+     "bones": [
+      710597176
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 50.0,
+     "effect": "#0a9f806c",
+     "bones": [
+      710597176
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 67.0,
+     "effect": "#0a9f806c",
+     "bones": [
+      710597176
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 80.0,
+     "effect": "#0a9f806c",
+     "bones": [
+      710597176
+     ]
+    }
+   ]
+  },
+  "#9028089f": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_a5f8afde",
+   "file": "8cf02b70a5f8afde",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#b20facf0",
+     "bones": [
+      710597176
+     ]
+    }
+   ]
+  },
+  "#998c286c": {
+   "type": "Sequencer",
+   "flags": 8,
+   "list": [
+    "#b849f242",
+    "#95ba6117",
+    "#390c6e04",
+    "#914db254"
+   ]
+  },
+  "#95ba6117": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_29a670a1",
+   "file": "9e2dfb3e29a670a1",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#b4a61f18",
+     "bones": []
+    },
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Jinx_Taunt23D_buffactivate"
+    }
+   ]
+  },
+  "#36bb1bc8": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "r_death",
+   "file": "ca024bdc1d4e3f2f"
+  },
+  "#622bd465": {
+   "type": "Atomic",
+   "flags": 6,
+   "track": "#0092b9c4",
+   "mask": "#347f084e",
+   "tick": 1.0,
+   "anim": null,
+   "xanim": "x/clip_6fbb3006",
+   "file": "b3a59c886fbb3006",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "#2ec639bb": {
+   "type": "Atomic",
+   "flags": 6,
+   "track": "#0092b9c4",
+   "mask": "#347f084e",
+   "tick": 1.0,
+   "anim": null,
+   "xanim": "x/clip_6fbb3006",
+   "file": "b3a59c886fbb3006",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "#aabc447a": {
+   "type": "Sequencer",
+   "list": [
+    "#5dadf217",
+    "#95ba6117",
+    "#0320b469",
+    "#6d50d37c"
+   ]
+  },
+  "#0356ec6e": {
+   "type": "Sequencer",
+   "list": [
+    "#5dadf217",
+    "#909da5ab",
+    "#0320b469",
+    "#6d50d37c"
+   ]
+  }
+ },
+ "blends": {
+  "r_death>r_death": 0.0,
+  "r_death>death": 0.0,
+  "r_death>#f8a62a4b": 0.0,
+  "#0320b469>#0320b469": 0.0,
+  "#0320b469>death": 0.0,
+  "#0320b469>#f8a62a4b": 0.0,
+  "#0356ec6e>death": 0.0,
+  "#0488fc41>death": 0.0,
+  "#05808276>#05808276": 0.0,
+  "#05808276>death": 0.0,
+  "#05808276>#f8a62a4b": 0.0,
+  "taunt_base>taunt_base": 0.0,
+  "taunt_base>death": 0.0,
+  "taunt_base>#f8a62a4b": 0.0,
+  "#0fd7fa17>#0fd7fa17": 0.0,
+  "#0fd7fa17>death": 0.0,
+  "#0fd7fa17>#f8a62a4b": 0.0,
+  "recall_base>recall_base": 0.0,
+  "recall_base>death": 0.0,
+  "recall_base>#f8a62a4b": 0.0,
+  "#1b1b305c>#1b1b305c": 0.0,
+  "#1b1b305c>death": 0.0,
+  "#1b1b305c>#f8a62a4b": 0.0,
+  "#1d39abef>#1d39abef": 0.0,
+  "#1d39abef>death": 0.0,
+  "#1d39abef>#f8a62a4b": 0.0,
+  "dance_loop>dance_loop": 0.0,
+  "dance_loop>death": 0.0,
+  "dance_loop>#f8a62a4b": 0.0,
+  "#21237563>#21237563": 0.0,
+  "#21237563>death": 0.0,
+  "#21237563>#f8a62a4b": 0.0,
+  "channel>channel": 0.0,
+  "channel>death": 0.0,
+  "channel>#f8a62a4b": 0.0,
+  "#267519f9>#267519f9": 0.0,
+  "#267519f9>death": 0.0,
+  "run_haste>death": 0.0,
+  "run>run": 0.0,
+  "run>death": 0.0,
+  "#2ec639bb>#2ec639bb": 0.0,
+  "#2ec639bb>death": 0.0,
+  "r_run_base>r_run_base": 0.0,
+  "r_run_base>death": 0.0,
+  "r_run_base>#f8a62a4b": 0.0,
+  "#36bb1bc8>death": 0.0,
+  "#390c6e04>#390c6e04": 0.0,
+  "#390c6e04>death": 0.0,
+  "#390c6e04>#f8a62a4b": 0.0,
+  "Recall_Leadout>Recall_Leadout": 0.0,
+  "Recall_Leadout>death": 0.0,
+  "Recall_Leadout>#f8a62a4b": 0.0,
+  "#4354dad7>#4354dad7": 0.0,
+  "#4354dad7>death": 0.0,
+  "#441e6f5d>#441e6f5d": 0.0,
+  "#441e6f5d>death": 0.0,
+  "#4aacc3f2>#4aacc3f2": 0.0,
+  "#4aacc3f2>death": 0.0,
+  "#4df82740>#4df82740": 0.0,
+  "#4df82740>death": 0.0,
+  "attack5>attack5": 0.0,
+  "attack5>death": 0.0,
+  "attack5>#f8a62a4b": 0.0,
+  "#5316001f>#5316001f": 0.0,
+  "#5316001f>death": 0.0,
+  "#5316001f>#f8a62a4b": 0.0,
+  "attack4>attack4": 0.0,
+  "attack4>death": 0.0,
+  "attack4>#f8a62a4b": 0.0,
+  "#55b1e791>#55b1e791": 0.0,
+  "#55b1e791>death": 0.0,
+  "#55b1e791>#f8a62a4b": 0.0,
+  "attack1>attack1": 0.0,
+  "attack1>death": 0.0,
+  "attack1>Spell3_Run": 5.0,
+  "attack1>#f8a62a4b": 0.0,
+  "attack3>attack3": 0.0,
+  "attack3>death": 0.0,
+  "attack3>Spell3_Run": 5.0,
+  "attack3>#f8a62a4b": 0.0,
+  "attack2>attack2": 0.0,
+  "attack2>death": 0.0,
+  "attack2>Spell3_Run": 5.0,
+  "attack2>#f8a62a4b": 0.0,
+  "#5a527c0b>death": 0.0,
+  "recall>recall": 0.0,
+  "recall>death": 0.0,
+  "#5cfd20f5>#5cfd20f5": 0.0,
+  "#5cfd20f5>death": 0.0,
+  "#5cfd20f5>#f8a62a4b": 0.0,
+  "#5d9ac533>#5d9ac533": 0.0,
+  "#5d9ac533>death": 0.0,
+  "#5dadf217>#5dadf217": 0.0,
+  "#5dadf217>death": 0.0,
+  "#5dadf217>#f8a62a4b": 0.0,
+  "#5f2e0306>death": 0.0,
+  "#622bd465>#622bd465": 0.0,
+  "#622bd465>death": 0.0,
+  "r_run>r_run": 0.0,
+  "r_run>death": 0.0,
+  "r_attack2>r_attack2": 0.10000000149011612,
+  "r_attack2>death": 0.10000000149011612,
+  "r_attack2>#f8a62a4b": 0.10000000149011612,
+  "r_attack1>r_attack1": 0.10000000149011612,
+  "r_attack1>death": 0.10000000149011612,
+  "r_attack1>#f8a62a4b": 0.10000000149011612,
+  "stunned>death": 0.0,
+  "idle1_base>idle1_base": 0.0,
+  "idle1_base>death": 0.0,
+  "idle1_base>#f8a62a4b": 0.0,
+  "#6d50d37c>#6d50d37c": 0.0,
+  "#6d50d37c>death": 0.0,
+  "idle3_base>idle3_base": 0.0,
+  "idle3_base>death": 0.0,
+  "idle3_base>#f8a62a4b": 0.0,
+  "#7715e3e6>death": 0.0,
+  "#9028089f>death": 0.0,
+  "#909da5ab>#909da5ab": 0.0,
+  "#909da5ab>death": 0.0,
+  "#909da5ab>#f8a62a4b": 0.0,
+  "#914db254>#914db254": 0.0,
+  "#914db254>death": 0.0,
+  "#95ba6117>death": 0.0,
+  "laugh_loop>laugh_loop": 0.0,
+  "laugh_loop>death": 0.0,
+  "laugh_loop>#f8a62a4b": 0.0,
+  "#998c286c>death": 0.0,
+  "joke_base>joke_base": 0.0,
+  "joke_base>death": 0.0,
+  "joke_base>#f8a62a4b": 0.0,
+  "idle1>idle1": 0.0,
+  "idle1>death": 0.0,
+  "respawn>respawn": 0.0,
+  "respawn>death": 0.0,
+  "respawn>#bdaf4563": 0.0,
+  "respawn>#d003b624": 0.0,
+  "respawn>#f8a62a4b": 0.0,
+  "Channel_Wndup>Channel_Wndup": 0.0,
+  "Channel_Wndup>death": 0.0,
+  "Channel_Wndup>#f8a62a4b": 0.0,
+  "#a6f38079>#a6f38079": 0.0,
+  "#a6f38079>death": 0.0,
+  "#a6f38079>#f8a62a4b": 0.0,
+  "run_fast>run_fast": 0.0,
+  "run_fast>death": 0.0,
+  "run_fast>#f8a62a4b": 0.0,
+  "#a7d08706>#a7d08706": 0.0,
+  "#a7d08706>death": 0.0,
+  "#a7d08706>#f8a62a4b": 0.0,
+  "laugh_in>laugh_in": 0.0,
+  "laugh_in>death": 0.0,
+  "laugh_in>#f8a62a4b": 0.0,
+  "Recall_Winddown>Recall_Winddown": 0.0,
+  "Recall_Winddown>death": 0.0,
+  "Recall_Winddown>#bdaf4563": 0.0,
+  "Recall_Winddown>#d003b624": 0.0,
+  "Recall_Winddown>#f8a62a4b": 0.0,
+  "#aabc447a>death": 0.0,
+  "#adc1b4e7>#adc1b4e7": 0.0,
+  "#adc1b4e7>death": 0.0,
+  "#adc1b4e7>#f8a62a4b": 0.0,
+  "Spell1>Spell1": 0.0,
+  "Spell1>death": 0.0,
+  "spell3>spell3": 0.0,
+  "spell3>death": 0.0,
+  "spell3>#f8a62a4b": 0.0,
+  "spell2>spell2": 0.0,
+  "spell2>death": 0.0,
+  "spell2>#f8a62a4b": 0.0,
+  "laugh>laugh": 0.0,
+  "laugh>death": 0.0,
+  "Spell4>Spell4": 0.0,
+  "Spell4>death": 0.0,
+  "Spell4>#f8a62a4b": 0.0,
+  "#b849f242>#b849f242": 0.0,
+  "#b849f242>death": 0.0,
+  "#b849f242>#f8a62a4b": 0.0,
+  "r_idle1>r_idle1": 0.0,
+  "r_idle1>death": 0.0,
+  "taunt>taunt": 0.0,
+  "taunt>death": 0.0,
+  "death>death": 0.0,
+  "death>#f8a62a4b": 0.0,
+  "#bdaf4563>death": 0.0,
+  "#bdaf4563>#bdaf4563": 0.0,
+  "#bdaf4563>#f8a62a4b": 0.0,
+  "joke>death": 0.0,
+  "joke>joke": 0.0,
+  "#c3d330cb>death": 0.0,
+  "#c3d330cb>#c3d330cb": 0.0,
+  "#c4d3325e>death": 0.0,
+  "#c4d3325e>#c4d3325e": 0.0,
+  "#c4d3325e>#f8a62a4b": 0.0,
+  "#c5d333f1>death": 0.0,
+  "#c5d333f1>#c5d333f1": 0.0,
+  "#c5d333f1>#f8a62a4b": 0.0,
+  "#c6d33584>death": 0.0,
+  "#c6d33584>#c6d33584": 0.0,
+  "#c6d33584>#f8a62a4b": 0.0,
+  "#caa6e196>death": 0.0,
+  "#caa6e196>#caa6e196": 0.0,
+  "#caa6e196>#f8a62a4b": 0.0,
+  "#caf10417>death": 0.0,
+  "#cceaa86e>death": 0.0,
+  "#cceaa86e>#cceaa86e": 0.0,
+  "#cceaa86e>#f8a62a4b": 0.0,
+  "#cec76c2e>death": 0.0,
+  "#d003b624>death": 0.0,
+  "#d003b624>#f8a62a4b": 0.0,
+  "idle2_base>death": 0.0,
+  "idle2_base>idle2_base": 0.0,
+  "idle2_base>#f8a62a4b": 0.0,
+  "#ea5ada43>death": 0.0,
+  "#ea5ada43>#ea5ada43": 0.0,
+  "#ea5ada43>#f8a62a4b": 0.0,
+  "#eabe175d>death": 0.0,
+  "#eb5adbd6>death": 0.0,
+  "#eb5adbd6>#eb5adbd6": 0.0,
+  "#eb5adbd6>#f8a62a4b": 0.0,
+  "Run_Base>death": 0.0,
+  "Run_Base>Run_Base": 0.0,
+  "Run_Base>#f8a62a4b": 0.0,
+  "Spell3_Run>r_death": 0.0,
+  "Spell3_Run>#0320b469": 0.0,
+  "Spell3_Run>#05808276": 0.0,
+  "Spell3_Run>taunt_base": 0.0,
+  "Spell3_Run>#0fd7fa17": 0.0,
+  "Spell3_Run>recall_base": 0.0,
+  "Spell3_Run>#1b1b305c": 0.0,
+  "Spell3_Run>#1d39abef": 0.0,
+  "Spell3_Run>dance_loop": 0.0,
+  "Spell3_Run>#21237563": 0.0,
+  "Spell3_Run>channel": 0.0,
+  "Spell3_Run>r_run_base": 0.0,
+  "Spell3_Run>#390c6e04": 0.0,
+  "Spell3_Run>Recall_Leadout": 0.0,
+  "Spell3_Run>attack5": 0.0,
+  "Spell3_Run>#5316001f": 0.0,
+  "Spell3_Run>attack4": 0.0,
+  "Spell3_Run>#55b1e791": 0.0,
+  "Spell3_Run>attack1": 5.0,
+  "Spell3_Run>attack3": 5.0,
+  "Spell3_Run>attack2": 5.0,
+  "Spell3_Run>#5cfd20f5": 0.0,
+  "Spell3_Run>#5dadf217": 0.0,
+  "Spell3_Run>r_attack2": 0.10000000149011612,
+  "Spell3_Run>r_attack1": 0.10000000149011612,
+  "Spell3_Run>idle1_base": 0.0,
+  "Spell3_Run>idle3_base": 0.0,
+  "Spell3_Run>#909da5ab": 0.0,
+  "Spell3_Run>laugh_loop": 0.0,
+  "Spell3_Run>joke_base": 0.0,
+  "Spell3_Run>respawn": 0.0,
+  "Spell3_Run>Channel_Wndup": 0.0,
+  "Spell3_Run>#a6f38079": 0.0,
+  "Spell3_Run>run_fast": 0.0,
+  "Spell3_Run>#a7d08706": 0.0,
+  "Spell3_Run>laugh_in": 0.0,
+  "Spell3_Run>Recall_Winddown": 0.0,
+  "Spell3_Run>#adc1b4e7": 0.0,
+  "Spell3_Run>spell3": 0.0,
+  "Spell3_Run>spell2": 0.0,
+  "Spell3_Run>Spell4": 0.0,
+  "Spell3_Run>#b849f242": 0.0,
+  "Spell3_Run>death": 0.0,
+  "Spell3_Run>#bdaf4563": 0.0,
+  "Spell3_Run>#c4d3325e": 0.0,
+  "Spell3_Run>#c5d333f1": 0.0,
+  "Spell3_Run>#c6d33584": 0.0,
+  "Spell3_Run>#caa6e196": 0.0,
+  "Spell3_Run>#cceaa86e": 0.0,
+  "Spell3_Run>#d003b624": 0.0,
+  "Spell3_Run>idle2_base": 0.0,
+  "Spell3_Run>#ea5ada43": 0.0,
+  "Spell3_Run>#eb5adbd6": 0.0,
+  "Spell3_Run>Run_Base": 0.0,
+  "Spell3_Run>Spell3_Run": 0.0,
+  "Spell3_Run>#f8a62a4b": 0.0,
+  "dance>death": 0.0,
+  "dance>dance": 0.0,
+  "#f8a62a4b>death": 0.0,
+  "#f8a62a4b>#f8a62a4b": 0.0,
+  "#fb7159de>death": 0.0,
+  "attack1>r_attack1": 0.10000000149011612,
+  "attack1>r_attack2": 0.10000000149011612,
+  "attack2>r_attack1": 0.10000000149011612,
+  "attack2>r_attack2": 0.10000000149011612,
+  "attack3>r_attack1": 0.10000000149011612,
+  "attack3>r_attack2": 0.10000000149011612,
+  "attack4>r_attack1": 0.10000000149011612,
+  "attack4>r_attack2": 0.10000000149011612,
+  "attack5>r_attack1": 0.10000000149011612,
+  "attack5>r_attack2": 0.10000000149011612,
+  "#55b1e791>r_attack1": 0.10000000149011612,
+  "#55b1e791>r_attack2": 0.10000000149011612,
+  "channel>r_attack1": 0.10000000149011612,
+  "channel>r_attack2": 0.10000000149011612,
+  "Channel_Wndup>r_attack1": 0.10000000149011612,
+  "Channel_Wndup>r_attack2": 0.10000000149011612,
+  "dance_loop>r_attack1": 0.10000000149011612,
+  "dance_loop>r_attack2": 0.10000000149011612,
+  "#caa6e196>r_attack1": 0.10000000149011612,
+  "#caa6e196>r_attack2": 0.10000000149011612,
+  "death>r_attack1": 0.10000000149011612,
+  "death>r_attack2": 0.10000000149011612,
+  "#7715e3e6>r_attack1": 0.10000000149011612,
+  "#7715e3e6>r_attack2": 0.10000000149011612,
+  "#fb7159de>r_attack1": 0.10000000149011612,
+  "#fb7159de>r_attack2": 0.10000000149011612,
+  "#9028089f>r_attack1": 0.10000000149011612,
+  "#9028089f>r_attack2": 0.10000000149011612,
+  "#b849f242>r_attack1": 0.10000000149011612,
+  "#b849f242>r_attack2": 0.10000000149011612,
+  "#5dadf217>r_attack1": 0.10000000149011612,
+  "#5dadf217>r_attack2": 0.10000000149011612,
+  "#390c6e04>r_attack1": 0.10000000149011612,
+  "#390c6e04>r_attack2": 0.10000000149011612,
+  "#0320b469>r_attack1": 0.10000000149011612,
+  "#0320b469>r_attack2": 0.10000000149011612,
+  "idle1_base>r_attack1": 0.10000000149011612,
+  "idle1_base>r_attack2": 0.10000000149011612,
+  "idle2_base>r_attack1": 0.10000000149011612,
+  "idle2_base>r_attack2": 0.10000000149011612,
+  "idle3_base>r_attack1": 0.10000000149011612,
+  "idle3_base>r_attack2": 0.10000000149011612,
+  "#914db254>r_attack1": 0.10000000149011612,
+  "#914db254>r_attack2": 0.10000000149011612,
+  "#ea5ada43>r_attack1": 0.10000000149011612,
+  "#ea5ada43>r_attack2": 0.10000000149011612,
+  "#eb5adbd6>r_attack1": 0.10000000149011612,
+  "#eb5adbd6>r_attack2": 0.10000000149011612,
+  "#5d9ac533>r_attack1": 0.10000000149011612,
+  "#5d9ac533>r_attack2": 0.10000000149011612,
+  "joke_base>r_attack1": 0.10000000149011612,
+  "joke_base>r_attack2": 0.10000000149011612,
+  "#eabe175d>r_attack1": 0.10000000149011612,
+  "#eabe175d>r_attack2": 0.10000000149011612,
+  "laugh_in>r_attack1": 0.10000000149011612,
+  "laugh_in>r_attack2": 0.10000000149011612,
+  "laugh_loop>r_attack1": 0.10000000149011612,
+  "laugh_loop>r_attack2": 0.10000000149011612,
+  "#622bd465>r_attack1": 0.10000000149011612,
+  "#622bd465>r_attack2": 0.10000000149011612,
+  "r_attack1>r_attack2": 0.10000000149011612,
+  "r_attack2>r_attack1": 0.10000000149011612,
+  "r_death>r_attack1": 0.10000000149011612,
+  "#a6f38079>r_attack1": 0.10000000149011612,
+  "#6d50d37c>r_attack1": 0.10000000149011612,
+  "#21237563>r_attack1": 0.10000000149011612,
+  "#cceaa86e>r_attack1": 0.10000000149011612,
+  "r_run_base>r_attack1": 0.10000000149011612,
+  "#a7d08706>r_attack1": 0.10000000149011612,
+  "#5a527c0b>r_attack1": 0.10000000149011612,
+  "#d003b624>r_attack1": 0.10000000149011612,
+  "#c4d3325e>r_attack1": 0.10000000149011612,
+  "#c5d333f1>r_attack1": 0.10000000149011612,
+  "#f8a62a4b>r_attack1": 0.10000000149011612,
+  "#c6d33584>r_attack1": 0.10000000149011612,
+  "recall_base>r_attack1": 0.10000000149011612,
+  "#1b1b305c>r_attack1": 0.10000000149011612,
+  "Recall_Leadout>r_attack1": 0.10000000149011612,
+  "Recall_Winddown>r_attack1": 0.10000000149011612,
+  "respawn>r_attack1": 0.10000000149011612,
+  "#36bb1bc8>r_attack1": 0.10000000149011612,
+  "#05808276>r_attack1": 0.10000000149011612,
+  "#5cfd20f5>r_attack1": 0.10000000149011612,
+  "#2ec639bb>r_attack1": 0.10000000149011612,
+  "Run_Base>r_attack1": 0.10000000149011612,
+  "run_fast>r_attack1": 0.10000000149011612,
+  "run_haste>r_attack1": 0.10000000149011612,
+  "#bdaf4563>r_attack1": 0.10000000149011612,
+  "#5316001f>r_attack1": 0.10000000149011612,
+  "#0fd7fa17>r_attack1": 0.10000000149011612,
+  "#1d39abef>r_attack1": 0.10000000149011612,
+  "#adc1b4e7>r_attack1": 0.10000000149011612,
+  "spell2>r_attack1": 0.10000000149011612,
+  "spell3>r_attack1": 0.10000000149011612,
+  "r_death>r_attack2": 0.10000000149011612,
+  "#a6f38079>r_attack2": 0.10000000149011612,
+  "#6d50d37c>r_attack2": 0.10000000149011612,
+  "#21237563>r_attack2": 0.10000000149011612,
+  "#cceaa86e>r_attack2": 0.10000000149011612,
+  "r_run_base>r_attack2": 0.10000000149011612,
+  "#a7d08706>r_attack2": 0.10000000149011612,
+  "#5a527c0b>r_attack2": 0.10000000149011612,
+  "#d003b624>r_attack2": 0.10000000149011612,
+  "#c4d3325e>r_attack2": 0.10000000149011612,
+  "#c5d333f1>r_attack2": 0.10000000149011612,
+  "#f8a62a4b>r_attack2": 0.10000000149011612,
+  "#c6d33584>r_attack2": 0.10000000149011612,
+  "recall_base>r_attack2": 0.10000000149011612,
+  "#1b1b305c>r_attack2": 0.10000000149011612,
+  "Recall_Leadout>r_attack2": 0.10000000149011612,
+  "Recall_Winddown>r_attack2": 0.10000000149011612,
+  "respawn>r_attack2": 0.10000000149011612,
+  "#36bb1bc8>r_attack2": 0.10000000149011612,
+  "#05808276>r_attack2": 0.10000000149011612,
+  "#5cfd20f5>r_attack2": 0.10000000149011612,
+  "#2ec639bb>r_attack2": 0.10000000149011612,
+  "Run_Base>r_attack2": 0.10000000149011612,
+  "run_fast>r_attack2": 0.10000000149011612,
+  "run_haste>r_attack2": 0.10000000149011612,
+  "#bdaf4563>r_attack2": 0.10000000149011612,
+  "#5316001f>r_attack2": 0.10000000149011612,
+  "#0fd7fa17>r_attack2": 0.10000000149011612,
+  "#1d39abef>r_attack2": 0.10000000149011612,
+  "#adc1b4e7>r_attack2": 0.10000000149011612,
+  "spell2>r_attack2": 0.10000000149011612,
+  "spell3>r_attack2": 0.10000000149011612,
+  "Spell4>r_attack1": 0.10000000149011612,
+  "Spell4>r_attack2": 0.10000000149011612,
+  "stunned>r_attack1": 0.10000000149011612,
+  "stunned>r_attack2": 0.10000000149011612,
+  "taunt_base>r_attack1": 0.10000000149011612,
+  "taunt_base>r_attack2": 0.10000000149011612,
+  "#95ba6117>r_attack1": 0.10000000149011612,
+  "#95ba6117>r_attack2": 0.10000000149011612,
+  "#909da5ab>r_attack1": 0.10000000149011612,
+  "#909da5ab>r_attack2": 0.10000000149011612,
+  "r_attack1>*": 0.10000000149011612,
+  "r_attack1>attack1": 0.10000000149011612,
+  "r_attack1>attack2": 0.10000000149011612,
+  "r_attack1>attack3": 0.10000000149011612,
+  "r_attack1>attack4": 0.10000000149011612,
+  "r_attack1>attack5": 0.10000000149011612,
+  "r_attack1>#55b1e791": 0.10000000149011612,
+  "r_attack1>channel": 0.10000000149011612,
+  "r_attack1>Channel_Wndup": 0.10000000149011612,
+  "r_attack1>dance_loop": 0.10000000149011612,
+  "r_attack1>#caa6e196": 0.10000000149011612,
+  "r_attack2>*": 0.10000000149011612,
+  "r_attack2>attack1": 0.10000000149011612,
+  "r_attack2>attack2": 0.10000000149011612,
+  "r_attack2>attack3": 0.10000000149011612,
+  "r_attack2>attack4": 0.10000000149011612,
+  "r_attack2>attack5": 0.10000000149011612,
+  "r_attack2>#55b1e791": 0.10000000149011612,
+  "r_attack2>channel": 0.10000000149011612,
+  "r_attack2>Channel_Wndup": 0.10000000149011612,
+  "r_attack2>dance_loop": 0.10000000149011612,
+  "r_attack2>#caa6e196": 0.10000000149011612,
+  "r_attack1>#7715e3e6": 0.10000000149011612,
+  "r_attack1>#fb7159de": 0.10000000149011612,
+  "r_attack1>#9028089f": 0.10000000149011612,
+  "r_attack1>#b849f242": 0.10000000149011612,
+  "r_attack1>#5dadf217": 0.10000000149011612,
+  "r_attack1>#390c6e04": 0.10000000149011612,
+  "r_attack1>#0320b469": 0.10000000149011612,
+  "r_attack1>idle1_base": 0.10000000149011612,
+  "r_attack1>idle2_base": 0.10000000149011612,
+  "r_attack1>idle3_base": 0.10000000149011612,
+  "r_attack1>#914db254": 0.10000000149011612,
+  "r_attack1>#ea5ada43": 0.10000000149011612,
+  "r_attack1>#eb5adbd6": 0.10000000149011612,
+  "r_attack1>#5d9ac533": 0.10000000149011612,
+  "r_attack1>joke_base": 0.10000000149011612,
+  "r_attack1>#eabe175d": 0.10000000149011612,
+  "r_attack1>laugh_in": 0.10000000149011612,
+  "r_attack1>laugh_loop": 0.10000000149011612,
+  "r_attack1>#622bd465": 0.10000000149011612,
+  "r_attack2>#7715e3e6": 0.10000000149011612,
+  "r_attack2>#fb7159de": 0.10000000149011612,
+  "r_attack2>#9028089f": 0.10000000149011612,
+  "r_attack2>#b849f242": 0.10000000149011612,
+  "r_attack2>#5dadf217": 0.10000000149011612,
+  "r_attack2>#390c6e04": 0.10000000149011612,
+  "r_attack2>#0320b469": 0.10000000149011612,
+  "r_attack2>idle1_base": 0.10000000149011612,
+  "r_attack2>idle2_base": 0.10000000149011612,
+  "r_attack2>idle3_base": 0.10000000149011612,
+  "r_attack2>#914db254": 0.10000000149011612,
+  "r_attack2>#ea5ada43": 0.10000000149011612,
+  "r_attack2>#eb5adbd6": 0.10000000149011612,
+  "r_attack2>#5d9ac533": 0.10000000149011612,
+  "r_attack2>joke_base": 0.10000000149011612,
+  "r_attack2>#eabe175d": 0.10000000149011612,
+  "r_attack2>laugh_in": 0.10000000149011612,
+  "r_attack2>laugh_loop": 0.10000000149011612,
+  "r_attack2>#622bd465": 0.10000000149011612,
+  "r_attack1>r_death": 0.10000000149011612,
+  "r_attack1>#a6f38079": 0.10000000149011612,
+  "r_attack1>#6d50d37c": 0.10000000149011612,
+  "r_attack1>#21237563": 0.10000000149011612,
+  "r_attack1>#cceaa86e": 0.10000000149011612,
+  "r_attack1>r_run_base": 0.10000000149011612,
+  "r_attack1>#a7d08706": 0.10000000149011612,
+  "r_attack1>#5a527c0b": 0.10000000149011612,
+  "r_attack1>#d003b624": 0.10000000149011612,
+  "r_attack1>#c4d3325e": 0.10000000149011612,
+  "r_attack1>#c5d333f1": 0.10000000149011612,
+  "r_attack1>#c6d33584": 0.10000000149011612,
+  "r_attack1>recall_base": 0.10000000149011612,
+  "r_attack1>#1b1b305c": 0.10000000149011612,
+  "r_attack1>Recall_Leadout": 0.10000000149011612,
+  "r_attack1>Recall_Winddown": 0.10000000149011612,
+  "r_attack1>respawn": 0.10000000149011612,
+  "r_attack1>#36bb1bc8": 0.10000000149011612,
+  "r_attack1>#05808276": 0.10000000149011612,
+  "r_attack1>#5cfd20f5": 0.10000000149011612,
+  "r_attack1>#2ec639bb": 0.10000000149011612,
+  "r_attack1>Run_Base": 0.10000000149011612,
+  "r_attack1>run_fast": 0.10000000149011612,
+  "r_attack1>run_haste": 0.10000000149011612,
+  "r_attack1>#bdaf4563": 0.10000000149011612,
+  "r_attack1>#5316001f": 0.10000000149011612,
+  "r_attack1>#0fd7fa17": 0.10000000149011612,
+  "r_attack1>#1d39abef": 0.10000000149011612,
+  "r_attack1>#adc1b4e7": 0.10000000149011612,
+  "r_attack1>spell2": 0.10000000149011612,
+  "r_attack1>spell3": 0.10000000149011612,
+  "r_attack1>Spell3_Run": 0.10000000149011612,
+  "r_attack1>Spell4": 0.10000000149011612,
+  "r_attack1>stunned": 0.10000000149011612,
+  "r_attack1>taunt_base": 0.10000000149011612,
+  "r_attack1>#95ba6117": 0.10000000149011612,
+  "r_attack1>#909da5ab": 0.10000000149011612,
+  "r_attack2>r_death": 0.10000000149011612,
+  "r_attack2>#a6f38079": 0.10000000149011612,
+  "r_attack2>#6d50d37c": 0.10000000149011612,
+  "r_attack2>#21237563": 0.10000000149011612,
+  "r_attack2>#cceaa86e": 0.10000000149011612,
+  "r_attack2>r_run_base": 0.10000000149011612,
+  "r_attack2>#a7d08706": 0.10000000149011612,
+  "r_attack2>#5a527c0b": 0.10000000149011612,
+  "r_attack2>#d003b624": 0.10000000149011612,
+  "r_attack2>#c4d3325e": 0.10000000149011612,
+  "r_attack2>#c5d333f1": 0.10000000149011612,
+  "r_attack2>#c6d33584": 0.10000000149011612,
+  "r_attack2>recall_base": 0.10000000149011612,
+  "r_attack2>#1b1b305c": 0.10000000149011612,
+  "r_attack2>Recall_Leadout": 0.10000000149011612,
+  "r_attack2>Recall_Winddown": 0.10000000149011612,
+  "r_attack2>respawn": 0.10000000149011612,
+  "r_attack2>#36bb1bc8": 0.10000000149011612,
+  "r_attack2>#05808276": 0.10000000149011612,
+  "r_attack2>#5cfd20f5": 0.10000000149011612,
+  "r_attack2>#2ec639bb": 0.10000000149011612,
+  "r_attack2>Run_Base": 0.10000000149011612,
+  "r_attack2>run_fast": 0.10000000149011612,
+  "r_attack2>run_haste": 0.10000000149011612,
+  "r_attack2>#bdaf4563": 0.10000000149011612,
+  "r_attack2>#5316001f": 0.10000000149011612,
+  "r_attack2>#0fd7fa17": 0.10000000149011612,
+  "r_attack2>#1d39abef": 0.10000000149011612,
+  "r_attack2>#adc1b4e7": 0.10000000149011612,
+  "r_attack2>spell2": 0.10000000149011612,
+  "r_attack2>spell3": 0.10000000149011612,
+  "r_attack2>Spell3_Run": 0.10000000149011612,
+  "r_attack2>Spell4": 0.10000000149011612,
+  "r_attack2>stunned": 0.10000000149011612,
+  "r_attack2>taunt_base": 0.10000000149011612,
+  "r_attack2>#95ba6117": 0.10000000149011612,
+  "r_attack2>#909da5ab": 0.10000000149011612,
+  "#d003b624>#2ec639bb": 0.0,
+  "#bdaf4563>#a7d08706": 0.0,
+  "#bdaf4563>r_run_base": 0.0,
+  "#bdaf4563>#5a527c0b": 0.0,
+  "Spell4>*": 0.10000000149011612,
+  "Spell4>idle1_base": 0.0,
+  "Spell4>idle2_base": 0.0,
+  "Spell4>idle3_base": 0.0
+ },
+ "tracks": {
+  "#0092b9c4": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  },
+  "spell3": {
+   "priority": 1,
+   "blend_mode": null,
+   "weight": null
+  },
+  "#42395c08": {
+   "priority": 2,
+   "blend_mode": null,
+   "weight": null
+  },
+  "Default": {
+   "priority": 3,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [
+  "#26a07077",
+  "#347f084e",
+  "#42395c08",
+  "#68d78255",
+  "#731cb44a",
+  "#ef7cfc3b"
+ ],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

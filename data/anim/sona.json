@@ -1,0 +1,327 @@
+{
+ "alias": "Sona",
+ "attacks": [
+  {
+   "name": "SonaBasicAttack",
+   "prob": 0.5,
+   "cast_offset": -0.1281787008047104,
+   "cast_frame": 11.0,
+   "missile_speed": 1500.0,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "SonaBasicAttack2",
+   "prob": 0.5,
+   "clip": "Attack2",
+   "cast_frame": 11.0,
+   "missile_speed": 1500.0,
+   "start_bone": "L_Hand",
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "crits": [
+  {
+   "name": "SonaCritAttack",
+   "cast_offset": -0.1281787008047104,
+   "clip": "Crit",
+   "cast_frame": 8.0,
+   "missile_speed": 1500.0,
+   "start_bone": "WEAPON",
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "spells": [
+  {
+   "name": "SonaQ",
+   "clip": "Spell1",
+   "cast_frame": 8.5,
+   "missile_speed": 1500.0,
+   "slot": 0
+  },
+  {
+   "name": "SonaW",
+   "clip": "Spell1",
+   "cast_frame": 8.5,
+   "missile_speed": 1500.0,
+   "slot": 1
+  },
+  {
+   "name": "SonaE",
+   "clip": "Spell1",
+   "cast_frame": 8.5,
+   "missile_speed": 1500.0,
+   "slot": 2
+  },
+  {
+   "name": "SonaR",
+   "clip": "Spell4",
+   "cast_frame": 8.5,
+   "missile_speed": 2400.0,
+   "start_bone": "WEAPON",
+   "hit_bone": "head",
+   "slot": 3
+  }
+ ],
+ "stats": {
+  "pathfindingCollisionRadius": 35.0,
+  "selectionRadius": 110.0,
+  "selectionHeight": 145.0,
+  "healthBarHeight": 113.0
+ },
+ "clips": {
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1",
+   "file": "5bc068fe22070112"
+  },
+  "attack2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack2",
+   "file": "6d14a32f0d04abfe"
+  },
+  "attack3": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack3",
+   "file": "8a5b734321e8791c"
+  },
+  "channel": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "channel",
+   "file": "59c5f27a91193583"
+  },
+  "Channel_Wndup": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "channel_windup",
+   "file": "1d57be528dc613e3"
+  },
+  "crit": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "crit",
+   "file": "ede829045319400c"
+  },
+  "dance": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "dance",
+   "file": "1cef9812dcde2dd4",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 19.0,
+     "end": 187.0,
+     "effect": "#a5e3e738",
+     "bones": [
+      1815519491
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 19.0,
+     "end": 150.0,
+     "effect": "#c2dcd581",
+     "bones": [
+      3669896029
+     ]
+    }
+   ]
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "1e4a66abafc3459f"
+  },
+  "idle1": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "3932c7adfe36a0ac"
+  },
+  "idle2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle2",
+   "file": "3ba341997676fe74"
+  },
+  "idle3": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle3",
+   "file": "0f85b4bcfd6e92c0"
+  },
+  "joke": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "joke",
+   "file": "af515e52a6ffd27b",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Sona_Joke3D_buffactivate"
+    },
+    {
+     "type": "Particle",
+     "start": 24.0,
+     "effect": "#c2dcd581",
+     "bones": [
+      1815519491
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 40.0,
+     "effect": "#a26d1957",
+     "bones": [
+      1815519491
+     ]
+    }
+   ]
+  },
+  "laugh": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "laugh",
+   "file": "20853cb246b4838e",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Sona_Laugh3D_buffactivate"
+    }
+   ]
+  },
+  "run": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "run",
+   "file": "09fa36fc049fd567"
+  },
+  "Spell1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell1",
+   "file": "dcc9250468a17b40"
+  },
+  "spell2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell2",
+   "file": "7eb92dc3371fafdd"
+  },
+  "spell3": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell3",
+   "file": "5e8fcca8657b501e"
+  },
+  "Spell4": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell4",
+   "file": "dda5d4de5c41edbd"
+  },
+  "taunt": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "taunt",
+   "file": "1700354542995173",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 4.0,
+     "sound": "Play_sfx_Sona_Taunt3D_buffactivate"
+    },
+    {
+     "type": "Particle",
+     "start": 12.0,
+     "effect": "#6fdd4bc4",
+     "bones": [
+      3669896029
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 17.0,
+     "effect": "#6fdd4bc4",
+     "bones": [
+      1815519491
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 20.0,
+     "effect": "#6fdd4bc4",
+     "bones": [
+      3669896029
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 26.0,
+     "effect": "#076b5ec3",
+     "bones": [
+      3352349492
+     ]
+    }
+   ]
+  },
+  "recall": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle2",
+   "file": "3ba341997676fe74"
+  }
+ },
+ "blends": {
+  "channel>death": 0.0,
+  "run>death": 0.0,
+  "attack1>death": 0.0,
+  "attack3>death": 0.0,
+  "attack2>death": 0.0,
+  "crit>death": 0.0,
+  "idle3>idle3": 0.5,
+  "idle3>idle2": 0.5,
+  "idle3>idle1": 0.5,
+  "idle3>death": 0.0,
+  "idle2>idle3": 0.5,
+  "idle2>idle2": 0.5,
+  "idle2>idle1": 0.5,
+  "idle2>death": 0.0,
+  "idle1>idle3": 0.5,
+  "idle1>idle2": 0.5,
+  "idle1>idle1": 0.5,
+  "idle1>death": 0.0,
+  "Channel_Wndup>death": 0.0,
+  "Spell1>death": 0.0,
+  "spell3>death": 0.0,
+  "spell2>death": 0.0,
+  "laugh>death": 0.0,
+  "Spell4>death": 0.0,
+  "taunt>death": 0.0,
+  "death>death": 0.0,
+  "joke>death": 0.0,
+  "dance>death": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

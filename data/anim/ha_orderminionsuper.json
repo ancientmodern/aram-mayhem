@@ -1,0 +1,127 @@
+{
+ "alias": "HA_OrderMinionSuper",
+ "attacks": [
+  {
+   "name": "HA_OrderMinionSuperBasicAttack",
+   "total_time": 1.440000057220459,
+   "cast_time": 0.5,
+   "cast_frame": 15.0,
+   "missile_speed": 0.0
+  }
+ ],
+ "crits": [],
+ "spells": [],
+ "stats": {
+  "pathfindingCollisionRadius": 55.52080154418945,
+  "overrideGameplayCollisionRadius": 65.0,
+  "selectionRadius": 145.0,
+  "selectionHeight": 110.0,
+  "healthBarHeight": 68.0
+ },
+ "clips": {
+  "run": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "run",
+   "file": "5f9599703325d6fb"
+  },
+  "#3f1534b8": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "5dfec408cd565e9c"
+  },
+  "#42153971": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "5dfec408cd565e9c"
+  },
+  "attack1": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "attack1",
+   "file": "f1528bfbd03c8c9b"
+  },
+  "attack2": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "attack2",
+   "file": "a2fd5cfab754cd16"
+  },
+  "stunned": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "5dfec408cd565e9c"
+  },
+  "idle1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "5dfec408cd565e9c"
+  },
+  "#9e66faeb": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "5dfec408cd565e9c"
+  },
+  "#9f66fc7e": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "5dfec408cd565e9c"
+  },
+  "death": {
+   "type": "Selector",
+   "pairs": [
+    [
+     "death_base",
+     50.0
+    ],
+    [
+     "#bd31845b",
+     50.0
+    ]
+   ]
+  },
+  "#bd31845b": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death_var2",
+   "file": "b1a833f12b52c3d9"
+  },
+  "death_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "f16066d29d4c66e5"
+  }
+ },
+ "blends": {
+  "run>death_base": 0.0,
+  "#3f1534b8>death_base": 0.0,
+  "#42153971>death_base": 0.0,
+  "attack1>death_base": 0.0,
+  "attack2>death_base": 0.0,
+  "stunned>death_base": 0.0,
+  "idle1>death_base": 0.0,
+  "#9e66faeb>death_base": 0.0,
+  "#9f66fc7e>death_base": 0.0,
+  "#bd31845b>death_base": 0.0,
+  "death_base>death_base": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

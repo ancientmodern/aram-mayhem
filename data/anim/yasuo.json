@@ -1,0 +1,1376 @@
+{
+ "alias": "Yasuo",
+ "attacks": [
+  {
+   "name": "YasuoBasicAttack",
+   "prob": 1.0,
+   "cast_offset": -0.07999999821186066,
+   "cast_offset_as_ratio": 1.0,
+   "clip": "Attack_First",
+   "cast_frame": 8.0,
+   "missile_speed": 347.79998779296875,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "YasuoBasicAttack2",
+   "clip": "Attack2",
+   "cast_frame": 8.0,
+   "missile_speed": 347.79998779296875,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "YasuoBasicAttack3",
+   "clip": "Attack3",
+   "cast_frame": 8.0,
+   "missile_speed": 347.79998779296875,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "YasuoBasicAttack4",
+   "clip": "Attack4",
+   "cast_frame": 8.0,
+   "missile_speed": 347.79998779296875,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "crits": [
+  {
+   "name": "YasuoCritAttack",
+   "cast_offset_as_ratio": 1.0,
+   "clip": "Attack_First",
+   "cast_frame": 8.0,
+   "missile_speed": 347.79998779296875,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "YasuoCritAttack2",
+   "clip": "Attack2",
+   "cast_frame": 8.0,
+   "missile_speed": 347.79998779296875,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "YasuoCritAttack3",
+   "clip": "Attack3",
+   "cast_frame": 8.0,
+   "missile_speed": 347.79998779296875,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "YasuoCritAttack4",
+   "clip": "Attack4",
+   "cast_frame": 8.0,
+   "missile_speed": 347.79998779296875,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "spells": [
+  {
+   "name": "YasuoQ1Wrapper",
+   "cast_frame": 7.5,
+   "missile_speed": 1500.0,
+   "slot": 0
+  },
+  {
+   "name": "YasuoW",
+   "clip": "Spell2",
+   "cast_frame": 7.5,
+   "cast_time": 0.013000000268220901,
+   "slot": 1
+  },
+  {
+   "name": "YasuoE",
+   "clip": "Channel",
+   "cast_frame": 9.0,
+   "missile_speed": 20.0,
+   "slot": 2
+  },
+  {
+   "name": "YasuoR",
+   "clip": "Spell4",
+   "cast_frame": 9.0,
+   "missile_speed": 20.0,
+   "slot": 3
+  }
+ ],
+ "stats": {
+  "pathfindingCollisionRadius": 32.0,
+  "selectionRadius": 120.0,
+  "selectionHeight": 180.0,
+  "healthBarHeight": 103.0
+ },
+ "clips": {
+  "#08b0f422": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": null,
+   "xanim": "x/idle_in",
+   "file": "e9ee141e95cf8537"
+  },
+  "#56f6d84b": {
+   "type": "Atomic",
+   "flags": 1,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "idle1",
+   "file": "1a2e91c33dc85e21",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "attack2": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "attack2",
+   "file": "9b7d384ecf7cb6e3",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      157494532
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 3.0,
+     "effect": "#90f3da12",
+     "bones": [
+      2094586845
+     ]
+    }
+   ]
+  },
+  "#6b01d0e8": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "sync": "Run_In",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_8c385969",
+   "file": "7d4ae1418c385969"
+  },
+  "#401ff3c4": {
+   "type": "Atomic",
+   "track": "Default",
+   "sync": "run",
+   "tick": 0.03333299979567528,
+   "anim": "run",
+   "file": "c385ebb7335d1ed6",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "run": {
+   "type": "Sequencer",
+   "flags": 2,
+   "list": [
+    "#401ff3c4"
+   ]
+  },
+  "Attack3": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "attack3",
+   "file": "a5f039cb35d6f796",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 3.0,
+     "effect": "#91f3dba5",
+     "bones": [
+      2094586845
+     ]
+    }
+   ]
+  },
+  "attack4": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "attack4",
+   "file": "76b8eab2d2aaa5eb",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#8af3d0a0",
+     "bones": [
+      2094586845
+     ]
+    }
+   ]
+  },
+  "Attack_First": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "attack1",
+   "file": "e7981d9ae639c666",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 3.0,
+     "effect": "#8ff3d87f",
+     "bones": [
+      2094586845
+     ]
+    }
+   ]
+  },
+  "spell1_dash": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell1_dash",
+   "file": "ab4154c837bd9535",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      157494532
+     ]
+    }
+   ]
+  },
+  "spell3": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell3",
+   "file": "b552d9ec8bc6b19a",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "run2": {
+   "type": "Atomic",
+   "track": "Default",
+   "sync": "run",
+   "tick": 0.03333299979567528,
+   "anim": "run2",
+   "file": "914cccfafa983f69"
+  },
+  "spell2_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell2_in",
+   "file": "a0a8567f730d0bd9"
+  },
+  "#cd12c5c1": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell2_var5",
+   "file": "e076a19807c35dac",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      157494532
+     ]
+    }
+   ]
+  },
+  "#7b1ca9e4": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell2",
+   "file": "15d1be0c8c6101e8"
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "Upper",
+   "anim": "death",
+   "file": "1963572c04ad0ee7",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#97592a2e",
+     "bones": []
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "#4f00d30c": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "sync": "run",
+   "anim": "run_fast",
+   "file": "ecbe4687cb38ebf2"
+  },
+  "Spell4": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell4",
+   "file": "485a89afd1b29bc2"
+  },
+  "#49b908d9": {
+   "type": "Atomic",
+   "track": "Default",
+   "sync": "Run_In",
+   "tick": 0.03333299979567528,
+   "anim": "run",
+   "file": "c385ebb7335d1ed6",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "spell1a": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell1a",
+   "file": "094984a8ace32050",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      157494532
+     ]
+    }
+   ]
+  },
+  "spell1b": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell1b",
+   "file": "5e59998e6d955c70",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      157494532
+     ]
+    }
+   ]
+  },
+  "spell1c": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell1c",
+   "file": "8ac970374e309fe6",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      157494532
+     ]
+    }
+   ]
+  },
+  "#ae92aef7": {
+   "type": "Atomic",
+   "flags": 6,
+   "track": "#1414f107",
+   "mask": "#1414f107",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_cef8ea27",
+   "file": "8e723b23cef8ea27"
+  },
+  "channel": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "channel",
+   "file": "a92e9e223cfd6605",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "hide": [
+      157494532
+     ]
+    }
+   ]
+  },
+  "Channel_Wndup": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "channel_windup",
+   "file": "1f11ad83b2c7067e",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "hide": [
+      157494532
+     ]
+    }
+   ]
+  },
+  "#a56d84cb": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell2_var4",
+   "file": "2347400f2bf393fd"
+  },
+  "#5a7fb1dc": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell2_var2",
+   "file": "48c77bdeda06cc48"
+  },
+  "run_fast": {
+   "type": "Sequencer",
+   "flags": 2,
+   "list": [
+    "Run_Fast_In",
+    "#cbc78130",
+    "#cbc78130",
+    "#f1b6fdb7",
+    "#4f00d30c"
+   ]
+  },
+  "Run_Fast_In": {
+   "type": "Atomic",
+   "track": "Default",
+   "sync": "Run_In",
+   "tick": 0.03333299979567528,
+   "anim": "run_fast_in",
+   "file": "65e5845dd83fcbe5"
+  },
+  "joke": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "joke",
+   "file": "b130c796b1e5c025",
+   "events": [
+    {
+     "type": "Particle",
+     "start": -2.0,
+     "effect": "#459c9d97",
+     "bones": []
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "end": 2.0,
+     "hide": [
+      157494532
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 166.0
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 169.0,
+     "hide": [
+      157494532
+     ]
+    }
+   ]
+  },
+  "taunt": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "taunt",
+   "file": "aa2f2d0bf7845d4f",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#b10c477e",
+     "bones": [
+      669624314
+     ]
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "end": 103.0,
+     "hide": [
+      157494532
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    },
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#ecaa9bde",
+     "bones": []
+    },
+    {
+     "type": "Particle",
+     "start": 2.0,
+     "effect": "#17e1e978",
+     "bones": []
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 104.0,
+     "end": 166.0,
+     "show": [
+      157494532
+     ]
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 167.0,
+     "end": 222.0,
+     "hide": [
+      157494532
+     ]
+    }
+   ]
+  },
+  "laugh": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "laugh",
+   "file": "3f722193d202d4fb",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#6b1f27d9",
+     "bones": []
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "hide": [
+      157494532
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "#3a495dde": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell2_var3",
+   "file": "08d13acd89534af9",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      157494532
+     ]
+    }
+   ]
+  },
+  "#822d5260": {
+   "type": "Parametric",
+   "flags": 4,
+   "track": "Upper",
+   "updater": "LookAtSpellTargetAngle"
+  },
+  "#3f589716": {
+   "type": "Parametric",
+   "flags": 4,
+   "track": "#1414f107",
+   "mask": "Upper",
+   "updater": "LookAtSpellTargetAngle"
+  },
+  "#cbc78130": {
+   "type": "Atomic",
+   "track": "Default",
+   "sync": "run",
+   "tick": 0.03333299979567528,
+   "anim": "run_fast_seq1",
+   "file": "77f58d7f55c21908"
+  },
+  "#f1b6fdb7": {
+   "type": "Atomic",
+   "track": "Default",
+   "sync": "run",
+   "anim": "run",
+   "file": "c385ebb7335d1ed6",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 32.0
+    }
+   ]
+  },
+  "#aec9ef19": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_a14d6f0e",
+   "file": "81eebbc3a14d6f0e",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "#fb8f4ae2": {
+   "type": "Sequencer",
+   "list": [
+    "#0c4d3736",
+    "#4f00d30c"
+   ]
+  },
+  "#0c4d3736": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "sync": "Run_In",
+   "tick": 0.03333299979567528,
+   "anim": null,
+   "xanim": "x/clip_da933369",
+   "file": "1e59873cda933369",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "#eed63eca": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "recall",
+   "file": "f57bf42fe7f3e8cf"
+  },
+  "#5a558fb9": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "recall_in",
+   "file": "0374202da684ac7d",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "Yasuo_Recall",
+     "bones": [
+      2094586845
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0,
+     "end": 86.0
+    },
+    {
+     "type": "Particle",
+     "start": 14.0,
+     "effect": "#36a5a16b",
+     "bones": []
+    }
+   ]
+  },
+  "recall": {
+   "type": "Sequencer",
+   "list": [
+    "#5a558fb9",
+    "#eed63eca"
+   ]
+  },
+  "#120aa0ea": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "idle1_var2",
+   "file": "a25fcac120a4b3da",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 9.0,
+     "show": [
+      157494532
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 136.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 136.0
+    }
+   ]
+  },
+  "#31084864": {
+   "type": "Selector",
+   "flags": 2,
+   "pairs": [
+    [
+     "#56f6d84b",
+     6.0
+    ],
+    [
+     "#120aa0ea",
+     4.0
+    ]
+   ]
+  },
+  "idle1": {
+   "type": "Sequencer",
+   "list": [
+    "#56f6d84b",
+    "#31084864"
+   ]
+  },
+  "spell2": {
+   "type": "Parallel",
+   "list": [
+    "spell2_base",
+    "#822d5260"
+   ]
+  },
+  "#18d5b1ae": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333333879709244,
+   "anim": "dance",
+   "file": "be555317836192e3",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      3478600801
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "hide": [
+      157494532
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 2.0,
+     "effect": "#84bc6347",
+     "bones": []
+    },
+    {
+     "type": "Particle",
+     "start": 2.0,
+     "effect": "#4e6ca6e8",
+     "bones": [
+      2094586845
+     ]
+    }
+   ]
+  },
+  "#4e29720f": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "dance_in",
+   "file": "d324fe4ac2680a68",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "hide": [
+      157494532
+     ]
+    },
+    {
+     "type": "FaceTarget",
+     "start": 0.0
+    },
+    {
+     "type": "Particle",
+     "start": 35.0,
+     "effect": "#fb46cc27",
+     "bones": []
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 64.0,
+     "show": [
+      3478600801
+     ]
+    }
+   ]
+  },
+  "dance": {
+   "type": "Sequencer",
+   "list": [
+    "#4e29720f",
+    "#18d5b1ae"
+   ]
+  },
+  "run_haste": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "sync": "run",
+   "anim": "run_fast",
+   "file": "ecbe4687cb38ebf2",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "#f337510f": {
+   "type": "Atomic",
+   "track": "Upper",
+   "anim": null,
+   "xanim": "x/idle_in",
+   "file": "e9ee141e95cf8537",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 36.0
+    },
+    {
+     "type": "Particle",
+     "start": 40.0,
+     "effect": "#23276686",
+     "bones": [
+      806132380
+     ]
+    }
+   ]
+  },
+  "#34dfd7e6": {
+   "type": "Atomic",
+   "track": "Upper",
+   "mask": "#8f3b0f3d",
+   "anim": null,
+   "xanim": "x/clip_8c385969",
+   "file": "7d4ae1418c385969",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 35.0
+    },
+    {
+     "type": "Particle",
+     "start": 40.0,
+     "effect": "#23276686",
+     "bones": [
+      806132380
+     ]
+    }
+   ]
+  },
+  "#300c9a9c": {
+   "type": "ConditionBool",
+   "true": "#34dfd7e6",
+   "false": "#f337510f",
+   "updater": "IsMoving",
+   "changeAnimationMidPlay": true
+  },
+  "Idle_Out": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333333879709244,
+   "anim": null,
+   "xanim": "x/clip_5180ef2e",
+   "file": "11dcf5cb5180ef2e"
+  },
+  "#86b7dee4": {
+   "type": "Atomic",
+   "flags": 6,
+   "track": "Default",
+   "sync": "run",
+   "anim": "run",
+   "file": "c385ebb7335d1ed6",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "Run_Haste_Out": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "sync": "run",
+   "anim": null,
+   "xanim": "x/clip_a5a9b825",
+   "file": "2a38ce95a5a9b825",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "#bcf84a8e": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#8f3b0f3d",
+   "anim": null,
+   "xanim": "x/clip_b47e9e2b",
+   "file": "ffff4880b47e9e2b",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 34.0
+    },
+    {
+     "type": "Particle",
+     "start": 40.0,
+     "effect": "#23276686",
+     "bones": [
+      806132380
+     ]
+    }
+   ]
+  },
+  "#4f62db84": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "sync": "run",
+   "anim": "run_out",
+   "file": "af4807ca49a70312"
+  },
+  "#294bef88": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "sync": "run",
+   "anim": null,
+   "xanim": "x/clip_e7ac92e5",
+   "file": "609d500be7ac92e5"
+  },
+  "run_out": {
+   "type": "Sequencer",
+   "flags": 3,
+   "list": [
+    "#4f62db84",
+    "#294bef88"
+   ]
+  },
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1",
+   "file": "e7981d9ae639c666",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 3.0,
+     "effect": "#8ff3d87f",
+     "bones": [
+      2094586845
+     ]
+    }
+   ]
+  },
+  "#c2cfde5a": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1_var2",
+   "file": "a25fcac120a4b3da",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 1.0,
+     "effect": "#2282701e",
+     "bones": []
+    },
+    {
+     "type": "Particle",
+     "start": 13.0,
+     "effect": "#78ec87a6",
+     "bones": []
+    },
+    {
+     "type": "JointSnap",
+     "start": 136.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 136.0
+    }
+   ]
+  },
+  "#0138ce20": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1_var2",
+   "file": "a25fcac120a4b3da",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 1.0,
+     "effect": "#2282701e",
+     "bones": []
+    },
+    {
+     "type": "Particle",
+     "start": 10.0,
+     "effect": "#15dc2ea4",
+     "bones": []
+    },
+    {
+     "type": "JointSnap",
+     "start": 136.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 136.0
+    }
+   ]
+  },
+  "#6438e53a": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1_var2",
+   "file": "a25fcac120a4b3da",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 1.0,
+     "effect": "#2282701e",
+     "bones": []
+    },
+    {
+     "type": "Particle",
+     "start": 14.0,
+     "effect": "#9675a9f6",
+     "bones": []
+    },
+    {
+     "type": "JointSnap",
+     "start": 136.0
+    },
+    {
+     "type": "JointSnap",
+     "start": 136.0
+    }
+   ]
+  }
+ },
+ "blends": {
+  "#0138ce20>death": 0.0,
+  "#08b0f422>spell1_dash": 0.10000000149011612,
+  "#08b0f422>spell2_base": 0.10000000149011612,
+  "#08b0f422>Channel_Wndup": 0.10000000149011612,
+  "#08b0f422>spell3": 0.10000000149011612,
+  "#08b0f422>death": 0.0,
+  "#08b0f422>spell1a": 0.10000000149011612,
+  "#08b0f422>spell1b": 0.10000000149011612,
+  "#08b0f422>spell1c": 0.10000000149011612,
+  "#0c4d3736>death": 0.0,
+  "#120aa0ea>spell1_dash": 0.10000000149011612,
+  "#120aa0ea>spell2_base": 0.10000000149011612,
+  "#120aa0ea>Channel_Wndup": 0.10000000149011612,
+  "#120aa0ea>spell3": 0.10000000149011612,
+  "#120aa0ea>death": 0.0,
+  "#120aa0ea>spell1a": 0.10000000149011612,
+  "#120aa0ea>spell1b": 0.10000000149011612,
+  "#120aa0ea>spell1c": 0.10000000149011612,
+  "#18d5b1ae>death": 0.0,
+  "spell1_dash>spell1_dash": 0.10000000149011612,
+  "spell1_dash>attack2": 0.10000000149011612,
+  "spell1_dash>spell2_base": 0.10000000149011612,
+  "spell1_dash>Channel_Wndup": 0.10000000149011612,
+  "spell1_dash>spell3": 0.10000000149011612,
+  "spell1_dash>death": 0.0,
+  "spell1_dash>spell1a": 0.10000000149011612,
+  "spell1_dash>spell1b": 0.10000000149011612,
+  "spell1_dash>spell1c": 0.10000000149011612,
+  "run_out>death": 0.0,
+  "channel>run_haste": 0.0,
+  "channel>#401ff3c4": 0.0,
+  "channel>#4f00d30c": 0.0,
+  "channel>run2": 0.0,
+  "channel>#6b01d0e8": 0.0,
+  "channel>Channel_Wndup": 0.10000000149011612,
+  "channel>death": 0.0,
+  "run_haste>death": 0.0,
+  "#294bef88>death": 0.0,
+  "run>death": 0.0,
+  "#300c9a9c>death": 0.0,
+  "#31084864>death": 0.0,
+  "Run_Fast_In>death": 0.0,
+  "#34dfd7e6>death": 0.0,
+  "#3a495dde>death": 0.0,
+  "#3f589716>death": 0.0,
+  "#401ff3c4>spell1_dash": 0.10000000149011612,
+  "#401ff3c4>#401ff3c4": 0.0,
+  "#401ff3c4>spell2_base": 0.10000000149011612,
+  "#401ff3c4>Channel_Wndup": 0.10000000149011612,
+  "#401ff3c4>spell3": 0.10000000149011612,
+  "#401ff3c4>death": 0.0,
+  "#401ff3c4>spell1a": 0.10000000149011612,
+  "#401ff3c4>spell1b": 0.10000000149011612,
+  "#401ff3c4>spell1c": 0.10000000149011612,
+  "#49b908d9>spell1_dash": 0.10000000149011612,
+  "#49b908d9>Channel_Wndup": 0.10000000149011612,
+  "#49b908d9>death": 0.0,
+  "#49b908d9>spell1a": 0.10000000149011612,
+  "#49b908d9>spell1b": 0.10000000149011612,
+  "#49b908d9>spell1c": 0.10000000149011612,
+  "#4e29720f>death": 0.0,
+  "#4f00d30c>spell1_dash": 0.10000000149011612,
+  "#4f00d30c>Channel_Wndup": 0.10000000149011612,
+  "#4f00d30c>death": 0.0,
+  "#4f00d30c>spell1a": 0.10000000149011612,
+  "#4f00d30c>spell1b": 0.10000000149011612,
+  "#4f00d30c>spell1c": 0.10000000149011612,
+  "#4f62db84>death": 0.0,
+  "attack4>spell1_dash": 0.10000000149011612,
+  "attack4>spell2_base": 0.10000000149011612,
+  "attack4>Channel_Wndup": 0.10000000149011612,
+  "attack4>spell3": 0.10000000149011612,
+  "attack4>death": 0.0,
+  "attack4>spell1a": 0.10000000149011612,
+  "attack4>spell1b": 0.10000000149011612,
+  "attack4>spell1c": 0.10000000149011612,
+  "attack1>death": 0.0,
+  "#56f6d84b>spell1_dash": 0.10000000149011612,
+  "#56f6d84b>spell2_base": 0.10000000149011612,
+  "#56f6d84b>Channel_Wndup": 0.10000000149011612,
+  "#56f6d84b>spell3": 0.10000000149011612,
+  "#56f6d84b>death": 0.0,
+  "#56f6d84b>spell1a": 0.10000000149011612,
+  "#56f6d84b>spell1b": 0.10000000149011612,
+  "#56f6d84b>spell1c": 0.10000000149011612,
+  "Attack3>spell1_dash": 0.10000000149011612,
+  "Attack3>spell2_base": 0.10000000149011612,
+  "Attack3>Channel_Wndup": 0.10000000149011612,
+  "Attack3>spell3": 0.10000000149011612,
+  "Attack3>death": 0.0,
+  "Attack3>spell1a": 0.10000000149011612,
+  "Attack3>spell1b": 0.10000000149011612,
+  "Attack3>spell1c": 0.10000000149011612,
+  "run2>spell1_dash": 0.10000000149011612,
+  "run2>spell2_base": 0.10000000149011612,
+  "run2>Channel_Wndup": 0.10000000149011612,
+  "run2>spell3": 0.10000000149011612,
+  "run2>death": 0.0,
+  "run2>spell1a": 0.10000000149011612,
+  "run2>spell1b": 0.10000000149011612,
+  "run2>spell1c": 0.10000000149011612,
+  "attack2>spell1_dash": 0.10000000149011612,
+  "attack2>spell2_base": 0.10000000149011612,
+  "attack2>Channel_Wndup": 0.10000000149011612,
+  "attack2>spell3": 0.10000000149011612,
+  "attack2>death": 0.0,
+  "attack2>spell1a": 0.10000000149011612,
+  "attack2>spell1b": 0.10000000149011612,
+  "attack2>spell1c": 0.10000000149011612,
+  "#5a558fb9>death": 0.0,
+  "#5a7fb1dc>death": 0.0,
+  "recall>death": 0.0,
+  "#6438e53a>death": 0.0,
+  "#6b01d0e8>spell1_dash": 0.10000000149011612,
+  "#6b01d0e8>spell2_base": 0.10000000149011612,
+  "#6b01d0e8>Channel_Wndup": 0.10000000149011612,
+  "#6b01d0e8>spell3": 0.10000000149011612,
+  "#6b01d0e8>death": 0.0,
+  "#6b01d0e8>spell1a": 0.10000000149011612,
+  "#6b01d0e8>spell1b": 0.10000000149011612,
+  "#6b01d0e8>spell1c": 0.10000000149011612,
+  "Run_Haste_Out>death": 0.0,
+  "Idle_Out>death": 0.0,
+  "Attack_First>spell1_dash": 0.10000000149011612,
+  "Attack_First>Attack_First": 0.10000000149011612,
+  "Attack_First>spell2_base": 0.10000000149011612,
+  "Attack_First>Channel_Wndup": 0.10000000149011612,
+  "Attack_First>spell3": 0.10000000149011612,
+  "Attack_First>death": 0.0,
+  "Attack_First>spell1a": 0.10000000149011612,
+  "Attack_First>spell1b": 0.10000000149011612,
+  "Attack_First>spell1c": 0.10000000149011612,
+  "#7b1ca9e4>spell1_dash": 0.10000000149011612,
+  "#7b1ca9e4>attack2": 0.10000000149011612,
+  "#7b1ca9e4>Channel_Wndup": 0.10000000149011612,
+  "#7b1ca9e4>death": 0.0,
+  "#7b1ca9e4>spell1a": 0.10000000149011612,
+  "#7b1ca9e4>spell1b": 0.10000000149011612,
+  "#7b1ca9e4>spell1c": 0.10000000149011612,
+  "spell2_base>spell1_dash": 0.10000000149011612,
+  "spell2_base>spell2_base": 0.10000000149011612,
+  "spell2_base>Channel_Wndup": 0.10000000149011612,
+  "spell2_base>spell3": 0.10000000149011612,
+  "spell2_base>death": 0.0,
+  "spell2_base>spell1a": 0.10000000149011612,
+  "spell2_base>spell1b": 0.10000000149011612,
+  "spell2_base>spell1c": 0.10000000149011612,
+  "#822d5260>death": 0.0,
+  "#86b7dee4>death": 0.0,
+  "idle1>death": 0.0,
+  "Channel_Wndup>Channel_Wndup": 0.10000000149011612,
+  "Channel_Wndup>death": 0.0,
+  "#a56d84cb>death": 0.0,
+  "run_fast>death": 0.0,
+  "#ae92aef7>Channel_Wndup": 0.10000000149011612,
+  "#ae92aef7>death": 0.0,
+  "#aec9ef19>death": 0.0,
+  "spell3>spell1_dash": 0.10000000149011612,
+  "spell3>spell2_base": 0.10000000149011612,
+  "spell3>Channel_Wndup": 0.10000000149011612,
+  "spell3>spell3": 0.10000000149011612,
+  "spell3>death": 0.0,
+  "spell3>spell1a": 0.10000000149011612,
+  "spell3>spell1b": 0.10000000149011612,
+  "spell3>spell1c": 0.10000000149011612,
+  "spell2>death": 0.0,
+  "laugh>death": 0.0,
+  "Spell4>spell1_dash": 0.10000000149011612,
+  "Spell4>Channel_Wndup": 0.10000000149011612,
+  "Spell4>death": 0.0,
+  "Spell4>spell1a": 0.10000000149011612,
+  "Spell4>spell1b": 0.10000000149011612,
+  "Spell4>spell1c": 0.10000000149011612,
+  "taunt>death": 0.0,
+  "#bcf84a8e>death": 0.0,
+  "death>spell1_dash": 0.10000000149011612,
+  "death>Channel_Wndup": 0.10000000149011612,
+  "death>death": 0.0,
+  "death>spell1a": 0.10000000149011612,
+  "death>spell1b": 0.10000000149011612,
+  "death>spell1c": 0.10000000149011612,
+  "joke>death": 0.0,
+  "spell1a>Channel_Wndup": 0.10000000149011612,
+  "spell1a>death": 0.0,
+  "spell1a>spell1a": 0.10000000149011612,
+  "spell1a>spell1b": 0.10000000149011612,
+  "spell1a>spell1c": 0.10000000149011612,
+  "#c2cfde5a>death": 0.0,
+  "spell1b>Channel_Wndup": 0.10000000149011612,
+  "spell1b>death": 0.0,
+  "spell1b>spell1a": 0.10000000149011612,
+  "spell1b>spell1b": 0.10000000149011612,
+  "spell1b>spell1c": 0.10000000149011612,
+  "spell1c>Channel_Wndup": 0.10000000149011612,
+  "spell1c>death": 0.0,
+  "spell1c>spell1a": 0.10000000149011612,
+  "spell1c>spell1b": 0.10000000149011612,
+  "spell1c>spell1c": 0.10000000149011612,
+  "#cbc78130>death": 0.0,
+  "#cd12c5c1>spell1_dash": 0.10000000149011612,
+  "#cd12c5c1>attack2": 0.10000000149011612,
+  "#cd12c5c1>Channel_Wndup": 0.10000000149011612,
+  "#cd12c5c1>death": 0.0,
+  "#cd12c5c1>spell1a": 0.10000000149011612,
+  "#cd12c5c1>spell1b": 0.10000000149011612,
+  "#cd12c5c1>spell1c": 0.10000000149011612,
+  "#eed63eca>death": 0.0,
+  "#f1b6fdb7>death": 0.0,
+  "#f337510f>death": 0.0,
+  "dance>death": 0.0,
+  "#fb8f4ae2>death": 0.0
+ },
+ "tracks": {
+  "Upper": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  },
+  "Default": {
+   "priority": 1,
+   "blend_mode": null,
+   "weight": null
+  },
+  "#1414f107": {
+   "priority": 2,
+   "blend_mode": 1,
+   "weight": null
+  }
+ },
+ "masks": [
+  "#1414f107",
+  "#8f3b0f3d",
+  "Upper"
+ ],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

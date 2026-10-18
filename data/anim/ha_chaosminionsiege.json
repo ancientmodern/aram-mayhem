@@ -1,0 +1,141 @@
+{
+ "alias": "HA_ChaosMinionSiege",
+ "attacks": [
+  {
+   "name": "HA_ChaosMinionSiegeBasicAttack",
+   "total_time": 1.0,
+   "cast_time": 0.30000001192092896,
+   "cast_frame": 9.0,
+   "missile_speed": 1200.0,
+   "start_bone": "cannon",
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "crits": [],
+ "spells": [],
+ "stats": {
+  "pathfindingCollisionRadius": 55.74369812011719,
+  "overrideGameplayCollisionRadius": 65.0,
+  "selectionRadius": 140.0,
+  "selectionHeight": 95.0,
+  "healthBarHeight": 52.0
+ },
+ "clips": {
+  "attack1_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1",
+   "file": "6ff2150bac8efb05"
+  },
+  "Attack2_Base": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1_var2",
+   "file": "72ea21add41c6218"
+  },
+  "#3f1534b8": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": null,
+   "xanim": "x/clip_d716a4f7",
+   "file": "41bd2788d716a4f7"
+  },
+  "#42153971": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": null,
+   "xanim": "x/clip_d716a4f7",
+   "file": "41bd2788d716a4f7"
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "457e563d9e570be9"
+  },
+  "Death2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "457e563d9e570be9",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "bones": []
+    }
+   ]
+  },
+  "idle1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "ec880df31400e40c"
+  },
+  "run": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "run",
+   "file": "f8a04184fa05e3af"
+  },
+  "#9e66faeb": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "457e563d9e570be9"
+  },
+  "stunned": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "run",
+   "file": "f8a04184fa05e3af"
+  },
+  "attack1": {
+   "type": "Selector",
+   "pairs": [
+    [
+     "attack1_base",
+     40.0
+    ],
+    [
+     "Attack2_Base",
+     30.0
+    ],
+    [
+     "attack3_base",
+     30.0
+    ]
+   ]
+  },
+  "attack3_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1_var3",
+   "file": "a0ad63209d1f287f"
+  }
+ },
+ "blends": {
+  "attack3_base>death": 0.0,
+  "run>death": 0.0,
+  "#3f1534b8>death": 0.0,
+  "#42153971>death": 0.0,
+  "Death2>death": 0.0,
+  "attack1>death": 0.0,
+  "stunned>death": 0.0,
+  "Attack2_Base>death": 0.0,
+  "idle1>death": 0.0,
+  "#9e66faeb>death": 0.0,
+  "death>death": 0.0,
+  "attack1_base>death": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

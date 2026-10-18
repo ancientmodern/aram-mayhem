@@ -1,0 +1,363 @@
+{
+ "alias": "Annie",
+ "attacks": [
+  {
+   "name": "AnnieBasicAttack",
+   "prob": 0.5,
+   "cast_offset": -0.10420524328947067,
+   "cast_frame": 7.5,
+   "missile_speed": 1200.0,
+   "start_bone": "R_hand",
+   "hit_bone": "C_BUFFBONE_GLB_CENTER_LOC"
+  },
+  {
+   "name": "AnnieBasicAttack2",
+   "prob": 0.5,
+   "clip": "Attack2",
+   "cast_frame": 8.5,
+   "missile_speed": 1200.0,
+   "start_bone": "R_hand",
+   "hit_bone": "C_BUFFBONE_GLB_CENTER_LOC"
+  }
+ ],
+ "crits": [
+  {
+   "name": "AnnieCritAttack",
+   "cast_offset": -0.10420524328947067,
+   "clip": "Crit",
+   "cast_frame": 11.0,
+   "missile_speed": 1200.0,
+   "start_bone": "R_hand",
+   "hit_bone": "C_BUFFBONE_GLB_CENTER_LOC"
+  }
+ ],
+ "spells": [
+  {
+   "name": "AnnieQ",
+   "clip": "Spell1",
+   "cast_frame": 8.699999809265137,
+   "missile_speed": 1400.0,
+   "start_bone": "neck",
+   "slot": 0
+  },
+  {
+   "name": "AnnieW",
+   "clip": "Spell2",
+   "cast_frame": 7.5,
+   "cast_time": 0.25,
+   "missile_speed": 0.0,
+   "slot": 1
+  },
+  {
+   "name": "AnnieE",
+   "clip": "Spell3",
+   "slot": 2
+  },
+  {
+   "name": "AnnieR",
+   "clip": "Spell4",
+   "cast_frame": 10.0,
+   "missile_speed": 0.0,
+   "slot": 3
+  }
+ ],
+ "stats": {
+  "pathfindingCollisionRadius": 30.0,
+  "overrideGameplayCollisionRadius": 55.0,
+  "selectionRadius": 100.0,
+  "selectionHeight": 85.0,
+  "healthBarHeight": 85.0
+ },
+ "clips": {
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1",
+   "file": "ed99a578eff6c27c",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#251cfba3",
+     "bones": [
+      1418910098
+     ]
+    }
+   ]
+  },
+  "attack2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack2",
+   "file": "a6f437df4c54f3d1",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#251cfba3",
+     "bones": [
+      1418910098
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "channel",
+   "file": "c9d779e765a17980"
+  },
+  "Channel_Wndup": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "channel_wndup",
+   "file": "3accca5b37a12a46"
+  },
+  "crit": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1",
+   "file": "ed99a578eff6c27c",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#251cfba3",
+     "bones": [
+      1815519491
+     ]
+    }
+   ]
+  },
+  "#9b58589d": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "dance_in",
+   "file": "20ec3e666df111ac"
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "d2432b3f19f6f356"
+  },
+  "#ba9fda17": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "ee2b072bcb9ae996",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#c9e80772",
+     "bones": [
+      1418910098
+     ]
+    }
+   ]
+  },
+  "#e7a9a7b3": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "laugh_in",
+   "file": "de066f114bb3ecc7"
+  },
+  "run": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "run",
+   "file": "a68c12320673e5da"
+  },
+  "Spell1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell1",
+   "file": "e566627858883111",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#57cf743c",
+     "bones": [
+      1418910098
+     ]
+    }
+   ]
+  },
+  "spell2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell2",
+   "file": "c92b81b5aa05da2e"
+  },
+  "spell3": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell3",
+   "file": "930091c9c1c77e96"
+  },
+  "Spell4": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell4",
+   "file": "1340c6fcbde0bfbc"
+  },
+  "#b3d0c366": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333333879709244,
+   "anim": "taunt_in",
+   "file": "dd33e9cf84b7663d"
+  },
+  "#bbee8205": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "joke_in",
+   "file": "fca159fdc0e708ae"
+  },
+  "#0aab9979": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "idle1_in",
+   "file": "272e9a6e5c17e829",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 12.0,
+     "effect": "#c9e80772",
+     "bones": [
+      1418910098
+     ]
+    }
+   ]
+  },
+  "#8b60d0a7": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "recall_in",
+   "file": "5f4f890de38b79ad"
+  },
+  "#718771fa": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "recall",
+   "file": "fa6be266e0cc23c5"
+  },
+  "#a9b4f39c": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333333879709244,
+   "anim": "dance",
+   "file": "4689b8b27788898d"
+  },
+  "dance": {
+   "type": "Sequencer",
+   "flags": 2,
+   "list": [
+    "#9b58589d",
+    "#a9b4f39c"
+   ]
+  },
+  "joke": {
+   "type": "Sequencer",
+   "list": [
+    "#bbee8205",
+    "#ba9fda17",
+    "#ba9fda17",
+    "#ba9fda17",
+    "#ba9fda17",
+    "#ba9fda17"
+   ]
+  },
+  "taunt": {
+   "type": "Sequencer",
+   "list": [
+    "#b3d0c366",
+    "#ba9fda17",
+    "#ba9fda17",
+    "#ba9fda17",
+    "#ba9fda17",
+    "#ba9fda17"
+   ]
+  },
+  "laugh": {
+   "type": "Sequencer",
+   "list": [
+    "#e7a9a7b3",
+    "#ba9fda17",
+    "#ba9fda17",
+    "#ba9fda17",
+    "#ba9fda17",
+    "#ba9fda17"
+   ]
+  },
+  "recall": {
+   "type": "Sequencer",
+   "flags": 2,
+   "list": [
+    "#8b60d0a7",
+    "#718771fa"
+   ]
+  },
+  "idle1": {
+   "type": "Sequencer",
+   "flags": 2,
+   "list": [
+    "#0aab9979",
+    "#ba9fda17"
+   ]
+  }
+ },
+ "blends": {
+  "#0aab9979>death": 0.0,
+  "channel>death": 0.0,
+  "run>death": 0.0,
+  "attack1>death": 0.0,
+  "attack2>death": 0.0,
+  "recall>death": 0.0,
+  "#718771fa>death": 0.0,
+  "#8b60d0a7>death": 0.0,
+  "crit>death": 0.0,
+  "#9b58589d>death": 0.0,
+  "idle1>death": 0.0,
+  "Channel_Wndup>channel": 0.10000000149011612,
+  "Channel_Wndup>death": 0.0,
+  "#a9b4f39c>death": 0.0,
+  "Spell1>death": 0.0,
+  "#b3d0c366>death": 0.0,
+  "spell3>death": 0.0,
+  "spell2>death": 0.0,
+  "laugh>death": 0.0,
+  "Spell4>death": 0.0,
+  "#ba9fda17>death": 0.0,
+  "#bbee8205>death": 0.0,
+  "taunt>death": 0.0,
+  "death>death": 0.0,
+  "joke>death": 0.0,
+  "#e7a9a7b3>death": 0.0,
+  "dance>death": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

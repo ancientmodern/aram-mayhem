@@ -1,0 +1,375 @@
+{
+ "alias": "Leona",
+ "attacks": [
+  {
+   "name": "LeonaBasicAttack",
+   "prob": 0.5,
+   "cast_offset": -0.07083333283662796,
+   "cast_frame": 11.0,
+   "missile_speed": 347.79998779296875
+  },
+  {
+   "name": "LeonaBasicAttack2",
+   "prob": 0.5,
+   "cast_offset": -0.07000000029802322,
+   "clip": "Attack2",
+   "cast_frame": 11.0,
+   "missile_speed": 347.79998779296875
+  },
+  {
+   "name": "LeonaBasicAttack3",
+   "prob": 0.0,
+   "cast_offset": -0.07000000029802322,
+   "clip": "Attack3",
+   "cast_frame": 11.0,
+   "missile_speed": 347.79998779296875
+  }
+ ],
+ "crits": [
+  {
+   "name": "LeonaCritAttack",
+   "cast_offset": -0.07083333283662796,
+   "clip": "Crit",
+   "cast_frame": 10.0,
+   "missile_speed": 347.79998779296875
+  }
+ ],
+ "spells": [
+  {
+   "name": "LeonaShieldOfDaybreak",
+   "clip": "Spell1",
+   "cast_frame": 7.5,
+   "cast_time": 0.25,
+   "missile_speed": 0.0,
+   "hit_bone": "root",
+   "slot": 0
+  },
+  {
+   "name": "LeonaSolarBarrier",
+   "clip": "Spell2",
+   "missile_speed": 828.5,
+   "slot": 1
+  },
+  {
+   "name": "LeonaZenithBlade",
+   "clip": "Spell3",
+   "cast_frame": 7.5,
+   "cast_time": 0.25,
+   "missile_speed": 1200.0,
+   "slot": 2
+  },
+  {
+   "name": "LeonaSolarFlare",
+   "clip": "Spell4",
+   "cast_frame": 7.5,
+   "missile_speed": 20.0,
+   "slot": 3
+  }
+ ],
+ "stats": {
+  "pathfindingCollisionRadius": 35.0,
+  "selectionRadius": 120.0,
+  "selectionHeight": 188.88890075683594
+ },
+ "clips": {
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "attack1",
+   "file": "70b904106d2305fa"
+  },
+  "attack2": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "attack2",
+   "file": "3e47e61174a0d341"
+  },
+  "Attack3": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "attack3",
+   "file": "bdb2ce2d81561304"
+  },
+  "channel": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "channel",
+   "file": "a67d6c461c2df337"
+  },
+  "Channel_Wndup": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "channel_windup",
+   "file": "721abb5112eafd87"
+  },
+  "crit": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "crit",
+   "file": "b7af69110ce0cbb1"
+  },
+  "dance": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "dance",
+   "file": "43b353fca3565ae2",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 1.0,
+     "effect": "#b2d45245",
+     "bones": [
+      2094586845
+     ]
+    }
+   ]
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "tick": 0.01666666939854622,
+   "anim": "death",
+   "file": "ed6011b6cdd8769b",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 40.0,
+     "effect": "#985d83c3",
+     "bones": [
+      2094586845
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 60.0,
+     "effect": "#96072278",
+     "bones": [
+      2094586845
+     ]
+    }
+   ]
+  },
+  "idle1": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "idle1",
+   "file": "339ec7c822f4bd13"
+  },
+  "idle2": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "tick": 0.01666666753590107,
+   "anim": "idle2",
+   "file": "3d3a20b08ef5f3b7"
+  },
+  "idle3": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "idle3",
+   "file": "3b422f8470fb33a9"
+  },
+  "joke": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "joke",
+   "file": "d03e127ff90697f4",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 1.0,
+     "effect": "#1825906d",
+     "bones": [
+      2094586845
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 44.0,
+     "end": 401.0
+    }
+   ]
+  },
+  "laugh": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "laugh",
+   "file": "a2e7d911cc61dd17",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 3.0,
+     "effect": "#517243e7",
+     "bones": [
+      2094586845
+     ]
+    }
+   ]
+  },
+  "run": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "tick": 0.03999999538064003,
+   "anim": "run",
+   "file": "d6aa86117f1b1226"
+  },
+  "Spell1": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "spell1",
+   "file": "7c043dad7736d5a9"
+  },
+  "spell2": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "spell2",
+   "file": "d0f894348e52dc6c"
+  },
+  "Spell2_Idle": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "spell2_idle",
+   "file": "a18e3416dd3b8bd2"
+  },
+  "spell2_attack": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "spell2_attack",
+   "file": "f9868ebc9366f1b3"
+  },
+  "spell2_run": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "tick": 0.02857142873108387,
+   "anim": "spell2_run",
+   "file": "6b6a3856c988f2a2"
+  },
+  "spell3": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "spell3",
+   "file": "3e21e161cb99bbfe"
+  },
+  "Spell4": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "spell4",
+   "file": "ac76d855738163b9"
+  },
+  "taunt": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "taunt",
+   "file": "8aa5278488c58705",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 1.0,
+     "effect": "#641adbe0",
+     "bones": [
+      2094586845
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 35.0,
+     "end": 190.0
+    }
+   ]
+  },
+  "recall": {
+   "type": "Sequencer",
+   "list": [
+    "#b4dcde19",
+    "idle3",
+    "idle1"
+   ]
+  },
+  "#b4dcde19": {
+   "type": "Atomic",
+   "track": "Default",
+   "mask": "#25a6c4fd",
+   "anim": "taunt",
+   "file": "8aa5278488c58705",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 1.0,
+     "effect": "#641adbe0",
+     "bones": [
+      2094586845
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 35.0,
+     "end": 190.0
+    }
+   ]
+  }
+ },
+ "blends": {
+  "spell2_run>death": 0.0,
+  "channel>death": 0.0,
+  "run>death": 0.0,
+  "attack1>death": 0.0,
+  "Attack3>death": 0.0,
+  "attack2>death": 0.0,
+  "crit>death": 0.0,
+  "idle3>death": 0.0,
+  "idle2>death": 0.0,
+  "idle1>death": 0.0,
+  "Channel_Wndup>death": 0.0,
+  "Spell1>death": 0.0,
+  "spell3>death": 0.0,
+  "spell2>death": 0.0,
+  "laugh>death": 0.0,
+  "Spell4>death": 0.0,
+  "taunt>death": 0.0,
+  "death>death": 0.0,
+  "joke>death": 0.0,
+  "Spell2_Idle>death": 0.0,
+  "spell2_attack>death": 0.0,
+  "dance>death": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [
+  "#25a6c4fd"
+ ],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

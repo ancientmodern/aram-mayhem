@@ -1,0 +1,164 @@
+{
+ "alias": "HA_ChaosMinionMelee",
+ "attacks": [
+  {
+   "name": "HA_ChaosMinionMeleeBasicAttack",
+   "total_time": 0.800000011920929,
+   "cast_time": 0.3930000066757202,
+   "cast_frame": 11.800000190734863,
+   "missile_speed": 0.0
+  }
+ ],
+ "crits": [],
+ "spells": [],
+ "stats": {
+  "pathfindingCollisionRadius": 35.74369812011719,
+  "overrideGameplayCollisionRadius": 48.0,
+  "selectionRadius": 115.0,
+  "selectionHeight": 68.0,
+  "healthBarHeight": 37.0
+ },
+ "clips": {
+  "#3f1534b8": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "f5a12f2c1262cbe7"
+  },
+  "#42153971": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "f5a12f2c1262cbe7"
+  },
+  "#411537de": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "f5a12f2c1262cbe7"
+  },
+  "#44153c97": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "f5a12f2c1262cbe7"
+  },
+  "#ac236dee": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "4c641de9a3081b9c"
+  },
+  "idle2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "f5a12f2c1262cbe7"
+  },
+  "run2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "run",
+   "file": "fa323de31679bd27"
+  },
+  "#9e66faeb": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "f5a12f2c1262cbe7"
+  },
+  "#9f66fc7e": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "f5a12f2c1262cbe7"
+  },
+  "stunned": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "f5a12f2c1262cbe7"
+  },
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1",
+   "file": "6972cfa9b1dea807"
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "4c641de9a3081b9c"
+  },
+  "idle1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "f5a12f2c1262cbe7"
+  },
+  "run": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "run",
+   "file": "fa323de31679bd27"
+  },
+  "attack2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack2",
+   "file": "f47548fe2aeb16ee"
+  },
+  "attack3": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack3",
+   "file": "12df9a7e6bfd79ff"
+  },
+  "#bec63b4e": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333333879709244,
+   "anim": null,
+   "xanim": "x/clip_8a9c13a2",
+   "file": "c50bef788a9c13a2"
+  },
+  "#41f434dd": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": null,
+   "xanim": "x/clip_1e2a1833",
+   "file": "660e33ef1e2a1833"
+  }
+ },
+ "blends": {
+  "run>death": 0.0,
+  "#3f1534b8>death": 0.0,
+  "#411537de>death": 0.0,
+  "#41f434dd>death": 0.0,
+  "#42153971>death": 0.0,
+  "#44153c97>death": 0.0,
+  "attack1>death": 0.0,
+  "attack3>death": 0.0,
+  "run2>death": 0.0,
+  "attack2>death": 0.0,
+  "stunned>death": 0.0,
+  "idle2>death": 0.0,
+  "idle1>death": 0.0,
+  "#9e66faeb>death": 0.0,
+  "#9f66fc7e>death": 0.0,
+  "#ac236dee>death": 0.0,
+  "death>death": 0.0,
+  "#bec63b4e>death": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

@@ -1,0 +1,120 @@
+{
+ "alias": "HA_OrderMinionRanged",
+ "attacks": [
+  {
+   "name": "HA_OrderMinionRangedBasicAttack",
+   "prob": 0.5,
+   "total_time": 1.5,
+   "cast_time": 0.4699999988079071,
+   "cast_frame": 14.100000381469727,
+   "missile_speed": 650.0,
+   "start_bone": "Buffbone_Glb_Weapon_1",
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "prob": 0.5
+  }
+ ],
+ "crits": [],
+ "spells": [],
+ "stats": {
+  "pathfindingCollisionRadius": 35.74369812011719,
+  "overrideGameplayCollisionRadius": 48.0,
+  "selectionRadius": 115.0,
+  "selectionHeight": 75.0,
+  "healthBarHeight": 41.0
+ },
+ "clips": {
+  "#3f1534b8": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "fa0bf462a64e323e"
+  },
+  "#bec63b4e": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "aa4b77d339502646",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "bones": []
+    }
+   ]
+  },
+  "#9e66faeb": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "fa0bf462a64e323e"
+  },
+  "attack2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack2",
+   "file": "a936dfbe8e6e3678"
+  },
+  "#41f434dd": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": null,
+   "xanim": "x/clip_24bfbf21",
+   "file": "f3b03e2c24bfbf21"
+  },
+  "#ac236dee": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": null,
+   "xanim": "x/clip_86b07430",
+   "file": "55b4630286b07430"
+  },
+  "run": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "run",
+   "file": "20550b99206279cd"
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "aa4b77d339502646"
+  },
+  "idle1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "fa0bf462a64e323e"
+  },
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1",
+   "file": "1540c760c16248be"
+  }
+ },
+ "blends": {
+  "run>death": 0.0,
+  "#3f1534b8>death": 0.0,
+  "#41f434dd>death": 0.0,
+  "attack1>death": 0.0,
+  "attack2>death": 0.0,
+  "idle1>death": 0.0,
+  "#9e66faeb>death": 0.0,
+  "#ac236dee>death": 0.0,
+  "death>death": 0.0,
+  "#bec63b4e>death": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

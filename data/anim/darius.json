@@ -1,0 +1,479 @@
+{
+ "alias": "Darius",
+ "attacks": [
+  {
+   "name": "DariusBasicAttack",
+   "prob": 0.5,
+   "cast_offset": -0.10000000149011612,
+   "cast_offset_as_ratio": 0.5,
+   "cast_frame": 11.0,
+   "missile_speed": 0.0,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "DariusBasicAttack2",
+   "prob": 0.5,
+   "clip": "Attack2",
+   "cast_frame": 9.0,
+   "missile_speed": 0.0,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "crits": [
+  {
+   "name": "DariusCritAttack",
+   "cast_offset": -0.10000000149011612,
+   "cast_offset_as_ratio": 0.5,
+   "clip": "Crit",
+   "cast_frame": 9.0,
+   "missile_speed": 0.0,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "spells": [
+  {
+   "name": "DariusCleave",
+   "clip": "Spell1",
+   "cast_frame": 7.5,
+   "cast_time": 0.23440000414848328,
+   "missile_speed": 0.0,
+   "slot": 0
+  },
+  {
+   "name": "DariusNoxianTacticsONH",
+   "cast_frame": 11.0,
+   "cast_time": 0.3666999936103821,
+   "missile_speed": 0.0,
+   "hit_bone": "root",
+   "slot": 1
+  },
+  {
+   "name": "DariusAxeGrabCone",
+   "clip": "Spell3",
+   "cast_frame": 11.625,
+   "cast_time": 0.25,
+   "missile_speed": 1500.0,
+   "slot": 2
+  },
+  {
+   "name": "DariusExecute",
+   "clip": "Spell4",
+   "cast_frame": 11.0,
+   "cast_time": 0.3666999936103821,
+   "missile_speed": 20.0,
+   "slot": 3
+  }
+ ],
+ "stats": {
+  "pathfindingCollisionRadius": 25.766599655151367,
+  "selectionRadius": 120.0,
+  "selectionHeight": 155.0
+ },
+ "clips": {
+  "Channel_Wndup": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "channel_wndup",
+   "file": "ef597897e46d5294"
+  },
+  "crit": {
+   "type": "Atomic",
+   "track": "UpperBody",
+   "anim": "crit",
+   "file": "82e72b3049432d41"
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "death",
+   "anim": "death",
+   "file": "ac16b696f2017045",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Darius_Death3D_cast"
+    }
+   ]
+  },
+  "idle1": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "defe6453073c3ac2"
+  },
+  "joke": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "joke",
+   "file": "913fbf89b8d0ea34",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 46.0,
+     "sound": "Play_sfx_Darius_Joke3D_buffactivate"
+    }
+   ]
+  },
+  "laugh": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "laugh",
+   "file": "5bb5c3b14d5cb9c7"
+  },
+  "run": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "run",
+   "tick": 0.03333333879709244,
+   "anim": "run",
+   "file": "ec5b70b7c12cab20"
+  },
+  "Spell1": {
+   "type": "Atomic",
+   "track": "UpperBody",
+   "anim": "spell1",
+   "file": "75f1b5f62bd7f8d9"
+  },
+  "spell2": {
+   "type": "Atomic",
+   "track": "UpperBody",
+   "anim": "spell2",
+   "file": "4601bf17e1cbbf5d"
+  },
+  "spell3": {
+   "type": "Atomic",
+   "track": "UpperBody",
+   "anim": "spell3",
+   "file": "dd38de79bd47071c"
+  },
+  "Spell4": {
+   "type": "Atomic",
+   "track": "UpperBody",
+   "anim": "spell4",
+   "file": "f55102c9d8818f9e"
+  },
+  "taunt": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "taunt",
+   "file": "f3b89754ccfbb188",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Darius_Taunt3D_buffactivate"
+    }
+   ]
+  },
+  "recall": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "recall",
+   "file": "8e067f800d184ca1"
+  },
+  "idle2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle2",
+   "file": "c6e546f877610715"
+  },
+  "Spell2_Idle": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "spell2_idle",
+   "file": "81aece2ffc143ff3"
+  },
+  "spell2_run": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "run",
+   "tick": 0.03333333879709244,
+   "anim": "spell2_run",
+   "file": "df836b84ebec9ff1"
+  },
+  "attack1": {
+   "type": "Atomic",
+   "track": "UpperBody",
+   "anim": "attack1",
+   "file": "e4d474b7edaf6c5e"
+  },
+  "attack2": {
+   "type": "Atomic",
+   "track": "UpperBody",
+   "anim": "attack2",
+   "file": "dbc531c7b24eaa9d"
+  },
+  "dance": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "dance",
+   "file": "507257beac9c0888",
+   "events": [
+    {
+     "type": "Sound",
+     "start": 0.0,
+     "sound": "Play_sfx_Darius_Dance3D_buffactivate"
+    }
+   ]
+  },
+  "channel": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "channel",
+   "file": "6197c944ec64d5cd"
+  },
+  "#1a24a1f0": {
+   "type": "Atomic",
+   "flags": 1,
+   "track": "UpperBody",
+   "mask": "UpperBody",
+   "anim": "spell1_in",
+   "file": "805a2c03be6e7f1a",
+   "events": [
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "#7d76ae19": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell1_in",
+   "file": "805a2c03be6e7f1a"
+  },
+  "#a742331b": {
+   "type": "Parallel",
+   "list": [
+    "#1a24a1f0",
+    "#7d76ae19"
+   ]
+  },
+  "#46dba2f5": {
+   "type": "Atomic",
+   "flags": 6,
+   "track": "#08f86153",
+   "mask": "#bd338063",
+   "anim": null,
+   "xanim": "x/clip_02d6e77d",
+   "file": "46b1b01702d6e77d"
+  }
+ },
+ "blends": {
+  "spell2_run>recall": 0.10000000149011612,
+  "spell2_run>crit": 0.10000000149011612,
+  "spell2_run>Spell1": 0.0,
+  "spell2_run>spell3": 0.0,
+  "spell2_run>spell2": 0.0,
+  "spell2_run>Spell4": 0.15000000596046448,
+  "spell2_run>death": 0.0,
+  "#1a24a1f0>Spell1": 0.0,
+  "channel>recall": 0.10000000149011612,
+  "channel>crit": 0.10000000149011612,
+  "channel>Spell1": 0.0,
+  "channel>spell3": 0.0,
+  "channel>spell2": 0.0,
+  "channel>Spell4": 0.15000000596046448,
+  "channel>death": 0.0,
+  "run>recall": 0.10000000149011612,
+  "run>crit": 0.10000000149011612,
+  "run>Channel_Wndup": 0.0,
+  "run>Spell1": 0.0,
+  "run>spell3": 0.0,
+  "run>spell2": 0.0,
+  "run>Spell4": 0.15000000596046448,
+  "run>death": 0.0,
+  "attack1>recall": 0.10000000149011612,
+  "attack1>crit": 0.10000000149011612,
+  "attack1>Spell1": 0.0,
+  "attack1>spell3": 0.0,
+  "attack1>spell2": 0.0,
+  "attack1>Spell4": 0.15000000596046448,
+  "attack1>death": 0.0,
+  "attack2>recall": 0.10000000149011612,
+  "attack2>crit": 0.10000000149011612,
+  "attack2>Spell1": 0.0,
+  "attack2>spell3": 0.0,
+  "attack2>spell2": 0.0,
+  "attack2>Spell4": 0.15000000596046448,
+  "attack2>death": 0.0,
+  "recall>run": 0.10000000149011612,
+  "recall>recall": 0.10000000149011612,
+  "recall>crit": 0.10000000149011612,
+  "recall>idle1": 0.10000000149011612,
+  "recall>Channel_Wndup": 0.10000000149011612,
+  "recall>Spell1": 0.10000000149011612,
+  "recall>spell3": 0.10000000149011612,
+  "recall>spell2": 0.10000000149011612,
+  "recall>laugh": 0.10000000149011612,
+  "recall>Spell4": 0.10000000149011612,
+  "recall>taunt": 0.10000000149011612,
+  "recall>death": 0.0,
+  "recall>joke": 0.10000000149011612,
+  "crit>recall": 0.10000000149011612,
+  "crit>crit": 0.10000000149011612,
+  "crit>Channel_Wndup": 0.0,
+  "crit>Spell1": 0.0,
+  "crit>spell3": 0.0,
+  "crit>spell2": 0.0,
+  "crit>Spell4": 0.15000000596046448,
+  "crit>death": 0.0,
+  "idle2>recall": 0.10000000149011612,
+  "idle2>crit": 0.10000000149011612,
+  "idle2>Spell1": 0.0,
+  "idle2>spell3": 0.0,
+  "idle2>spell2": 0.0,
+  "idle2>Spell4": 0.15000000596046448,
+  "idle2>death": 0.0,
+  "idle1>recall": 0.10000000149011612,
+  "idle1>crit": 0.10000000149011612,
+  "idle1>Channel_Wndup": 0.0,
+  "idle1>Spell1": 0.0,
+  "idle1>spell3": 0.0,
+  "idle1>spell2": 0.0,
+  "idle1>Spell4": 0.15000000596046448,
+  "idle1>death": 0.0,
+  "Channel_Wndup>recall": 0.10000000149011612,
+  "Channel_Wndup>crit": 0.10000000149011612,
+  "Channel_Wndup>Channel_Wndup": 0.0,
+  "Channel_Wndup>Spell1": 0.0,
+  "Channel_Wndup>spell3": 0.0,
+  "Channel_Wndup>spell2": 0.0,
+  "Channel_Wndup>Spell4": 0.15000000596046448,
+  "Channel_Wndup>death": 0.0,
+  "Spell1>spell2_run": 0.30000001192092896,
+  "Spell1>channel": 0.30000001192092896,
+  "Spell1>run": 0.30000001192092896,
+  "Spell1>attack1": 0.30000001192092896,
+  "Spell1>attack2": 0.30000001192092896,
+  "Spell1>recall": 0.30000001192092896,
+  "Spell1>crit": 0.30000001192092896,
+  "Spell1>idle2": 0.30000001192092896,
+  "Spell1>idle1": 0.30000001192092896,
+  "Spell1>Channel_Wndup": 0.30000001192092896,
+  "Spell1>Spell1": 0.30000001192092896,
+  "Spell1>spell3": 0.30000001192092896,
+  "Spell1>spell2": 0.30000001192092896,
+  "Spell1>laugh": 0.30000001192092896,
+  "Spell1>Spell4": 0.30000001192092896,
+  "Spell1>taunt": 0.30000001192092896,
+  "Spell1>death": 0.0,
+  "Spell1>joke": 0.30000001192092896,
+  "Spell1>Spell2_Idle": 0.30000001192092896,
+  "Spell1>dance": 0.30000001192092896,
+  "spell3>recall": 0.10000000149011612,
+  "spell3>crit": 0.10000000149011612,
+  "spell3>Channel_Wndup": 0.0,
+  "spell3>Spell1": 0.0,
+  "spell3>spell3": 0.0,
+  "spell3>spell2": 0.0,
+  "spell3>Spell4": 0.15000000596046448,
+  "spell3>death": 0.0,
+  "spell2>recall": 0.10000000149011612,
+  "spell2>crit": 0.10000000149011612,
+  "spell2>Channel_Wndup": 0.0,
+  "spell2>Spell1": 0.0,
+  "spell2>spell3": 0.0,
+  "spell2>spell2": 0.0,
+  "spell2>Spell4": 0.15000000596046448,
+  "spell2>death": 0.0,
+  "laugh>recall": 0.10000000149011612,
+  "laugh>crit": 0.10000000149011612,
+  "laugh>Channel_Wndup": 0.0,
+  "laugh>Spell1": 0.0,
+  "laugh>spell3": 0.0,
+  "laugh>spell2": 0.0,
+  "laugh>Spell4": 0.15000000596046448,
+  "laugh>death": 0.0,
+  "Spell4>run": 0.0,
+  "Spell4>recall": 0.10000000149011612,
+  "Spell4>crit": 0.15000000596046448,
+  "Spell4>idle1": 0.0,
+  "Spell4>Channel_Wndup": 0.0,
+  "Spell4>Spell1": 0.15000000596046448,
+  "Spell4>spell3": 0.15000000596046448,
+  "Spell4>spell2": 0.15000000596046448,
+  "Spell4>laugh": 0.0,
+  "Spell4>Spell4": 0.15000000596046448,
+  "Spell4>taunt": 0.0,
+  "Spell4>death": 0.0,
+  "Spell4>joke": 0.0,
+  "taunt>recall": 0.10000000149011612,
+  "taunt>crit": 0.10000000149011612,
+  "taunt>Channel_Wndup": 0.0,
+  "taunt>Spell1": 0.0,
+  "taunt>spell3": 0.0,
+  "taunt>spell2": 0.0,
+  "taunt>Spell4": 0.15000000596046448,
+  "taunt>death": 0.0,
+  "death>recall": 0.10000000149011612,
+  "death>crit": 0.10000000149011612,
+  "death>Channel_Wndup": 0.0,
+  "death>Spell1": 0.0,
+  "death>spell3": 0.0,
+  "death>spell2": 0.0,
+  "death>Spell4": 0.15000000596046448,
+  "death>death": 0.0,
+  "joke>recall": 0.10000000149011612,
+  "joke>crit": 0.10000000149011612,
+  "joke>Channel_Wndup": 0.0,
+  "joke>Spell1": 0.0,
+  "joke>spell3": 0.0,
+  "joke>spell2": 0.0,
+  "joke>Spell4": 0.15000000596046448,
+  "joke>death": 0.0,
+  "Spell2_Idle>recall": 0.10000000149011612,
+  "Spell2_Idle>crit": 0.10000000149011612,
+  "Spell2_Idle>Spell1": 0.0,
+  "Spell2_Idle>spell3": 0.0,
+  "Spell2_Idle>spell2": 0.0,
+  "Spell2_Idle>Spell4": 0.15000000596046448,
+  "Spell2_Idle>death": 0.0,
+  "dance>recall": 0.10000000149011612,
+  "dance>crit": 0.10000000149011612,
+  "dance>Spell1": 0.0,
+  "dance>spell3": 0.0,
+  "dance>spell2": 0.0,
+  "dance>Spell4": 0.15000000596046448,
+  "dance>death": 0.0
+ },
+ "tracks": {
+  "death": {
+   "priority": 1,
+   "blend_mode": null,
+   "weight": null
+  },
+  "UpperBody": {
+   "priority": 2,
+   "blend_mode": null,
+   "weight": null
+  },
+  "run": {
+   "priority": 3,
+   "blend_mode": null,
+   "weight": null
+  },
+  "Default": {
+   "priority": 4,
+   "blend_mode": null,
+   "weight": null
+  },
+  "#08f86153": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [
+  "#bd338063",
+  "UpperBody"
+ ],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

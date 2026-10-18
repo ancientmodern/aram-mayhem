@@ -1,0 +1,1279 @@
+{
+ "alias": "Garen",
+ "attacks": [
+  {
+   "name": "GarenBasicAttack",
+   "prob": 0.5,
+   "cast_offset": -0.11999999731779099,
+   "cast_offset_as_ratio": 0.5,
+   "cast_frame": 10.0,
+   "missile_speed": 347.79998779296875,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "GarenBasicAttack2",
+   "prob": 0.5,
+   "clip": "Attack2",
+   "cast_frame": 10.0,
+   "missile_speed": 347.79998779296875,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "crits": [
+  {
+   "name": "GarenCritAttack",
+   "cast_offset_as_ratio": 0.5,
+   "clip": "Crit",
+   "cast_frame": 8.0,
+   "missile_speed": 347.79998779296875,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "spells": [
+  {
+   "name": "GarenQ",
+   "clip": "Spell1",
+   "cast_frame": 5.264999866485596,
+   "missile_speed": 0.0,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC",
+   "slot": 0
+  },
+  {
+   "name": "GarenW",
+   "clip": "Spell2",
+   "cast_frame": 16.094999313354492,
+   "missile_speed": 0.0,
+   "slot": 1
+  },
+  {
+   "name": "GarenE",
+   "clip": "",
+   "cast_frame": 9.75,
+   "missile_speed": 700.0,
+   "slot": 2
+  },
+  {
+   "name": "GarenR",
+   "clip": "Spell4",
+   "cast_frame": 18.5,
+   "missile_speed": 900.0,
+   "slot": 3
+  }
+ ],
+ "stats": {
+  "pathfindingCollisionRadius": 35.0,
+  "selectionRadius": 120.0,
+  "selectionHeight": 188.88890075683594
+ },
+ "clips": {
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "attack1",
+   "file": "2f939b6f36b276e8",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 5.0,
+     "effect": "#82e6ee3e",
+     "bones": [
+      1865621569
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 6.0,
+     "effect": "#83f0d65e",
+     "bones": [
+      2309574905
+     ]
+    }
+   ]
+  },
+  "attack2": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "attack2",
+   "file": "5a5cff27f903c30b",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 5.0,
+     "effect": "#82e6ee3e",
+     "bones": [
+      1865621569
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 7.0,
+     "effect": "#82f0d4cb",
+     "bones": [
+      2309574905
+     ]
+    }
+   ]
+  },
+  "channel": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "channel",
+   "file": "1ceea144d0a794a3"
+  },
+  "Channel_Wndup": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "channel_wndup",
+   "file": "cca3118ee9432a4d"
+  },
+  "crit": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "crit",
+   "file": "c75da5596f4f5d38"
+  },
+  "dance_base": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "dance_in",
+   "file": "920f24263ba21895",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#33224f01",
+     "bones": [
+      2514140751
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 60.0,
+     "end": 81.0
+    }
+   ]
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "death",
+   "file": "243453402aca3e0e",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#2ad4b1c0",
+     "bones": [
+      2514140751
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 18.0,
+     "end": 130.0
+    }
+   ]
+  },
+  "#e9ba192a": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "idle1_in",
+   "file": "d531f1bafb89cffb"
+  },
+  "idle1_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "idle1",
+   "file": "c49246c7b15ebf12"
+  },
+  "idle2_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "idle1_seq1",
+   "file": "2454a1fa4ee76118"
+  },
+  "idle3_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "idle1_seq2",
+   "file": "2cd91bff058db2ec"
+  },
+  "joke_base": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "joke_in",
+   "file": "20d7be75afa09d68",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#65fab709",
+     "bones": [
+      2514140751
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#dd33a249",
+     "bones": [
+      2514140751
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 8.0
+    }
+   ]
+  },
+  "#5dbf4f4f": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "joke",
+   "file": "11b4d487a2416858",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#f6ae2bcc",
+     "bones": [
+      2514140751
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "laugh_base": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "laugh_in",
+   "file": "0ce4c36dab979938",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#85431767",
+     "bones": [
+      2514140751
+     ]
+    }
+   ]
+  },
+  "recall_base": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "recall",
+   "file": "d3aed8601f9f93a0"
+  },
+  "#7b201d91": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "2013_recall_loop",
+   "file": "4166d275bb6f4f84"
+  },
+  "Run_Base": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "run_var2",
+   "file": "edaab218e521e32a"
+  },
+  "Spell1": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell1",
+   "file": "74bed0b909a29001",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#95142e1b",
+     "bones": []
+    },
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#8fefcf15",
+     "bones": [
+      553455173
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#82e6ee3e",
+     "bones": [
+      1865621569
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 8.0,
+     "effect": "#51fb019f",
+     "bones": [
+      2309574905
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 9.0,
+     "effect": "#e284bf62",
+     "bones": []
+    }
+   ]
+  },
+  "spell4_base": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "spell4_in",
+   "file": "ced54d6f0e2d3646",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 10.0,
+     "effect": "#88bec769",
+     "bones": [
+      2528140958
+     ]
+    }
+   ]
+  },
+  "taunt_base": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "taunt_in",
+   "file": "0d11773296e46cec",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#fa32947e",
+     "bones": [
+      2514140751
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#a5545c64",
+     "bones": [
+      2514140751
+     ]
+    }
+   ]
+  },
+  "joke": {
+   "type": "Sequencer",
+   "list": [
+    "joke_base",
+    "#5dbf4f4f"
+   ]
+  },
+  "idle1": {
+   "type": "Sequencer",
+   "list": [
+    "#e9ba192a",
+    "idle1_base",
+    "idle2"
+   ]
+  },
+  "idle2": {
+   "type": "Sequencer",
+   "flags": 2,
+   "list": [
+    "idle1_base",
+    "idle1_base",
+    "idle2_base",
+    "idle1_base",
+    "idle1_base",
+    "idle1_base",
+    "idle3_base",
+    "idle1_base"
+   ]
+  },
+  "laugh": {
+   "type": "Sequencer",
+   "list": [
+    "laugh_base",
+    "idle2"
+   ]
+  },
+  "taunt": {
+   "type": "Sequencer",
+   "list": [
+    "taunt_base",
+    "idle2"
+   ]
+  },
+  "dance_loop_base": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "dance",
+   "file": "4b7e40d577f648af",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#aeadf5b4",
+     "bones": [
+      2514140751
+     ]
+    },
+    {
+     "type": "JointSnap",
+     "start": 0.0
+    }
+   ]
+  },
+  "dance": {
+   "type": "Sequencer",
+   "list": [
+    "dance_base",
+    "dance_loop_base"
+   ]
+  },
+  "recall": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "recall",
+   "file": "d3aed8601f9f93a0"
+  },
+  "Recall_Leadout": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "2013_recall_leadout",
+   "file": "008b49b1cffdd06d"
+  },
+  "Respawn_Base": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "respawn_in",
+   "file": "c788fe63afbc953c"
+  },
+  "#13f95189": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "respawn_in",
+   "file": "c788fe63afbc953c"
+  },
+  "Recall_Winddown": {
+   "type": "Sequencer",
+   "list": [
+    "#13f95189",
+    "idle2"
+   ]
+  },
+  "respawn": {
+   "type": "Sequencer",
+   "flags": 8,
+   "list": [
+    "Respawn_Base",
+    "idle2"
+   ]
+  },
+  "run_haste": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "run_var2_var3",
+   "file": "d9afba169275209f"
+  },
+  "#83cf436e": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "run",
+   "file": "fe30f0ef84ebd72a"
+  },
+  "run_fast": {
+   "type": "Atomic",
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "run_var2_var2",
+   "file": "4163fdd87a9d63b5"
+  },
+  "Spell4": {
+   "type": "Sequencer",
+   "flags": 8,
+   "list": [
+    "spell4_base",
+    "idle1_base"
+   ]
+  },
+  "#1d0e4fa6": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "taunt_in",
+   "file": "0d11773296e46cec",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#6a4e0a74",
+     "bones": [
+      2514140751
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#fa32947e",
+     "bones": [
+      2514140751
+     ]
+    }
+   ]
+  },
+  "#2ee891b9": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "joke_in",
+   "file": "20d7be75afa09d68",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#54493cc3",
+     "bones": [
+      2514140751
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#65fab709",
+     "bones": [
+      2514140751
+     ]
+    }
+   ]
+  },
+  "#c2cae43a": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "tick": 0.03333299979567528,
+   "anim": "joke_in",
+   "file": "20d7be75afa09d68",
+   "events": [
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#700b2781",
+     "bones": [
+      2514140751
+     ]
+    },
+    {
+     "type": "Particle",
+     "start": 0.0,
+     "effect": "#65fab709",
+     "bones": [
+      2514140751
+     ]
+    }
+   ]
+  },
+  "#504bd08d": {
+   "type": "Sequencer",
+   "list": [
+    "#2ee891b9",
+    "#5dbf4f4f"
+   ]
+  },
+  "#755f645c": {
+   "type": "Sequencer",
+   "list": [
+    "#c2cae43a",
+    "#5dbf4f4f"
+   ]
+  },
+  "#a2d214c6": {
+   "type": "Sequencer",
+   "list": [
+    "#1d0e4fa6",
+    "idle2"
+   ]
+  },
+  "#3f226e49": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell3_var3",
+   "file": "66d5a166788e6306"
+  },
+  "#00f67dce": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell3_var5",
+   "file": "16813e36798f7920"
+  },
+  "#35f21911": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell3",
+   "file": "e002c5970657e78d"
+  },
+  "#e645415a": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell3_var4",
+   "file": "58f5ea04d910e5c7"
+  },
+  "#4b856cdb": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "spell3_var2",
+   "file": "e18da26fdf79d513"
+  },
+  "spell3": {
+   "type": "Parametric",
+   "track": "Default",
+   "updater": "LookAtSpellTargetAngle"
+  },
+  "#bc1ef3fb": {
+   "type": "ConditionFloat",
+   "pairs": [
+    [
+     "Run_Base",
+     0.0,
+     null,
+     null
+    ],
+    [
+     "run_fast",
+     341.0,
+     null,
+     null
+    ],
+    [
+     "run_haste",
+     385.0,
+     null,
+     null
+    ]
+   ],
+   "updater": "MoveSpeed",
+   "changeAnimationMidPlay": true
+  },
+  "run": {
+   "type": "ConditionBool",
+   "true": "#83cf436e",
+   "false": "#bc1ef3fb",
+   "updater": "LogicDriverBool",
+   "changeAnimationMidPlay": true
+  }
+ },
+ "blends": {
+  "#00f67dce>#00f67dce": 0.0,
+  "#00f67dce>taunt_base": 0.0,
+  "#00f67dce>#13f95189": 0.0,
+  "#00f67dce>Respawn_Base": 0.0,
+  "#00f67dce>recall_base": 0.0,
+  "#00f67dce>#1d0e4fa6": 0.0,
+  "#00f67dce>channel": 0.0,
+  "#00f67dce>run_haste": 0.0,
+  "#00f67dce>Run_Base": 0.0,
+  "#00f67dce>#2ee891b9": 0.0,
+  "#00f67dce>#35f21911": 0.0,
+  "#00f67dce>Recall_Leadout": 0.0,
+  "#00f67dce>#3f226e49": 0.0,
+  "#00f67dce>#4b856cdb": 0.0,
+  "#00f67dce>attack1": 0.0,
+  "#00f67dce>attack2": 0.0,
+  "#00f67dce>recall": 0.0,
+  "#00f67dce>dance_base": 0.0,
+  "#00f67dce>#5dbf4f4f": 0.0,
+  "#00f67dce>idle1_base": 0.0,
+  "#00f67dce>idle3_base": 0.0,
+  "#00f67dce>#7b201d91": 0.0,
+  "#00f67dce>#83cf436e": 0.0,
+  "#00f67dce>crit": 0.0,
+  "#00f67dce>joke_base": 0.0,
+  "#00f67dce>laugh_base": 0.0,
+  "#00f67dce>Channel_Wndup": 0.0,
+  "#00f67dce>spell4_base": 0.0,
+  "#00f67dce>run_fast": 0.0,
+  "#00f67dce>Spell1": 0.0,
+  "#00f67dce>spell3": 0.0,
+  "#00f67dce>death": 0.0,
+  "#00f67dce>#c2cae43a": 0.0,
+  "#00f67dce>idle2_base": 0.0,
+  "#00f67dce>#e645415a": 0.0,
+  "#00f67dce>#e9ba192a": 0.0,
+  "#00f67dce>dance_loop_base": 0.0,
+  "taunt_base>#00f67dce": 0.0,
+  "taunt_base>#35f21911": 0.0,
+  "taunt_base>#3f226e49": 0.0,
+  "taunt_base>#4b856cdb": 0.0,
+  "taunt_base>joke_base": 0.10000000149011612,
+  "taunt_base>spell4_base": 0.0,
+  "taunt_base>Spell1": 0.10000000149011612,
+  "taunt_base>spell3": 0.0,
+  "taunt_base>death": 0.0,
+  "taunt_base>#e645415a": 0.0,
+  "#13f95189>#00f67dce": 0.0,
+  "#13f95189>#35f21911": 0.0,
+  "#13f95189>#3f226e49": 0.0,
+  "#13f95189>#4b856cdb": 0.0,
+  "#13f95189>spell4_base": 0.0,
+  "#13f95189>Spell1": 0.10000000149011612,
+  "#13f95189>spell3": 0.0,
+  "#13f95189>death": 0.0,
+  "#13f95189>#e645415a": 0.0,
+  "Respawn_Base>#00f67dce": 0.0,
+  "Respawn_Base>#35f21911": 0.0,
+  "Respawn_Base>#3f226e49": 0.0,
+  "Respawn_Base>#4b856cdb": 0.0,
+  "Respawn_Base>spell4_base": 0.0,
+  "Respawn_Base>Spell1": 0.10000000149011612,
+  "Respawn_Base>spell3": 0.0,
+  "Respawn_Base>death": 0.0,
+  "Respawn_Base>#e645415a": 0.0,
+  "recall_base>#00f67dce": 0.0,
+  "recall_base>#35f21911": 0.0,
+  "recall_base>#3f226e49": 0.0,
+  "recall_base>#4b856cdb": 0.0,
+  "recall_base>joke_base": 0.10000000149011612,
+  "recall_base>spell4_base": 0.0,
+  "recall_base>Spell1": 0.10000000149011612,
+  "recall_base>spell3": 0.0,
+  "recall_base>death": 0.0,
+  "recall_base>#e645415a": 0.0,
+  "#1d0e4fa6>#00f67dce": 0.0,
+  "#1d0e4fa6>#35f21911": 0.0,
+  "#1d0e4fa6>#3f226e49": 0.0,
+  "#1d0e4fa6>#4b856cdb": 0.0,
+  "#1d0e4fa6>spell3": 0.0,
+  "#1d0e4fa6>death": 0.0,
+  "#1d0e4fa6>#e645415a": 0.0,
+  "channel>#00f67dce": 0.0,
+  "channel>#35f21911": 0.0,
+  "channel>#3f226e49": 0.0,
+  "channel>#4b856cdb": 0.0,
+  "channel>attack1": 0.0,
+  "channel>joke_base": 0.10000000149011612,
+  "channel>spell4_base": 0.0,
+  "channel>Spell1": 0.10000000149011612,
+  "channel>spell3": 0.0,
+  "channel>death": 0.0,
+  "channel>#e645415a": 0.0,
+  "run_haste>#00f67dce": 0.0,
+  "run_haste>#35f21911": 0.0,
+  "run_haste>#3f226e49": 0.0,
+  "run_haste>#4b856cdb": 0.0,
+  "run_haste>spell4_base": 0.0,
+  "run_haste>Spell1": 0.10000000149011612,
+  "run_haste>spell3": 0.0,
+  "run_haste>death": 0.0,
+  "run_haste>#e645415a": 0.0,
+  "Run_Base>#00f67dce": 0.0,
+  "Run_Base>#35f21911": 0.0,
+  "Run_Base>#3f226e49": 0.0,
+  "Run_Base>#4b856cdb": 0.0,
+  "Run_Base>joke_base": 0.10000000149011612,
+  "Run_Base>spell4_base": 0.0,
+  "Run_Base>Spell1": 0.10000000149011612,
+  "Run_Base>spell3": 0.0,
+  "Run_Base>death": 0.0,
+  "Run_Base>#e645415a": 0.0,
+  "#2ee891b9>#00f67dce": 0.0,
+  "#2ee891b9>#35f21911": 0.0,
+  "#2ee891b9>#3f226e49": 0.0,
+  "#2ee891b9>#4b856cdb": 0.0,
+  "#2ee891b9>spell3": 0.0,
+  "#2ee891b9>death": 0.0,
+  "#2ee891b9>#e645415a": 0.0,
+  "#35f21911>#00f67dce": 0.0,
+  "#35f21911>taunt_base": 0.0,
+  "#35f21911>#13f95189": 0.0,
+  "#35f21911>Respawn_Base": 0.0,
+  "#35f21911>recall_base": 0.0,
+  "#35f21911>#1d0e4fa6": 0.0,
+  "#35f21911>channel": 0.0,
+  "#35f21911>run_haste": 0.0,
+  "#35f21911>Run_Base": 0.0,
+  "#35f21911>#2ee891b9": 0.0,
+  "#35f21911>#35f21911": 0.0,
+  "#35f21911>Recall_Leadout": 0.0,
+  "#35f21911>#3f226e49": 0.0,
+  "#35f21911>#4b856cdb": 0.0,
+  "#35f21911>attack1": 0.0,
+  "#35f21911>attack2": 0.0,
+  "#35f21911>recall": 0.0,
+  "#35f21911>dance_base": 0.0,
+  "#35f21911>#5dbf4f4f": 0.0,
+  "#35f21911>idle1_base": 0.0,
+  "#35f21911>idle3_base": 0.0,
+  "#35f21911>#7b201d91": 0.0,
+  "#35f21911>#83cf436e": 0.0,
+  "#35f21911>crit": 0.0,
+  "#35f21911>joke_base": 0.0,
+  "#35f21911>laugh_base": 0.0,
+  "#35f21911>Channel_Wndup": 0.0,
+  "#35f21911>spell4_base": 0.0,
+  "#35f21911>run_fast": 0.0,
+  "#35f21911>Spell1": 0.0,
+  "#35f21911>spell3": 0.0,
+  "#35f21911>death": 0.0,
+  "#35f21911>#c2cae43a": 0.0,
+  "#35f21911>idle2_base": 0.0,
+  "#35f21911>#e645415a": 0.0,
+  "#35f21911>#e9ba192a": 0.0,
+  "#35f21911>dance_loop_base": 0.0,
+  "Recall_Leadout>#00f67dce": 0.0,
+  "Recall_Leadout>#35f21911": 0.0,
+  "Recall_Leadout>#3f226e49": 0.0,
+  "Recall_Leadout>#4b856cdb": 0.0,
+  "Recall_Leadout>spell4_base": 0.0,
+  "Recall_Leadout>Spell1": 0.10000000149011612,
+  "Recall_Leadout>spell3": 0.0,
+  "Recall_Leadout>death": 0.0,
+  "Recall_Leadout>#e645415a": 0.0,
+  "#3f226e49>#00f67dce": 0.0,
+  "#3f226e49>taunt_base": 0.0,
+  "#3f226e49>#13f95189": 0.0,
+  "#3f226e49>Respawn_Base": 0.0,
+  "#3f226e49>recall_base": 0.0,
+  "#3f226e49>#1d0e4fa6": 0.0,
+  "#3f226e49>channel": 0.0,
+  "#3f226e49>run_haste": 0.0,
+  "#3f226e49>Run_Base": 0.0,
+  "#3f226e49>#2ee891b9": 0.0,
+  "#3f226e49>#35f21911": 0.0,
+  "#3f226e49>Recall_Leadout": 0.0,
+  "#3f226e49>#3f226e49": 0.0,
+  "#3f226e49>#4b856cdb": 0.0,
+  "#3f226e49>attack1": 0.0,
+  "#3f226e49>attack2": 0.0,
+  "#3f226e49>recall": 0.0,
+  "#3f226e49>dance_base": 0.0,
+  "#3f226e49>#5dbf4f4f": 0.0,
+  "#3f226e49>idle1_base": 0.0,
+  "#3f226e49>idle3_base": 0.0,
+  "#3f226e49>#7b201d91": 0.0,
+  "#3f226e49>#83cf436e": 0.0,
+  "#3f226e49>crit": 0.0,
+  "#3f226e49>joke_base": 0.0,
+  "#3f226e49>laugh_base": 0.0,
+  "#3f226e49>Channel_Wndup": 0.0,
+  "#3f226e49>spell4_base": 0.0,
+  "#3f226e49>run_fast": 0.0,
+  "#3f226e49>Spell1": 0.0,
+  "#3f226e49>spell3": 0.0,
+  "#3f226e49>death": 0.0,
+  "#3f226e49>#c2cae43a": 0.0,
+  "#3f226e49>idle2_base": 0.0,
+  "#3f226e49>#e645415a": 0.0,
+  "#3f226e49>#e9ba192a": 0.0,
+  "#3f226e49>dance_loop_base": 0.0,
+  "#4b856cdb>#00f67dce": 0.0,
+  "#4b856cdb>taunt_base": 0.0,
+  "#4b856cdb>#13f95189": 0.0,
+  "#4b856cdb>Respawn_Base": 0.0,
+  "#4b856cdb>recall_base": 0.0,
+  "#4b856cdb>#1d0e4fa6": 0.0,
+  "#4b856cdb>channel": 0.0,
+  "#4b856cdb>run_haste": 0.0,
+  "#4b856cdb>Run_Base": 0.0,
+  "#4b856cdb>#2ee891b9": 0.0,
+  "#4b856cdb>#35f21911": 0.0,
+  "#4b856cdb>Recall_Leadout": 0.0,
+  "#4b856cdb>#3f226e49": 0.0,
+  "#4b856cdb>#4b856cdb": 0.0,
+  "#4b856cdb>attack1": 0.0,
+  "#4b856cdb>attack2": 0.0,
+  "#4b856cdb>recall": 0.0,
+  "#4b856cdb>dance_base": 0.0,
+  "#4b856cdb>#5dbf4f4f": 0.0,
+  "#4b856cdb>idle1_base": 0.0,
+  "#4b856cdb>idle3_base": 0.0,
+  "#4b856cdb>#7b201d91": 0.0,
+  "#4b856cdb>#83cf436e": 0.0,
+  "#4b856cdb>crit": 0.0,
+  "#4b856cdb>joke_base": 0.0,
+  "#4b856cdb>laugh_base": 0.0,
+  "#4b856cdb>Channel_Wndup": 0.0,
+  "#4b856cdb>spell4_base": 0.0,
+  "#4b856cdb>run_fast": 0.0,
+  "#4b856cdb>Spell1": 0.0,
+  "#4b856cdb>spell3": 0.0,
+  "#4b856cdb>death": 0.0,
+  "#4b856cdb>#c2cae43a": 0.0,
+  "#4b856cdb>idle2_base": 0.0,
+  "#4b856cdb>#e645415a": 0.0,
+  "#4b856cdb>#e9ba192a": 0.0,
+  "#4b856cdb>dance_loop_base": 0.0,
+  "#504bd08d>death": 0.0,
+  "attack1>#00f67dce": 0.0,
+  "attack1>#35f21911": 0.0,
+  "attack1>#3f226e49": 0.0,
+  "attack1>#4b856cdb": 0.0,
+  "attack1>attack1": 0.0,
+  "attack1>joke_base": 0.10000000149011612,
+  "attack1>spell4_base": 0.0,
+  "attack1>Spell1": 0.10000000149011612,
+  "attack1>spell3": 0.0,
+  "attack1>death": 0.0,
+  "attack1>#e645415a": 0.0,
+  "attack2>#00f67dce": 0.0,
+  "attack2>#35f21911": 0.0,
+  "attack2>#3f226e49": 0.0,
+  "attack2>#4b856cdb": 0.0,
+  "attack2>joke_base": 0.10000000149011612,
+  "attack2>spell4_base": 0.0,
+  "attack2>Spell1": 0.10000000149011612,
+  "attack2>spell3": 0.0,
+  "attack2>death": 0.0,
+  "attack2>#e645415a": 0.0,
+  "recall>#00f67dce": 0.0,
+  "recall>#35f21911": 0.0,
+  "recall>#3f226e49": 0.0,
+  "recall>#4b856cdb": 0.0,
+  "recall>spell4_base": 0.0,
+  "recall>Spell1": 0.10000000149011612,
+  "recall>spell3": 0.0,
+  "recall>death": 0.0,
+  "recall>#e645415a": 0.0,
+  "dance_base>#00f67dce": 0.0,
+  "dance_base>#35f21911": 0.0,
+  "dance_base>#3f226e49": 0.0,
+  "dance_base>#4b856cdb": 0.0,
+  "dance_base>attack1": 0.0,
+  "dance_base>joke_base": 0.10000000149011612,
+  "dance_base>spell4_base": 0.0,
+  "dance_base>Spell1": 0.10000000149011612,
+  "dance_base>spell3": 0.0,
+  "dance_base>death": 0.0,
+  "dance_base>#e645415a": 0.0,
+  "#5dbf4f4f>#00f67dce": 0.0,
+  "#5dbf4f4f>#35f21911": 0.0,
+  "#5dbf4f4f>#3f226e49": 0.0,
+  "#5dbf4f4f>#4b856cdb": 0.0,
+  "#5dbf4f4f>joke_base": 0.10000000149011612,
+  "#5dbf4f4f>spell4_base": 0.0,
+  "#5dbf4f4f>Spell1": 0.10000000149011612,
+  "#5dbf4f4f>spell3": 0.0,
+  "#5dbf4f4f>death": 0.0,
+  "#5dbf4f4f>#e645415a": 0.0,
+  "idle1_base>#00f67dce": 0.0,
+  "idle1_base>#35f21911": 0.0,
+  "idle1_base>#3f226e49": 0.0,
+  "idle1_base>#4b856cdb": 0.0,
+  "idle1_base>joke_base": 0.10000000149011612,
+  "idle1_base>spell4_base": 0.0,
+  "idle1_base>Spell1": 0.10000000149011612,
+  "idle1_base>spell3": 0.0,
+  "idle1_base>death": 0.0,
+  "idle1_base>#e645415a": 0.0,
+  "#755f645c>death": 0.0,
+  "idle3_base>#00f67dce": 0.0,
+  "idle3_base>#35f21911": 0.0,
+  "idle3_base>#3f226e49": 0.0,
+  "idle3_base>#4b856cdb": 0.0,
+  "idle3_base>joke_base": 0.10000000149011612,
+  "idle3_base>spell4_base": 0.0,
+  "idle3_base>Spell1": 0.10000000149011612,
+  "idle3_base>spell3": 0.0,
+  "idle3_base>death": 0.0,
+  "idle3_base>#e645415a": 0.0,
+  "#7b201d91>#00f67dce": 0.0,
+  "#7b201d91>#35f21911": 0.0,
+  "#7b201d91>#3f226e49": 0.0,
+  "#7b201d91>#4b856cdb": 0.0,
+  "#7b201d91>joke_base": 0.10000000149011612,
+  "#7b201d91>spell4_base": 0.0,
+  "#7b201d91>Spell1": 0.10000000149011612,
+  "#7b201d91>spell3": 0.0,
+  "#7b201d91>death": 0.0,
+  "#7b201d91>#e645415a": 0.0,
+  "#83cf436e>#00f67dce": 0.0,
+  "#83cf436e>#35f21911": 0.0,
+  "#83cf436e>#3f226e49": 0.0,
+  "#83cf436e>#4b856cdb": 0.0,
+  "#83cf436e>spell4_base": 0.0,
+  "#83cf436e>Spell1": 0.10000000149011612,
+  "#83cf436e>spell3": 0.0,
+  "#83cf436e>death": 0.0,
+  "#83cf436e>#e645415a": 0.0,
+  "crit>#00f67dce": 0.0,
+  "crit>#35f21911": 0.0,
+  "crit>#3f226e49": 0.0,
+  "crit>#4b856cdb": 0.0,
+  "crit>joke_base": 0.10000000149011612,
+  "crit>spell4_base": 0.0,
+  "crit>Spell1": 0.10000000149011612,
+  "crit>spell3": 0.0,
+  "crit>death": 0.0,
+  "crit>#e645415a": 0.0,
+  "idle2>death": 0.0,
+  "joke_base>#00f67dce": 0.0,
+  "joke_base>#35f21911": 0.0,
+  "joke_base>#3f226e49": 0.0,
+  "joke_base>#4b856cdb": 0.0,
+  "joke_base>joke_base": 0.10000000149011612,
+  "joke_base>spell4_base": 0.0,
+  "joke_base>Spell1": 0.10000000149011612,
+  "joke_base>spell3": 0.0,
+  "joke_base>death": 0.0,
+  "joke_base>#e645415a": 0.0,
+  "idle1>death": 0.0,
+  "laugh_base>#00f67dce": 0.0,
+  "laugh_base>#35f21911": 0.0,
+  "laugh_base>#3f226e49": 0.0,
+  "laugh_base>#4b856cdb": 0.0,
+  "laugh_base>idle1_base": 0.10000000149011612,
+  "laugh_base>joke_base": 0.10000000149011612,
+  "laugh_base>spell4_base": 0.0,
+  "laugh_base>Spell1": 0.10000000149011612,
+  "laugh_base>spell3": 0.0,
+  "laugh_base>death": 0.0,
+  "laugh_base>#e645415a": 0.0,
+  "respawn>death": 0.0,
+  "#a2d214c6>death": 0.0,
+  "Channel_Wndup>#00f67dce": 0.0,
+  "Channel_Wndup>#35f21911": 0.0,
+  "Channel_Wndup>#3f226e49": 0.0,
+  "Channel_Wndup>#4b856cdb": 0.0,
+  "Channel_Wndup>attack1": 0.0,
+  "Channel_Wndup>joke_base": 0.10000000149011612,
+  "Channel_Wndup>spell4_base": 0.0,
+  "Channel_Wndup>Spell1": 0.10000000149011612,
+  "Channel_Wndup>spell3": 0.0,
+  "Channel_Wndup>death": 0.0,
+  "Channel_Wndup>#e645415a": 0.0,
+  "spell4_base>#00f67dce": 0.0,
+  "spell4_base>#35f21911": 0.0,
+  "spell4_base>#3f226e49": 0.0,
+  "spell4_base>#4b856cdb": 0.0,
+  "spell4_base>joke_base": 0.10000000149011612,
+  "spell4_base>spell4_base": 0.0,
+  "spell4_base>Spell1": 0.10000000149011612,
+  "spell4_base>spell3": 0.0,
+  "spell4_base>death": 0.0,
+  "spell4_base>#e645415a": 0.0,
+  "run_fast>#00f67dce": 0.0,
+  "run_fast>#35f21911": 0.0,
+  "run_fast>#3f226e49": 0.0,
+  "run_fast>#4b856cdb": 0.0,
+  "run_fast>spell4_base": 0.0,
+  "run_fast>Spell1": 0.10000000149011612,
+  "run_fast>spell3": 0.0,
+  "run_fast>death": 0.0,
+  "run_fast>#e645415a": 0.0,
+  "Recall_Winddown>death": 0.0,
+  "Spell1>#00f67dce": 0.0,
+  "Spell1>#35f21911": 0.0,
+  "Spell1>#3f226e49": 0.0,
+  "Spell1>#4b856cdb": 0.0,
+  "Spell1>joke_base": 0.10000000149011612,
+  "Spell1>spell4_base": 0.0,
+  "Spell1>Spell1": 0.10000000149011612,
+  "Spell1>spell3": 0.0,
+  "Spell1>death": 0.0,
+  "Spell1>#e645415a": 0.0,
+  "spell3>#00f67dce": 0.0,
+  "spell3>taunt_base": 0.0,
+  "spell3>#13f95189": 0.0,
+  "spell3>Respawn_Base": 0.0,
+  "spell3>recall_base": 0.0,
+  "spell3>#1d0e4fa6": 0.0,
+  "spell3>channel": 0.0,
+  "spell3>run_haste": 0.0,
+  "spell3>Run_Base": 0.0,
+  "spell3>#2ee891b9": 0.0,
+  "spell3>#35f21911": 0.0,
+  "spell3>Recall_Leadout": 0.0,
+  "spell3>#3f226e49": 0.0,
+  "spell3>#4b856cdb": 0.0,
+  "spell3>attack1": 0.0,
+  "spell3>attack2": 0.0,
+  "spell3>recall": 0.0,
+  "spell3>dance_base": 0.0,
+  "spell3>#5dbf4f4f": 0.0,
+  "spell3>idle1_base": 0.0,
+  "spell3>idle3_base": 0.0,
+  "spell3>#7b201d91": 0.0,
+  "spell3>#83cf436e": 0.0,
+  "spell3>crit": 0.0,
+  "spell3>joke_base": 0.0,
+  "spell3>laugh_base": 0.0,
+  "spell3>Channel_Wndup": 0.0,
+  "spell3>spell4_base": 0.0,
+  "spell3>run_fast": 0.0,
+  "spell3>Spell1": 0.0,
+  "spell3>spell3": 0.0,
+  "spell3>death": 0.0,
+  "spell3>#c2cae43a": 0.0,
+  "spell3>idle2_base": 0.0,
+  "spell3>#e645415a": 0.0,
+  "spell3>#e9ba192a": 0.0,
+  "spell3>dance_loop_base": 0.0,
+  "laugh>death": 0.0,
+  "Spell4>death": 0.0,
+  "taunt>death": 0.0,
+  "death>#00f67dce": 0.0,
+  "death>#35f21911": 0.0,
+  "death>#3f226e49": 0.0,
+  "death>#4b856cdb": 0.0,
+  "death>joke_base": 0.10000000149011612,
+  "death>spell4_base": 0.0,
+  "death>Spell1": 0.10000000149011612,
+  "death>spell3": 0.0,
+  "death>death": 0.0,
+  "death>#e645415a": 0.0,
+  "joke>death": 0.0,
+  "#c2cae43a>#00f67dce": 0.0,
+  "#c2cae43a>#35f21911": 0.0,
+  "#c2cae43a>#3f226e49": 0.0,
+  "#c2cae43a>#4b856cdb": 0.0,
+  "#c2cae43a>spell3": 0.0,
+  "#c2cae43a>death": 0.0,
+  "#c2cae43a>#e645415a": 0.0,
+  "idle2_base>#00f67dce": 0.0,
+  "idle2_base>#35f21911": 0.0,
+  "idle2_base>#3f226e49": 0.0,
+  "idle2_base>#4b856cdb": 0.0,
+  "idle2_base>joke_base": 0.10000000149011612,
+  "idle2_base>spell4_base": 0.0,
+  "idle2_base>Spell1": 0.10000000149011612,
+  "idle2_base>spell3": 0.0,
+  "idle2_base>death": 0.0,
+  "idle2_base>#e645415a": 0.0,
+  "#e645415a>#00f67dce": 0.0,
+  "#e645415a>taunt_base": 0.0,
+  "#e645415a>#13f95189": 0.0,
+  "#e645415a>Respawn_Base": 0.0,
+  "#e645415a>recall_base": 0.0,
+  "#e645415a>#1d0e4fa6": 0.0,
+  "#e645415a>channel": 0.0,
+  "#e645415a>run_haste": 0.0,
+  "#e645415a>Run_Base": 0.0,
+  "#e645415a>#2ee891b9": 0.0,
+  "#e645415a>#35f21911": 0.0,
+  "#e645415a>Recall_Leadout": 0.0,
+  "#e645415a>#3f226e49": 0.0,
+  "#e645415a>#4b856cdb": 0.0,
+  "#e645415a>attack1": 0.0,
+  "#e645415a>attack2": 0.0,
+  "#e645415a>recall": 0.0,
+  "#e645415a>dance_base": 0.0,
+  "#e645415a>#5dbf4f4f": 0.0,
+  "#e645415a>idle1_base": 0.0,
+  "#e645415a>idle3_base": 0.0,
+  "#e645415a>#7b201d91": 0.0,
+  "#e645415a>#83cf436e": 0.0,
+  "#e645415a>crit": 0.0,
+  "#e645415a>joke_base": 0.0,
+  "#e645415a>laugh_base": 0.0,
+  "#e645415a>Channel_Wndup": 0.0,
+  "#e645415a>spell4_base": 0.0,
+  "#e645415a>run_fast": 0.0,
+  "#e645415a>Spell1": 0.0,
+  "#e645415a>spell3": 0.0,
+  "#e645415a>death": 0.0,
+  "#e645415a>#c2cae43a": 0.0,
+  "#e645415a>idle2_base": 0.0,
+  "#e645415a>#e645415a": 0.0,
+  "#e645415a>#e9ba192a": 0.0,
+  "#e645415a>dance_loop_base": 0.0,
+  "#e9ba192a>#00f67dce": 0.0,
+  "#e9ba192a>#35f21911": 0.0,
+  "#e9ba192a>#3f226e49": 0.0,
+  "#e9ba192a>#4b856cdb": 0.0,
+  "#e9ba192a>joke_base": 0.10000000149011612,
+  "#e9ba192a>spell4_base": 0.0,
+  "#e9ba192a>Spell1": 0.10000000149011612,
+  "#e9ba192a>spell3": 0.0,
+  "#e9ba192a>death": 0.0,
+  "#e9ba192a>#e645415a": 0.0,
+  "dance>death": 0.0,
+  "dance_loop_base>#00f67dce": 0.0,
+  "dance_loop_base>#35f21911": 0.0,
+  "dance_loop_base>#3f226e49": 0.0,
+  "dance_loop_base>#4b856cdb": 0.0,
+  "dance_loop_base>attack1": 0.0,
+  "dance_loop_base>spell4_base": 0.0,
+  "dance_loop_base>Spell1": 0.10000000149011612,
+  "dance_loop_base>spell3": 0.0,
+  "dance_loop_base>death": 0.0,
+  "dance_loop_base>#e645415a": 0.0,
+  "attack2>attack1": 0.0,
+  "crit>attack1": 0.0,
+  "#bc1ef3fb>joke_base": 0.10000000149011612,
+  "#bc1ef3fb>death": 0.0,
+  "#bc1ef3fb>Spell1": 0.10000000149011612,
+  "#bc1ef3fb>spell3": 0.0,
+  "#bc1ef3fb>#35f21911": 0.0,
+  "#bc1ef3fb>#4b856cdb": 0.0,
+  "#bc1ef3fb>#3f226e49": 0.0,
+  "#bc1ef3fb>#00f67dce": 0.0,
+  "#bc1ef3fb>#e645415a": 0.0,
+  "#bc1ef3fb>spell4_base": 0.0,
+  "run>death": 0.0,
+  "run>joke_base": 0.10000000149011612,
+  "run>Spell1": 0.10000000149011612,
+  "run>spell3": 0.0,
+  "run>#35f21911": 0.0,
+  "run>#4b856cdb": 0.0,
+  "run>#3f226e49": 0.0,
+  "run>#00f67dce": 0.0,
+  "run>#e645415a": 0.0,
+  "run>spell4_base": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

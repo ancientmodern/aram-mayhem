@@ -1,0 +1,128 @@
+{
+ "alias": "HA_ChaosMinionRanged",
+ "attacks": [
+  {
+   "name": "HA_ChaosMinionRangedBasicAttack",
+   "prob": 0.5,
+   "total_time": 1.5,
+   "cast_time": 0.4699999988079071,
+   "cast_frame": 14.0,
+   "missile_speed": 650.0,
+   "start_bone": "Buffbone_Glb_Weapon_1",
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "prob": 0.5
+  }
+ ],
+ "crits": [],
+ "spells": [],
+ "stats": {
+  "pathfindingCollisionRadius": 35.74369812011719,
+  "overrideGameplayCollisionRadius": 48.0,
+  "selectionRadius": 115.0,
+  "selectionHeight": 75.0,
+  "healthBarHeight": 33.0
+ },
+ "clips": {
+  "#3f1534b8": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "518f32fd96f0c831"
+  },
+  "#9e66faeb": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "518f32fd96f0c831"
+  },
+  "stunned": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "518f32fd96f0c831"
+  },
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1",
+   "file": "e19e999285605eda"
+  },
+  "attack2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack2",
+   "file": "17e93f4f82a1e923"
+  },
+  "#41f434dd": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": null,
+   "xanim": "x/clip_c43cd26f",
+   "file": "78e746f3c43cd26f"
+  },
+  "#ac236dee": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": null,
+   "xanim": "x/clip_c43cd26f",
+   "file": "78e746f3c43cd26f"
+  },
+  "#bec63b4e": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "1c1a74f6656390e6"
+  },
+  "run": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "run",
+   "file": "99d4ae89b2f6c202"
+  },
+  "death": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "1c1a74f6656390e6"
+  },
+  "idle1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "518f32fd96f0c831"
+  }
+ },
+ "blends": {
+  "run>run": 0.0,
+  "run>death": 0.0,
+  "#3f1534b8>#3f1534b8": 0.0,
+  "#3f1534b8>death": 0.0,
+  "#41f434dd>#41f434dd": 0.0,
+  "#41f434dd>death": 0.0,
+  "attack1>death": 0.0,
+  "attack2>death": 0.0,
+  "stunned>stunned": 0.0,
+  "stunned>death": 0.0,
+  "idle1>idle1": 0.0,
+  "idle1>death": 0.0,
+  "#9e66faeb>#9e66faeb": 0.0,
+  "#9e66faeb>death": 0.0,
+  "#ac236dee>#ac236dee": 0.0,
+  "#ac236dee>death": 0.0,
+  "death>death": 0.0,
+  "#bec63b4e>death": 0.0,
+  "#bec63b4e>#bec63b4e": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}
