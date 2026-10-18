@@ -66,10 +66,68 @@ var next_match := {
 }
 
 
+signal flow_request(what: String)   ## "menu", "replay", "quit" (handled by Main)
+
+const SETTINGS_PATH := "user://settings.cfg"
+
+
 func _ready() -> void:
 	rng.randomize()
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_setup_input()
+	load_settings()
+
+
+func load_settings() -> void:
+	var cf := ConfigFile.new()
+	if cf.load(SETTINGS_PATH) != OK:
+		return
+	for k in settings.keys():
+		settings[k] = cf.get_value("settings", k, settings[k])
+
+
+func save_settings() -> void:
+	var cf := ConfigFile.new()
+	for k in settings.keys():
+		cf.set_value("settings", k, settings[k])
+	cf.save(SETTINGS_PATH)
+
+
+func apply_window_mode() -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	if settings.get("fullscreen", true):
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	elif DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+
+
+var _trace_file: FileAccess = null
+var ctx := ""          ## debug: current frame phase (read by the sim watchdog)
+var ctx_unit := ""
+var beat := 0
+
+
+var _bad_vec_count := 0
+
+
+## Report a non-finite position handed to a movement primitive (with the GDScript call stack).
+func bad_vector(where: String, v: Vector3) -> void:
+	_bad_vec_count += 1
+	if _bad_vec_count > 20:
+		return
+	var frames := []
+	for f in get_stack().slice(1, 7):
+		frames.append("%s:%d %s" % [str(f.source).get_file(), f.line, f.function])
+	push_warning("Non-finite vector %s in %s <- %s" % [str(v), where, " <- ".join(frames)])
+
+
+## Debug tracing to a flushed file (survives a hard hang).
+func trace(a = "", b = "", c = "", d = "") -> void:
+	if _trace_file == null:
+		_trace_file = FileAccess.open("user://trace.log", FileAccess.WRITE)
+	_trace_file.store_line("%s %s %s %s" % [str(a), str(b), str(c), str(d)])
+	_trace_file.flush()
 
 
 func _exit_tree() -> void:
