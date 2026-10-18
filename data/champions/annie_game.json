@@ -1,0 +1,462 @@
+{
+ "alias": "Annie",
+ "name": "Annie",
+ "stats": {
+  "base_hp": 560.0,
+  "hp_per_level": 96.0,
+  "base_hp_regen": 1.1,
+  "hp_regen_per_level": 0.11,
+  "base_ad": 50.0,
+  "ad_per_level": 2.65,
+  "base_armor": 23.0,
+  "armor_per_level": 4.0,
+  "base_mr": 30.0,
+  "mr_per_level": 1.3,
+  "base_ms": 335.0,
+  "attack_range": 625.0,
+  "attack_speed": 0.61,
+  "attack_speed_ratio": 0.625,
+  "attack_speed_per_level": 1.36,
+  "resource_type": 0,
+  "mana_base": 418.0,
+  "mana_per_level": 25.0,
+  "mana_regen": 1.6,
+  "mana_regen_per_level": 0.16,
+  "critDamageMultiplier": 2.0,
+  "acquisitionRange": 625.0,
+  "selectionHeight": 85.0,
+  "selectionRadius": 100.0,
+  "pathfindingCollisionRadius": 30.0,
+  "overrideGameplayCollisionRadius": 55.0,
+  "healthBarHeight": 85.0,
+  "attack_cast_offset": -0.10420524328947067,
+  "attack_total_time": null,
+  "attack_cast_time": null
+ },
+ "spell_slots": {
+  "Q": "AnnieQ",
+  "W": "AnnieW",
+  "E": "AnnieE",
+  "R": "AnnieR"
+ },
+ "passive": "AnniePassive",
+ "passive_name": "Pyromania",
+ "passive_desc": "After casting 4 spells, Annie's next offensive spell will stun the target for a short duration.",
+ "spells": {
+  "InfernalGuardianGuide": {
+   "script": "InfernalGuardianGuide",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 20000.0,
+   "castRadius": 250.3,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Spell4"
+  },
+  "Incinerate": {
+   "script": "Incinerate",
+   "data_values": {
+    "BaseDamage": [
+     25.0,
+     70.0,
+     115.0,
+     160.0,
+     205.0,
+     250.0,
+     295.0
+    ]
+   },
+   "cooldownTime": 8.0,
+   "mana": [
+    70.0,
+    80.0,
+    90.0,
+    100.0,
+    110.0,
+    120.0
+   ],
+   "castRange": 600.0,
+   "castRadius": 210.0,
+   "castConeAngle": 24.760000228881836,
+   "castConeDistance": 600.0,
+   "missileSpeed": 0.0,
+   "mCastTime": 0.25,
+   "mAnimationName": "Spell2",
+   "mAlternateName": "Incinerate"
+  },
+  "AnnieR": {
+   "script": "AnnieR",
+   "data_values": {
+    "InitialDamage": [
+     25.0,
+     150.0,
+     275.0,
+     400.0,
+     525.0,
+     650.0,
+     775.0
+    ],
+    "AuraDamage": [
+     4.0,
+     8.0,
+     12.0,
+     16.0,
+     20.0,
+     24.0,
+     28.0
+    ],
+    "TibbersAttackDamage": [
+     15.0,
+     30.0,
+     45.0,
+     60.0,
+     75.0,
+     90.0,
+     105.0
+    ],
+    "TibbersAttackSpeedDecay": -0.1,
+    "TibbersAttackAPRatio": 0.1,
+    "MovespeedBurst": 1.0,
+    "EnrageDuration": 3.0,
+    "AvengerEnrageDuration": 10.0,
+    "TibbersLifetime": 45.0,
+    "TibbersBonusMS": [
+     -25.0,
+     0.0,
+     25.0,
+     50.0,
+     75.0,
+     100.0,
+     125.0
+    ],
+    "TibbersModeSpecificHPMod": 1.0,
+    "RPercentPenBuff": [
+     0.05,
+     0.1,
+     0.15,
+     0.2,
+     0.25,
+     0.3,
+     0.35
+    ]
+   },
+   "calcs": {
+    "#19d777a6": "InitialDamage + 0.75*AP",
+    "#21bcb144": "AuraDamage + 0.04*AP",
+    "#612a9df9": "TibbersAttackDamage + TibbersAttackAPRatio*AP",
+    "#a285ce04": "(byLevelBreakpoints(L1=1150) * TibbersModeSpecificHPMod) + 0.5*AP",
+    "#90e92fb7": "byLevelBreakpoints(L1=30)"
+   },
+   "cooldownTime": [
+    130.0,
+    130.0,
+    115.0,
+    100.0,
+    100.0,
+    100.0,
+    100.0
+   ],
+   "mana": [
+    100.0,
+    100.0,
+    100.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "castRange": 600.0,
+   "castRadius": 250.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Spell4",
+   "name": "Summon: Tibbers",
+   "tooltip": "<spellPassive>Passive:</spellPassive> Annie gains <magicPen>@RPercentPenBuff*100@% Magic Penetration</magicPen>.<br><br>Annie summons her bear Tibbers, dealing <magicDamage>@InitialBurstDamage@ magic damage</magicDamage>. For the next @TibbersLifetime@ seconds, Tibbers burns nearby enemies for <magicDamage>@TibbersAuraDamage@ magic damage per second</magicDamage>.<br><br>Tibbers becomes enraged when summoned, if Annie stuns an enemy champion, and if Annie dies. When enraged, Tibbers gains <attackSpeed>275% Attack Speed</attackSpeed> and <speed>100% Move Speed</speed> decaying over 3 seconds.<br><br><recast>Recast:</recast> Manually issue orders to Tibbers.",
+   "summary": "Annie wills her bear Tibbers to life, dealing damage to units in the area. Tibbers can attack and also burns enemies that stand near him."
+  },
+  "AnnieRController": {
+   "script": "AnnieRController",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 20000.0,
+   "castRadius": 250.3,
+   "mAnimationName": "Spell4"
+  },
+  "Disintegrate": {
+   "script": "Disintegrate",
+   "data_values": {},
+   "cooldownTime": 4.0,
+   "mana": [
+    60.0,
+    65.0,
+    70.0,
+    75.0,
+    80.0,
+    85.0
+   ],
+   "castRange": 625.0,
+   "castRadius": 710.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1400.0,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "Disintegrate"
+  },
+  "AnniePassive": {
+   "script": "AnniePassive",
+   "data_values": {
+    "MaxStacks": 4.0,
+    "StunBaseDuration": 1.25,
+    "StunDurationPerTier": 0.25
+   },
+   "calcs": {
+    "#29f3d7f1": "byLevelBreakpoints(L1=1.25)"
+   },
+   "name": "Pyromania",
+   "tooltip": "After using 4 Abilities, Annie's next damaging Ability <status>Stuns</status> for @StunDuration@ seconds.<br><br>Annie begins the game and respawns with <spellName>Pyromania</spellName> available.",
+   "summary": "After casting 4 spells, Annie's next offensive spell will stun the target.<br><br>Annie begins the game and respawns with Pyromania available."
+  },
+  "AnnieQ": {
+   "script": "AnnieQ",
+   "data_values": {
+    "BaseDamage": [
+     35.0,
+     80.0,
+     125.0,
+     170.0,
+     215.0,
+     260.0,
+     305.0
+    ],
+    "APRatio": 0.8
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamage + APRatio*AP"
+   },
+   "cooldownTime": 4.0,
+   "mana": [
+    60.0,
+    65.0,
+    70.0,
+    75.0,
+    80.0,
+    85.0
+   ],
+   "castRange": 625.0,
+   "castRadius": 710.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1400.0,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "Disintegrate",
+   "name": "Disintegrate",
+   "tooltip": "Annie hurls a fireball, dealing <magicDamage>@TotalDamage@ magic damage</magicDamage>. If the target dies, Annie refunds the Mana cost and reduces the Cooldown by 50%.",
+   "summary": "Annie hurls a Mana infused fireball, dealing damage and refunding the Mana cost if it destroys the target."
+  },
+  "AnnieE": {
+   "script": "AnnieE",
+   "data_values": {
+    "ShieldDuration": 3.0,
+    "DamageReduction": [
+     9.0,
+     13.0,
+     17.0,
+     21.0,
+     25.0,
+     29.0,
+     33.0
+    ],
+    "DamageReflection": [
+     15.0,
+     25.0,
+     35.0,
+     45.0,
+     55.0,
+     65.0,
+     75.0
+    ],
+    "MovementSpeed": [
+     0.1,
+     0.15,
+     0.2,
+     0.25,
+     0.3,
+     0.35,
+     0.4
+    ],
+    "MovementSpeedDuration": 1.5,
+    "ShieldAmount": [
+     25.0,
+     60.0,
+     95.0,
+     130.0,
+     165.0,
+     200.0,
+     235.0
+    ],
+    "CastRangeGenerosity": 225.0
+   },
+   "calcs": {
+    "#21e3fd66": "DamageReflection + 0.4*AP",
+    "#5486c90e": "lerpByLevel(0.2->0.5)  [as %]",
+    "#da502e71": "ShieldAmount + 0.4*AP"
+   },
+   "mana": [
+    60.0,
+    65.0,
+    70.0,
+    75.0,
+    80.0,
+    85.0
+   ],
+   "castRange": 800.0,
+   "mAnimationName": "Spell3",
+   "name": "Molten Shield",
+   "tooltip": "Annie grants an ally champion <shield>@ShieldBlockTotal@ Shield</shield> for @ShieldDuration@ seconds and <speed>@MoveSpeedCalc@ Decaying Move Speed</speed> for @MovementSpeedDuration@ seconds. While the shield holds, enemies who hit the shielded ally with an Attack or Ability receive <magicDamage>@DamageReturn@ magic damage</magicDamage> once per shield.<br><br>Tibbers always gains the effects of <spellName>Molten Shield</spellName> when summoned.",
+   "summary": "Grants Annie or an ally a shield, a burst of Move Speed, and damages enemies who strike her with attacks or spells."
+  },
+  "InfernalGuardian": {
+   "script": "InfernalGuardian",
+   "data_values": {
+    "InitialDamage": [
+     0.0,
+     150.0,
+     275.0,
+     400.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "AuraDamage": [
+     0.0,
+     10.0,
+     15.0,
+     20.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "AADamage": [
+     0.0,
+     50.0,
+     75.0,
+     100.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "AttackspeedLossPerAttackWhileEnraged": -0.1,
+    "MovespeedBurst": 1.0,
+    "EnrageBuffDuration": 3.0,
+    "BonusArmorAndMR": [
+     0.0,
+     30.0,
+     50.0,
+     70.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "BonusHP": [
+     0.0,
+     0.0,
+     900.0,
+     1800.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "AAAPRatio": 0.15
+   },
+   "cooldownTime": [
+    120.0,
+    120.0,
+    100.0,
+    80.0,
+    120.0,
+    120.0,
+    120.0
+   ],
+   "mana": [
+    100.0,
+    100.0,
+    100.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "castRange": 600.0,
+   "castRadius": 250.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 0.0,
+   "mAnimationName": "Spell4"
+  },
+  "AnnieBasicAttack2": {
+   "script": "AnnieBasicAttack2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mAnimationName": "Attack2",
+   "mAlternateName": "AnnieBasicAttack2"
+  },
+  "AnnieBasicAttack": {
+   "script": "AnnieBasicAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mAlternateName": "AnnieBasicAttack"
+  },
+  "AnnieW": {
+   "script": "AnnieW",
+   "data_values": {
+    "BaseDamage": [
+     30.0,
+     70.0,
+     110.0,
+     150.0,
+     190.0,
+     230.0,
+     270.0
+    ],
+    "APRatio": 0.8
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamage + APRatio*AP"
+   },
+   "cooldownTime": 7.0,
+   "mana": [
+    70.0,
+    75.0,
+    80.0,
+    85.0,
+    90.0,
+    95.0
+   ],
+   "castRange": 600.0,
+   "castRadius": 210.0,
+   "castConeAngle": 24.760000228881836,
+   "castConeDistance": 600.0,
+   "missileSpeed": 0.0,
+   "mCastTime": 0.25,
+   "mAnimationName": "Spell2",
+   "mAlternateName": "Incinerate",
+   "name": "Incinerate",
+   "tooltip": "Annie projects a wave of fire, dealing <magicDamage>@TotalDamage@ magic damage</magicDamage>.",
+   "summary": "Annie casts a blazing cone of fire, dealing damage to all enemies in the area."
+  },
+  "AnnieCritAttack": {
+   "script": "AnnieCritAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mAnimationName": "Crit",
+   "mAlternateName": "AnnieCritAttack"
+  }
+ }
+}

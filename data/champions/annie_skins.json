@@ -1,0 +1,202 @@
+[
+ {
+  "id": 1000,
+  "num": 0,
+  "name": "Annie",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1001,
+  "num": 1,
+  "name": "Goth Annie",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1002,
+  "num": 2,
+  "name": "Red Riding Annie",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1003,
+  "num": 3,
+  "name": "Annie in Wonderland",
+  "rarity": "kLegendary",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1004,
+  "num": 4,
+  "name": "Prom Queen Annie",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1005,
+  "num": 5,
+  "name": "Frostfire Annie",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1006,
+  "num": 6,
+  "name": "Reverse Annie",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1007,
+  "num": 7,
+  "name": "FrankenTibbers Annie",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1008,
+  "num": 8,
+  "name": "Panda Annie",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1009,
+  "num": 9,
+  "name": "Sweetheart Annie",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1010,
+  "num": 10,
+  "name": "Hextech Annie",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1011,
+  "num": 11,
+  "name": "Super Galaxy Annie",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1012,
+  "num": 12,
+  "name": "Annie-Versary",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1013,
+  "num": 13,
+  "name": "Lunar Beast Annie",
+  "rarity": "kEpic",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1022,
+  "num": 22,
+  "name": "Cafe Cuties Annie",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1031,
+  "num": 31,
+  "name": "Fright Night Annie",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1040,
+  "num": 40,
+  "name": "Winterblessed Annie",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1050,
+  "num": 50,
+  "name": "Battle Princess Annie",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1059,
+  "num": 59,
+  "name": "Pandemonium Annie",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 1060,
+  "num": 60,
+  "name": "Goth Annie Modern",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ }
+]
