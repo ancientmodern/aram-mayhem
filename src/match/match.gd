@@ -345,46 +345,8 @@ func _resolve_collisions(_dt: float) -> void:
 
 
 func _push_pair(a: Unit, b: Unit) -> void:
-	var ap := a.global_position
-	var bp := b.global_position
-	var dx := bp.x - ap.x
-	var dz := bp.z - ap.z
-	var rr := a.path_radius + b.path_radius
-	var d2 := dx * dx + dz * dz
-	if d2 >= rr * rr:
-		return
-	# champions slide past each other and minions more easily (League pathing radius is small)
-	var d := sqrt(d2)
-	if d < 0.001:
-		dx = 0.01 * (1 if a.uid % 2 == 0 else -1)
-		dz = 0.01
-		d = 0.0141
-	var overlap := rr - d
-	var nx := dx / d
-	var nz := dz / d
-	var ma := a.mass if b.mass > 0.0 else 0.0
-	var mb := b.mass if a.mass > 0.0 else 0.0
-	# moving units yield to stationary attackers (minion waves look nicer)
-	var wa := mb / maxf(ma + mb, 0.001) if b.mass > 0.0 else 1.0
-	var wb := 1.0 - wa
-	if b.mass <= 0.0:
-		wa = 1.0
-		wb = 0.0
-	if a.moving and not b.moving and b.mass > 0.0:
-		wa = 0.8
-		wb = 0.2
-	elif b.moving and not a.moving and b.mass > 0.0:
-		wa = 0.2
-		wb = 0.8
-	var push := overlap * 0.5
-	if wa > 0.0:
-		var na := Vector3(ap.x - nx * push * wa * 2.0, ap.y, ap.z - nz * push * wa * 2.0)
-		if nav == null or nav.is_walkable(na):
-			a.set_ground_pos(na)
-	if wb > 0.0 and b.mass > 0.0:
-		var nb := Vector3(bp.x + nx * push * wb * 2.0, bp.y, bp.z + nz * push * wb * 2.0)
-		if nav == null or nav.is_walkable(nb):
-			b.set_ground_pos(nb)
+	# [motion] collision response lives in Unit.resolve_pair (League body-block rules)
+	Unit.resolve_pair(a, b, nav)
 
 
 # ===================================================================== vision
@@ -425,10 +387,24 @@ func _seen_by(u: Unit, t: int) -> bool:
 # ===================================================================== combat helpers
 func spawn_attack_missile(src: Unit, tgt: Unit, crit: bool) -> Missile:
 	var mi := Missile.new()
-	var from := src.global_position + Vector3(0, src.height * 0.55, 0) + src.facing * src.radius
+	# [motion] League spawns the attack missile at the attack spell's mStartBoneName
+	var from: Vector3 = src.missile_origin() if src.has_method("missile_origin") else \
+			src.global_position + Vector3(0, src.height * 0.55, 0) + src.facing * src.radius
 	mi.setup_homing(src, from, tgt, src.attack_missile_speed * G.U)
 	mi.is_attack = true
 	mi.height = src.height * 0.55
+	if src.has_method("missile_origin"):
+		# [motion] fly from the start bone's height to the target's hit bone (C_BUFFBONE_GLB_CHEST_LOC)
+		var h0: float = clampf(from.y - src.ground_y, 0.2, 6.0)
+		mi.height = h0
+		mi.on_move = func(m2, _dt):
+			var t2 = m2.target
+			if t2 == null or not is_instance_valid(t2):
+				return
+			var h1: float = t2.height * 0.55
+			var total: float = G.flat_dist(m2.start, t2.global_position)
+			var k: float = clampf(m2.traveled / maxf(total, 0.01), 0.0, 1.0)
+			m2.height = lerpf(h0, h1, k)
 	mi.blockable = src.kind != G.Kind.TURRET
 	var vis = null
 	if src is Champion:
@@ -954,6 +930,9 @@ func _setup_view() -> void:
 	add_child(player_controller)
 	snow = MapBuilder.build_snow(camera_rig)
 	snow.position = Vector3(0, -6, -10)
+	var ambient := MapAmbient.new()   # [env] League map particles, poros, brush interaction
+	add_child(ambient)
+	ambient.setup(self)
 	var gray_layer := CanvasLayer.new()
 	gray_layer.name = "DeathGrayLayer"
 	gray_layer.layer = 0

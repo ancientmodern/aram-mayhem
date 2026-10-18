@@ -3,6 +3,7 @@ extends RefCounted
 ## Asset loading: models (converted from League files), icons, fonts, shaders.
 
 const CHAMP_SHADER := preload("res://src/vfx/shaders/champion.gdshader")
+const INK_SHADER := preload("res://src/vfx/shaders/champion_ink.gdshader")
 
 static var _scene_cache := {}
 static var _mat_cache := {}
@@ -122,7 +123,16 @@ static func _champion_material(src: Material, self_illum: float) -> Material:
 	if tex != null:
 		sm.set_shader_parameter("albedo_tex", tex)
 	sm.set_shader_parameter("use_alpha_scissor", masked)
-	sm.set_shader_parameter("self_illum", 0.55 if self_illum > 0.0 else 0.35)
+	sm.set_shader_parameter("self_illum", 0.6 if self_illum > 0.0 else 0.55)
+	# League "inking": thin dark silhouette on skinned meshes
+	var ink := ShaderMaterial.new()
+	ink.shader = INK_SHADER
+	if tex != null:
+		ink.set_shader_parameter("albedo_tex", tex)
+	ink.set_shader_parameter("use_alpha_scissor", masked)
+	if self_illum <= 0.0:
+		ink.set_shader_parameter("thickness", 0.0012)
+	sm.next_pass = ink
 	_mat_cache[key] = sm
 	return sm
 
@@ -201,6 +211,125 @@ static func _find_skeleton(n: Node) -> Skeleton3D:
 
 static func find_skeleton(n: Node) -> Skeleton3D:
 	return _find_skeleton(n)
+
+
+static var _stride_cache := {}
+static var _extra_libs := {}
+
+
+## Drop non-finite keys: some League compressed transition clips decode to NaN on a few frames,
+## which makes the mixer blend NaN quaternions ("end quaternion must be normalized").
+static func _sanitize_animation(a: Animation) -> void:
+	for t in range(a.get_track_count() - 1, -1, -1):
+		var ty := a.track_get_type(t)
+		if ty != Animation.TYPE_ROTATION_3D and ty != Animation.TYPE_POSITION_3D and ty != Animation.TYPE_SCALE_3D:
+			continue
+		for k in range(a.track_get_key_count(t) - 1, -1, -1):
+			var v = a.track_get_key_value(t, k)
+			var ok := true
+			if v is Quaternion:
+				ok = is_finite(v.x) and is_finite(v.y) and is_finite(v.z) and is_finite(v.w) and v.length() > 0.5
+			elif v is Vector3:
+				ok = v.is_finite()
+			if not ok:
+				a.track_remove_key(t, k)
+		if a.track_get_key_count(t) == 0:
+			a.remove_track(t)
+
+
+## Merge the companion clip library (League transition / unnamed graph clips that the main .glb
+## omits; tools/lol/extract_anim_clips.py) into the model's AnimationPlayer as library "x".
+static func merge_extra_clips(ap: AnimationPlayer, alias: String) -> void:
+	if alias == "" or ap.has_animation_library("x"):
+		return
+	var key := alias.to_lower()
+	if not _extra_libs.has(key):
+		var lib: AnimationLibrary = null
+		var ps := _load_scene("res://data/anim/clips/%s.glb" % key)
+		if ps != null:
+			var inst := ps.instantiate()
+			var xap := _find_anim(inst)
+			if xap != null and xap.has_animation_library(""):
+				lib = xap.get_animation_library("").duplicate()
+				if lib.has_animation("RESET"):
+					lib.remove_animation("RESET")
+				for an in lib.get_animation_list():
+					_sanitize_animation(lib.get_animation(an))
+			inst.free()
+		_extra_libs[key] = lib
+	var l: AnimationLibrary = _extra_libs[key]
+	if l != null:
+		ap.add_animation_library("x", l)
+
+
+## Skeleton-space ground speed (m/s at playback speed 1) of every run-like clip, measured from the
+## planted foot (League foot buff bones): during stance the foot moves backwards at the authored
+## ground speed, so playback = move_speed / stride gives zero foot sliding. Cached per model file.
+static func run_strides(ap: AnimationPlayer, skel: Skeleton3D) -> Dictionary:
+	var key := ""
+	if ap.owner != null:
+		key = ap.owner.scene_file_path
+	if key == "":
+		key = str(ap.get_animation_list())
+	if _stride_cache.has(key):
+		return _stride_cache[key]
+	var out := {}
+	var feet: Array = []
+	var by_norm := {}
+	for i in skel.get_bone_count():
+		var n := skel.get_bone_name(i).to_lower().replace("_", "")
+		by_norm[n] = i
+	for pair in [["lbuffboneglbfootloc", "rbuffboneglbfootloc"], ["lfoot", "rfoot"], ["lankle", "rankle"]]:
+		if by_norm.has(pair[0]) and by_norm.has(pair[1]):
+			feet = [by_norm[pair[0]], by_norm[pair[1]]]
+			break
+	if feet.is_empty():
+		_stride_cache[key] = out
+		return out
+	var was_active := ap.active
+	ap.active = true
+	for an in ap.get_animation_list():
+		var low := String(an).to_lower()
+		if not (low.contains("run") or low.contains("walk") or low.contains("haste")) or low.contains("_in") \
+				or low.contains("_out") or low.contains("toidle") or low.contains("torun"):
+			continue
+		var a := ap.get_animation(an)
+		if a == null or a.length < 0.2:
+			continue
+		var n_s := 60
+		ap.play(an, 0.0, 1.0)
+		var tracks := []
+		for f in feet:
+			tracks.append([])
+		for i in n_s + 1:
+			var t := a.length * float(i) / float(n_s)
+			ap.seek(minf(t, a.length - 0.0001), true)
+			for k in feet.size():
+				tracks[k].append(skel.get_bone_global_pose(feet[k]).origin)
+		var speeds: Array = []
+		var dt := a.length / float(n_s)
+		for tr in tracks:
+			var ymin := INF
+			var ymax := -INF
+			for p in tr:
+				ymin = minf(ymin, p.y)
+				ymax = maxf(ymax, p.y)
+			if ymax - ymin < 0.04:
+				continue   # foot bone does not lift (legless minions, static buff bone)
+			var thr := ymin + (ymax - ymin) * 0.12
+			for i in range(1, tr.size()):
+				if tr[i].y <= thr and tr[i - 1].y <= thr:
+					var d := Vector2(tr[i].x - tr[i - 1].x, tr[i].z - tr[i - 1].z).length()
+					speeds.append(d / dt)
+		if speeds.size() >= 4:
+			speeds.sort()
+			var med := float(speeds[speeds.size() / 2])
+			if med > 0.8 and med < 12.0:
+				out[String(an)] = med
+	ap.stop()
+	ap.active = was_active
+	_stride_cache[key] = out
+	return out
 
 
 ## Map logical animation names to available clips.
