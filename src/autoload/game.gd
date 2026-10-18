@@ -102,6 +102,8 @@ func apply_window_mode() -> void:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	elif DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+	# vsync on = locked to the monitor refresh (60/120/144 Hz); off = uncapped
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if settings.get("vsync", true) else DisplayServer.VSYNC_DISABLED)
 
 
 var _trace_file: FileAccess = null
