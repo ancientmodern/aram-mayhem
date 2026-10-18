@@ -2,47 +2,159 @@ extends Node
 ## Audio manager (autoload `Sfx`): pooled 2D/3D one-shots, named UI sounds, music with crossfade.
 ## Buses: Master > Music, SFX, UI.
 
+## UI sound catalog: name -> [file in assets/audio/ui (no extension), loudness role]. The files are League's own
+## client sounds, wired the way the real client wires them (rcp-fe-lol-uikit sound map: flat buttons use
+## gold-hover/gold-click, checkboxes checkbox-click, radios radio-click, dropdowns dropdown-click/select, close
+## buttons circlegold-hover / circlex-click, primary buttons magic-button-*, tabs/sub-nav text-click-small, ...).
+## Raw client files ship at wildly different levels (hovers peak around -53 dBFS, stingers around -2 dBFS) because the
+## client mixes them per category, so every sound is normalised from data/audio/ui_gain.json (measured peaks,
+## tools/lol/ui_audio_gain.py) to the ROLE_TARGET peak of its role.
+const ROLE_TARGET := {
+	"hover": -23.0,     ## shimmer / tick under the cursor
+	"click": -14.0,     ## ordinary button / tab / toggle clicks
+	"big": -10.0,       ## confirm, play, lock-in
+	"stinger": -9.0,    ## victory / defeat / card reveals / celebrations
+	"tick": -17.0,      ## countdown ticks
+	"notify": -12.0,    ## chat / notification dings
+}
+const ROLE_GAP_MS := {"hover": 70, "click": 25, "big": 60, "stinger": 120, "tick": 60, "notify": 80}
+
 const UI_SOUNDS := {
-	"hover": "sfx-uikit-grid-hover",
-	"click": "sfx-uikit-generic-click-small",
-	"gold_hover": "sfx-uikit-button-gold-hover",
-	"gold_click": "sfx-uikit-button-gold-click",
-	"play_hover": "sfx-lobby-button-find-match-hover",
-	"play_click": "sfx-lobby-button-find-match-click",
-	"lockin_hover": "sfx-cs-lockin-button-hover",
-	"lockin": "sfx-cs-lockin-button-click",
-	"lock_confirm": "sfx-ui-jade-champselect-lockchampion",
-	"reroll_hover": "sfx-cs-button-reroll-hover",
-	"reroll": "sfx-cs-button-reroll-click",
-	"swap": "sfx-cs-button-swap-click",
-	"bench": "sfx-champ-select-bench-update",
-	"card_appear": "sfx-cs-aram-card-2-appear",
-	"card_appear2": "sfx-cs-aram-card-3-appear",
-	"card_hover": "sfx-cs-aram-card-hover",
-	"card_select": "sfx-cs-aram-card-select",
-	"tick": "sfx-cs-timer-tick-small",
-	"victory": "sfx-eog-ui-exp-burst",
-	"defeat": "sfx-eog-ui-exp-burst-negative",
-	"eog": "sfx-eog-chaos-order",
-	"flare": "sfx-eog-ui-edge-flare",
-	"toast": "sfx-uikit-reward-toast",
-	"celebrate": "sfx-vignette-celebration-intro",
-	"buy": "sfx-purchase-button-click",
-	"buy_hover": "sfx-purchase-button-hover",
-	"toggle": "sfx-uikit-radio-click",
-	"checkbox": "sfx-uikit-checkbox-click",
-	"locked": "sfx-uikit-button-locked-click",
-	"accept": "sfx-ui-jade-match-accept",
-	"your_pick": "sfx-cs-draft-notif-yourpick",
-	"pick_intro": "sfx-cs-draft-pick-intro",
-	"spells_open": "sfx-cs-spells-open",
-	"reward": "sfx-celebrate-receive-generic",
+	# ---- generic uikit
+	"hover": ["sfx-uikit-grid-hover", "hover"],
+	"click": ["sfx-uikit-generic-click-small", "click"],
+	"grid_hover": ["sfx-uikit-grid-hover", "hover"],
+	"grid_click": ["sfx-uikit-grid-click", "click"],
+	"grid_release": ["sfx-uikit-grid-click-release", "click"],
+	"grid_big_hover": ["sfx-uikit-grid-big-hover", "hover"],
+	"grid_big_click": ["sfx-uikit-grid-big-click", "click"],
+	"gold_hover": ["sfx-uikit-button-gold-hover", "hover"],        ## flat button hover
+	"gold_click": ["sfx-uikit-button-gold-click", "click"],        ## flat button click
+	"flat_hover": ["sfx-uikit-button-gold-hover", "hover"],
+	"flat_click": ["sfx-uikit-button-gold-click", "click"],
+	"generic_hover": ["sfx-uikit-button-generic-hover", "hover"],
+	"generic_click": ["sfx-uikit-button-generic-click", "click"],
+	"big_click": ["sfx-uikit-button-big-click", "big"],
+	"magic_hover": ["sfx-uikit-magic-button-hover", "hover"],      ## primary (call to action) button
+	"magic_click": ["sfx-uikit-magic-button-click", "big"],
+	"nav_click": ["sfx-nav-button-text-click", "click"],
+	"tab": ["sfx-uikit-text-click-small", "click"],                ## tabs / sub-nav
+	"text_click": ["sfx-uikit-button-text-click", "click"],
+	"toggle": ["sfx-uikit-radio-click", "click"],                  ## radio / segmented option
+	"checkbox": ["sfx-uikit-checkbox-click", "click"],
+	"dropdown": ["sfx-uikit-dropdown-click", "click"],
+	"dropdown_select": ["sfx-uikit-dropdown-select", "click"],
+	"close_hover": ["sfx-uikit-button-circlegold-hover", "hover"],
+	"close_click": ["sfx-uikit-button-circlex-click", "click"],
+	"arrow_hover": ["sfx-uikit-arrow-button-hover", "hover"],
+	"arrow_click": ["sfx-uikit-arrow-button-click", "click"],
+	"back_click": ["sfx-uikit-button-arrowback-click", "click"],
+	"fwd_click": ["sfx-uikit-button-arrowfwd-click", "click"],
+	"pip": ["sfx-uikit-button-pip-click", "click"],
+	"locked": ["sfx-uikit-button-locked-click", "click"],          ## disabled / not allowed
+	"slide": ["sfx-uikit-click-and-slide", "click"],               ## slider grab
+	"slide_tick": ["sfx-vc-volume-scroll-click", "click"],         ## slider step
+	"slide_release": ["sfx-vc-volume-scroll-release", "click"],
+	"drag": ["sfx-uikit-drag", "click"],
+	"drop": ["sfx-uikit-drop", "click"],
+	"edit": ["sfx-uikit-edit-click", "click"],
+	"flyout_open": ["sfx-uikit-button-flyout-open-click", "click"],
+	"flyout_close": ["sfx-uikit-button-flyout-close-click", "click"],
+	"replay": ["sfx-uikit-button-replay-click", "click"],
+	"framed_click": ["sfx-uikit-framed-icon-click", "click"],
+	"toast": ["sfx-uikit-reward-toast", "notify"],
+	# ---- lobby / nav / game select
+	"play_hover": ["sfx-nav-button-play-hover", "hover"],
+	"play_click": ["sfx-nav-button-play-click", "big"],
+	"find_hover": ["sfx-lobby-button-find-match-hover", "hover"],
+	"find_click": ["sfx-lobby-button-find-match-click", "big"],
+	"quit_hover": ["sfx-lobby-button-quit-hover", "hover"],
+	"quit_click": ["sfx-lobby-button-quit-click", "big"],
+	"confirm_hover": ["sfx-gameselect-button-confirm-hover", "hover"],
+	"confirm_click": ["sfx-gameselect-button-confirm-click", "big"],
+	"to_lobby": ["sfx-gameselect-trans-to-lobby", "stinger"],
+	"to_gameselect": ["sfx-lobby-trans-to-gameselect", "stinger"],
+	"accept": ["sfx-ui-jade-match-accept", "big"],
+	"decline": ["sfx-ui-jade-match-decline", "click"],
+	"readycheck_click": ["sfx-readycheck-accept-button-click", "big"],
+	"readycheck_hover": ["sfx-readycheck-accept-button-hover", "hover"],
+	"readycheck_decline": ["sfx-readycheck-decline-button-click", "click"],
+	"readycheck_countdown": ["sfx-readycheck-ringmagic-countdown", "stinger"],
+	"jade_press": ["sfx-ui-jade-buttonpress", "click"],
+	"jade_press1": ["sfx-ui-jade-buttonpress-1", "click"],
+	"jade_locked": ["sfx-ui-jade-buttonlocked", "click"],
+	"openstore": ["sfx-ui-jade-openstore", "click"],
+	# ---- champion select
+	"lockin_hover": ["sfx-cs-lockin-button-hover", "hover"],
+	"lockin": ["sfx-cs-lockin-button-click", "big"],
+	"lock_confirm": ["sfx-ui-jade-champselect-lockchampion", "big"],
+	"lock_done": ["sfx-ui-jade-champselect-lockchampion-confirmed", "big"],
+	"reroll_hover": ["sfx-cs-button-reroll-hover", "hover"],
+	"reroll": ["sfx-cs-button-reroll-click", "big"],
+	"swap": ["sfx-cs-button-swap-click", "click"],
+	"swap_accepted": ["sfx-cs-notif-swaprequest-accepted", "notify"],
+	"swap_declined": ["sfx-cs-notif-swaprequest-declined", "notify"],
+	"swap_request": ["sfx-cs-notif-swaprequest-rcvd", "notify"],
+	"bench": ["sfx-champ-select-bench-update", "notify"],
+	"thumb_click": ["sfx-cs-button-thumbnail-click", "click"],
+	"grid_open": ["sfx-cs-champgrid-button-open", "click"],
+	"grid_close": ["sfx-cs-champgrid-button-close", "click"],
+	"splash_fwd": ["sfx-cs-splash-forward", "click"],
+	"splash_back": ["sfx-cs-splash-back", "click"],
+	"ward_select": ["sfx-cs-ward-select", "click"],
+	"spells_open": ["sfx-cs-spells-open", "click"],
+	"boost_unlocked": ["sfx-cs-notif-boost-unlocked", "notify"],
+	"card_appear": ["sfx-cs-aram-card-2-appear", "stinger"],
+	"card_appear2": ["sfx-cs-aram-card-3-appear", "stinger"],
+	"card_hover": ["sfx-cs-aram-card-hover", "hover"],
+	"card_select": ["sfx-cs-aram-card-select", "stinger"],
+	"tick": ["sfx-cs-timer-tick-small", "tick"],
+	"tick_big": ["sfx-cs-timer-tick", "tick"],
+	"countdown": ["sfx-ui-jade-champselect-countdown-single", "tick"],
+	"countdown10": ["sfx-ui-jade-champselect-countdown10", "tick"],
+	"your_turn": ["sfx-ui-jade-champselect-yourturn", "notify"],
+	"your_pick": ["sfx-cs-draft-notif-yourpick", "notify"],
+	"pick_intro": ["sfx-cs-draft-pick-intro", "stinger"],
+	"cs_exit": ["sfx-ui-jade-champselect-exit", "click"],
+	"browse": ["sfx-ui-jade-champselect-browse-skins", "click"],
+	# ---- end of game
+	"victory": ["sfx-eog-ui-exp-burst", "stinger"],
+	"defeat": ["sfx-eog-ui-exp-burst-negative", "stinger"],
+	"neutral": ["sfx-eog-ui-neutral-burst", "stinger"],
+	"eog": ["sfx-eog-chaos-order", "stinger"],
+	"flare": ["sfx-eog-ui-edge-flare", "stinger"],
+	"consolation": ["sfx-uikit-consolation-stinger", "stinger"],
+	"honor_intro": ["sfx-honor-voting-intro", "stinger"],
+	"honor_team": ["sfx-honor-scoreboard-team-choice", "click"],
+	"honor_cast": ["sfx-honor-vote-cast", "click"],
+	"postgame_level": ["sfx-levelup-postgame-generic", "stinger"],
+	"celebrate_intro": ["sfx-celebrate-notif-intro", "stinger"],
+	"celebrate": ["sfx-vignette-celebration-intro", "stinger"],
+	"celebrate_outro": ["sfx-vignette-celebration-outro", "stinger"],
+	"reward": ["sfx-celebrate-receive-generic", "stinger"],
+	# ---- chat / social
+	"chat_rcvd": ["sfx-ui-jade-chat-message-receive", "notify"],
+	"chat_notif": ["sfx-soc-notif-chat-rcvd", "notify"],
+	"soc_click": ["sfx-soc-ui-click-generic", "click"],
+	"soc_drag": ["sfx-soc-ui-drag", "click"],
+	"soc_drop": ["sfx-soc-ui-drop", "click"],
+	# ---- store buttons (shop agent keeps these names)
+	"buy": ["sfx-purchase-button-click", "big"],
+	"buy_hover": ["sfx-purchase-button-hover", "hover"],
 }
 
 var players: Array = []
 var players3d: Array = []
+var ui_players: Array = []    ## dedicated UI voices (bus "UI")
+var _ui_path: Array = []      ## file currently playing on each UI voice (hovers restart instead of stacking)
+var _ui_rr := 0
 var _cache := {}
+var _req := {}                ## path -> true while a threaded load request is outstanding
+var _gain := {}               ## res:// path -> {peak, rms, len} (tools/lol/ui_audio_gain.py)
 var _last_play := {}          ## name -> time (rate limiting)
+var _last_role := {}          ## role -> time (global per-role rate limit)
+var _log := false             ## --sfxlog: print every UI sound with its resolved gain (verification without ears)
+var stats := {}               ## name/path -> play count (for harnesses)
 var music_a: AudioStreamPlayer
 var music_b: AudioStreamPlayer
 var _music_cur: AudioStreamPlayer = null
@@ -52,12 +164,19 @@ var _layers: Array = []       ## extra synced music layers
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_log = "--sfxlog" in OS.get_cmdline_user_args()
 	_setup_buses()
 	for i in 24:
 		var p := AudioStreamPlayer.new()
 		p.bus = "SFX"
 		add_child(p)
 		players.append(p)
+	for i in 14:
+		var u := AudioStreamPlayer.new()
+		u.bus = "UI"
+		add_child(u)
+		ui_players.append(u)
+		_ui_path.append("")
 	music_a = AudioStreamPlayer.new()
 	music_b = AudioStreamPlayer.new()
 	for m in [music_a, music_b]:
@@ -65,6 +184,29 @@ func _ready() -> void:
 		m.volume_db = -80.0
 		add_child(m)
 	apply_volumes()
+	_load_gain()
+	_prewarm()
+
+
+func _load_gain() -> void:
+	var path := "res://data/audio/ui_gain.json"
+	if FileAccess.file_exists(path):
+		var d = JSON.parse_string(FileAccess.get_file_as_string(path))
+		if d is Dictionary:
+			_gain = d
+
+
+## Every catalog sound is requested on a background thread at boot so the first hover/click never loads from disk.
+func _prewarm() -> void:
+	for k in UI_SOUNDS:
+		var path := _path_of(UI_SOUNDS[k][0])
+		if not _cache.has(path) and not _req.has(path) and ResourceLoader.exists(path):
+			if ResourceLoader.load_threaded_request(path, "", false) == OK:
+				_req[path] = true
+
+
+func _path_of(file: String) -> String:
+	return "res://assets/audio/ui/%s.ogg" % file
 
 
 func _setup_buses() -> void:
@@ -88,7 +230,12 @@ func apply_volumes() -> void:
 func stream(path: String) -> AudioStream:
 	if _cache.has(path):
 		return _cache[path]
-	var s: AudioStream = load(path) if ResourceLoader.exists(path) else null
+	var s: AudioStream = null
+	if _req.has(path):
+		_req.erase(path)
+		s = ResourceLoader.load_threaded_get(path)
+	elif ResourceLoader.exists(path):
+		s = load(path)
 	_cache[path] = s
 	return s
 
@@ -106,28 +253,74 @@ func play(s: AudioStream, volume_db: float = 0.0, pitch: float = 1.0, bus: Strin
 			return
 
 
+## dB to add so this file's measured peak lands on the role's target peak (0 when it was never measured).
+func gain_for(path: String, role: String) -> float:
+	var g = _gain.get(path)
+	if g == null:
+		return 0.0
+	return clampf(float(ROLE_TARGET.get(role, -14.0)) - float(g.get("peak", -14.0)), -12.0, 42.0)
+
+
 ## Named client UI sound (see UI_SOUNDS). Rate-limited so hover spam stays clean.
 func ui(name: String, volume_db: float = 0.0) -> void:
-	var file: String = UI_SOUNDS.get(name, "")
-	if file == "":
+	var e = UI_SOUNDS.get(name)
+	if e == null:
+		if _log:
+			push_warning("Sfx.ui: unknown sound '%s'" % name)
 		return
+	var role: String = e[1]
 	var now := Time.get_ticks_msec()
-	if now - int(_last_play.get(name, -1000)) < 45:
+	if now - int(_last_play.get(name, -1000)) < 30:
+		return
+	if (role == "hover" or role == "tick") and now - int(_last_role.get(role, -1000)) < int(ROLE_GAP_MS.get(role, 25)):
 		return
 	_last_play[name] = now
-	play(stream("res://assets/audio/ui/%s.ogg" % file), volume_db - 4.0, 1.0, "UI")
+	_last_role[role] = now
+	_play_ui(_path_of(e[0]), role, volume_db, name)
 
 
 ## Any UI sound file by path (res://...ogg/.wav), rate-limited per path. Lets each UI area ship its own
-## League sounds (assets/audio/ui/<area>/...) without editing UI_SOUNDS.
-func ui_file(path: String, volume_db: float = 0.0, min_gap_ms: int = 45) -> void:
+## League sounds (assets/audio/ui/<area>/...) without editing UI_SOUNDS. `role` selects the loudness target;
+## files listed in data/audio/ui_gain.json are normalised, anything else plays as authored.
+func ui_file(path: String, volume_db: float = 0.0, min_gap_ms: int = 45, role: String = "click") -> void:
 	var now := Time.get_ticks_msec()
 	if now - int(_last_play.get(path, -1000)) < min_gap_ms:
 		return
 	_last_play[path] = now
+	_play_ui(path, role, volume_db, path)
+
+
+func _play_ui(path: String, role: String, volume_db: float, tag: String) -> void:
 	var s := stream(path)
-	if s != null:
-		play(s, volume_db - 4.0, 1.0, "UI")
+	if s == null:
+		if _log:
+			push_warning("Sfx: missing UI sound %s" % path)
+		return
+	var db := gain_for(path, role) + volume_db
+	# hovers restart their own voice instead of stacking into a wash
+	var idx := -1
+	if role == "hover":
+		idx = _ui_path.find(path)
+		if idx >= 0 and not ui_players[idx].playing:
+			idx = -1
+	if idx < 0:
+		for i in ui_players.size():
+			var k := (_ui_rr + i) % ui_players.size()
+			if not ui_players[k].playing:
+				idx = k
+				break
+	if idx < 0:
+		idx = _ui_rr   # all busy: steal the round-robin voice
+	_ui_rr = (idx + 1) % ui_players.size()
+	var p: AudioStreamPlayer = ui_players[idx]
+	p.stream = s
+	p.volume_db = db
+	p.pitch_scale = 1.0
+	p.play()
+	_ui_path[idx] = path
+	stats[tag] = int(stats.get(tag, 0)) + 1
+	if _log:
+		print("SFX %s [%s] %s vol=%+.1fdB len=%.2fs" % [tag, role, path.get_file(), db, s.get_length()])
 
 
 ## Champion voice / stinger from the client (choose_vo, stinger, ban_vo).
