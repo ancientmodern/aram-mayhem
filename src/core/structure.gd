@@ -89,7 +89,7 @@ func on_died(_killer) -> void:
 	if _idle_fx != null and is_instance_valid(_idle_fx):
 		_idle_fx.stop()
 	var tname := "Order" if team == G.Team.ORDER else "Chaos"
-	var boom := LolVfx.spawn(m, "HA_Order_Inhibitor_Explosion" if is_inhibitor else "HA_Order_Nexus_Explosion", p)
+	var boom := LolVfx.spawn(m, "HA_Order_Inhibitor_Explosion" if is_inhibitor else "HA_Order_Nexus_Explosion", p, {"max_life": 14.0})
 	if is_inhibitor:
 		_timer_fx = LolVfx.attach(self, "HA_%s_Inhibitor_runeTimer" % tname, {"loop": true})
 		LolVfx.attach(self, "HA_%s_Inhibitor_Rubble_dust" % tname)
