@@ -103,7 +103,7 @@
   "selectionHeight": 155.0
  },
  "clips": {
-  "death": {
+  "Death": {
    "type": "Atomic",
    "flags": 8,
    "track": "Default",
@@ -113,12 +113,14 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": false,
      "start": 0.0,
      "sound": "Play_sfx_Jinx_Death3D_cast"
     }
    ]
   },
-  "idle1_base": {
+  "Idle1_Base": {
    "type": "Atomic",
    "flags": 8,
    "track": "Default",
@@ -152,14 +154,16 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#26a07077",
+     "blend_out": 0.20000000298023224
     }
    ]
   },
   "spell2": {
    "type": "Atomic",
    "flags": 8,
-   "track": "spell3",
+   "track": "Spell3",
    "tick": 0.03333299979567528,
    "anim": "spell2",
    "file": "721a849669389518"
@@ -174,14 +178,17 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#26a07077",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.10000000149011612
     }
    ]
   },
   "Spell3_Run": {
    "type": "Atomic",
    "flags": 8,
-   "track": "spell3",
+   "track": "Spell3",
    "mask": "#731cb44a",
    "tick": 0.03333299979567528,
    "anim": "spell3_run",
@@ -210,7 +217,7 @@
    "anim": "attack1",
    "file": "0467734e00b1e4b0"
   },
-  "attack2": {
+  "Attack2": {
    "type": "Atomic",
    "flags": 8,
    "track": "#42395c08",
@@ -256,7 +263,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#26a07077",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.10000000149011612
     }
    ]
   },
@@ -286,6 +296,8 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": false,
      "start": 0.0,
      "sound": "Play_sfx_Jinx_Death3D_cast"
     }
@@ -301,11 +313,14 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 7.0
+     "start": 7.0,
+     "mask": "#26a07077",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
-  "run": {
+  "Run": {
    "type": "Sequencer",
    "list": [
     "#bdaf4563",
@@ -323,7 +338,9 @@
     {
      "type": "ConformToPath",
      "start": 0.0,
-     "end": 1.0
+     "end": 1.0,
+     "mask": "#26a07077",
+     "blend_out": 0.30000001192092896
     }
    ]
   },
@@ -332,9 +349,9 @@
    "flags": 8,
    "list": [
     "#5d9ac533",
-    "idle1_base",
-    "idle1_base",
-    "idle1_base",
+    "Idle1_Base",
+    "Idle1_Base",
+    "Idle1_Base",
     "#914db254"
    ]
   },
@@ -350,7 +367,9 @@
     {
      "type": "ConformToPath",
      "start": 0.0,
-     "end": 1.0
+     "end": 1.0,
+     "mask": "#26a07077",
+     "blend_out": 0.5
     }
    ]
   },
@@ -370,7 +389,7 @@
    "flags": 2,
    "pairs": [
     [
-     "idle1_base",
+     "Idle1_Base",
      90.0
     ],
     [
@@ -412,7 +431,7 @@
   "#c4d3325e": {
    "type": "Atomic",
    "flags": 8,
-   "track": "spell3",
+   "track": "Spell3",
    "tick": 0.03333299979567528,
    "anim": null,
    "xanim": "x/clip_e17752e2",
@@ -429,7 +448,7 @@
   "#f8a62a4b": {
    "type": "Atomic",
    "flags": 8,
-   "track": "spell3",
+   "track": "Spell3",
    "mask": "#68d78255",
    "tick": 0.03333299979567528,
    "anim": null,
@@ -515,7 +534,7 @@
    "xanim": "x/clip_7ed02f50",
    "file": "9129f9e97ed02f50"
   },
-  "dance_loop": {
+  "Dance_Loop": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -525,6 +544,8 @@
    "events": [
     {
      "type": "Sound",
+     "loop": true,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Jinx_Dance3D_loop"
     }
@@ -540,16 +561,18 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Jinx_Dance3D_buffactivate"
     }
    ]
   },
-  "dance": {
+  "Dance": {
    "type": "Sequencer",
    "list": [
     "#caa6e196",
-    "dance_loop"
+    "Dance_Loop"
    ]
   },
   "r_run": {
@@ -571,7 +594,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#26a07077",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.10000000149011612
     }
    ]
   },
@@ -585,40 +611,86 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Jinx_Recall3D_buffactivate"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 45.0,
-     "effect": "#0a9f806c",
+     "name": "#a3aec9fc",
+     "effect": "Jinx_Base_Recall_Bounce_Dust",
+     "key": "Jinx_Recall_Bounce_Dust",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 72.0,
-     "effect": "#0a9f806c",
+     "name": "#a6aeceb5",
+     "effect": "Jinx_Base_Recall_Bounce_Dust",
+     "key": "Jinx_Recall_Bounce_Dust",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 90.0,
-     "effect": "#0a9f806c",
+     "name": "#a5aecd22",
+     "effect": "Jinx_Base_Recall_Bounce_Dust",
+     "key": "Jinx_Recall_Bounce_Dust",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 103.0,
-     "effect": "#0a9f806c",
+     "name": "#a0aec543",
+     "effect": "Jinx_Base_Recall_Bounce_Dust",
+     "key": "Jinx_Recall_Bounce_Dust",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     }
    ]
   },
@@ -632,11 +704,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#b20facf0",
+     "name": "Recall",
+     "effect": "Jinx_Base_Recall_Launch",
+     "key": "Jinx_Recall_Launch",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     }
    ]
   },
@@ -650,26 +733,48 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#1dc9cba7",
+     "name": "#f2718af9",
+     "effect": "Jinx_Base_Recall_Launch_Start",
+     "key": "Jinx_Recall_Launch_Start",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#618b1f9c",
-     "bones": []
+     "name": "#07002de7",
+     "effect": "Jinx_Base_VO_recall",
+     "key": "Jinx_VO_recall",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "jinx"
     },
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Jinx_Recall3D_leadout"
     }
    ]
   },
-  "recall": {
+  "Recall": {
    "type": "Sequencer",
    "flags": 8,
    "list": [
@@ -716,18 +821,29 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#228c331d",
-     "bones": []
+     "name": "#fc0eaccc",
+     "effect": "Jinx_Base_VO_Taunt_Generic",
+     "key": "Jinx_VO_Taunt_Generic",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "jinx"
     },
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Jinx_Taunt3D_buffactivate"
     }
    ]
   },
-  "taunt": {
+  "Taunt": {
    "type": "Sequencer",
    "list": [
     "#b849f242",
@@ -746,7 +862,7 @@
     "#914db254"
    ]
   },
-  "respawn": {
+  "Respawn": {
    "type": "Atomic",
    "flags": 8,
    "track": "Default",
@@ -756,12 +872,17 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Jinx_Respawn3D_buffactivate"
     },
     {
      "type": "JointSnap",
-     "start": 25.0
+     "start": 25.0,
+     "name": "#e3468391",
+     "joint": "Rocket_Launcher",
+     "snap_to": "Rocket_Launcher_World"
     }
    ]
   },
@@ -775,12 +896,17 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Jinx_Winddown3D_buffactivate"
     },
     {
      "type": "JointSnap",
-     "start": 25.0
+     "start": 25.0,
+     "name": "#e3468391",
+     "joint": "Rocket_Launcher",
+     "snap_to": "Rocket_Launcher_World"
     }
    ]
   },
@@ -795,7 +921,9 @@
     {
      "type": "ConformToPath",
      "start": 0.0,
-     "end": 1.0
+     "end": 1.0,
+     "mask": "#26a07077",
+     "blend_out": 0.30000001192092896
     }
    ]
   },
@@ -813,7 +941,7 @@
     ]
    ]
   },
-  "run_fast": {
+  "Run_Fast": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -822,11 +950,14 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#26a07077",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
-  "laugh": {
+  "Laugh": {
    "type": "Sequencer",
    "list": [
     "#b849f242",
@@ -861,6 +992,8 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Jinx_Joke3D_buffactivate"
     }
@@ -875,7 +1008,7 @@
     "#6d50d37c"
    ]
   },
-  "joke": {
+  "Joke": {
    "type": "Sequencer",
    "list": [
     "#b849f242",
@@ -901,9 +1034,18 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#4b73542c",
-     "bones": []
+     "name": "#56eebc91",
+     "effect": "Jinx_Base_VO_laugh_in",
+     "key": "Jinx_VO_laugh_in",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "jinx"
     }
    ]
   },
@@ -916,13 +1058,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#785a85cd",
-     "bones": []
+     "name": "#b1e643a2",
+     "effect": "Jinx_Base_VO_laugh_loop",
+     "key": "Jinx_VO_laugh_loop",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "jinx"
     }
    ]
   },
-  "channel": {
+  "Channel": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -941,12 +1092,23 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#703192a1",
-     "bones": []
+     "name": "#87566c32",
+     "effect": "Jinx_Base_VO_Taunt_Vi",
+     "key": "Jinx_VO_Taunt_Vi",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "jinx"
     },
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Jinx_Taunt23D_buffactivate"
     }
@@ -954,15 +1116,15 @@
   },
   "#c5d333f1": {
    "type": "Atomic",
-   "track": "spell3",
+   "track": "Spell3",
    "tick": 0.03333299979567528,
    "anim": null,
    "xanim": "x/clip_37fb3b60",
    "file": "b0d78c4437fb3b60"
   },
-  "spell3": {
+  "Spell3": {
    "type": "Atomic",
-   "track": "spell3",
+   "track": "Spell3",
    "tick": 0.03333299979567528,
    "anim": "spell3",
    "file": "07f246a1b7dc16a2"
@@ -991,7 +1153,7 @@
     "#eabe175d"
    ]
   },
-  "run_haste": {
+  "Run_Haste": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -1000,7 +1162,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#26a07077",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -1014,7 +1179,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#26a07077",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.10000000149011612
     }
    ]
   },
@@ -1058,11 +1226,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#1dc9cba7",
+     "name": "#f2718af9",
+     "effect": "Jinx_Base_Recall_Launch_Start",
+     "key": "Jinx_Recall_Launch_Start",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     }
    ]
   },
@@ -1077,43 +1256,98 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 25.0,
-     "effect": "#0a9f806c",
+     "name": "#9faec3b0",
+     "effect": "Jinx_Base_Recall_Bounce_Dust",
+     "key": "Jinx_Recall_Bounce_Dust",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 45.0,
-     "effect": "#0a9f806c",
+     "name": "#a3aec9fc",
+     "effect": "Jinx_Base_Recall_Bounce_Dust",
+     "key": "Jinx_Recall_Bounce_Dust",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 50.0,
-     "effect": "#0a9f806c",
+     "name": "#a6aeceb5",
+     "effect": "Jinx_Base_Recall_Bounce_Dust",
+     "key": "Jinx_Recall_Bounce_Dust",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 67.0,
-     "effect": "#0a9f806c",
+     "name": "#a5aecd22",
+     "effect": "Jinx_Base_Recall_Bounce_Dust",
+     "key": "Jinx_Recall_Bounce_Dust",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 80.0,
-     "effect": "#0a9f806c",
+     "name": "#a0aec543",
+     "effect": "Jinx_Base_Recall_Bounce_Dust",
+     "key": "Jinx_Recall_Bounce_Dust",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     }
    ]
   },
@@ -1128,11 +1362,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#b20facf0",
+     "name": "Recall",
+     "effect": "Jinx_Base_Recall_Launch",
+     "key": "Jinx_Recall_Launch",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Rocket_Launcher"
+      }
+     ],
      "bones": [
-      710597176
-     ]
+      "Cstm_Buffbone_Rocket_Launcher"
+     ],
+     "set": "jinx"
     }
    ]
   },
@@ -1156,12 +1401,23 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#b4a61f18",
-     "bones": []
+     "name": "#7388cbb9",
+     "effect": "Jinx_Base_VO_Taunt_Caitlyn",
+     "key": "Jinx_VO_Taunt_Caitlyn",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "jinx"
     },
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Jinx_Taunt23D_buffactivate"
     }
@@ -1186,7 +1442,10 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#0092b9c4",
+     "joint": "Buffbone_Glb_Weapon_1",
+     "snap_to": "Cstm_Buffbone_Rocket_Launcher"
     }
    ]
   },
@@ -1202,7 +1461,10 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#0092b9c4",
+     "joint": "Buffbone_Glb_Weapon_1",
+     "snap_to": "Cstm_Buffbone_Minigun"
     }
    ]
   },
@@ -1225,227 +1487,228 @@
    ]
   }
  },
+ "idle_particles": [],
  "blends": {
   "r_death>r_death": 0.0,
-  "r_death>death": 0.0,
+  "r_death>Death": 0.0,
   "r_death>#f8a62a4b": 0.0,
   "#0320b469>#0320b469": 0.0,
-  "#0320b469>death": 0.0,
+  "#0320b469>Death": 0.0,
   "#0320b469>#f8a62a4b": 0.0,
-  "#0356ec6e>death": 0.0,
-  "#0488fc41>death": 0.0,
+  "#0356ec6e>Death": 0.0,
+  "#0488fc41>Death": 0.0,
   "#05808276>#05808276": 0.0,
-  "#05808276>death": 0.0,
+  "#05808276>Death": 0.0,
   "#05808276>#f8a62a4b": 0.0,
   "taunt_base>taunt_base": 0.0,
-  "taunt_base>death": 0.0,
+  "taunt_base>Death": 0.0,
   "taunt_base>#f8a62a4b": 0.0,
   "#0fd7fa17>#0fd7fa17": 0.0,
-  "#0fd7fa17>death": 0.0,
+  "#0fd7fa17>Death": 0.0,
   "#0fd7fa17>#f8a62a4b": 0.0,
   "recall_base>recall_base": 0.0,
-  "recall_base>death": 0.0,
+  "recall_base>Death": 0.0,
   "recall_base>#f8a62a4b": 0.0,
   "#1b1b305c>#1b1b305c": 0.0,
-  "#1b1b305c>death": 0.0,
+  "#1b1b305c>Death": 0.0,
   "#1b1b305c>#f8a62a4b": 0.0,
   "#1d39abef>#1d39abef": 0.0,
-  "#1d39abef>death": 0.0,
+  "#1d39abef>Death": 0.0,
   "#1d39abef>#f8a62a4b": 0.0,
-  "dance_loop>dance_loop": 0.0,
-  "dance_loop>death": 0.0,
-  "dance_loop>#f8a62a4b": 0.0,
+  "Dance_Loop>Dance_Loop": 0.0,
+  "Dance_Loop>Death": 0.0,
+  "Dance_Loop>#f8a62a4b": 0.0,
   "#21237563>#21237563": 0.0,
-  "#21237563>death": 0.0,
+  "#21237563>Death": 0.0,
   "#21237563>#f8a62a4b": 0.0,
-  "channel>channel": 0.0,
-  "channel>death": 0.0,
-  "channel>#f8a62a4b": 0.0,
+  "Channel>Channel": 0.0,
+  "Channel>Death": 0.0,
+  "Channel>#f8a62a4b": 0.0,
   "#267519f9>#267519f9": 0.0,
-  "#267519f9>death": 0.0,
-  "run_haste>death": 0.0,
-  "run>run": 0.0,
-  "run>death": 0.0,
+  "#267519f9>Death": 0.0,
+  "Run_Haste>Death": 0.0,
+  "Run>Run": 0.0,
+  "Run>Death": 0.0,
   "#2ec639bb>#2ec639bb": 0.0,
-  "#2ec639bb>death": 0.0,
+  "#2ec639bb>Death": 0.0,
   "r_run_base>r_run_base": 0.0,
-  "r_run_base>death": 0.0,
+  "r_run_base>Death": 0.0,
   "r_run_base>#f8a62a4b": 0.0,
-  "#36bb1bc8>death": 0.0,
+  "#36bb1bc8>Death": 0.0,
   "#390c6e04>#390c6e04": 0.0,
-  "#390c6e04>death": 0.0,
+  "#390c6e04>Death": 0.0,
   "#390c6e04>#f8a62a4b": 0.0,
   "Recall_Leadout>Recall_Leadout": 0.0,
-  "Recall_Leadout>death": 0.0,
+  "Recall_Leadout>Death": 0.0,
   "Recall_Leadout>#f8a62a4b": 0.0,
   "#4354dad7>#4354dad7": 0.0,
-  "#4354dad7>death": 0.0,
+  "#4354dad7>Death": 0.0,
   "#441e6f5d>#441e6f5d": 0.0,
-  "#441e6f5d>death": 0.0,
+  "#441e6f5d>Death": 0.0,
   "#4aacc3f2>#4aacc3f2": 0.0,
-  "#4aacc3f2>death": 0.0,
+  "#4aacc3f2>Death": 0.0,
   "#4df82740>#4df82740": 0.0,
-  "#4df82740>death": 0.0,
+  "#4df82740>Death": 0.0,
   "attack5>attack5": 0.0,
-  "attack5>death": 0.0,
+  "attack5>Death": 0.0,
   "attack5>#f8a62a4b": 0.0,
   "#5316001f>#5316001f": 0.0,
-  "#5316001f>death": 0.0,
+  "#5316001f>Death": 0.0,
   "#5316001f>#f8a62a4b": 0.0,
   "attack4>attack4": 0.0,
-  "attack4>death": 0.0,
+  "attack4>Death": 0.0,
   "attack4>#f8a62a4b": 0.0,
   "#55b1e791>#55b1e791": 0.0,
-  "#55b1e791>death": 0.0,
+  "#55b1e791>Death": 0.0,
   "#55b1e791>#f8a62a4b": 0.0,
   "attack1>attack1": 0.0,
-  "attack1>death": 0.0,
+  "attack1>Death": 0.0,
   "attack1>Spell3_Run": 5.0,
   "attack1>#f8a62a4b": 0.0,
   "attack3>attack3": 0.0,
-  "attack3>death": 0.0,
+  "attack3>Death": 0.0,
   "attack3>Spell3_Run": 5.0,
   "attack3>#f8a62a4b": 0.0,
-  "attack2>attack2": 0.0,
-  "attack2>death": 0.0,
-  "attack2>Spell3_Run": 5.0,
-  "attack2>#f8a62a4b": 0.0,
-  "#5a527c0b>death": 0.0,
-  "recall>recall": 0.0,
-  "recall>death": 0.0,
+  "Attack2>Attack2": 0.0,
+  "Attack2>Death": 0.0,
+  "Attack2>Spell3_Run": 5.0,
+  "Attack2>#f8a62a4b": 0.0,
+  "#5a527c0b>Death": 0.0,
+  "Recall>Recall": 0.0,
+  "Recall>Death": 0.0,
   "#5cfd20f5>#5cfd20f5": 0.0,
-  "#5cfd20f5>death": 0.0,
+  "#5cfd20f5>Death": 0.0,
   "#5cfd20f5>#f8a62a4b": 0.0,
   "#5d9ac533>#5d9ac533": 0.0,
-  "#5d9ac533>death": 0.0,
+  "#5d9ac533>Death": 0.0,
   "#5dadf217>#5dadf217": 0.0,
-  "#5dadf217>death": 0.0,
+  "#5dadf217>Death": 0.0,
   "#5dadf217>#f8a62a4b": 0.0,
-  "#5f2e0306>death": 0.0,
+  "#5f2e0306>Death": 0.0,
   "#622bd465>#622bd465": 0.0,
-  "#622bd465>death": 0.0,
+  "#622bd465>Death": 0.0,
   "r_run>r_run": 0.0,
-  "r_run>death": 0.0,
+  "r_run>Death": 0.0,
   "r_attack2>r_attack2": 0.10000000149011612,
-  "r_attack2>death": 0.10000000149011612,
+  "r_attack2>Death": 0.10000000149011612,
   "r_attack2>#f8a62a4b": 0.10000000149011612,
   "r_attack1>r_attack1": 0.10000000149011612,
-  "r_attack1>death": 0.10000000149011612,
+  "r_attack1>Death": 0.10000000149011612,
   "r_attack1>#f8a62a4b": 0.10000000149011612,
-  "stunned>death": 0.0,
-  "idle1_base>idle1_base": 0.0,
-  "idle1_base>death": 0.0,
-  "idle1_base>#f8a62a4b": 0.0,
+  "stunned>Death": 0.0,
+  "Idle1_Base>Idle1_Base": 0.0,
+  "Idle1_Base>Death": 0.0,
+  "Idle1_Base>#f8a62a4b": 0.0,
   "#6d50d37c>#6d50d37c": 0.0,
-  "#6d50d37c>death": 0.0,
+  "#6d50d37c>Death": 0.0,
   "idle3_base>idle3_base": 0.0,
-  "idle3_base>death": 0.0,
+  "idle3_base>Death": 0.0,
   "idle3_base>#f8a62a4b": 0.0,
-  "#7715e3e6>death": 0.0,
-  "#9028089f>death": 0.0,
+  "#7715e3e6>Death": 0.0,
+  "#9028089f>Death": 0.0,
   "#909da5ab>#909da5ab": 0.0,
-  "#909da5ab>death": 0.0,
+  "#909da5ab>Death": 0.0,
   "#909da5ab>#f8a62a4b": 0.0,
   "#914db254>#914db254": 0.0,
-  "#914db254>death": 0.0,
-  "#95ba6117>death": 0.0,
+  "#914db254>Death": 0.0,
+  "#95ba6117>Death": 0.0,
   "laugh_loop>laugh_loop": 0.0,
-  "laugh_loop>death": 0.0,
+  "laugh_loop>Death": 0.0,
   "laugh_loop>#f8a62a4b": 0.0,
-  "#998c286c>death": 0.0,
+  "#998c286c>Death": 0.0,
   "joke_base>joke_base": 0.0,
-  "joke_base>death": 0.0,
+  "joke_base>Death": 0.0,
   "joke_base>#f8a62a4b": 0.0,
   "idle1>idle1": 0.0,
-  "idle1>death": 0.0,
-  "respawn>respawn": 0.0,
-  "respawn>death": 0.0,
-  "respawn>#bdaf4563": 0.0,
-  "respawn>#d003b624": 0.0,
-  "respawn>#f8a62a4b": 0.0,
+  "idle1>Death": 0.0,
+  "Respawn>Respawn": 0.0,
+  "Respawn>Death": 0.0,
+  "Respawn>#bdaf4563": 0.0,
+  "Respawn>#d003b624": 0.0,
+  "Respawn>#f8a62a4b": 0.0,
   "Channel_Wndup>Channel_Wndup": 0.0,
-  "Channel_Wndup>death": 0.0,
+  "Channel_Wndup>Death": 0.0,
   "Channel_Wndup>#f8a62a4b": 0.0,
   "#a6f38079>#a6f38079": 0.0,
-  "#a6f38079>death": 0.0,
+  "#a6f38079>Death": 0.0,
   "#a6f38079>#f8a62a4b": 0.0,
-  "run_fast>run_fast": 0.0,
-  "run_fast>death": 0.0,
-  "run_fast>#f8a62a4b": 0.0,
+  "Run_Fast>Run_Fast": 0.0,
+  "Run_Fast>Death": 0.0,
+  "Run_Fast>#f8a62a4b": 0.0,
   "#a7d08706>#a7d08706": 0.0,
-  "#a7d08706>death": 0.0,
+  "#a7d08706>Death": 0.0,
   "#a7d08706>#f8a62a4b": 0.0,
   "laugh_in>laugh_in": 0.0,
-  "laugh_in>death": 0.0,
+  "laugh_in>Death": 0.0,
   "laugh_in>#f8a62a4b": 0.0,
   "Recall_Winddown>Recall_Winddown": 0.0,
-  "Recall_Winddown>death": 0.0,
+  "Recall_Winddown>Death": 0.0,
   "Recall_Winddown>#bdaf4563": 0.0,
   "Recall_Winddown>#d003b624": 0.0,
   "Recall_Winddown>#f8a62a4b": 0.0,
-  "#aabc447a>death": 0.0,
+  "#aabc447a>Death": 0.0,
   "#adc1b4e7>#adc1b4e7": 0.0,
-  "#adc1b4e7>death": 0.0,
+  "#adc1b4e7>Death": 0.0,
   "#adc1b4e7>#f8a62a4b": 0.0,
   "Spell1>Spell1": 0.0,
-  "Spell1>death": 0.0,
-  "spell3>spell3": 0.0,
-  "spell3>death": 0.0,
-  "spell3>#f8a62a4b": 0.0,
+  "Spell1>Death": 0.0,
+  "Spell3>Spell3": 0.0,
+  "Spell3>Death": 0.0,
+  "Spell3>#f8a62a4b": 0.0,
   "spell2>spell2": 0.0,
-  "spell2>death": 0.0,
+  "spell2>Death": 0.0,
   "spell2>#f8a62a4b": 0.0,
-  "laugh>laugh": 0.0,
-  "laugh>death": 0.0,
+  "Laugh>Laugh": 0.0,
+  "Laugh>Death": 0.0,
   "Spell4>Spell4": 0.0,
-  "Spell4>death": 0.0,
+  "Spell4>Death": 0.0,
   "Spell4>#f8a62a4b": 0.0,
   "#b849f242>#b849f242": 0.0,
-  "#b849f242>death": 0.0,
+  "#b849f242>Death": 0.0,
   "#b849f242>#f8a62a4b": 0.0,
   "r_idle1>r_idle1": 0.0,
-  "r_idle1>death": 0.0,
-  "taunt>taunt": 0.0,
-  "taunt>death": 0.0,
-  "death>death": 0.0,
-  "death>#f8a62a4b": 0.0,
-  "#bdaf4563>death": 0.0,
+  "r_idle1>Death": 0.0,
+  "Taunt>Taunt": 0.0,
+  "Taunt>Death": 0.0,
+  "Death>Death": 0.0,
+  "Death>#f8a62a4b": 0.0,
+  "#bdaf4563>Death": 0.0,
   "#bdaf4563>#bdaf4563": 0.0,
   "#bdaf4563>#f8a62a4b": 0.0,
-  "joke>death": 0.0,
-  "joke>joke": 0.0,
-  "#c3d330cb>death": 0.0,
+  "Joke>Death": 0.0,
+  "Joke>Joke": 0.0,
+  "#c3d330cb>Death": 0.0,
   "#c3d330cb>#c3d330cb": 0.0,
-  "#c4d3325e>death": 0.0,
+  "#c4d3325e>Death": 0.0,
   "#c4d3325e>#c4d3325e": 0.0,
   "#c4d3325e>#f8a62a4b": 0.0,
-  "#c5d333f1>death": 0.0,
+  "#c5d333f1>Death": 0.0,
   "#c5d333f1>#c5d333f1": 0.0,
   "#c5d333f1>#f8a62a4b": 0.0,
-  "#c6d33584>death": 0.0,
+  "#c6d33584>Death": 0.0,
   "#c6d33584>#c6d33584": 0.0,
   "#c6d33584>#f8a62a4b": 0.0,
-  "#caa6e196>death": 0.0,
+  "#caa6e196>Death": 0.0,
   "#caa6e196>#caa6e196": 0.0,
   "#caa6e196>#f8a62a4b": 0.0,
-  "#caf10417>death": 0.0,
-  "#cceaa86e>death": 0.0,
+  "#caf10417>Death": 0.0,
+  "#cceaa86e>Death": 0.0,
   "#cceaa86e>#cceaa86e": 0.0,
   "#cceaa86e>#f8a62a4b": 0.0,
-  "#cec76c2e>death": 0.0,
-  "#d003b624>death": 0.0,
+  "#cec76c2e>Death": 0.0,
+  "#d003b624>Death": 0.0,
   "#d003b624>#f8a62a4b": 0.0,
-  "idle2_base>death": 0.0,
+  "idle2_base>Death": 0.0,
   "idle2_base>idle2_base": 0.0,
   "idle2_base>#f8a62a4b": 0.0,
-  "#ea5ada43>death": 0.0,
+  "#ea5ada43>Death": 0.0,
   "#ea5ada43>#ea5ada43": 0.0,
   "#ea5ada43>#f8a62a4b": 0.0,
-  "#eabe175d>death": 0.0,
-  "#eb5adbd6>death": 0.0,
+  "#eabe175d>Death": 0.0,
+  "#eb5adbd6>Death": 0.0,
   "#eb5adbd6>#eb5adbd6": 0.0,
   "#eb5adbd6>#f8a62a4b": 0.0,
-  "Run_Base>death": 0.0,
+  "Run_Base>Death": 0.0,
   "Run_Base>Run_Base": 0.0,
   "Run_Base>#f8a62a4b": 0.0,
   "Spell3_Run>r_death": 0.0,
@@ -1456,9 +1719,9 @@
   "Spell3_Run>recall_base": 0.0,
   "Spell3_Run>#1b1b305c": 0.0,
   "Spell3_Run>#1d39abef": 0.0,
-  "Spell3_Run>dance_loop": 0.0,
+  "Spell3_Run>Dance_Loop": 0.0,
   "Spell3_Run>#21237563": 0.0,
-  "Spell3_Run>channel": 0.0,
+  "Spell3_Run>Channel": 0.0,
   "Spell3_Run>r_run_base": 0.0,
   "Spell3_Run>#390c6e04": 0.0,
   "Spell3_Run>Recall_Leadout": 0.0,
@@ -1468,29 +1731,29 @@
   "Spell3_Run>#55b1e791": 0.0,
   "Spell3_Run>attack1": 5.0,
   "Spell3_Run>attack3": 5.0,
-  "Spell3_Run>attack2": 5.0,
+  "Spell3_Run>Attack2": 5.0,
   "Spell3_Run>#5cfd20f5": 0.0,
   "Spell3_Run>#5dadf217": 0.0,
   "Spell3_Run>r_attack2": 0.10000000149011612,
   "Spell3_Run>r_attack1": 0.10000000149011612,
-  "Spell3_Run>idle1_base": 0.0,
+  "Spell3_Run>Idle1_Base": 0.0,
   "Spell3_Run>idle3_base": 0.0,
   "Spell3_Run>#909da5ab": 0.0,
   "Spell3_Run>laugh_loop": 0.0,
   "Spell3_Run>joke_base": 0.0,
-  "Spell3_Run>respawn": 0.0,
+  "Spell3_Run>Respawn": 0.0,
   "Spell3_Run>Channel_Wndup": 0.0,
   "Spell3_Run>#a6f38079": 0.0,
-  "Spell3_Run>run_fast": 0.0,
+  "Spell3_Run>Run_Fast": 0.0,
   "Spell3_Run>#a7d08706": 0.0,
   "Spell3_Run>laugh_in": 0.0,
   "Spell3_Run>Recall_Winddown": 0.0,
   "Spell3_Run>#adc1b4e7": 0.0,
-  "Spell3_Run>spell3": 0.0,
+  "Spell3_Run>Spell3": 0.0,
   "Spell3_Run>spell2": 0.0,
   "Spell3_Run>Spell4": 0.0,
   "Spell3_Run>#b849f242": 0.0,
-  "Spell3_Run>death": 0.0,
+  "Spell3_Run>Death": 0.0,
   "Spell3_Run>#bdaf4563": 0.0,
   "Spell3_Run>#c4d3325e": 0.0,
   "Spell3_Run>#c5d333f1": 0.0,
@@ -1504,15 +1767,15 @@
   "Spell3_Run>Run_Base": 0.0,
   "Spell3_Run>Spell3_Run": 0.0,
   "Spell3_Run>#f8a62a4b": 0.0,
-  "dance>death": 0.0,
-  "dance>dance": 0.0,
-  "#f8a62a4b>death": 0.0,
+  "Dance>Death": 0.0,
+  "Dance>Dance": 0.0,
+  "#f8a62a4b>Death": 0.0,
   "#f8a62a4b>#f8a62a4b": 0.0,
-  "#fb7159de>death": 0.0,
+  "#fb7159de>Death": 0.0,
   "attack1>r_attack1": 0.10000000149011612,
   "attack1>r_attack2": 0.10000000149011612,
-  "attack2>r_attack1": 0.10000000149011612,
-  "attack2>r_attack2": 0.10000000149011612,
+  "Attack2>r_attack1": 0.10000000149011612,
+  "Attack2>r_attack2": 0.10000000149011612,
   "attack3>r_attack1": 0.10000000149011612,
   "attack3>r_attack2": 0.10000000149011612,
   "attack4>r_attack1": 0.10000000149011612,
@@ -1521,16 +1784,16 @@
   "attack5>r_attack2": 0.10000000149011612,
   "#55b1e791>r_attack1": 0.10000000149011612,
   "#55b1e791>r_attack2": 0.10000000149011612,
-  "channel>r_attack1": 0.10000000149011612,
-  "channel>r_attack2": 0.10000000149011612,
+  "Channel>r_attack1": 0.10000000149011612,
+  "Channel>r_attack2": 0.10000000149011612,
   "Channel_Wndup>r_attack1": 0.10000000149011612,
   "Channel_Wndup>r_attack2": 0.10000000149011612,
-  "dance_loop>r_attack1": 0.10000000149011612,
-  "dance_loop>r_attack2": 0.10000000149011612,
+  "Dance_Loop>r_attack1": 0.10000000149011612,
+  "Dance_Loop>r_attack2": 0.10000000149011612,
   "#caa6e196>r_attack1": 0.10000000149011612,
   "#caa6e196>r_attack2": 0.10000000149011612,
-  "death>r_attack1": 0.10000000149011612,
-  "death>r_attack2": 0.10000000149011612,
+  "Death>r_attack1": 0.10000000149011612,
+  "Death>r_attack2": 0.10000000149011612,
   "#7715e3e6>r_attack1": 0.10000000149011612,
   "#7715e3e6>r_attack2": 0.10000000149011612,
   "#fb7159de>r_attack1": 0.10000000149011612,
@@ -1545,8 +1808,8 @@
   "#390c6e04>r_attack2": 0.10000000149011612,
   "#0320b469>r_attack1": 0.10000000149011612,
   "#0320b469>r_attack2": 0.10000000149011612,
-  "idle1_base>r_attack1": 0.10000000149011612,
-  "idle1_base>r_attack2": 0.10000000149011612,
+  "Idle1_Base>r_attack1": 0.10000000149011612,
+  "Idle1_Base>r_attack2": 0.10000000149011612,
   "idle2_base>r_attack1": 0.10000000149011612,
   "idle2_base>r_attack2": 0.10000000149011612,
   "idle3_base>r_attack1": 0.10000000149011612,
@@ -1588,21 +1851,21 @@
   "#1b1b305c>r_attack1": 0.10000000149011612,
   "Recall_Leadout>r_attack1": 0.10000000149011612,
   "Recall_Winddown>r_attack1": 0.10000000149011612,
-  "respawn>r_attack1": 0.10000000149011612,
+  "Respawn>r_attack1": 0.10000000149011612,
   "#36bb1bc8>r_attack1": 0.10000000149011612,
   "#05808276>r_attack1": 0.10000000149011612,
   "#5cfd20f5>r_attack1": 0.10000000149011612,
   "#2ec639bb>r_attack1": 0.10000000149011612,
   "Run_Base>r_attack1": 0.10000000149011612,
-  "run_fast>r_attack1": 0.10000000149011612,
-  "run_haste>r_attack1": 0.10000000149011612,
+  "Run_Fast>r_attack1": 0.10000000149011612,
+  "Run_Haste>r_attack1": 0.10000000149011612,
   "#bdaf4563>r_attack1": 0.10000000149011612,
   "#5316001f>r_attack1": 0.10000000149011612,
   "#0fd7fa17>r_attack1": 0.10000000149011612,
   "#1d39abef>r_attack1": 0.10000000149011612,
   "#adc1b4e7>r_attack1": 0.10000000149011612,
   "spell2>r_attack1": 0.10000000149011612,
-  "spell3>r_attack1": 0.10000000149011612,
+  "Spell3>r_attack1": 0.10000000149011612,
   "r_death>r_attack2": 0.10000000149011612,
   "#a6f38079>r_attack2": 0.10000000149011612,
   "#6d50d37c>r_attack2": 0.10000000149011612,
@@ -1620,21 +1883,21 @@
   "#1b1b305c>r_attack2": 0.10000000149011612,
   "Recall_Leadout>r_attack2": 0.10000000149011612,
   "Recall_Winddown>r_attack2": 0.10000000149011612,
-  "respawn>r_attack2": 0.10000000149011612,
+  "Respawn>r_attack2": 0.10000000149011612,
   "#36bb1bc8>r_attack2": 0.10000000149011612,
   "#05808276>r_attack2": 0.10000000149011612,
   "#5cfd20f5>r_attack2": 0.10000000149011612,
   "#2ec639bb>r_attack2": 0.10000000149011612,
   "Run_Base>r_attack2": 0.10000000149011612,
-  "run_fast>r_attack2": 0.10000000149011612,
-  "run_haste>r_attack2": 0.10000000149011612,
+  "Run_Fast>r_attack2": 0.10000000149011612,
+  "Run_Haste>r_attack2": 0.10000000149011612,
   "#bdaf4563>r_attack2": 0.10000000149011612,
   "#5316001f>r_attack2": 0.10000000149011612,
   "#0fd7fa17>r_attack2": 0.10000000149011612,
   "#1d39abef>r_attack2": 0.10000000149011612,
   "#adc1b4e7>r_attack2": 0.10000000149011612,
   "spell2>r_attack2": 0.10000000149011612,
-  "spell3>r_attack2": 0.10000000149011612,
+  "Spell3>r_attack2": 0.10000000149011612,
   "Spell4>r_attack1": 0.10000000149011612,
   "Spell4>r_attack2": 0.10000000149011612,
   "stunned>r_attack1": 0.10000000149011612,
@@ -1647,25 +1910,25 @@
   "#909da5ab>r_attack2": 0.10000000149011612,
   "r_attack1>*": 0.10000000149011612,
   "r_attack1>attack1": 0.10000000149011612,
-  "r_attack1>attack2": 0.10000000149011612,
+  "r_attack1>Attack2": 0.10000000149011612,
   "r_attack1>attack3": 0.10000000149011612,
   "r_attack1>attack4": 0.10000000149011612,
   "r_attack1>attack5": 0.10000000149011612,
   "r_attack1>#55b1e791": 0.10000000149011612,
-  "r_attack1>channel": 0.10000000149011612,
+  "r_attack1>Channel": 0.10000000149011612,
   "r_attack1>Channel_Wndup": 0.10000000149011612,
-  "r_attack1>dance_loop": 0.10000000149011612,
+  "r_attack1>Dance_Loop": 0.10000000149011612,
   "r_attack1>#caa6e196": 0.10000000149011612,
   "r_attack2>*": 0.10000000149011612,
   "r_attack2>attack1": 0.10000000149011612,
-  "r_attack2>attack2": 0.10000000149011612,
+  "r_attack2>Attack2": 0.10000000149011612,
   "r_attack2>attack3": 0.10000000149011612,
   "r_attack2>attack4": 0.10000000149011612,
   "r_attack2>attack5": 0.10000000149011612,
   "r_attack2>#55b1e791": 0.10000000149011612,
-  "r_attack2>channel": 0.10000000149011612,
+  "r_attack2>Channel": 0.10000000149011612,
   "r_attack2>Channel_Wndup": 0.10000000149011612,
-  "r_attack2>dance_loop": 0.10000000149011612,
+  "r_attack2>Dance_Loop": 0.10000000149011612,
   "r_attack2>#caa6e196": 0.10000000149011612,
   "r_attack1>#7715e3e6": 0.10000000149011612,
   "r_attack1>#fb7159de": 0.10000000149011612,
@@ -1674,7 +1937,7 @@
   "r_attack1>#5dadf217": 0.10000000149011612,
   "r_attack1>#390c6e04": 0.10000000149011612,
   "r_attack1>#0320b469": 0.10000000149011612,
-  "r_attack1>idle1_base": 0.10000000149011612,
+  "r_attack1>Idle1_Base": 0.10000000149011612,
   "r_attack1>idle2_base": 0.10000000149011612,
   "r_attack1>idle3_base": 0.10000000149011612,
   "r_attack1>#914db254": 0.10000000149011612,
@@ -1693,7 +1956,7 @@
   "r_attack2>#5dadf217": 0.10000000149011612,
   "r_attack2>#390c6e04": 0.10000000149011612,
   "r_attack2>#0320b469": 0.10000000149011612,
-  "r_attack2>idle1_base": 0.10000000149011612,
+  "r_attack2>Idle1_Base": 0.10000000149011612,
   "r_attack2>idle2_base": 0.10000000149011612,
   "r_attack2>idle3_base": 0.10000000149011612,
   "r_attack2>#914db254": 0.10000000149011612,
@@ -1721,21 +1984,21 @@
   "r_attack1>#1b1b305c": 0.10000000149011612,
   "r_attack1>Recall_Leadout": 0.10000000149011612,
   "r_attack1>Recall_Winddown": 0.10000000149011612,
-  "r_attack1>respawn": 0.10000000149011612,
+  "r_attack1>Respawn": 0.10000000149011612,
   "r_attack1>#36bb1bc8": 0.10000000149011612,
   "r_attack1>#05808276": 0.10000000149011612,
   "r_attack1>#5cfd20f5": 0.10000000149011612,
   "r_attack1>#2ec639bb": 0.10000000149011612,
   "r_attack1>Run_Base": 0.10000000149011612,
-  "r_attack1>run_fast": 0.10000000149011612,
-  "r_attack1>run_haste": 0.10000000149011612,
+  "r_attack1>Run_Fast": 0.10000000149011612,
+  "r_attack1>Run_Haste": 0.10000000149011612,
   "r_attack1>#bdaf4563": 0.10000000149011612,
   "r_attack1>#5316001f": 0.10000000149011612,
   "r_attack1>#0fd7fa17": 0.10000000149011612,
   "r_attack1>#1d39abef": 0.10000000149011612,
   "r_attack1>#adc1b4e7": 0.10000000149011612,
   "r_attack1>spell2": 0.10000000149011612,
-  "r_attack1>spell3": 0.10000000149011612,
+  "r_attack1>Spell3": 0.10000000149011612,
   "r_attack1>Spell3_Run": 0.10000000149011612,
   "r_attack1>Spell4": 0.10000000149011612,
   "r_attack1>stunned": 0.10000000149011612,
@@ -1758,21 +2021,21 @@
   "r_attack2>#1b1b305c": 0.10000000149011612,
   "r_attack2>Recall_Leadout": 0.10000000149011612,
   "r_attack2>Recall_Winddown": 0.10000000149011612,
-  "r_attack2>respawn": 0.10000000149011612,
+  "r_attack2>Respawn": 0.10000000149011612,
   "r_attack2>#36bb1bc8": 0.10000000149011612,
   "r_attack2>#05808276": 0.10000000149011612,
   "r_attack2>#5cfd20f5": 0.10000000149011612,
   "r_attack2>#2ec639bb": 0.10000000149011612,
   "r_attack2>Run_Base": 0.10000000149011612,
-  "r_attack2>run_fast": 0.10000000149011612,
-  "r_attack2>run_haste": 0.10000000149011612,
+  "r_attack2>Run_Fast": 0.10000000149011612,
+  "r_attack2>Run_Haste": 0.10000000149011612,
   "r_attack2>#bdaf4563": 0.10000000149011612,
   "r_attack2>#5316001f": 0.10000000149011612,
   "r_attack2>#0fd7fa17": 0.10000000149011612,
   "r_attack2>#1d39abef": 0.10000000149011612,
   "r_attack2>#adc1b4e7": 0.10000000149011612,
   "r_attack2>spell2": 0.10000000149011612,
-  "r_attack2>spell3": 0.10000000149011612,
+  "r_attack2>Spell3": 0.10000000149011612,
   "r_attack2>Spell3_Run": 0.10000000149011612,
   "r_attack2>Spell4": 0.10000000149011612,
   "r_attack2>stunned": 0.10000000149011612,
@@ -1784,7 +2047,7 @@
   "#bdaf4563>r_run_base": 0.0,
   "#bdaf4563>#5a527c0b": 0.0,
   "Spell4>*": 0.10000000149011612,
-  "Spell4>idle1_base": 0.0,
+  "Spell4>Idle1_Base": 0.0,
   "Spell4>idle2_base": 0.0,
   "Spell4>idle3_base": 0.0
  },
@@ -1794,7 +2057,7 @@
    "blend_mode": null,
    "weight": null
   },
-  "spell3": {
+  "Spell3": {
    "priority": 1,
    "blend_mode": null,
    "weight": null

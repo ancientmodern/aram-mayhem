@@ -21,7 +21,7 @@
   "healthBarHeight": 52.0
  },
  "clips": {
-  "attack1_base": {
+  "Attack1_Base": {
    "type": "Atomic",
    "track": "Default",
    "anim": "attack1",
@@ -47,7 +47,7 @@
    "xanim": "x/clip_d716a4f7",
    "file": "41bd2788d716a4f7"
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "anim": "death",
@@ -61,7 +61,14 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
+     "name": "#bcf25d27",
+     "pairs": [
+      {}
+     ],
      "bones": []
     }
    ]
@@ -72,7 +79,7 @@
    "anim": "idle1",
    "file": "ec880df31400e40c"
   },
-  "run": {
+  "Run": {
    "type": "Atomic",
    "track": "Default",
    "anim": "run",
@@ -94,7 +101,7 @@
    "type": "Selector",
    "pairs": [
     [
-     "attack1_base",
+     "Attack1_Base",
      40.0
     ],
     [
@@ -114,19 +121,20 @@
    "file": "a0ad63209d1f287f"
   }
  },
+ "idle_particles": [],
  "blends": {
-  "attack3_base>death": 0.0,
-  "run>death": 0.0,
-  "#3f1534b8>death": 0.0,
-  "#42153971>death": 0.0,
-  "Death2>death": 0.0,
-  "attack1>death": 0.0,
-  "stunned>death": 0.0,
-  "Attack2_Base>death": 0.0,
-  "idle1>death": 0.0,
-  "#9e66faeb>death": 0.0,
-  "death>death": 0.0,
-  "attack1_base>death": 0.0
+  "attack3_base>Death": 0.0,
+  "Run>Death": 0.0,
+  "#3f1534b8>Death": 0.0,
+  "#42153971>Death": 0.0,
+  "Death2>Death": 0.0,
+  "attack1>Death": 0.0,
+  "stunned>Death": 0.0,
+  "Attack2_Base>Death": 0.0,
+  "idle1>Death": 0.0,
+  "#9e66faeb>Death": 0.0,
+  "Death>Death": 0.0,
+  "Attack1_Base>Death": 0.0
  },
  "tracks": {
   "Default": {

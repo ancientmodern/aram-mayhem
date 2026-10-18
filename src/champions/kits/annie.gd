@@ -18,10 +18,8 @@ func build_kit() -> void:
 	# AnnieE has no cooldown in the extracted data (live: 14/13/12/11/10)
 	c.abilities[2].cooldowns = [14.0, 13.0, 12.0, 11.0, 10.0]
 	c.add_effect(TibbersPen.new(c.abilities[3]))
-	# Skin particles (SkinCharacterDataProperties / animation events): the flame in her hand idles at the custom
-	# Idle_Fire bone and flares on every attack (Idle_cas)
-	c.add_effect(K.IdleFx.new([{"lol": "Annie_Base_Idle_fire", "bone": "Cstm_Buffbone_Idle_Fire"}]))
-	c.add_effect(AttackFx.new())
+	# [anim-events] the hand flame (Annie_Base_Idle_fire on the Idle1 clip) and its flare on every attack
+	# (Annie_Base_Idle_cas on Attack1/2/Crit) are clip particle events now
 
 
 func ai_tuning() -> Dictionary:
@@ -39,17 +37,6 @@ class KAbility extends Ability:
 		if t.get("hold", false):
 			return false
 		return super.try_cast(t)
-
-
-## Attack animation events: Annie_Base_Idle_cas at the Idle_Fire bone (R_Hand on crit swings, which we cannot tell
-## apart here).
-class AttackFx extends Effect:
-	func _init() -> void:
-		id = "annie_attack_fx"
-		hidden = true
-
-	func on_attack_launch(_target) -> void:
-		K.attach_fx(owner, {"lol": "Annie_Base_Idle_cas", "bone": "Cstm_Buffbone_Idle_Fire"}, false)
 
 
 # ===================================================================== shared helpers
@@ -214,11 +201,7 @@ class Disintegrate extends KAbility:
 	func damage() -> float:
 		return dv("BaseDamage") + dv("APRatio", 0.8) * ap()
 
-	## spell1 animation event: Annie_Base_Q_cas at the Idle_Fire bone from the first frame
-	func begin_cast(t: Dictionary) -> void:
-		super(t)
-		K.attach_fx(owner, {"lol": "Annie_Base_Q_cas", "bone": "Cstm_Buffbone_Idle_Fire", "dir": owner.facing}, false)
-
+	## [anim-events] Annie_Base_Q_cas (Idle_Fire bone, frame 0) is the Spell1 clip's particle event
 	func execute(t: Dictionary) -> void:
 		var o = owner
 		var u = t.get("unit")
@@ -746,22 +729,7 @@ class TibbersFists extends Effect:
 			info.amount = r_ab.dv("TibbersAttackDamage") + r_ab.dv("TibbersAttackAPRatio", 0.1) * r_ab.owner.stats.ap
 			info.is_pet = true
 
-	var swing := 0
-
-	## AnnieTibbers attack animation event (frame 9, Root bone): the alternating arm swipe trails
-	func on_attack_launch(target) -> void:
-		var nm := "AnnieTibbers_Base_BA_ArmSwipe_01" if swing % 2 == 0 else "AnnieTibbers_Base_BA_ArmSwipe_02"
-		swing += 1
-		var o = owner
-		var d: Vector3 = o.facing
-		if target != null and is_instance_valid(target):
-			d = G.flat_dir(o.global_position, target.global_position)
-		if o.match_ref != null:
-			var wr := weakref(o)
-			o.match_ref.after(0.2, func():
-				var u = wr.get_ref()
-				if u != null and not u.dead:
-					K.attach_fx(u, {"lol": nm, "bone": "Root", "dir": d}, false))
+	# [anim-events] the alternating arm swipe trails are the Attack1/2 clips' particle events (frame 9, Root bone)
 
 	func on_attack_hit(target, _info) -> void:
 		if owner.match_ref != null and is_instance_valid(target):
@@ -775,23 +743,12 @@ class Tibbers extends Summon:
 	var move_cmd_until := 0.0
 	var move_goal_cmd := Vector3.ZERO
 	var burn_acc := 0.0
-	var idle_fx = null
 
 	func setup_visuals() -> void:
 		add_effect(TibbersFists.new(r_ab))
-		# SkinCharacterDataProperties of AnnieTibbers: flames on the head / body / elbows / hands / knees / feet and the
-		# burning ground ring, all attached for his whole life
-		var specs := [
-			{"lol": "AnnieTibbers_Base_Idle_head", "bone": "Head"},
-			{"lol": "AnnieTibbers_Base_Idle_body", "bone": "Spine1"},
-			{"lol": "AnnieTibbers_Base_Idle_arm", "bone": "R_Elbow"}, {"lol": "AnnieTibbers_Base_Idle_arm", "bone": "L_Elbow"},
-			{"lol": "AnnieTibbers_Base_Idle_hand", "bone": "R_Buffbone_Glb_Hand_Loc"},
-			{"lol": "AnnieTibbers_Base_Idle_hand", "bone": "L_Buffbone_Glb_Hand_Loc"},
-			{"lol": "AnnieTibbers_Base_Idle_leg", "bone": "R_KneeLower"}, {"lol": "AnnieTibbers_Base_Idle_leg", "bone": "L_KneeLower"},
-			{"lol": "AnnieTibbers_Base_Idle_foot", "bone": "R_Foot"}, {"lol": "AnnieTibbers_Base_Idle_foot", "bone": "L_Foot"},
-			{"lol": "AnnieTibbers_Base_Idle_Ground", "bone": "Buffbone_Glb_Ground_Loc"}]
-		idle_fx = K.IdleFx.new(specs)
-		add_effect(idle_fx)
+		# [anim-events] SkinCharacterDataProperties of AnnieTibbers (flames on the head / body / elbows / hands / knees /
+		# feet + the burning ground ring) and his attack clip events, from data/anim/annietibbers.json
+		setup_anim_events("annietibbers")
 		# drop from the sky
 		airborne_height = 6.0
 		var tw := create_tween()
@@ -842,8 +799,8 @@ class Tibbers extends Summon:
 					"ability": r_ab, "tag": "tibbers_aura"})
 
 	func _fade_fx() -> void:
-		if idle_fx != null:
-			idle_fx._clear()
+		if anim_ev != null:
+			anim_ev.set_idle_enabled(false)   # [anim-events]
 
 	func on_died(killer) -> void:
 		_fade_fx()

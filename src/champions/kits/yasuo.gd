@@ -57,37 +57,27 @@ func vfx_map() -> Dictionary:
 	}
 
 
-## Basic attack visuals. League plays the swing trail from an animation event on the Attack1-4 clip (frame 3, bone
-## Buffbone_Glb_Ground_Loc: the system carries its own 1.4 m offset, so it is NOT raised) and the impact on the hit.
+## Basic attack visuals. [anim-events] The swing trails are the Attack1-4 clips' particle events (frame 3, bone
+## Buffbone_Glb_Ground_Loc); the matching impact lands on the hit here.
 class YasuoFx extends Effect:
 	var _was_winding := false
-	var _total := 0.0
-	var _due := -1.0
 	var _i := 1
 
 	func _init() -> void:
 		id = "yasuo_lol_fx"
 		hidden = true
 
-	func on_tick(u, dt: float) -> void:
+	func on_tick(u, _dt: float) -> void:
 		var winding: bool = u.windup_timer >= 0.0
 		if winding and not _was_winding:
-			_total = u.windup_timer + dt
 			var clip := String(u.anim_player.current_animation).to_lower() if u.anim_player != null else ""
 			_i = clampi(int(clip.right(1)), 1, 4) if clip.begins_with("attack") and clip.right(1).is_valid_int() else G.rng.randi_range(1, 4)
-			_due = 3.0 / 8.0
-		elif winding and _due >= 0.0 and (_total - u.windup_timer) >= _due * _total:
-			_due = -1.0
-			LolVfx.attach(u, "Yasuo_base_BA_trail_%d" % _i, {"dir": u.facing, "bone": "Buffbone_Glb_Ground_Loc"})
 		_was_winding = winding
 
 	func on_attack_hit(t, info) -> void:
 		var o = owner
 		if t == null or not is_instance_valid(t) or o == null:
 			return
-		if _due >= 0.0:   # the windup ended before the poll saw the event
-			_due = -1.0
-			LolVfx.attach(o, "Yasuo_base_BA_trail_%d" % _i, {"dir": o.facing, "bone": "Buffbone_Glb_Ground_Loc"})
 		var dir := G.flat_dir(o.global_position, t.global_position)
 		var crit: bool = info != null and info.is_crit
 		var nm := ("Yasuo_Base_BA_Crit_hit_%02d" if crit else "Yasuo_base_BA_hit_tar_%02d") % _i
@@ -467,7 +457,9 @@ class WindWall extends YAbility:
 		var c0: Vector3 = origin + dir * d0
 		var bl: Dictionary = m.add_blocker(o.team, c0 - perp * width * 0.5, c0 + perp * width * 0.5, life)
 		# League wall (rank variant 1..5 = wider wall), kept emitting for the wall's life, carried along with the blocker
-		var n := LolVfx.spawn(m, "Yasuo_Base_W_windwall%d" % clampi(level, 1, 5), c0, {"dir": dir, "loop": true})
+		# [vfx-runtime] League plays the wall on its moving-wall MISSILE: missile frame (+Y = travel), which with
+		# League's Z-X-Y euler order stands the wall meshes up
+		var n := LolVfx.spawn(m, "Yasuo_Base_W_windwall%d" % clampi(level, 1, 5), c0, {"dir": dir, "loop": true, "missile": true})
 		if n != null:
 			m.after(maxf(0.1, life - 0.7), func():
 				if is_instance_valid(n):

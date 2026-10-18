@@ -43,40 +43,32 @@ func vfx_map() -> Dictionary:
 	}
 
 
-## Basic attack visuals. League spawns the swing trail from an animation event on the attack clip (frame 5 of
-## Attack1/Attack2 at bone C_Buffbone_Glb_Center_Loc, frame 8 for Crit; Wuju variants while Wuju Style is up) while
-## the hit lands on the cast frame (8 / 7): the trail is started from the windup, the impact from the hit.
+## Basic attack visuals. [anim-events] The swing trails are the attack clips' particle events (frame 5 of
+## Attack1/Attack2 at C_Buffbone_Glb_Center_Loc, frame 8 for Crit, P_Trail_1/2 on the Passive clip); while Wuju
+## Style is up League plays the *_Wuju_Trail clip variants, mirrored here by swapping the event particles. The
+## impact on the target stays here (on the hit).
+const WUJU_SWAP := {
+	"MasterYi_Base_BA1_Trail": "MasterYi_Base_BA1_Wuju_Trail", "MasterYi_Base_BA2_Trail": "MasterYi_Base_BA2_Wuju_Trail",
+	"MasterYi_Base_Crit_Trail": "MasterYi_Base_Crit_Wuju_Trail",
+	"MasterYi_Base_P_Trail_1": "MasterYi_Base_P_Wuju_Trail_1", "MasterYi_Base_P_Trail_2": "MasterYi_Base_P_Wuju_Trail_2",
+}
+
+
 class YiFx extends Effect:
 	var alt := false
-	var _was_winding := false
-	var _total := 0.0
-	var _trail_due := -1.0     ## fraction of the windup at which the trail event fires (-1 = already played)
-	var _trail := ""
-	var _trail_hit := false     ## the crit trail fires after the hit frame: play it from on_attack_hit
+	var _wuju := false
 
 	func _init() -> void:
 		id = "yi_lol_fx"
 		hidden = true
 
-	func on_tick(u, dt: float) -> void:
-		var winding: bool = u.windup_timer >= 0.0
-		if winding and not _was_winding:
-			_total = u.windup_timer + dt
-			var crit: bool = u._pending_crit
-			var clip := String(u.anim_player.current_animation).to_lower() if u.anim_player != null else ""
-			var wuju: bool = u.has_buff("yi_wuju")
-			if crit:
-				_trail = "MasterYi_Base_Crit_Wuju_Trail" if wuju else "MasterYi_Base_Crit_Trail"
-				_trail_due = 8.0 / 7.0
-			else:
-				alt = clip.contains("attack2") if clip.contains("attack") else not alt
-				_trail = "MasterYi_Base_BA%d%s_Trail" % [2 if alt else 1, "_Wuju" if wuju else ""]
-				_trail_due = 5.0 / 8.0
-		elif winding and _trail_due >= 0.0 and _trail_due <= 1.0:
-			if (_total - u.windup_timer) >= _trail_due * _total:
-				_trail_due = -1.0
-				LolVfx.attach(u, _trail, {"bone": "C_Buffbone_Glb_Center_Loc", "dir": u.facing})
-		_was_winding = winding
+	func on_tick(u, _dt: float) -> void:
+		var wuju: bool = u.has_buff("yi_wuju")
+		if wuju != _wuju and u.anim_ev != null:
+			_wuju = wuju
+			u.anim_ev.fx_swap = WUJU_SWAP if wuju else {}
+		if u.windup_timer >= 0.0 and u.anim_player != null:
+			alt = String(u.anim_player.current_animation).to_lower().contains("attack2")
 
 	func on_attack_hit(t, info) -> void:
 		var o = owner
@@ -86,10 +78,6 @@ class YiFx extends Effect:
 			return    # Double Strike's extra hit has its own trail and impact (DoubleStrike._second)
 		var crit: bool = info != null and info.is_crit
 		var dir := G.flat_dir(o.global_position, t.global_position)
-		if _trail_due > 1.0 or (_trail_due >= 0.0 and crit):
-			# the crit trail event sits just after the hit frame (or the windup ended before the poll saw it)
-			LolVfx.attach(o, _trail, {"bone": "C_Buffbone_Glb_Center_Loc", "dir": dir})
-		_trail_due = -1.0
 		var nm := "MasterYi_Base_Crit_tar" if crit else "MasterYi_Base_BA_Tar_%02d" % (2 if alt else 1)
 		var meta := LolVfx.spell_meta(o, "CRIT" if crit else "BA")
 		var tp: Vector3 = LolVfx._hit_point(t, String(meta.get("hit_bone", "C_BUFFBONE_GLB_CHEST_LOC")))
@@ -179,15 +167,10 @@ class DoubleStrike extends Effect:
 		var tp: Vector3 = target.global_position + Vector3(0, target.height * 0.5, 0)
 		o.attack_hit(target, crit, 0.5)
 		striking = false
-		var wuju: bool = o.has_buff("yi_wuju")
-		# League: the "Passive" clip fires P_Trail_1 at frame 6 and P_Trail_2 at frame 9 (both on the center bone)
-		var pre := "MasterYi_Base_P_%sTrail_" % ("Wuju_" if wuju else "")
-		LolVfx.attach(o, pre + "1", {"bone": "C_Buffbone_Glb_Center_Loc", "dir": dir})
-		o.match_ref.after(0.1, func():
-			if is_instance_valid(o) and not o.dead:
-				LolVfx.attach(o, pre + "2", {"bone": "C_Buffbone_Glb_Center_Loc", "dir": o.facing}))
+		# [anim-events] League's "Passive" clip (MasterYiDoubleStrike) fires P_Trail_1 at frame 6 and P_Trail_2 at
+		# frame 9 on the center bone as clip particle events (Wuju variants through YiFx's swap)
 		LolVfx.spawn(o.match_ref, "MasterYi_Base_P_tar", target.global_position, {"dir": dir, "center": maxf(tp.y - target.global_position.y, 0.0)})
-		o.play_anim("crit", 1.6, 0.03)
+		o.play_anim("passive" if o.has_anim("passive") else "crit", 1.6, 0.03)
 		o.anim_lock = 0.3
 
 

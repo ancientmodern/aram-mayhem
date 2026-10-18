@@ -73,6 +73,10 @@
   "selectionHeight": 135.0,
   "healthBarHeight": 94.0
  },
+ "initial_hidden": [
+  "Tail_Large",
+  "Body_Proxy"
+ ],
  "clips": {
   "attack1": {
    "type": "Atomic",
@@ -82,19 +86,41 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": false,
+     "detach": false,
      "start": 5.0,
-     "effect": "#89271df1",
+     "effect": "Ahri_Base_BA_cas_fingertips",
+     "key": "Ahri_BA_cas_fingertips",
+     "pairs": [
+      {
+       "bone": "R_Thumb3"
+      },
+      {
+       "bone": "R_Pinky2"
+      },
+      {
+       "bone": "R_Index2"
+      },
+      {
+       "bone": "R_Middle2"
+      },
+      {
+       "bone": "R_Ring2"
+      }
+     ],
      "bones": [
-      1467734039,
-      2398940337,
-      140076656,
-      1828786795,
-      281110706
-     ]
+      "R_Thumb3",
+      "R_Pinky2",
+      "R_Index2",
+      "R_Middle2",
+      "R_Ring2"
+     ],
+     "set": "ahri"
     }
    ]
   },
-  "attack2": {
+  "Attack2": {
    "type": "Atomic",
    "track": "Default",
    "anim": "attack2",
@@ -102,19 +128,41 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": false,
+     "detach": false,
      "start": 5.0,
-     "effect": "#89271df1",
+     "effect": "Ahri_Base_BA_cas_fingertips",
+     "key": "Ahri_BA_cas_fingertips",
+     "pairs": [
+      {
+       "bone": "R_Thumb3"
+      },
+      {
+       "bone": "R_Pinky2"
+      },
+      {
+       "bone": "R_Index2"
+      },
+      {
+       "bone": "R_Middle2"
+      },
+      {
+       "bone": "R_Ring2"
+      }
+     ],
      "bones": [
-      1467734039,
-      2398940337,
-      140076656,
-      1828786795,
-      281110706
-     ]
+      "R_Thumb3",
+      "R_Pinky2",
+      "R_Index2",
+      "R_Middle2",
+      "R_Ring2"
+     ],
+     "set": "ahri"
     }
    ]
   },
-  "channel": {
+  "Channel": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -127,7 +175,7 @@
    "anim": "channel_wndup",
    "file": "704ea331517b6cb1"
   },
-  "crit": {
+  "Crit": {
    "type": "Atomic",
    "track": "Default",
    "anim": "crit",
@@ -135,11 +183,14 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "anim": "death",
@@ -147,33 +198,57 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Ahri_Death3D_cast"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
      "end": 74.0,
-     "effect": "#ac8fb6d9",
+     "effect": "Ahri_Base_Emote_Death_Orb",
+     "key": "Ahri_Emote_Death_Orb",
+     "pairs": [
+      {
+       "bone": "Weapon"
+      }
+     ],
      "bones": [
-      1865621569
-     ]
+      "Weapon"
+     ],
+     "set": "ahri"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "joint": "Weapon",
+     "snap_to": "Weapon_World_Snap"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 65.0,
-     "effect": "#575db7b2",
+     "effect": "Ahri_Base_Emote_Death_Orb_Dissipate",
+     "key": "Ahri_Emote_Death_Orb_Dissipate",
+     "pairs": [
+      {
+       "bone": "Weapon"
+      }
+     ],
      "bones": [
-      1865621569
-     ]
+      "Weapon"
+     ],
+     "set": "ahri"
     }
    ]
   },
-  "idle1_base": {
+  "Idle1_Base": {
    "type": "Sequencer",
    "list": [
     "#1efabc75",
@@ -188,16 +263,20 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Ahri_Joke3D_buffactivate"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "joint": "Weapon",
+     "snap_to": "Weapon_World_Snap"
     }
    ]
   },
-  "laugh": {
+  "Laugh": {
    "type": "Atomic",
    "track": "Default",
    "anim": "laugh",
@@ -205,12 +284,16 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Ahri_Laugh3D_buffactivate"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "joint": "Weapon",
+     "snap_to": "Weapon_World_Snap"
     }
    ]
   },
@@ -223,24 +306,47 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
      "end": 7.0,
-     "effect": "#9d375197",
+     "effect": "Ahri_Base_Q_Orb_Cast",
+     "key": "Ahri_Q_Orb_Cast",
+     "pairs": [
+      {
+       "bone": "Buffbone_Glb_Weapon_1"
+      }
+     ],
      "bones": [
-      2037822235
-     ]
+      "Buffbone_Glb_Weapon_1"
+     ],
+     "set": "ahri"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": false,
+     "detach": false,
      "start": 5.0,
-     "effect": "#3c7ee03f",
+     "effect": "Ahri_Base_Q_cas",
+     "key": "Ahri_Q_Cas",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "ahri"
     },
     {
      "type": "ConformToPath",
-     "start": 6.0
+     "start": 6.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -253,11 +359,14 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 80.0
+     "start": 80.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
-  "spell3": {
+  "Spell3": {
    "type": "ConditionFloat",
    "pairs": [
     [
@@ -303,11 +412,14 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
-  "taunt": {
+  "Taunt": {
    "type": "Atomic",
    "track": "Default",
    "anim": "taunt",
@@ -315,24 +427,39 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Ahri_Taunt3D_buffactivate"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "joint": "Weapon",
+     "snap_to": "Weapon_World_Snap"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 78.0,
-     "effect": "#6f014557",
+     "name": "#19499b5b",
+     "effect": "Ahri_Base_Emote_Taunt_Hit",
+     "key": "Ahri_Emote_Taunt_Hit",
+     "pairs": [
+      {
+       "bone": "Weapon"
+      }
+     ],
      "bones": [
-      1865621569
-     ]
+      "Weapon"
+     ],
+     "set": "ahri"
     }
    ]
   },
-  "dance_loop": {
+  "Dance_Loop": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -341,16 +468,20 @@
    "events": [
     {
      "type": "Sound",
+     "loop": true,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Ahri_Dance3D_loop"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "joint": "Weapon",
+     "snap_to": "Weapon_World_Snap"
     }
    ]
   },
-  "recall": {
+  "Recall": {
    "type": "Atomic",
    "track": "Default",
    "anim": "recall",
@@ -358,16 +489,28 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Ahri_Recall3D_buffactivate"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#abb2e3a4",
+     "effect": "Ahri_Base_Emote_Recall_Fox",
+     "key": "Ahri_Emote_Recall_Fox",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Layout_Loc"
+      }
+     ],
      "bones": [
-      2528140958
-     ]
+      "C_Buffbone_Glb_Layout_Loc"
+     ],
+     "set": "ahri"
     },
     {
      "type": "FaceTarget",
@@ -375,39 +518,71 @@
     },
     {
      "type": "IdleParticlesVisibility",
+     "show": false,
      "start": 39.0
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 40.0,
-     "effect": "#51960228",
+     "effect": "Ahri_Base_Emote_Recall_Orb_Deform",
+     "key": "Ahri_Emote_Recall_Orb_Deform",
+     "pairs": [
+      {
+       "bone": "Weapon_World_Snap"
+      }
+     ],
      "bones": [
-      3966214379
-     ]
+      "Weapon_World_Snap"
+     ],
+     "set": "ahri"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 220.0,
-     "effect": "#79a8fb12",
+     "effect": "Ahri_Base_Emote_Recall_Orb_Reform",
+     "key": "Ahri_Emote_Recall_Orb_Reform",
+     "pairs": [
+      {
+       "bone": "Weapon_World_Snap"
+      }
+     ],
      "bones": [
-      3966214379
-     ]
+      "Weapon_World_Snap"
+     ],
+     "set": "ahri"
     },
     {
      "type": "IdleParticlesVisibility",
+     "show": true,
      "start": 220.0
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 220.0,
-     "effect": "#51c0a9aa",
+     "effect": "Ahri_Base_Emote_Recall_Tails",
+     "key": "Ahri_Emote_Recall_Tails",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Chest_Loc"
+      }
+     ],
      "bones": [
-      1362603135
-     ]
+      "C_Buffbone_Glb_Chest_Loc"
+     ],
+     "set": "ahri"
     }
    ]
   },
-  "attack1_toidle": {
+  "Attack1_ToIdle": {
    "type": "Atomic",
    "track": "Default",
    "anim": null,
@@ -430,15 +605,22 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "joint": "Weapon",
+     "snap_to": "Weapon_World_Snap"
     },
     {
      "type": "ConformToPath",
      "start": 1.0,
-     "end": 70.0
+     "end": 70.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     },
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 69.0,
      "sound": "Play_sfx_Ahri_Idle3D_buffactivate"
     }
@@ -451,7 +633,7 @@
     "#52185746"
    ]
   },
-  "run_fast": {
+  "Run_Fast": {
    "type": "Atomic",
    "track": "Default",
    "anim": "run_var2_var2_var2",
@@ -459,11 +641,14 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
-  "run_haste": {
+  "Run_Haste": {
    "type": "Atomic",
    "track": "Default",
    "anim": "run_var2_var2_var2",
@@ -471,7 +656,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -483,7 +671,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -498,7 +689,10 @@
     {
      "type": "ConformToPath",
      "start": 5.0,
-     "end": 37.0
+     "end": 37.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -510,11 +704,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": false,
+     "detach": false,
      "start": 1.0,
-     "effect": "#fe3db783",
+     "name": "#26919641",
+     "effect": "Ahri_Base_E_cas",
+     "key": "Ahri_E_cas",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "ahri"
     }
    ]
   },
@@ -526,11 +731,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": false,
+     "detach": false,
      "start": 1.0,
-     "effect": "#fe3db783",
+     "name": "#26919641",
+     "effect": "Ahri_Base_E_cas",
+     "key": "Ahri_E_cas",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "ahri"
     }
    ]
   },
@@ -542,11 +758,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": false,
+     "detach": false,
      "start": 1.0,
-     "effect": "#fe3db783",
+     "name": "#26919641",
+     "effect": "Ahri_Base_E_cas",
+     "key": "Ahri_E_cas",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "ahri"
     }
    ]
   },
@@ -558,15 +785,26 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": false,
+     "detach": false,
      "start": 1.0,
-     "effect": "#fe3db783",
+     "name": "#26919641",
+     "effect": "Ahri_Base_E_cas",
+     "key": "Ahri_E_cas",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "ahri"
     }
    ]
   },
-  "spell4_toidle": {
+  "Spell4_ToIdle": {
    "type": "Sequencer",
    "list": [
     "#5f28fb20",
@@ -589,16 +827,21 @@
    "events": [
     {
      "type": "Sound",
+     "loop": true,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Ahri_AhriBasicAttack_spin_cast"
     },
     {
      "type": "ConformToPath",
-     "start": 10.0
+     "start": 10.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
-  "attack2_torun": {
+  "Attack2_ToRun": {
    "type": "Atomic",
    "track": "Default",
    "anim": "run_var2",
@@ -606,11 +849,14 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
-  "spell2_torun": {
+  "Spell2_ToRun": {
    "type": "Atomic",
    "flags": 4,
    "track": "Default",
@@ -621,7 +867,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -643,7 +892,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -655,7 +907,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 5.0
+     "start": 5.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -668,7 +923,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -693,14 +951,17 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
   "idle1": {
    "type": "ConditionBool",
-   "true": "spell4_toidle",
-   "false": "idle1_base",
+   "true": "Spell4_ToIdle",
+   "false": "Idle1_Base",
    "updater": "LogicDriverBool",
    "changeAnimationMidPlay": true
   },
@@ -713,7 +974,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -726,14 +990,17 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
   "#9a6b0962": {
    "type": "ConditionBool",
    "true": "Attack1_ToRun",
-   "false": "laugh",
+   "false": "Laugh",
    "updater": "LogicDriverBool",
    "changeAnimationMidPlay": true
   },
@@ -746,7 +1013,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 5.0
+     "start": 5.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -760,11 +1030,14 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
-  "run": {
+  "Run": {
    "type": "ConditionBool",
    "true": "run_homeguard",
    "false": "#ae1afd78",
@@ -782,7 +1055,9 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 14.0
+     "start": 14.0,
+     "mask": "#a270850b",
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -793,7 +1068,7 @@
    "xanim": "x/clip_996c3410",
    "file": "bdbc9bdd996c3410"
   },
-  "respawn": {
+  "Respawn": {
    "type": "Atomic",
    "track": "Default",
    "anim": "respawn",
@@ -805,16 +1080,20 @@
     },
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Ahri_Respawn3D_buffactivate"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "joint": "Weapon",
+     "snap_to": "Weapon_World_Snap"
     }
    ]
   },
-  "dance_in": {
+  "Dance_In": {
    "type": "Atomic",
    "track": "Default",
    "anim": "dance_in",
@@ -822,20 +1101,24 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "joint": "Weapon",
+     "snap_to": "Weapon_World_Snap"
     },
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Ahri_Dance3D_buffactivate"
     }
    ]
   },
-  "dance": {
+  "Dance": {
    "type": "Sequencer",
    "list": [
-    "dance_in",
-    "dance_loop"
+    "Dance_In",
+    "Dance_Loop"
    ]
   },
   "joke_loop": {
@@ -847,16 +1130,20 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "joint": "Weapon",
+     "snap_to": "Weapon_World_Snap"
     },
     {
      "type": "Sound",
+     "loop": true,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Ahri_Joke3D_loop"
     }
    ]
   },
-  "joke": {
+  "Joke": {
    "type": "Sequencer",
    "list": [
     "joke_in",
@@ -875,12 +1162,16 @@
     },
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Ahri_Respawn3D_buffactivate"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "joint": "Weapon",
+     "snap_to": "Weapon_World_Snap"
     }
    ]
   },
@@ -894,7 +1185,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -915,7 +1209,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 5.0
+     "start": 5.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -930,7 +1227,7 @@
      null
     ],
     [
-     "run_haste",
+     "Run_Haste",
      451.0,
      1000.0,
      null
@@ -947,7 +1244,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -959,7 +1259,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -971,7 +1274,10 @@
    "events": [
     {
      "type": "ConformToPath",
-     "start": 0.0
+     "start": 0.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -1009,7 +1315,10 @@
     {
      "type": "ConformToPath",
      "start": 0.0,
-     "end": 70.0
+     "end": 70.0,
+     "mask": "#a270850b",
+     "blend_in": 0.10000000149011612,
+     "blend_out": 0.20000000298023224
     }
    ]
   },
@@ -1063,191 +1372,192 @@
    "file": "cea6e01cfef31fa1"
   }
  },
+ "idle_particles": [],
  "blends": {
-  "channel>laugh": 0.0,
-  "channel>taunt": 0.0,
-  "channel>death": 0.0,
-  "channel>joke_in": 0.10000000149011612,
-  "attack1>laugh": 0.0,
-  "attack1>taunt": 0.0,
-  "attack1>death": 0.0,
+  "Channel>Laugh": 0.0,
+  "Channel>Taunt": 0.0,
+  "Channel>Death": 0.0,
+  "Channel>joke_in": 0.10000000149011612,
+  "attack1>Laugh": 0.0,
+  "attack1>Taunt": 0.0,
+  "attack1>Death": 0.0,
   "attack1>joke_in": 0.10000000149011612,
-  "attack2>laugh": 0.0,
-  "attack2>taunt": 0.0,
-  "attack2>death": 0.0,
-  "attack2>joke_in": 0.10000000149011612,
-  "crit>laugh": 0.0,
-  "crit>taunt": 0.0,
-  "crit>death": 0.0,
-  "crit>joke_in": 0.10000000149011612,
-  "idle1_base>laugh": 0.0,
-  "idle1_base>taunt": 0.0,
-  "idle1_base>death": 0.0,
-  "idle1_base>joke_in": 0.10000000149011612,
-  "Channel_Wndup>laugh": 0.0,
-  "Channel_Wndup>taunt": 0.0,
-  "Channel_Wndup>death": 0.0,
+  "Attack2>Laugh": 0.0,
+  "Attack2>Taunt": 0.0,
+  "Attack2>Death": 0.0,
+  "Attack2>joke_in": 0.10000000149011612,
+  "Crit>Laugh": 0.0,
+  "Crit>Taunt": 0.0,
+  "Crit>Death": 0.0,
+  "Crit>joke_in": 0.10000000149011612,
+  "Idle1_Base>Laugh": 0.0,
+  "Idle1_Base>Taunt": 0.0,
+  "Idle1_Base>Death": 0.0,
+  "Idle1_Base>joke_in": 0.10000000149011612,
+  "Channel_Wndup>Laugh": 0.0,
+  "Channel_Wndup>Taunt": 0.0,
+  "Channel_Wndup>Death": 0.0,
   "Channel_Wndup>joke_in": 0.10000000149011612,
-  "Spell1>laugh": 0.0,
-  "Spell1>taunt": 0.0,
-  "Spell1>death": 0.0,
+  "Spell1>Laugh": 0.0,
+  "Spell1>Taunt": 0.0,
+  "Spell1>Death": 0.0,
   "Spell1>joke_in": 0.10000000149011612,
-  "spell3>laugh": 0.0,
-  "spell3>taunt": 0.0,
-  "spell3>joke_in": 0.10000000149011612,
-  "spell2>channel": 0.0,
-  "spell2>attack2": 0.0,
-  "spell2>crit": 0.0,
-  "spell2>idle1_base": {
+  "Spell3>Laugh": 0.0,
+  "Spell3>Taunt": 0.0,
+  "Spell3>joke_in": 0.10000000149011612,
+  "spell2>Channel": 0.0,
+  "spell2>Attack2": 0.0,
+  "spell2>Crit": 0.0,
+  "spell2>Idle1_Base": {
    "clip": "Spell2_ToIdle"
   },
   "spell2>Channel_Wndup": 0.0,
   "spell2>Spell1": 0.0,
-  "spell2>spell3": 0.0,
+  "spell2>Spell3": 0.0,
   "spell2>spell2": 0.0,
-  "spell2>laugh": 0.0,
+  "spell2>Laugh": 0.0,
   "spell2>Spell4": 0.0,
-  "spell2>taunt": 0.0,
-  "spell2>death": 0.0,
+  "spell2>Taunt": 0.0,
+  "spell2>Death": 0.0,
   "spell2>joke_in": 0.10000000149011612,
-  "laugh>channel": 0.0,
-  "laugh>attack2": 0.0,
-  "laugh>crit": 0.0,
-  "laugh>idle1_base": 0.0,
-  "laugh>Channel_Wndup": 0.0,
-  "laugh>Spell1": 0.0,
-  "laugh>spell3": 0.0,
-  "laugh>spell2": 0.0,
-  "laugh>laugh": 0.0,
-  "laugh>Spell4": 0.0,
-  "laugh>taunt": 0.0,
-  "laugh>death": 0.0,
-  "laugh>joke_in": 0.10000000149011612,
-  "Spell4>laugh": 0.0,
-  "Spell4>taunt": 0.0,
-  "Spell4>death": 0.0,
+  "Laugh>Channel": 0.0,
+  "Laugh>Attack2": 0.0,
+  "Laugh>Crit": 0.0,
+  "Laugh>Idle1_Base": 0.0,
+  "Laugh>Channel_Wndup": 0.0,
+  "Laugh>Spell1": 0.0,
+  "Laugh>Spell3": 0.0,
+  "Laugh>spell2": 0.0,
+  "Laugh>Laugh": 0.0,
+  "Laugh>Spell4": 0.0,
+  "Laugh>Taunt": 0.0,
+  "Laugh>Death": 0.0,
+  "Laugh>joke_in": 0.10000000149011612,
+  "Spell4>Laugh": 0.0,
+  "Spell4>Taunt": 0.0,
+  "Spell4>Death": 0.0,
   "Spell4>joke_in": 0.10000000149011612,
-  "taunt>channel": 0.0,
-  "taunt>attack2": 0.0,
-  "taunt>crit": 0.0,
-  "taunt>idle1_base": 0.10000000149011612,
-  "taunt>Channel_Wndup": 0.0,
-  "taunt>Spell1": 0.0,
-  "taunt>spell3": 0.0,
-  "taunt>spell2": 0.0,
-  "taunt>laugh": 0.0,
-  "taunt>Spell4": 0.0,
-  "taunt>taunt": 0.0,
-  "taunt>death": 0.0,
-  "taunt>joke_in": 0.10000000149011612,
-  "death>laugh": 0.0,
-  "death>taunt": 0.0,
-  "death>death": 0.0,
-  "death>joke_in": 0.10000000149011612,
-  "joke_in>channel": 0.0,
-  "joke_in>attack2": 0.0,
-  "joke_in>crit": 0.0,
-  "joke_in>idle1_base": 0.0,
+  "Taunt>Channel": 0.0,
+  "Taunt>Attack2": 0.0,
+  "Taunt>Crit": 0.0,
+  "Taunt>Idle1_Base": 0.10000000149011612,
+  "Taunt>Channel_Wndup": 0.0,
+  "Taunt>Spell1": 0.0,
+  "Taunt>Spell3": 0.0,
+  "Taunt>spell2": 0.0,
+  "Taunt>Laugh": 0.0,
+  "Taunt>Spell4": 0.0,
+  "Taunt>Taunt": 0.0,
+  "Taunt>Death": 0.0,
+  "Taunt>joke_in": 0.10000000149011612,
+  "Death>Laugh": 0.0,
+  "Death>Taunt": 0.0,
+  "Death>Death": 0.0,
+  "Death>joke_in": 0.10000000149011612,
+  "joke_in>Channel": 0.0,
+  "joke_in>Attack2": 0.0,
+  "joke_in>Crit": 0.0,
+  "joke_in>Idle1_Base": 0.0,
   "joke_in>Channel_Wndup": 0.0,
   "joke_in>Spell1": 0.0,
-  "joke_in>spell3": 0.0,
+  "joke_in>Spell3": 0.0,
   "joke_in>spell2": 0.0,
-  "joke_in>laugh": 0.0,
+  "joke_in>Laugh": 0.0,
   "joke_in>Spell4": 0.0,
-  "joke_in>taunt": 0.0,
-  "joke_in>death": 0.0,
+  "joke_in>Taunt": 0.0,
+  "joke_in>Death": 0.0,
   "joke_in>joke_in": 0.10000000149011612,
-  "dance_loop>death": 0.0,
+  "Dance_Loop>Death": 0.0,
   "#16b0f5fd>attack1": 0.0,
-  "attack1>attack1_toidle": 0.0,
+  "attack1>Attack1_ToIdle": 0.0,
   "attack1>Attack2_ToIdle": 0.0,
-  "attack2>attack1_toidle": 0.0,
-  "attack2>Attack2_ToIdle": 0.0,
-  "attack1>dance_loop": 0.0,
-  "attack1_toidle>dance_loop": 0.05000000074505806,
-  "Attack2_ToIdle>dance_loop": 0.05000000074505806,
-  "attack1_toidle>death": 0.05000000074505806,
-  "Attack2_ToIdle>death": 0.05000000074505806,
-  "attack2>dance_loop": 0.0,
-  "channel>dance_loop": 0.0,
-  "Channel_Wndup>dance_loop": 0.0,
-  "crit>dance_loop": 0.0,
-  "dance_loop>dance_loop": 0.0,
-  "death>dance_loop": 0.0,
-  "idle1_base>dance_loop": 0.0,
-  "Spell1>dance_loop": 0.0,
-  "spell2>dance_loop": 0.0,
-  "spell3>dance_loop": 0.0,
-  "spell3_east>dance_loop": 0.0,
-  "#16b0f5fd>dance_loop": 0.0,
-  "spell3_north>dance_loop": 0.0,
-  "spell3_south>dance_loop": 0.0,
-  "spell3_west>dance_loop": 0.0,
-  "Spell4>dance_loop": 0.0,
-  "spell4_toidle>dance_loop": 0.0,
-  "#2bf6994d>dance_loop": 0.0,
-  "taunt>dance_loop": 0.0,
-  "Idle_In>dance_loop": 0.0,
-  "joke_in>dance_loop": 0.0,
-  "recall>dance_loop": 0.0,
-  "laugh>dance_loop": 0.0,
-  "Run_Base>dance_loop": 0.0,
-  "run_haste>dance_loop": 0.0,
-  "run_fast>dance_loop": 0.0,
-  "Run_In>dance_loop": 0.0,
-  "Run_Base>death": 0.0,
-  "attack1>idle1_base": {
-   "clip": "attack1_toidle"
+  "Attack2>Attack1_ToIdle": 0.0,
+  "Attack2>Attack2_ToIdle": 0.0,
+  "attack1>Dance_Loop": 0.0,
+  "Attack1_ToIdle>Dance_Loop": 0.05000000074505806,
+  "Attack2_ToIdle>Dance_Loop": 0.05000000074505806,
+  "Attack1_ToIdle>Death": 0.05000000074505806,
+  "Attack2_ToIdle>Death": 0.05000000074505806,
+  "Attack2>Dance_Loop": 0.0,
+  "Channel>Dance_Loop": 0.0,
+  "Channel_Wndup>Dance_Loop": 0.0,
+  "Crit>Dance_Loop": 0.0,
+  "Dance_Loop>Dance_Loop": 0.0,
+  "Death>Dance_Loop": 0.0,
+  "Idle1_Base>Dance_Loop": 0.0,
+  "Spell1>Dance_Loop": 0.0,
+  "spell2>Dance_Loop": 0.0,
+  "Spell3>Dance_Loop": 0.0,
+  "spell3_east>Dance_Loop": 0.0,
+  "#16b0f5fd>Dance_Loop": 0.0,
+  "spell3_north>Dance_Loop": 0.0,
+  "spell3_south>Dance_Loop": 0.0,
+  "spell3_west>Dance_Loop": 0.0,
+  "Spell4>Dance_Loop": 0.0,
+  "Spell4_ToIdle>Dance_Loop": 0.0,
+  "#2bf6994d>Dance_Loop": 0.0,
+  "Taunt>Dance_Loop": 0.0,
+  "Idle_In>Dance_Loop": 0.0,
+  "joke_in>Dance_Loop": 0.0,
+  "Recall>Dance_Loop": 0.0,
+  "Laugh>Dance_Loop": 0.0,
+  "Run_Base>Dance_Loop": 0.0,
+  "Run_Haste>Dance_Loop": 0.0,
+  "Run_Fast>Dance_Loop": 0.0,
+  "Run_In>Dance_Loop": 0.0,
+  "Run_Base>Death": 0.0,
+  "attack1>Idle1_Base": {
+   "clip": "Attack1_ToIdle"
   },
-  "attack2>idle1_base": {
+  "Attack2>Idle1_Base": {
    "clip": "Attack2_ToIdle"
   },
-  "Run_Base>idle1_base": {
+  "Run_Base>Idle1_Base": {
    "clip": "Idle_In"
   },
-  "Run_In>idle1_base": {
+  "Run_In>Idle1_Base": {
    "clip": "Idle_In"
   },
-  "Spell1>idle1_base": {
+  "Spell1>Idle1_Base": {
    "clip": "Spell1_ToIdle"
   },
-  "Spell4>idle1_base": {
-   "clip": "spell4_toidle"
+  "Spell4>Idle1_Base": {
+   "clip": "Spell4_ToIdle"
   },
-  "#2bf6994d>idle1_base": {
-   "clip": "spell4_toidle"
+  "#2bf6994d>Idle1_Base": {
+   "clip": "Spell4_ToIdle"
   },
   "Spell4>Run_Base": {
    "clip": "#2bf6994d"
   },
-  "Spell4>run_fast": {
+  "Spell4>Run_Fast": {
    "clip": "#2bf6994d"
   },
-  "Spell4>run_haste": {
+  "Spell4>Run_Haste": {
    "clip": "#2bf6994d"
   },
   "Spell4>Run_In": {
    "clip": "#2bf6994d"
   },
-  "spell4_toidle>Run_In": {
+  "Spell4_ToIdle>Run_In": {
    "clip": "#2bf6994d"
   },
-  "spell4_toidle>run_haste": {
+  "Spell4_ToIdle>Run_Haste": {
    "clip": "#2bf6994d"
   },
-  "spell4_toidle>run_fast": {
+  "Spell4_ToIdle>Run_Fast": {
    "clip": "#2bf6994d"
   },
-  "spell4_toidle>Run_Base": {
+  "Spell4_ToIdle>Run_Base": {
    "clip": "#2bf6994d"
   },
   "attack1>Spell1": 0.0,
-  "attack2>Spell1": 0.0,
-  "channel>Spell1": 0.0,
+  "Attack2>Spell1": 0.0,
+  "Channel>Spell1": 0.0,
   "Channel_Wndup>Spell1": 0.0,
   "Spell1>Spell1": 0.0,
   "#2bf6994d>Spell1": 0.0,
-  "spell4_toidle>Spell1": 0.0,
+  "Spell4_ToIdle>Spell1": 0.0,
   "Spell4>Spell1": 0.0,
   "spell3_west>Spell1": 0.0,
   "spell3_south>Spell1": 0.0,
@@ -1255,133 +1565,133 @@
   "#16b0f5fd>Spell1": 0.0,
   "spell3_east>Spell1": 0.0,
   "Run_In>Spell1": 0.0,
-  "run_haste>Spell1": 0.0,
-  "run_fast>Spell1": 0.0,
+  "Run_Haste>Spell1": 0.0,
+  "Run_Fast>Spell1": 0.0,
   "Run_Base>Spell1": 0.0,
-  "recall>Spell1": 0.0,
+  "Recall>Spell1": 0.0,
   "Idle_In>Spell1": 0.0,
-  "idle1_base>Spell1": 0.0,
-  "death>Spell1": 0.0,
-  "dance_loop>Spell1": 0.0,
-  "crit>Spell1": 0.0,
-  "attack1_toidle>Run_Base": {
+  "Idle1_Base>Spell1": 0.0,
+  "Death>Spell1": 0.0,
+  "Dance_Loop>Spell1": 0.0,
+  "Crit>Spell1": 0.0,
+  "Attack1_ToIdle>Run_Base": {
    "clip": "Attack1_ToRun"
   },
-  "attack1_toidle>run_fast": {
+  "Attack1_ToIdle>Run_Fast": {
    "clip": "Attack1_ToRun"
   },
-  "attack1_toidle>run_haste": {
+  "Attack1_ToIdle>Run_Haste": {
    "clip": "Attack1_ToRun"
   },
   "attack1>Run_Base": {
    "clip": "Attack1_ToRun"
   },
-  "attack1>run_fast": {
+  "attack1>Run_Fast": {
    "clip": "Attack1_ToRun"
   },
-  "attack1>run_haste": {
+  "attack1>Run_Haste": {
    "clip": "Attack1_ToRun"
   },
-  "attack2>Run_Base": {
-   "clip": "attack2_torun"
+  "Attack2>Run_Base": {
+   "clip": "Attack2_ToRun"
   },
-  "attack2>run_fast": {
-   "clip": "attack2_torun"
+  "Attack2>Run_Fast": {
+   "clip": "Attack2_ToRun"
   },
-  "attack2>run_haste": {
-   "clip": "attack2_torun"
+  "Attack2>Run_Haste": {
+   "clip": "Attack2_ToRun"
   },
   "Attack2_ToIdle>Run_Base": {
-   "clip": "attack2_torun"
+   "clip": "Attack2_ToRun"
   },
-  "Attack2_ToIdle>run_fast": {
-   "clip": "attack2_torun"
+  "Attack2_ToIdle>Run_Fast": {
+   "clip": "Attack2_ToRun"
   },
-  "Attack2_ToIdle>run_haste": {
-   "clip": "attack2_torun"
+  "Attack2_ToIdle>Run_Haste": {
+   "clip": "Attack2_ToRun"
   },
   "spell2>Run_Base": {
-   "clip": "spell2_torun"
+   "clip": "Spell2_ToRun"
   },
-  "spell2>run_fast": {
-   "clip": "spell2_torun"
+  "spell2>Run_Fast": {
+   "clip": "Spell2_ToRun"
   },
-  "spell2>run_haste": {
-   "clip": "spell2_torun"
+  "spell2>Run_Haste": {
+   "clip": "Spell2_ToRun"
   },
-  "spell2>spell2_torun": 0.10000000149011612,
+  "spell2>Spell2_ToRun": 0.10000000149011612,
   "Spell1>Run_Base": {
    "clip": "Spell1_ToRun"
   },
-  "Spell1>run_fast": {
+  "Spell1>Run_Fast": {
    "clip": "Spell1_ToRun"
   },
-  "Spell1>run_haste": {
+  "Spell1>Run_Haste": {
    "clip": "Spell1_ToRun"
   },
   "Spell1_ToIdle>Spell1": 0.0,
   "Spell1_ToRun>Spell1": 0.0,
-  "attack1_toidle>Spell1": 0.0,
+  "Attack1_ToIdle>Spell1": 0.0,
   "Attack1_ToRun>Spell1": 0.0,
   "Attack2_ToIdle>Spell1": 0.0,
-  "attack2_torun>Spell1": 0.0,
+  "Attack2_ToRun>Spell1": 0.0,
   "Spell2_ToIdle>Spell1": 0.0,
-  "spell2_torun>Spell1": 0.0,
+  "Spell2_ToRun>Spell1": 0.0,
   "Spell1_ToIdle>Run_Base": {
    "clip": "Spell1_ToRun"
   },
-  "Spell1_ToIdle>run_fast": {
+  "Spell1_ToIdle>Run_Fast": {
    "clip": "Spell1_ToRun"
   },
-  "Spell1_ToIdle>run_haste": {
+  "Spell1_ToIdle>Run_Haste": {
    "clip": "Spell1_ToRun"
   },
-  "spell3>Run_Base": 0.5,
-  "spell3>run_fast": 0.5,
-  "spell3>run_haste": 0.5,
+  "Spell3>Run_Base": 0.5,
+  "Spell3>Run_Fast": 0.5,
+  "Spell3>Run_Haste": 0.5,
   "spell3_east>Run_Base": {
    "clip": "Spell3_ToRun"
   },
-  "spell3_east>run_fast": {
+  "spell3_east>Run_Fast": {
    "clip": "Spell3_ToRun"
   },
-  "spell3_east>run_haste": {
+  "spell3_east>Run_Haste": {
    "clip": "Spell3_ToRun"
   },
   "#16b0f5fd>Run_Base": {
    "clip": "Spell3_ToRun"
   },
-  "#16b0f5fd>run_fast": {
+  "#16b0f5fd>Run_Fast": {
    "clip": "Spell3_ToRun"
   },
-  "#16b0f5fd>run_haste": {
+  "#16b0f5fd>Run_Haste": {
    "clip": "Spell3_ToRun"
   },
   "spell3_north>Run_Base": {
    "clip": "Spell3_ToRun"
   },
-  "spell3_north>run_fast": {
+  "spell3_north>Run_Fast": {
    "clip": "Spell3_ToRun"
   },
-  "spell3_north>run_haste": {
+  "spell3_north>Run_Haste": {
    "clip": "Spell3_ToRun"
   },
   "spell3_south>Run_Base": {
    "clip": "Spell3_ToRun"
   },
-  "spell3_south>run_fast": {
+  "spell3_south>Run_Fast": {
    "clip": "Spell3_ToRun"
   },
-  "spell3_south>run_haste": {
+  "spell3_south>Run_Haste": {
    "clip": "Spell3_ToRun"
   },
   "spell3_west>Run_Base": {
    "clip": "Spell3_ToRun"
   },
-  "spell3_west>run_fast": {
+  "spell3_west>Run_Fast": {
    "clip": "Spell3_ToRun"
   },
-  "spell3_west>run_haste": {
+  "spell3_west>Run_Haste": {
    "clip": "Spell3_ToRun"
   },
   "spell3_east>Spell3_ToRun": 0.5,
@@ -1393,50 +1703,50 @@
   "attack1>#16b0f5fd": 0.10000000149011612,
   "attack1>spell3_north": 0.0,
   "attack1>spell3_south": 0.0,
-  "attack1_toidle>spell3_east": 0.0,
-  "attack1_toidle>#16b0f5fd": 0.10000000149011612,
-  "attack1_toidle>spell3_north": 0.0,
-  "attack1_toidle>spell3_south": 0.0,
+  "Attack1_ToIdle>spell3_east": 0.0,
+  "Attack1_ToIdle>#16b0f5fd": 0.10000000149011612,
+  "Attack1_ToIdle>spell3_north": 0.0,
+  "Attack1_ToIdle>spell3_south": 0.0,
   "Attack1_ToRun>spell3_east": 0.0,
   "Attack1_ToRun>#16b0f5fd": 0.10000000149011612,
   "Attack1_ToRun>spell3_north": 0.0,
   "Attack1_ToRun>spell3_south": 0.0,
-  "attack2>spell3_east": 0.0,
-  "attack2>#16b0f5fd": 0.10000000149011612,
-  "attack2>spell3_north": 0.0,
-  "attack2>spell3_south": 0.0,
+  "Attack2>spell3_east": 0.0,
+  "Attack2>#16b0f5fd": 0.10000000149011612,
+  "Attack2>spell3_north": 0.0,
+  "Attack2>spell3_south": 0.0,
   "Attack2_ToIdle>spell3_east": 0.0,
   "Attack2_ToIdle>#16b0f5fd": 0.10000000149011612,
   "Attack2_ToIdle>spell3_north": 0.0,
   "Attack2_ToIdle>spell3_south": 0.0,
-  "attack2_torun>spell3_east": 0.0,
-  "attack2_torun>#16b0f5fd": 0.10000000149011612,
-  "attack2_torun>spell3_north": 0.0,
-  "attack2_torun>spell3_south": 0.0,
-  "channel>spell3_east": 0.0,
-  "channel>#16b0f5fd": 0.10000000149011612,
-  "channel>spell3_north": 0.0,
-  "channel>spell3_south": 0.0,
+  "Attack2_ToRun>spell3_east": 0.0,
+  "Attack2_ToRun>#16b0f5fd": 0.10000000149011612,
+  "Attack2_ToRun>spell3_north": 0.0,
+  "Attack2_ToRun>spell3_south": 0.0,
+  "Channel>spell3_east": 0.0,
+  "Channel>#16b0f5fd": 0.10000000149011612,
+  "Channel>spell3_north": 0.0,
+  "Channel>spell3_south": 0.0,
   "Channel_Wndup>spell3_east": 0.0,
   "Channel_Wndup>#16b0f5fd": 0.10000000149011612,
   "Channel_Wndup>spell3_north": 0.0,
   "Channel_Wndup>spell3_south": 0.0,
-  "crit>spell3_east": 0.0,
-  "crit>#16b0f5fd": 0.10000000149011612,
-  "crit>spell3_north": 0.0,
-  "crit>spell3_south": 0.0,
-  "dance_loop>spell3_east": 0.0,
-  "dance_loop>#16b0f5fd": 0.10000000149011612,
-  "dance_loop>spell3_north": 0.0,
-  "dance_loop>spell3_south": 0.0,
-  "death>spell3_east": 0.0,
-  "death>#16b0f5fd": 0.10000000149011612,
-  "death>spell3_north": 0.0,
-  "death>spell3_south": 0.0,
-  "idle1_base>spell3_east": 0.10000000149011612,
-  "idle1_base>#16b0f5fd": 0.10000000149011612,
-  "idle1_base>spell3_north": 0.10000000149011612,
-  "idle1_base>spell3_south": 0.10000000149011612,
+  "Crit>spell3_east": 0.0,
+  "Crit>#16b0f5fd": 0.10000000149011612,
+  "Crit>spell3_north": 0.0,
+  "Crit>spell3_south": 0.0,
+  "Dance_Loop>spell3_east": 0.0,
+  "Dance_Loop>#16b0f5fd": 0.10000000149011612,
+  "Dance_Loop>spell3_north": 0.0,
+  "Dance_Loop>spell3_south": 0.0,
+  "Death>spell3_east": 0.0,
+  "Death>#16b0f5fd": 0.10000000149011612,
+  "Death>spell3_north": 0.0,
+  "Death>spell3_south": 0.0,
+  "Idle1_Base>spell3_east": 0.10000000149011612,
+  "Idle1_Base>#16b0f5fd": 0.10000000149011612,
+  "Idle1_Base>spell3_north": 0.10000000149011612,
+  "Idle1_Base>spell3_south": 0.10000000149011612,
   "Idle_In>spell3_east": 0.0,
   "Idle_In>#16b0f5fd": 0.10000000149011612,
   "Idle_In>spell3_north": 0.0,
@@ -1445,26 +1755,26 @@
   "joke_in>#16b0f5fd": 0.10000000149011612,
   "joke_in>spell3_north": 0.0,
   "joke_in>spell3_south": 0.0,
-  "laugh>spell3_east": 0.0,
-  "laugh>#16b0f5fd": 0.10000000149011612,
-  "laugh>spell3_north": 0.0,
-  "laugh>spell3_south": 0.0,
-  "recall>spell3_east": 0.0,
-  "recall>#16b0f5fd": 0.10000000149011612,
-  "recall>spell3_north": 0.0,
-  "recall>spell3_south": 0.0,
+  "Laugh>spell3_east": 0.0,
+  "Laugh>#16b0f5fd": 0.10000000149011612,
+  "Laugh>spell3_north": 0.0,
+  "Laugh>spell3_south": 0.0,
+  "Recall>spell3_east": 0.0,
+  "Recall>#16b0f5fd": 0.10000000149011612,
+  "Recall>spell3_north": 0.0,
+  "Recall>spell3_south": 0.0,
   "Run_Base>spell3_east": 0.10000000149011612,
   "Run_Base>#16b0f5fd": 0.10000000149011612,
   "Run_Base>spell3_north": 0.10000000149011612,
   "Run_Base>spell3_south": 0.10000000149011612,
-  "run_fast>spell3_east": 0.0,
-  "run_fast>#16b0f5fd": 0.10000000149011612,
-  "run_fast>spell3_north": 0.0,
-  "run_fast>spell3_south": 0.0,
-  "run_haste>spell3_east": 0.0,
-  "run_haste>#16b0f5fd": 0.10000000149011612,
-  "run_haste>spell3_north": 0.0,
-  "run_haste>spell3_south": 0.0,
+  "Run_Fast>spell3_east": 0.0,
+  "Run_Fast>#16b0f5fd": 0.10000000149011612,
+  "Run_Fast>spell3_north": 0.0,
+  "Run_Fast>spell3_south": 0.0,
+  "Run_Haste>spell3_east": 0.0,
+  "Run_Haste>#16b0f5fd": 0.10000000149011612,
+  "Run_Haste>spell3_north": 0.0,
+  "Run_Haste>spell3_south": 0.0,
   "Run_In>spell3_east": 0.0,
   "Run_In>#16b0f5fd": 0.10000000149011612,
   "Run_In>spell3_north": 0.0,
@@ -1474,8 +1784,8 @@
   "Spell1_ToRun>#16b0f5fd": 0.10000000149011612,
   "spell2>#16b0f5fd": 0.10000000149011612,
   "Spell2_ToIdle>#16b0f5fd": 0.10000000149011612,
-  "spell2_torun>#16b0f5fd": 0.10000000149011612,
-  "spell3>#16b0f5fd": 0.10000000149011612,
+  "Spell2_ToRun>#16b0f5fd": 0.10000000149011612,
+  "Spell3>#16b0f5fd": 0.10000000149011612,
   "spell3_east>#16b0f5fd": 0.10000000149011612,
   "#16b0f5fd>spell3_east": 0.10000000149011612,
   "#16b0f5fd>#16b0f5fd": 0.10000000149011612,
@@ -1486,32 +1796,32 @@
   "Spell3_ToRun>#16b0f5fd": 0.10000000149011612,
   "spell3_west>#16b0f5fd": 0.10000000149011612,
   "Spell4>#16b0f5fd": 0.10000000149011612,
-  "spell4_toidle>spell3_east": 0.10000000149011612,
-  "spell4_toidle>#16b0f5fd": 0.10000000149011612,
-  "spell4_toidle>spell3_north": 0.10000000149011612,
-  "spell4_toidle>spell3_south": 0.10000000149011612,
+  "Spell4_ToIdle>spell3_east": 0.10000000149011612,
+  "Spell4_ToIdle>#16b0f5fd": 0.10000000149011612,
+  "Spell4_ToIdle>spell3_north": 0.10000000149011612,
+  "Spell4_ToIdle>spell3_south": 0.10000000149011612,
   "#2bf6994d>spell3_east": 0.10000000149011612,
   "#2bf6994d>#16b0f5fd": 0.10000000149011612,
   "#2bf6994d>spell3_north": 0.10000000149011612,
   "#2bf6994d>spell3_south": 0.10000000149011612,
-  "taunt>spell3_east": 0.0,
-  "taunt>#16b0f5fd": 0.10000000149011612,
-  "taunt>spell3_north": 0.0,
-  "taunt>spell3_south": 0.0,
+  "Taunt>spell3_east": 0.0,
+  "Taunt>#16b0f5fd": 0.10000000149011612,
+  "Taunt>spell3_north": 0.0,
+  "Taunt>spell3_south": 0.0,
   "Spell4>run_spell4": {
    "clip": "#2bf6994d"
   },
-  "spell4_toidle>run_spell4": {
+  "Spell4_ToIdle>run_spell4": {
    "clip": "#2bf6994d"
   },
   "#5f28fb20>run_spell4": {
    "clip": "#2bf6994d"
   },
   "#5f28fb20>#489d5b81": 0.4000000059604645,
-  "crit>idle1_base": {
+  "Crit>Idle1_Base": {
    "clip": "Crit_ToIdle"
   },
-  "idle1_base>run_homeguard": {
+  "Idle1_Base>run_homeguard": {
    "clip": "#5d07a297"
   },
   "Idle_In>run_homeguard": {
@@ -1520,70 +1830,70 @@
   "idle1>run_homeguard": {
    "clip": "#5d07a297"
   },
-  "run_homeguard>idle1_base": {
+  "run_homeguard>Idle1_Base": {
    "clip": "Idle_In"
   },
-  "attack1>dance_in": 0.0,
-  "attack1_toidle>dance_in": 0.0,
-  "Attack1_ToRun>dance_in": 0.0,
-  "attack2>dance_in": 0.0,
-  "Attack2_ToIdle>dance_in": 0.0,
-  "attack2_torun>dance_in": 0.0,
-  "channel>dance_in": 0.0,
-  "Channel_Wndup>dance_in": 0.0,
-  "crit>dance_in": 0.0,
-  "Crit_ToIdle>dance_in": 0.0,
-  "dance_in>dance_in": 0.0,
-  "dance_loop>dance_in": 0.0,
-  "death>dance_in": 0.0,
-  "#ef042329>dance_in": 0.0,
-  "#5d07a297>dance_in": 0.0,
-  "idle1>dance_in": 0.0,
-  "idle1_base>dance_in": 0.0,
-  "Idle_In>dance_in": 0.0,
-  "#5f28fb20>dance_in": 0.0,
-  "#489d5b81>dance_in": 0.0,
-  "joke_in>dance_in": 0.0,
-  "laugh>dance_in": 0.0,
-  "#9a6b0962>dance_in": 0.0,
-  "recall>dance_in": 0.0,
-  "respawn>dance_in": 0.0,
-  "run>dance_in": 0.0,
-  "Run_Base>dance_in": 0.0,
-  "#ae1afd78>dance_in": 0.0,
-  "run_fast>dance_in": 0.0,
-  "run_haste>dance_in": 0.0,
-  "run_homeguard>dance_in": 0.0,
-  "Run_In>dance_in": 0.0,
-  "run_spell4>dance_in": 0.0,
-  "#871388dc>dance_in": 0.0,
-  "Spell1>dance_in": 0.0,
-  "Spell1_ToIdle>dance_in": 0.0,
-  "Spell1_ToRun>dance_in": 0.0,
-  "spell2>dance_in": 0.0,
-  "Spell2_ToIdle>dance_in": 0.0,
-  "spell2_torun>dance_in": 0.0,
-  "spell3>dance_in": 0.0,
-  "spell3_east>dance_in": 0.0,
-  "spell3_north>dance_in": 0.0,
-  "spell3_south>dance_in": 0.0,
-  "Spell3_ToRun>dance_in": 0.0,
-  "spell3_west>dance_in": 0.0,
-  "Spell4>dance_in": 0.0,
-  "spell4_toidle>dance_in": 0.0,
-  "spell4_toidle_base>dance_in": 0.0,
-  "#2bf6994d>dance_in": 0.0,
-  "taunt>dance_in": 0.0,
-  "respawn>idle1": 0.10000000149011612,
-  "respawn>idle1_base": 0.10000000149011612,
-  "taunt>idle1": 0.10000000149011612,
-  "attack1_toidle>joke_in": 0.10000000149011612,
+  "attack1>Dance_In": 0.0,
+  "Attack1_ToIdle>Dance_In": 0.0,
+  "Attack1_ToRun>Dance_In": 0.0,
+  "Attack2>Dance_In": 0.0,
+  "Attack2_ToIdle>Dance_In": 0.0,
+  "Attack2_ToRun>Dance_In": 0.0,
+  "Channel>Dance_In": 0.0,
+  "Channel_Wndup>Dance_In": 0.0,
+  "Crit>Dance_In": 0.0,
+  "Crit_ToIdle>Dance_In": 0.0,
+  "Dance_In>Dance_In": 0.0,
+  "Dance_Loop>Dance_In": 0.0,
+  "Death>Dance_In": 0.0,
+  "#ef042329>Dance_In": 0.0,
+  "#5d07a297>Dance_In": 0.0,
+  "idle1>Dance_In": 0.0,
+  "Idle1_Base>Dance_In": 0.0,
+  "Idle_In>Dance_In": 0.0,
+  "#5f28fb20>Dance_In": 0.0,
+  "#489d5b81>Dance_In": 0.0,
+  "joke_in>Dance_In": 0.0,
+  "Laugh>Dance_In": 0.0,
+  "#9a6b0962>Dance_In": 0.0,
+  "Recall>Dance_In": 0.0,
+  "Respawn>Dance_In": 0.0,
+  "Run>Dance_In": 0.0,
+  "Run_Base>Dance_In": 0.0,
+  "#ae1afd78>Dance_In": 0.0,
+  "Run_Fast>Dance_In": 0.0,
+  "Run_Haste>Dance_In": 0.0,
+  "run_homeguard>Dance_In": 0.0,
+  "Run_In>Dance_In": 0.0,
+  "run_spell4>Dance_In": 0.0,
+  "#871388dc>Dance_In": 0.0,
+  "Spell1>Dance_In": 0.0,
+  "Spell1_ToIdle>Dance_In": 0.0,
+  "Spell1_ToRun>Dance_In": 0.0,
+  "spell2>Dance_In": 0.0,
+  "Spell2_ToIdle>Dance_In": 0.0,
+  "Spell2_ToRun>Dance_In": 0.0,
+  "Spell3>Dance_In": 0.0,
+  "spell3_east>Dance_In": 0.0,
+  "spell3_north>Dance_In": 0.0,
+  "spell3_south>Dance_In": 0.0,
+  "Spell3_ToRun>Dance_In": 0.0,
+  "spell3_west>Dance_In": 0.0,
+  "Spell4>Dance_In": 0.0,
+  "Spell4_ToIdle>Dance_In": 0.0,
+  "spell4_toidle_base>Dance_In": 0.0,
+  "#2bf6994d>Dance_In": 0.0,
+  "Taunt>Dance_In": 0.0,
+  "Respawn>idle1": 0.10000000149011612,
+  "Respawn>Idle1_Base": 0.10000000149011612,
+  "Taunt>idle1": 0.10000000149011612,
+  "Attack1_ToIdle>joke_in": 0.10000000149011612,
   "Attack1_ToRun>joke_in": 0.10000000149011612,
   "Attack2_ToIdle>joke_in": 0.10000000149011612,
-  "attack2_torun>joke_in": 0.10000000149011612,
+  "Attack2_ToRun>joke_in": 0.10000000149011612,
   "Crit_ToIdle>joke_in": 0.10000000149011612,
-  "dance_in>joke_in": 0.10000000149011612,
-  "dance_loop>joke_in": 0.10000000149011612,
+  "Dance_In>joke_in": 0.10000000149011612,
+  "Dance_Loop>joke_in": 0.10000000149011612,
   "#ef042329>joke_in": 0.10000000149011612,
   "#5d07a297>joke_in": 0.10000000149011612,
   "idle1>joke_in": 0.10000000149011612,
@@ -1592,13 +1902,13 @@
   "#489d5b81>joke_in": 0.10000000149011612,
   "joke_loop>joke_in": 0.10000000149011612,
   "#9a6b0962>joke_in": 0.10000000149011612,
-  "recall>joke_in": 0.10000000149011612,
-  "respawn>joke_in": 0.10000000149011612,
-  "run>joke_in": 0.10000000149011612,
+  "Recall>joke_in": 0.10000000149011612,
+  "Respawn>joke_in": 0.10000000149011612,
+  "Run>joke_in": 0.10000000149011612,
   "Run_Base>joke_in": 0.10000000149011612,
   "#ae1afd78>joke_in": 0.10000000149011612,
-  "run_fast>joke_in": 0.10000000149011612,
-  "run_haste>joke_in": 0.10000000149011612,
+  "Run_Fast>joke_in": 0.10000000149011612,
+  "Run_Haste>joke_in": 0.10000000149011612,
   "run_homeguard>joke_in": 0.10000000149011612,
   "Run_In>joke_in": 0.10000000149011612,
   "run_spell4>joke_in": 0.10000000149011612,
@@ -1606,34 +1916,34 @@
   "Spell1_ToIdle>joke_in": 0.10000000149011612,
   "Spell1_ToRun>joke_in": 0.10000000149011612,
   "Spell2_ToIdle>joke_in": 0.10000000149011612,
-  "spell2_torun>joke_in": 0.10000000149011612,
+  "Spell2_ToRun>joke_in": 0.10000000149011612,
   "spell3_east>joke_in": 0.10000000149011612,
   "spell3_north>joke_in": 0.10000000149011612,
   "spell3_south>joke_in": 0.10000000149011612,
   "Spell3_ToRun>joke_in": 0.10000000149011612,
   "spell3_west>joke_in": 0.10000000149011612,
-  "spell4_toidle>joke_in": 0.10000000149011612,
+  "Spell4_ToIdle>joke_in": 0.10000000149011612,
   "spell4_toidle_base>joke_in": 0.10000000149011612,
   "#2bf6994d>joke_in": 0.10000000149011612,
   "attack1>run_homeguard": {
    "clip": "Attack1_ToRun"
   },
-  "attack1_toidle>run_homeguard": {
+  "Attack1_ToIdle>run_homeguard": {
    "clip": "Attack1_ToRun"
   },
-  "attack2>run_homeguard": {
-   "clip": "attack2_torun"
+  "Attack2>run_homeguard": {
+   "clip": "Attack2_ToRun"
   },
   "Attack2_ToIdle>run_homeguard": {
-   "clip": "attack2_torun"
+   "clip": "Attack2_ToRun"
   },
-  "spell3>#cc7e3fac": {
+  "Spell3>#cc7e3fac": {
    "clip": "Spell3_ToRun"
   },
-  "spell3>#c2c5c38e": {
+  "Spell3>#c2c5c38e": {
    "clip": "Spell3_ToRun"
   },
-  "spell3>#c1c5c1fb": {
+  "Spell3>#c1c5c1fb": {
    "clip": "Spell3_ToRun"
   },
   "spell3_east>#cc7e3fac": {
@@ -1682,27 +1992,27 @@
    "clip": "Spell3_ToRun"
   },
   "spell2>#cc7e3fac": {
-   "clip": "spell2_torun"
+   "clip": "Spell2_ToRun"
   },
   "spell2>#c2c5c38e": {
-   "clip": "spell2_torun"
+   "clip": "Spell2_ToRun"
   },
   "spell2>#c1c5c1fb": {
-   "clip": "spell2_torun"
+   "clip": "Spell2_ToRun"
   },
-  "#cc7e3fac>idle1_base": {
+  "#cc7e3fac>Idle1_Base": {
    "clip": "Idle_In"
   },
-  "#c2c5c38e>idle1_base": {
+  "#c2c5c38e>Idle1_Base": {
    "clip": "Idle_In"
   },
-  "#c1c5c1fb>idle1_base": {
+  "#c1c5c1fb>Idle1_Base": {
    "clip": "Idle_In"
   },
-  "run_haste>idle1_base": {
+  "Run_Haste>Idle1_Base": {
    "clip": "Idle_In"
   },
-  "run_haste>idle1": {
+  "Run_Haste>idle1": {
    "clip": "Idle_In"
   },
   "run_homeguard>idle1": {
@@ -1712,7 +2022,7 @@
    "clip": "Idle_In"
   },
   "run_homeguard>#cc7e3fac": 1.0,
-  "run_haste>#1efabc75": {
+  "Run_Haste>#1efabc75": {
    "clip": "Idle_In"
   },
   "run_homeguard>#1efabc75": {
@@ -1721,7 +2031,7 @@
   "Run_In>#1efabc75": {
    "clip": "Idle_In"
   },
-  "run_haste>#d5bc96d1": {
+  "Run_Haste>#d5bc96d1": {
    "clip": "Idle_In"
   },
   "run_homeguard>#d5bc96d1": {
@@ -1730,10 +2040,10 @@
   "Run_In>#d5bc96d1": {
    "clip": "Idle_In"
   },
-  "run_haste>idle_var2": {
+  "Run_Haste>idle_var2": {
    "clip": "Idle_In"
   },
-  "run_haste>idle_var3": {
+  "Run_Haste>idle_var3": {
    "clip": "Idle_In"
   },
   "run_homeguard>idle_var2": {
@@ -1749,12 +2059,12 @@
    "clip": "Idle_In"
   },
   "attack1>#1efabc75": {
-   "clip": "attack1_toidle"
+   "clip": "Attack1_ToIdle"
   },
-  "attack2>#1efabc75": {
+  "Attack2>#1efabc75": {
    "clip": "Attack2_ToIdle"
   },
-  "crit>#1efabc75": {
+  "Crit>#1efabc75": {
    "clip": "Crit_ToIdle"
   },
   "#cc7e3fac>#1efabc75": {
@@ -1799,39 +2109,39 @@
   "attack1>#c1c5c1fb": {
    "clip": "Attack1_ToRun"
   },
-  "attack1_toidle>#cc7e3fac": {
+  "Attack1_ToIdle>#cc7e3fac": {
    "clip": "Attack1_ToRun"
   },
-  "attack1_toidle>#c2c5c38e": {
+  "Attack1_ToIdle>#c2c5c38e": {
    "clip": "Attack1_ToRun"
   },
-  "attack1_toidle>#c1c5c1fb": {
+  "Attack1_ToIdle>#c1c5c1fb": {
    "clip": "Attack1_ToRun"
   },
-  "attack2>#cc7e3fac": {
-   "clip": "attack2_torun"
+  "Attack2>#cc7e3fac": {
+   "clip": "Attack2_ToRun"
   },
-  "attack2>#c2c5c38e": {
-   "clip": "attack2_torun"
+  "Attack2>#c2c5c38e": {
+   "clip": "Attack2_ToRun"
   },
-  "attack2>#c1c5c1fb": {
-   "clip": "attack2_torun"
+  "Attack2>#c1c5c1fb": {
+   "clip": "Attack2_ToRun"
   },
   "Attack2_ToIdle>#cc7e3fac": {
-   "clip": "attack2_torun"
+   "clip": "Attack2_ToRun"
   },
   "Attack2_ToIdle>#c2c5c38e": {
-   "clip": "attack2_torun"
+   "clip": "Attack2_ToRun"
   },
   "Attack2_ToIdle>#c1c5c1fb": {
-   "clip": "attack2_torun"
+   "clip": "Attack2_ToRun"
   },
   "Crit_ToIdle>spell3_east": 0.0,
   "Crit_ToIdle>spell3_north": 0.0,
   "Crit_ToIdle>spell3_south": 0.0,
-  "dance_in>spell3_east": 0.0,
-  "dance_in>spell3_north": 0.0,
-  "dance_in>spell3_south": 0.0,
+  "Dance_In>spell3_east": 0.0,
+  "Dance_In>spell3_north": 0.0,
+  "Dance_In>spell3_south": 0.0,
   "#ef042329>spell3_east": 0.0,
   "#ef042329>spell3_north": 0.0,
   "#ef042329>spell3_south": 0.0,
@@ -1871,12 +2181,12 @@
   "Recall_Winddown>spell3_east": 0.0,
   "Recall_Winddown>spell3_north": 0.0,
   "Recall_Winddown>spell3_south": 0.0,
-  "respawn>spell3_east": 0.0,
-  "respawn>spell3_north": 0.0,
-  "respawn>spell3_south": 0.0,
-  "run>spell3_east": 0.0,
-  "run>spell3_north": 0.0,
-  "run>spell3_south": 0.0,
+  "Respawn>spell3_east": 0.0,
+  "Respawn>spell3_north": 0.0,
+  "Respawn>spell3_south": 0.0,
+  "Run>spell3_east": 0.0,
+  "Run>spell3_north": 0.0,
+  "Run>spell3_south": 0.0,
   "#ae1afd78>spell3_east": 0.0,
   "#ae1afd78>spell3_north": 0.0,
   "#ae1afd78>spell3_south": 0.0,
@@ -1919,12 +2229,12 @@
   "Spell2_ToIdle>spell3_east": 0.0,
   "Spell2_ToIdle>spell3_north": 0.0,
   "Spell2_ToIdle>spell3_south": 0.0,
-  "spell2_torun>spell3_east": 0.0,
-  "spell2_torun>spell3_north": 0.0,
-  "spell2_torun>spell3_south": 0.0,
-  "spell3>spell3_east": 0.0,
-  "spell3>spell3_north": 0.0,
-  "spell3>spell3_south": 0.0,
+  "Spell2_ToRun>spell3_east": 0.0,
+  "Spell2_ToRun>spell3_north": 0.0,
+  "Spell2_ToRun>spell3_south": 0.0,
+  "Spell3>spell3_east": 0.0,
+  "Spell3>spell3_north": 0.0,
+  "Spell3>spell3_south": 0.0,
   "spell3_east>spell3_east": 0.0,
   "spell3_east>spell3_north": 0.0,
   "spell3_east>spell3_south": 0.0,
@@ -1959,18 +2269,18 @@
   "stunned>spell3_north": 0.0,
   "stunned>spell3_south": 0.0,
   "attack1>spell3_west": 0.0,
-  "attack1_toidle>spell3_west": 0.0,
+  "Attack1_ToIdle>spell3_west": 0.0,
   "Attack1_ToRun>spell3_west": 0.0,
-  "attack2>spell3_west": 0.0,
+  "Attack2>spell3_west": 0.0,
   "Attack2_ToIdle>spell3_west": 0.0,
-  "attack2_torun>spell3_west": 0.0,
-  "channel>spell3_west": 0.0,
+  "Attack2_ToRun>spell3_west": 0.0,
+  "Channel>spell3_west": 0.0,
   "Channel_Wndup>spell3_west": 0.0,
-  "crit>spell3_west": 0.0,
+  "Crit>spell3_west": 0.0,
   "Crit_ToIdle>spell3_west": 0.0,
-  "dance_in>spell3_west": 0.0,
-  "dance_loop>spell3_west": 0.0,
-  "death>spell3_west": 0.0,
+  "Dance_In>spell3_west": 0.0,
+  "Dance_Loop>spell3_west": 0.0,
+  "Death>spell3_west": 0.0,
   "#ef042329>spell3_west": 0.0,
   "#5d07a297>spell3_west": 0.0,
   "idle1>spell3_west": 0.0,
@@ -1984,15 +2294,15 @@
   "joke_in>spell3_west": 0.0,
   "joke_loop>spell3_west": 0.0,
   "knockup>spell3_west": 0.0,
-  "laugh>spell3_west": 0.0,
+  "Laugh>spell3_west": 0.0,
   "#9a6b0962>spell3_west": 0.0,
-  "recall>spell3_west": 0.0,
+  "Recall>spell3_west": 0.0,
   "Recall_Winddown>spell3_west": 0.0,
-  "respawn>spell3_west": 0.0,
-  "run>spell3_west": 0.0,
+  "Respawn>spell3_west": 0.0,
+  "Run>spell3_west": 0.0,
   "#ae1afd78>spell3_west": 0.0,
-  "run_fast>spell3_west": 0.0,
-  "run_haste>spell3_west": 0.0,
+  "Run_Fast>spell3_west": 0.0,
+  "Run_Haste>spell3_west": 0.0,
   "run_homeguard>spell3_west": 0.0,
   "Run_In>spell3_west": 0.0,
   "#52185746>spell3_west": 0.0,
@@ -2007,8 +2317,8 @@
   "Spell1_ToRun>spell3_west": 0.0,
   "spell2>spell3_west": 0.0,
   "Spell2_ToIdle>spell3_west": 0.0,
-  "spell2_torun>spell3_west": 0.0,
-  "spell3>spell3_west": 0.0,
+  "Spell2_ToRun>spell3_west": 0.0,
+  "Spell3>spell3_west": 0.0,
   "spell3_east>spell3_west": 0.0,
   "spell3_north>spell3_west": 0.0,
   "spell3_south>spell3_west": 0.0,
@@ -2020,8 +2330,8 @@
   "spell4_toidle_base>spell3_west": 0.0,
   "#960cce87>spell3_west": 0.0,
   "stunned>spell3_west": 0.0,
-  "taunt>spell3_west": 0.0,
-  "spell2_torun>#1efabc75": {
+  "Taunt>spell3_west": 0.0,
+  "Spell2_ToRun>#1efabc75": {
    "clip": "Idle_In"
   },
   "Spell1_ToRun>#1efabc75": {
@@ -2046,7 +2356,7 @@
    "clip": "ult_end"
   },
   "Channel_Wndup>#1efabc75": {
-   "clip": "channel"
+   "clip": "Channel"
   },
   "Spell1>#5f28fb20": {
    "clip": "Spell1_ToIdle"
@@ -2057,7 +2367,7 @@
   "Attack1_ToRun>#1efabc75": {
    "clip": "Idle_In"
   },
-  "attack2_torun>#1efabc75": {
+  "Attack2_ToRun>#1efabc75": {
    "clip": "Idle_In"
   },
   "#5d07a297>idle1": {
@@ -2066,7 +2376,7 @@
   "#5d07a297>#1efabc75": {
    "clip": "Idle_In"
   },
-  "spell2_torun>#cc7e3fac": 0.10000000149011612
+  "Spell2_ToRun>#cc7e3fac": 0.10000000149011612
  },
  "tracks": {
   "Default": {

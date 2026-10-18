@@ -19,7 +19,7 @@ func build_kit() -> void:
 	r.ind_length = 3000.0
 	c.abilities[3] = r
 	c.add_effect(FluxHook.new(w))
-	c.add_effect(AttackFx.new())
+	# [anim-events] the attack muzzle flash (Ezreal_Base_BA_cas) is the Attack clips' particle event now
 	c.add_effect(BotLeveler.new())
 
 
@@ -97,19 +97,6 @@ class FX extends RefCounted:
 		return u.kind == G.Kind.TURRET or u.kind == G.Kind.INHIBITOR or u.kind == G.Kind.NEXUS
 
 
-## League basic attack muzzle flash (Ezreal_Base_BA_cas) at the gauntlet.
-class AttackFx extends Effect:
-	func _init() -> void:
-		id = "ezreal_attack_fx"
-		hidden = true
-
-	func on_attack_launch(target) -> void:
-		var dir: Vector3 = owner.facing
-		if target != null and is_instance_valid(target):
-			dir = G.flat_dir(owner.global_position, target.global_position)
-		FX.hand_fx(owner, "Ezreal_Base_BA_cas", dir, owner.height * 0.55, owner.radius)
-
-
 # ===================================================================== passive
 class RisingSpellForce extends Effect:
 	var per := 0.1
@@ -160,7 +147,7 @@ class MysticShot extends KitAbility:
 
 	func begin_cast(t: Dictionary) -> void:
 		super(t)
-		FX.hand_fx(owner, "Ezreal_Base_Q_bow", t.get("dir", owner.facing))
+		# [anim-events] Ezreal_Base_Q_bow is the Spell1 clip's particle event (L hand bone)
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
@@ -242,7 +229,7 @@ class EssenceFlux extends KitAbility:
 
 	func begin_cast(t: Dictionary) -> void:
 		super(t)
-		FX.hand_fx(owner, "Ezreal_Base_W_Cas", t.get("dir", owner.facing))
+		# [anim-events] Ezreal_Base_W_Cas (+ BA_cas flash) are Spell2 clip particle events
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
@@ -461,10 +448,7 @@ class TrueshotBarrage extends KitAbility:
 
 	func begin_cast(t: Dictionary) -> void:
 		super(t)
-		# League channel: arcane bow drawn in front of Ezreal + glowing gauntlet
-		var dir: Vector3 = t.get("dir", owner.facing)
-		FX.hand_fx(owner, "Ezreal_Base_R_bow", dir, 1.2, 0.6)
-		FX.hand_fx(owner, "Ezreal_Base_R_Gauntlet_Glow", dir, 1.2, 0.4)
+		# [anim-events] the arcane bow (ground bone) and gauntlet glow (L_Gauntlet, frame 14) are Spell4 clip events
 
 	func execute(t: Dictionary) -> void:
 		var o = owner

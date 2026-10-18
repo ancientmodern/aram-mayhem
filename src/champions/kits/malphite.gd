@@ -20,7 +20,7 @@ func build_kit() -> void:
 	c.abilities[3].cast_time = 0.0
 	c.add_effect(ThunderclapHook.new(c.abilities[1]))
 	c.add_effect(BotLeveler.new())
-	c.add_effect(SwingTrails.new())
+	# [anim-events] the fist sweeps (BA_Sweep_01/02) are the Attack1/2 clips' particle events (layout bone, frame 5)
 
 
 
@@ -65,19 +65,6 @@ class LFx:
 			G.match.after(fade, func():
 				if is_instance_valid(n):
 					n.queue_free())
-
-
-## League fist sweep on each basic attack (alternating arms).
-class SwingTrails extends Effect:
-	var n := 0
-
-	func _init() -> void:
-		id = "malph_swing_fx"
-		hidden = true
-
-	func on_attack_launch(_target) -> void:
-		n += 1
-		LolVfx.attach(owner, "Malphite_Base_BA_Sweep_01" if n % 2 == 1 else "Malphite_Base_BA_Sweep_02", {"dir": owner.facing})
 
 
 # ===================================================================== helpers
@@ -455,7 +442,7 @@ class GroundSlam extends MAbility:
 				if ab != null and (ab.vfx == null or not is_instance_valid(ab.vfx)):
 					ab.vfx = LolVfx.attach(u, "Malphite_Base_E_tar_buf_hands", {"loop": true, "height": u.height * 0.5})
 		# League: the slam (rock crater / pillar) and the ground shockwave
-		LolVfx.spawn(m, "Malphite_Base_E_cas", p, {"dir": o.facing})
+		# [anim-events] Malphite_Base_E_cas is the Spell3 clip's detached particle event (R hand, frame 8)
 		LolVfx.spawn(m, "Malphite_Base_E_hit_aoe", p, {"dir": o.facing})
 		if m.camera_rig != null and o == G.player:
 			m.camera_rig.shake(0.15)

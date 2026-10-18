@@ -19,7 +19,7 @@
   "healthBarHeight": 71.0
  },
  "clips": {
-  "run": {
+  "Run": {
    "type": "Atomic",
    "track": "Default",
    "anim": "run",
@@ -73,11 +73,11 @@
    "anim": "idle1",
    "file": "5dfec408cd565e9c"
   },
-  "death": {
+  "Death": {
    "type": "Selector",
    "pairs": [
     [
-     "death_base",
+     "Death_Base",
      50.0
     ],
     [
@@ -92,25 +92,26 @@
    "anim": "death_var2",
    "file": "789ecfa9dabac019"
   },
-  "death_base": {
+  "Death_Base": {
    "type": "Atomic",
    "track": "Default",
    "anim": "death",
    "file": "0cd8ee15832af20c"
   }
  },
+ "idle_particles": [],
  "blends": {
-  "run>death_base": 0.0,
-  "#3f1534b8>death_base": 0.0,
-  "#42153971>death_base": 0.0,
-  "attack1>death_base": 0.0,
-  "attack2>death_base": 0.0,
-  "stunned>death_base": 0.0,
-  "idle1>death_base": 0.0,
-  "#9e66faeb>death_base": 0.0,
-  "#9f66fc7e>death_base": 0.0,
-  "#bd31845b>death_base": 0.0,
-  "death_base>death_base": 0.0
+  "Run>Death_Base": 0.0,
+  "#3f1534b8>Death_Base": 0.0,
+  "#42153971>Death_Base": 0.0,
+  "attack1>Death_Base": 0.0,
+  "attack2>Death_Base": 0.0,
+  "stunned>Death_Base": 0.0,
+  "idle1>Death_Base": 0.0,
+  "#9e66faeb>Death_Base": 0.0,
+  "#9f66fc7e>Death_Base": 0.0,
+  "#bd31845b>Death_Base": 0.0,
+  "Death_Base>Death_Base": 0.0
  },
  "tracks": {
   "Default": {

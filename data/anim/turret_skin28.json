@@ -1,0 +1,630 @@
+{
+ "alias": "Turret",
+ "attacks": [
+  {
+   "name": "TurretBasicAttack",
+   "prob": 0.0,
+   "cast_offset": -0.16099999845027924,
+   "clip": "attack1",
+   "cast_frame": 4.949999809265137,
+   "missile_speed": 1200.0,
+   "start_bone": "joint2",
+   "hit_bone": "C_Buffbone_Glb_Chest_Loc"
+  },
+  {
+   "name": "TurretBasicAttack2",
+   "prob": 0.0,
+   "clip": "attack1",
+   "cast_frame": 4.949999809265137,
+   "missile_speed": 1200.0,
+   "start_bone": "joint2",
+   "hit_bone": "C_Buffbone_Glb_Chest_Loc"
+  },
+  {
+   "name": "TurretBasicAttack3",
+   "prob": 0.0,
+   "clip": "attack1",
+   "cast_frame": 4.949999809265137,
+   "missile_speed": 1200.0,
+   "start_bone": "joint2",
+   "hit_bone": "C_Buffbone_Glb_Chest_Loc"
+  },
+  {
+   "name": "TurretBasicAttack4",
+   "prob": 0.0,
+   "clip": "attack1",
+   "cast_frame": 4.949999809265137,
+   "missile_speed": 1200.0,
+   "start_bone": "joint2",
+   "hit_bone": "C_Buffbone_Glb_Chest_Loc"
+  }
+ ],
+ "crits": [],
+ "spells": [],
+ "stats": {
+  "pathfindingCollisionRadius": 125.0,
+  "overrideGameplayCollisionRadius": 88.4000015258789,
+  "selectionRadius": 130.0,
+  "selectionHeight": 200.0,
+  "healthBarHeight": 525.0
+ },
+ "initial_hidden": [
+  "State1",
+  "State2",
+  "State3",
+  "MedRubble_Left",
+  "ShortRubble_Left",
+  "LongRubble_Right",
+  "MedRubble_Right",
+  "ShortRubble_Right"
+ ],
+ "clips": {
+  "idle1": {
+   "type": "Atomic",
+   "flags": 1,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "661cb782cf62f425",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      "BaseState"
+     ]
+    }
+   ]
+  },
+  "#f972ea8c": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "661cb782cf62f425",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      "State1"
+     ],
+     "hide": [
+      "BaseState"
+     ]
+    }
+   ]
+  },
+  "#cc2030a0": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": null,
+   "xanim": "x/clip_7a394e26",
+   "file": "08e9dfc47a394e26",
+   "events": [
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": true,
+     "start": 0.0,
+     "effect": "HA_AP_Order_Turret_Shatter_01",
+     "key": "#7dd8b50e",
+     "mEnemyEffectKey": 2111354126,
+     "pairs": [
+      {
+       "bone": "Root"
+      }
+     ],
+     "bones": [
+      "Root"
+     ]
+    },
+    {
+     "type": "Sound",
+     "loop": false,
+     "kill": false,
+     "start": 0.0,
+     "sound": "Play_sfx_Env_Turret_map12_OrderTurret_break01"
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 1.0,
+     "show": [
+      "State1"
+     ],
+     "hide": [
+      "BaseState"
+     ]
+    }
+   ]
+  },
+  "#fa72ec1f": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "661cb782cf62f425",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      "State2"
+     ],
+     "hide": [
+      "BaseState",
+      "State1"
+     ]
+    }
+   ]
+  },
+  "#f5c65fef": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": null,
+   "xanim": "x/clip_7a394e26",
+   "file": "08e9dfc47a394e26",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      "State1"
+     ],
+     "hide": [
+      "BaseState"
+     ]
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": true,
+     "start": 0.0,
+     "effect": "HA_AP_Order_Turret_Shatter_02",
+     "key": "#7cd8b37b",
+     "mEnemyEffectKey": 2094576507,
+     "pairs": [
+      {
+       "bone": "Root"
+      }
+     ],
+     "bones": [
+      "Root"
+     ]
+    },
+    {
+     "type": "Sound",
+     "loop": false,
+     "kill": false,
+     "start": 0.0,
+     "sound": "Play_sfx_Env_Turret_map12_OrderTurret_break02"
+    }
+   ]
+  },
+  "#4ae1fb4c": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "661cb782cf62f425",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      "State3"
+     ],
+     "hide": [
+      "State1",
+      "State2",
+      "BaseState",
+      "MedRubble_Left",
+      "ShortRubble_Left",
+      "LongRubble_Right",
+      "ShortRubble_Right",
+      "MedRubble_Right"
+     ]
+    }
+   ]
+  },
+  "#5fe86160": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "661cb782cf62f425",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      "State3"
+     ],
+     "hide": [
+      "State2",
+      "State1",
+      "BaseState",
+      "MedRubble_Left",
+      "ShortRubble_Left",
+      "LongRubble_Right",
+      "ShortRubble_Right",
+      "MedRubble_Right"
+     ]
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": true,
+     "start": 0.0,
+     "effect": "HA_AP_Order_Turret_Shatter_03",
+     "key": "#7bd8b1e8",
+     "mEnemyEffectKey": 2077798888,
+     "pairs": [
+      {
+       "bone": "Root"
+      }
+     ],
+     "bones": [
+      "Root"
+     ]
+    },
+    {
+     "type": "Sound",
+     "loop": false,
+     "kill": false,
+     "start": 0.0,
+     "sound": "Play_sfx_Env_Turret_map12_OrderTurret_break03"
+    }
+   ]
+  },
+  "#aa006aba": {
+   "type": "Parallel",
+   "list": [
+    "#4ae1fb4c"
+   ]
+  },
+  "attack1": {
+   "type": "Atomic",
+   "track": "Attack",
+   "anim": "idle1",
+   "file": "661cb782cf62f425"
+  },
+  "#f618f139": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "661cb782cf62f425",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "hide": [
+      "BaseState",
+      "State1",
+      "State2",
+      "State3"
+     ]
+    }
+   ]
+  },
+  "#502619a4": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "661cb782cf62f425",
+   "events": [
+    {
+     "type": "Sound",
+     "loop": false,
+     "kill": false,
+     "start": 0.0,
+     "sound": "Play_sfx_Env_Turret_map12_OrderTurret_break03"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": true,
+     "start": 0.0,
+     "effect": "HA_AP_Order_Turret_Shatter_03_Left",
+     "key": "HA_AP_Order_Turret_Shatter_03_Left",
+     "pairs": [
+      {
+       "bone": "Root"
+      }
+     ],
+     "bones": [
+      "Root"
+     ],
+     "set": "map12"
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      "State3"
+     ],
+     "hide": [
+      "State2",
+      "State1",
+      "BaseState"
+     ]
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 39.0,
+     "show": [
+      "MedRubble_Left"
+     ],
+     "hide": [
+      "State1",
+      "State2",
+      "BaseState",
+      "ShortRubble_Left",
+      "LongRubble_Right",
+      "ShortRubble_Right",
+      "MedRubble_Right"
+     ]
+    }
+   ]
+  },
+  "#53261e5d": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "661cb782cf62f425",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      "State3"
+     ],
+     "hide": [
+      "State2",
+      "State1",
+      "BaseState"
+     ]
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": true,
+     "start": 0.0,
+     "effect": "HA_AP_Order_Turret_Shatter_03_Right",
+     "key": "HA_AP_Order_Turret_Shatter_03_Right",
+     "pairs": [
+      {
+       "bone": "Root"
+      }
+     ],
+     "bones": [
+      "Root"
+     ],
+     "set": "map12"
+    },
+    {
+     "type": "Sound",
+     "loop": false,
+     "kill": false,
+     "start": 0.0,
+     "sound": "Play_sfx_Env_Turret_map12_OrderTurret_break03"
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 39.0,
+     "show": [
+      "MedRubble_Right"
+     ],
+     "hide": [
+      "State1",
+      "State2",
+      "BaseState",
+      "MedRubble_Left",
+      "ShortRubble_Left",
+      "LongRubble_Right",
+      "ShortRubble_Right"
+     ]
+    }
+   ]
+  },
+  "#cf7c7018": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "661cb782cf62f425",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      "MedRubble_Left"
+     ],
+     "hide": [
+      "State1",
+      "State2",
+      "BaseState",
+      "State3",
+      "ShortRubble_Left",
+      "LongRubble_Right",
+      "ShortRubble_Right",
+      "MedRubble_Right"
+     ]
+    }
+   ]
+  },
+  "#d27c74d1": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "661cb782cf62f425",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      "MedRubble_Right"
+     ],
+     "hide": [
+      "State1",
+      "State2",
+      "BaseState",
+      "State3",
+      "MedRubble_Left",
+      "ShortRubble_Left",
+      "LongRubble_Right",
+      "ShortRubble_Right"
+     ]
+    }
+   ]
+  },
+  "#3d034832": {
+   "type": "Sequencer",
+   "flags": 4,
+   "list": [
+    "#502619a4",
+    "#cf7c7018"
+   ]
+  },
+  "#3c03469f": {
+   "type": "Sequencer",
+   "flags": 4,
+   "list": [
+    "#53261e5d",
+    "#d27c74d1"
+   ]
+  },
+  "#d17c733e": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "661cb782cf62f425",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      "ShortRubble_Right",
+      "ShortRubble_Left"
+     ],
+     "hide": [
+      "State1",
+      "State2",
+      "BaseState",
+      "State3",
+      "MedRubble_Left",
+      "MedRubble_Right",
+      "LongRubble_Right"
+     ]
+    }
+   ]
+  },
+  "#52261cca": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "661cb782cf62f425",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "show": [
+      "State3"
+     ],
+     "hide": [
+      "State2",
+      "State1",
+      "BaseState"
+     ]
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": true,
+     "start": 0.0,
+     "effect": "HA_AP_Order_Turret_Shatter_03_Right",
+     "key": "HA_AP_Order_Turret_Shatter_03_Right",
+     "pairs": [
+      {
+       "bone": "Root"
+      }
+     ],
+     "bones": [
+      "Root"
+     ],
+     "set": "map12"
+    },
+    {
+     "type": "Sound",
+     "loop": false,
+     "kill": false,
+     "start": 0.0,
+     "sound": "Play_sfx_Env_Turret_map12_OrderTurret_break03"
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 39.0,
+     "show": [
+      "ShortRubble_Right",
+      "ShortRubble_Left"
+     ],
+     "hide": [
+      "State1",
+      "State2",
+      "MedRubble_Right",
+      "BaseState",
+      "MedRubble_Left",
+      "LongRubble_Right"
+     ]
+    }
+   ]
+  },
+  "#3b03450c": {
+   "type": "Sequencer",
+   "flags": 4,
+   "list": [
+    "#52261cca",
+    "#d17c733e"
+   ]
+  }
+ },
+ "idle_particles": [
+  {
+   "key": "HA_Order_Turret_Weapon_Glow",
+   "bone": "joint2",
+   "effect": "HA_Order_Turret_Weapon_Glow",
+   "set": "shared"
+  }
+ ],
+ "blends": {},
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  },
+  "Attack": {
+   "priority": 1,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [
+  "#523785eb",
+  "#5337877e",
+  "#54378911"
+ ],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

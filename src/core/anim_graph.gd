@@ -16,6 +16,8 @@ var crits: Array = []
 var spells: Array = []
 var stats := {}
 var alias := ""
+var idle_particles: Array = []   ## [anim-events] skin idle particles [{effect, bone, set}]
+var initial_hidden: Array = []   ## [anim-events] League initialSubmeshToHide submesh names
 
 
 static func load_for(name: String) -> AnimGraph:
@@ -44,6 +46,8 @@ func _load(d: Dictionary) -> void:
 	crits = d.get("crits", []).filter(func(a): return a is Dictionary and a.has("name"))
 	spells = d.get("spells", [])
 	stats = d.get("stats", {})
+	idle_particles = d.get("idle_particles", [])
+	initial_hidden = d.get("initial_hidden", [])
 
 
 func has_clip(n: String) -> bool:

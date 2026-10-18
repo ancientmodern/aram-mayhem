@@ -75,13 +75,13 @@
    "anim": "death",
    "file": "1c1a74f6656390e6"
   },
-  "run": {
+  "Run": {
    "type": "Atomic",
    "track": "Default",
    "anim": "run",
    "file": "99d4ae89b2f6c202"
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "anim": "death",
@@ -94,25 +94,26 @@
    "file": "518f32fd96f0c831"
   }
  },
+ "idle_particles": [],
  "blends": {
-  "run>run": 0.0,
-  "run>death": 0.0,
+  "Run>Run": 0.0,
+  "Run>Death": 0.0,
   "#3f1534b8>#3f1534b8": 0.0,
-  "#3f1534b8>death": 0.0,
+  "#3f1534b8>Death": 0.0,
   "#41f434dd>#41f434dd": 0.0,
-  "#41f434dd>death": 0.0,
-  "attack1>death": 0.0,
-  "attack2>death": 0.0,
+  "#41f434dd>Death": 0.0,
+  "attack1>Death": 0.0,
+  "attack2>Death": 0.0,
   "stunned>stunned": 0.0,
-  "stunned>death": 0.0,
+  "stunned>Death": 0.0,
   "idle1>idle1": 0.0,
-  "idle1>death": 0.0,
+  "idle1>Death": 0.0,
   "#9e66faeb>#9e66faeb": 0.0,
-  "#9e66faeb>death": 0.0,
+  "#9e66faeb>Death": 0.0,
   "#ac236dee>#ac236dee": 0.0,
-  "#ac236dee>death": 0.0,
-  "death>death": 0.0,
-  "#bec63b4e>death": 0.0,
+  "#ac236dee>Death": 0.0,
+  "Death>Death": 0.0,
+  "#bec63b4e>Death": 0.0,
   "#bec63b4e>#bec63b4e": 0.0
  },
  "tracks": {

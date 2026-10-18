@@ -8,9 +8,15 @@ Writes data/anim/<alias>.json with:
   spells  : Q/W/E/R spell animation names, castFrame, mCastTime, channel, missile start bone
   stats   : misc CharacterRecord numbers (collision radii, base attack time, ...)
 
+  events  : (per clip) every mEventDataMap entry with its full field set (League defaults filled in): Particle
+            (effect = exported VFX system name via the skin ResourceResolver, bones / pairs = skeleton joint names,
+            start / end frame, loop / kill / detach), Sound, SubmeshVisibility, Fade, JointSnap, FaceTarget,
+            IdleParticlesVisibility, ConformToPath ...; "fps" when the clip's .anm is not 30 fps
+  idle_particles : SkinCharacterDataProperties.idleParticlesEffects (effect + bone)
+
 Usage:
-  python extract_anim.py               # roster + Howling Abyss minions
-  python extract_anim.py Ezreal Ahri   # selection
+  python extract_anim.py               # roster + Howling Abyss minions, turrets, structures, Tibbers
+  python extract_anim.py Ezreal Ahri   # selection (Unit:skin for a non-base skin, e.g. Turret:28)
 """
 import json
 import os
@@ -27,6 +33,9 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 OUT = os.path.join(ROOT, "data", "anim")
 MINIONS = ["HA_OrderMinionMelee", "HA_ChaosMinionMelee", "HA_OrderMinionRanged", "HA_ChaosMinionRanged",
            "HA_OrderMinionSiege", "HA_ChaosMinionSiege", "HA_OrderMinionSuper", "HA_ChaosMinionSuper"]
+# Howling Abyss turrets / structures (unit:skin, written as <unit>_skin<N>.json) and summons
+STRUCTURES = ["Turret:28", "Turret:29", "Turret:31", "Inhibitor:22", "Inhibitor:23", "Nexus:24", "Nexus:25",
+              "AnnieTibbers"]
 
 CLASS = {fnv1a32(n): n for n in (
     "AtomicClipData SelectorClipData SequencerClipData ParallelClipData ConditionFloatClipData "
@@ -247,6 +256,254 @@ def spell_entry(nm, objs):
     return {k: v for k, v in e.items() if v is not None}
 
 
+# ---------------------------------------------------------------- animation events (full field set)
+# CommunityDragon field / class / hash names (tools/extracted/cdhash); unknown fields keep "#hash" keys.
+_CD = {}
+
+
+def cd_names():
+    if _CD:
+        return _CD
+    base = os.path.join(ROOT, "tools", "extracted", "cdhash")
+    for fn in ("hashes.binfields.txt", "hashes.bintypes.txt", "hashes.binhashes.txt", "hashes.binentries.txt"):
+        fp = os.path.join(base, fn)
+        if not os.path.exists(fp):
+            continue
+        with open(fp, encoding="utf-8") as f:
+            for line in f:
+                a = line.rstrip("\n").split(" ", 1)
+                if len(a) == 2:
+                    try:
+                        _CD.setdefault(int(a[0], 16), a[1])
+                    except ValueError:
+                        pass
+    _CD.setdefault(-1, "")
+    return _CD
+
+
+# Per-unit resolution context, set by extract() before the clips are converted:
+#   effect(h)  effect key hash / link -> {"effect": exported VFX system name, "key": League key name}
+#   bone(h)    bone name hash -> skeleton joint name
+#   fps(co)    clip object -> .anm frame rate (event frames are in the clip's frames)
+#   submesh(h) submesh name hash -> .skn material range name
+EV = {"effect": lambda h: {}, "bone": lambda h: h, "fps": lambda co: None, "submesh": lambda h: h}
+
+# field -> (json key, League default). The bins store only values that differ from the default: mIsLoop /
+# mIsKillEvent are only ever written False, mIsDetachable / mShow only True.
+_EV_FIELDS = {
+    "mName": ("name", None), "mStartFrame": ("start", 0.0), "mEndFrame": ("end", None),
+    "mIsLoop": ("loop", True), "mIsKillEvent": ("kill", True), "mIsDetachable": ("detach", False),
+    "mIsSelfOnly": ("self_only", False), "mFireIfAnimationEndsEarly": ("fire_if_ends_early", False),
+    "mScalePlaySpeedWithAnimation": ("scale_speed", False), "mEffectName": ("effect_name", None),
+    "mSoundName": ("sound", None), "mShowSubmeshList": ("show", None), "mHideSubmeshList": ("hide", None),
+    "mTargetAlpha": ("alpha", None), "mTimeToFade": ("time", None), "mShow": ("show", False),
+    "mJointNameToOverride": ("joint", None), "mJointNameToSnapTo": ("snap_to", None),
+    "mMaskDataName": ("mask", None), "mBlendInTime": ("blend_in", None), "mBlendOutTime": ("blend_out", None),
+    "YRotationDegrees": ("y_rotation", None),
+}
+_EV_BOOL_DEFAULTS = {"Particle": ("loop", "kill", "detach"), "Sound": ("loop", "kill"),
+                     "IdleParticlesVisibility": ("show",)}
+_EV_DEFAULT = {v[0]: v[1] for v in _EV_FIELDS.values()}
+_EV_DEFAULT["show"] = False
+
+
+def _plain(v, name_of):
+    cd = cd_names()
+    if isinstance(v, BinStruct):
+        return {cd.get(k) or h32(k): _plain(x, name_of) for k, (_t, x) in v.fields.items()}
+    if isinstance(v, list):
+        return [_plain(x, name_of) for x in v]
+    if isinstance(v, dict):
+        return {str(_plain(a, name_of)): _plain(b, name_of) for a, b in v.items()}
+    if isinstance(v, tuple):
+        return list(v)
+    if isinstance(v, bytes):
+        return v.hex()
+    return v
+
+
+def event_entry(e, name_of):
+    """One mEventDataMap entry -> JSON dict with every field the bin stores (League names resolved)."""
+    if e is None:
+        return None
+    cd = cd_names()
+    cls = CLASS.get(e.class_hash) or cd.get(e.class_hash) or h32(e.class_hash)
+    ecls = cls.replace("EventData", "")
+    d = {"type": ecls}
+    for b in _EV_BOOL_DEFAULTS.get(ecls, ()):
+        d[b] = _EV_DEFAULT[b]
+    d["start"] = 0.0
+    for fh, (_t, x) in e.fields.items():
+        fname = cd.get(fh) or h32(fh)
+        if fname == "mEffectKey":
+            r = EV["effect"](x)
+            d["effect"] = r.get("effect")
+            d["key"] = r.get("key")
+        elif fname == "mParticleEventDataPairList":
+            pairs = []
+            for pr in x or []:
+                if pr is None:
+                    continue
+                bn = pr.get("mBoneName")
+                tb = pr.get("mTargetBoneName")
+                pd = {"bone": EV["bone"](bn) if bn is not None else None}
+                if tb is not None:
+                    pd["target_bone"] = EV["bone"](tb)
+                for k2, (_t2, x2) in pr.fields.items():
+                    n2 = cd.get(k2) or h32(k2)
+                    if n2 not in ("mBoneName", "mTargetBoneName"):
+                        pd[n2] = _plain(x2, name_of)
+                pairs.append({k: v for k, v in pd.items() if v is not None})
+            d["pairs"] = pairs
+            d["bones"] = [p["bone"] for p in pairs if p.get("bone")]
+        elif fname in ("mName", "mMaskDataName"):
+            d[_EV_FIELDS[fname][0]] = name_of(x) if isinstance(x, int) else x
+        elif fname in ("mJointNameToOverride", "mJointNameToSnapTo"):
+            d[_EV_FIELDS[fname][0]] = EV["bone"](x)
+        elif fname in ("mShowSubmeshList", "mHideSubmeshList"):
+            d[_EV_FIELDS[fname][0]] = [EV["submesh"](v) for v in (x or [])]
+        elif fname in _EV_FIELDS:
+            d[_EV_FIELDS[fname][0]] = _plain(x, name_of)
+        else:
+            d[fname] = _plain(x, name_of)
+    if str(d.get("effect_name", "")).lower().startswith("doesnotexist"):
+        d.pop("effect_name")   # League's placeholder for "no particle"
+    if ecls == "Particle" and not d.get("effect") and d.get("effect_name"):
+        # legacy .troy reference (minions): the system is exported under the file's base name
+        d["effect"] = os.path.basename(str(d["effect_name"]).replace("\\", "/")).rsplit(".", 1)[0]
+    return {k: v for k, v in d.items() if v is not None}
+
+
+def effect_resolver(objs, skin_obj):
+    """mEffectKey -> {"effect": particleName, "key": League key name} through the skin's ResourceResolver
+    (resourceMap: key hash -> VfxSystemDefinitionData link), or a direct VfxSystemDefinitionData link."""
+    cd = cd_names()
+    rmap = {}
+    rr_objs = []
+    rr_link = skin_obj.get("mResourceResolver") if skin_obj is not None else None
+    if rr_link is not None and objs.get(rr_link) is not None:
+        rr_objs.append(objs[rr_link])
+    for o in objs.values():
+        if cd.get(o.class_hash) == "ResourceResolver" and all(o is not x for x in rr_objs):
+            rr_objs.append(o)
+    for o in rr_objs:
+        for a, b in (o.get("resourceMap") or {}).items():
+            rmap.setdefault(a, b)
+
+    def pname(link):
+        o = objs.get(link)
+        return o.get("particleName") if o is not None else None
+
+    def res(h):
+        if h is None:
+            return {}
+        if isinstance(h, str):
+            return {"effect": h, "key": h}
+        key = cd.get(h) or h32(h)
+        nm = None
+        if h in rmap:
+            nm = pname(rmap[h])
+            if nm is None:
+                # the resolver points at an entry outside the loaded bins: League path naming
+                pth = cd.get(rmap[h], "")
+                if "/Particles/" in pth:
+                    nm = pth.rsplit("/", 1)[-1]
+        if nm is None:
+            nm = pname(h)
+        return {"effect": nm, "key": key}
+    return res
+
+
+def bone_resolver(skin_obj, bins):
+    names = {}
+    try:
+        from lolmesh import read_skl
+        smp = skin_obj.get("skinMeshProperties") if skin_obj is not None else None
+        sp = smp.get("skeleton") if smp is not None else None
+        if sp:
+            skl = read_skl(bins.read(sp.lower()))
+            for j in skl.joints:
+                names[fnv1a32(j.name)] = j.name
+    except Exception as ex:
+        print("  skeleton names unavailable:", ex)
+
+    def res(h):
+        if h is None or isinstance(h, str):
+            return h
+        return names.get(h) or cd_names().get(h) or h32(h)
+    return res
+
+
+def submesh_resolver(skin_obj, bins):
+    """Submesh (material range) name hashes -> names from the .skn."""
+    names = {}
+    try:
+        from lolmesh import read_skn
+        smp = skin_obj.get("skinMeshProperties") if skin_obj is not None else None
+        sp = smp.get("simpleSkin") if smp is not None else None
+        if sp:
+            for rg in read_skn(bins.read(sp.lower())).ranges:
+                names[fnv1a32(rg.material)] = rg.material
+    except Exception as ex:
+        print("  submesh names unavailable:", ex)
+
+    def res(h):
+        if h is None or isinstance(h, str):
+            return h
+        return names.get(h) or cd_names().get(h) or h32(h)
+    return res
+
+
+def anm_fps(wads, fk):
+    """Frame rate of an .anm (header only)."""
+    import struct
+    if not isinstance(fk, int):
+        return None
+    for w in wads:
+        e = w.entries.get(fk)
+        if e is None:
+            continue
+        d = w.read_entry(e)
+        if d is None:
+            return None
+        try:
+            if d[:8] == b"r3d2canm":
+                return round(struct.unpack_from("<f", d, 12 + 28)[0], 3)
+            if d[:8] == b"r3d2anmd":
+                ver = struct.unpack_from("<I", d, 8)[0]
+                if ver in (4, 5):
+                    fd = struct.unpack_from("<f", d, 12 + 24)[0]
+                    return round(1.0 / fd, 3) if fd > 0 else None
+                return 30.0
+        except Exception:
+            return None
+    return None
+
+
+def idle_particles(skin_obj, name_of):
+    """SkinCharacterDataProperties.idleParticlesEffects: persistent skin particles (effect + bone)."""
+    out = []
+    cd = cd_names()
+    for ip in ((skin_obj.get("idleParticlesEffects") or []) if skin_obj is not None else []):
+        if ip is None:
+            continue
+        d = {}
+        for fh, (_t, x) in ip.fields.items():
+            fname = cd.get(fh) or h32(fh)
+            if fname == "effectKey":
+                r = EV["effect"](x)
+                d["effect"] = r.get("effect")
+                d["key"] = r.get("key")
+            elif fname == "boneName":
+                d["bone"] = EV["bone"](x)
+            else:
+                d[fname] = _plain(x, name_of)
+        if str(d.get("effectName", "")).lower().startswith("doesnotexist"):
+            continue
+        out.append({k: v for k, v in d.items() if v is not None})
+    return out
+
+
 def clip_node(co, name_of, glb_of, x_of=None):
     cls = CLASS.get(co.class_hash, f"{co.class_hash:08x}")
     n = {"type": cls.replace("ClipData", "")}
@@ -298,34 +555,21 @@ def clip_node(co, name_of, glb_of, x_of=None):
             n[k[1].lower() + k[2:]] = v
     ev = co.get("mEventDataMap")
     if ev:
-        evs = []
-        for _ek, e in ev.items():
-            if e is None:
-                continue
-            ecls = CLASS.get(e.class_hash, f"{e.class_hash:08x}").replace("EventData", "")
-            d = {"type": ecls, "start": e.get("mStartFrame", 0.0)}
-            if e.get("mEndFrame") is not None:
-                d["end"] = e.get("mEndFrame")
-            if ecls == "Particle":
-                d["effect"] = name_of(e.get("mEffectKey")) if isinstance(e.get("mEffectKey"), int) else e.get("mEffectKey")
-                pl = e.get("mParticleEventDataPairList") or []
-                d["bones"] = [p.get("mBoneName") for p in pl if p.get("mBoneName")]
-            elif ecls == "Sound":
-                d["sound"] = e.get("mSoundName")
-            elif ecls == "SubmeshVisibility":
-                d["show"] = e.get("mShowSubmeshList")
-                d["hide"] = e.get("mHideSubmeshList")
-            elif ecls == "Fade":
-                d["alpha"] = e.get("mTargetAlpha")
-                d["time"] = e.get("mTimeToFade")
-            evs.append({k: v for k, v in d.items() if v is not None})
+        evs = [d for d in (event_entry(e, name_of) for e in ev.values()) if d is not None]
+        fps = EV["fps"](co)
         if evs:
             n["events"] = sorted(evs, key=lambda x: x.get("start", 0.0))
+            if fps and abs(fps - 30.0) > 0.01:
+                n["fps"] = fps
     return n
 
 
+# units whose bins ship inside another champion's WAD
+PARENT_WAD = {"AnnieTibbers": "Annie"}
+
+
 def extract(char, skin=0):
-    wads = open_wads(char)
+    wads = open_wads(PARENT_WAD.get(char, char))
     cl = char.lower()
     rec_bins = BinSet(wads, f"data/characters/{cl}/{cl}.bin")
     objs = rec_bins.objects
@@ -369,17 +613,32 @@ def extract(char, skin=0):
             if o.get("skinMeshProperties") is not None:
                 skin_obj = o
                 break
+    # animation events / idle particles: effect keys through the skin's ResourceResolver, bone hashes through the
+    # skeleton's joint names, event frames in the clip's own frame rate
+    EV["effect"] = effect_resolver(sk_bins.objects, skin_obj)
+    EV["bone"] = bone_resolver(skin_obj, sk_bins)
+    EV["submesh"] = submesh_resolver(skin_obj, sk_bins)
+    smp0 = skin_obj.get("skinMeshProperties") if skin_obj is not None else None
+    if smp0 is not None and smp0.get("initialSubmeshToHide"):
+        import re
+        out["initial_hidden"] = [t for t in re.split(r"[\s,;]+", str(smp0.get("initialSubmeshToHide"))) if t]
+
+    def clip_fps(co):
+        ard = co.get("mAnimationResourceData")
+        return anm_fps(wads, file_key(ard.get("mAnimationFilePath"))) if ard is not None else None
+    EV["fps"] = clip_fps
     agl = skin_obj.get("skinAnimationProperties") if skin_obj is not None else None
     graph = sk_bins.get(agl.get("animationGraphData")) if agl is not None else None
     if graph is None:
         print("  no graph for", char)
+        out["idle_particles"] = idle_particles(skin_obj, h32)
         return out
     clipmap = graph.get("mClipDataMap") or {}
     for nm in list(names):
         for p in ("", char + "_", char + "_Base_"):
             names.add(p + nm)
     by_hash = {}
-    for nm in names:
+    for nm in sorted(names):   # deterministic casing when several spellings share a hash
         by_hash.setdefault(fnv1a32(nm), nm)
     # track / mask / sync names
     for nm in ("Default", "Base", "Upper", "Lower", "UpperBody", "LowerBody", "Additive", "Override", "Face",
@@ -400,6 +659,7 @@ def extract(char, skin=0):
             continue
         clips[name_of(ck)] = clip_node(co, name_of, glb_of, x_of)
     out["clips"] = clips
+    out["idle_particles"] = idle_particles(skin_obj, name_of)
     blends = {}
     for bk, bd in (graph.get("mBlendDataTable") or {}).items():
         if bd is None:
@@ -425,24 +685,76 @@ def extract(char, skin=0):
     return out
 
 
+VFX_COMMON = ["shared", "map12", "moments", "summoners", "items", "hexgate"]
+_vfx_cache = {}
+
+
+def vfx_index(fn):
+    if fn not in _vfx_cache:
+        idx = {}
+        fp = os.path.join(ROOT, "data", "vfx", fn + ".json")
+        if os.path.exists(fp):
+            with open(fp, encoding="utf-8") as f:
+                for k in json.load(f):
+                    if not k.startswith("_"):
+                        idx.setdefault(k.lower(), k)
+        _vfx_cache[fn] = idx
+    return _vfx_cache[fn]
+
+
+def bind_vfx(d, alias):
+    """Point every particle event / idle particle at the exported system (exact case + the data/vfx set holding
+    it, "set"); falls back to the League key name. Returns the effects no set exports."""
+    sets = [alias.lower(), alias.split("_skin")[0].lower()] + VFX_COMMON
+    missing = []
+
+    def bind(e):
+        for cand in (e.get("effect"), e.get("key")):
+            if not cand or str(cand).startswith("#"):
+                continue
+            for fn in sets:
+                hit = vfx_index(fn).get(str(cand).lower())
+                if hit:
+                    e["effect"] = hit
+                    e["set"] = fn
+                    return
+        if e.get("effect") or e.get("key"):
+            missing.append(e.get("effect") or e.get("key"))
+    for c in d.get("clips", {}).values():
+        for e in c.get("events", []):
+            if e.get("type") == "Particle":
+                bind(e)
+    for e in d.get("idle_particles", []):
+        bind(e)
+    return sorted(set(missing))
+
+
 def main():
     args = sys.argv[1:]
-    chars = args or (ROSTER + MINIONS)
+    chars = args or (ROSTER + MINIONS + STRUCTURES)
     os.makedirs(OUT, exist_ok=True)
-    for ch in chars:
+    for spec in chars:
+        ch, _, sk = spec.partition(":")
+        skin = int(sk) if sk else 0
         try:
-            d = extract(ch)
+            d = extract(ch, skin)
         except Exception as ex:
             import traceback
             traceback.print_exc()
             print("!! failed", ch, ex)
             continue
-        p = os.path.join(OUT, ch.lower() + ".json")
+        nm = ch.lower() + (f"_skin{skin}" if skin else "")
+        miss = bind_vfx(d, nm)
+        if miss:
+            print(f"  {spec}: effects not exported to data/vfx: {miss}")
+        p = os.path.join(OUT, nm + ".json")
         with open(p, "w", newline="\n") as f:
             json.dump(d, f, indent=1)
         nclip = len(d.get("clips", {}))
         unres = sum(1 for k in d.get("clips", {}) if k.startswith("#"))
-        print(f"{ch}: clips={nclip} (unnamed {unres}) blends={len(d.get('blends', {}))} "
+        nev = sum(len(c.get("events", [])) for c in d.get("clips", {}).values())
+        print(f"{spec}: events={nev} idle={[(i.get('effect'), i.get('bone')) for i in d.get('idle_particles', [])]} "
+              f"clips={nclip} (unnamed {unres}) blends={len(d.get('blends', {}))} "
               f"attacks={[(a.get('name'), a.get('clip'), a.get('start_bone')) for a in d['attacks']]}")
 
 

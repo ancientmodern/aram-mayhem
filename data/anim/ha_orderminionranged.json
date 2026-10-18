@@ -39,7 +39,14 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
+     "name": "#bcf25d27",
+     "pairs": [
+      {}
+     ],
      "bones": []
     }
    ]
@@ -70,13 +77,13 @@
    "xanim": "x/clip_86b07430",
    "file": "55b4630286b07430"
   },
-  "run": {
+  "Run": {
    "type": "Atomic",
    "track": "Default",
    "anim": "run",
    "file": "20550b99206279cd"
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "anim": "death",
@@ -95,17 +102,18 @@
    "file": "1540c760c16248be"
   }
  },
+ "idle_particles": [],
  "blends": {
-  "run>death": 0.0,
-  "#3f1534b8>death": 0.0,
-  "#41f434dd>death": 0.0,
-  "attack1>death": 0.0,
-  "attack2>death": 0.0,
-  "idle1>death": 0.0,
-  "#9e66faeb>death": 0.0,
-  "#ac236dee>death": 0.0,
-  "death>death": 0.0,
-  "#bec63b4e>death": 0.0
+  "Run>Death": 0.0,
+  "#3f1534b8>Death": 0.0,
+  "#41f434dd>Death": 0.0,
+  "attack1>Death": 0.0,
+  "attack2>Death": 0.0,
+  "idle1>Death": 0.0,
+  "#9e66faeb>Death": 0.0,
+  "#ac236dee>Death": 0.0,
+  "Death>Death": 0.0,
+  "#bec63b4e>Death": 0.0
  },
  "tracks": {
   "Default": {

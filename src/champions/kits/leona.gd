@@ -23,10 +23,7 @@ func build_kit() -> void:
 	c.abilities[2].cast_range = 875.0
 	c.abilities[3].cast_time = 0.25
 	c.add_effect(QAttackHook.new(c.abilities[0]))
-	# the champion's permanent skin particles (SkinCharacterDataProperties): sword and shield flames
-	c.add_effect(K.IdleFx.new([
-		{"lol": "Leona_Base_Idle_Sword", "bone": "BUFFBONE_GLB_WEAPON_1"},
-		{"lol": "Leona_Base_Idle_Shield", "bone": "BUFFBONE_CSTM_SHIELD_TOP"}]))
+	# [anim-events] the sword and shield flames are her skin's idleParticlesEffects (attached by Unit.anim_ev)
 
 
 func ai_tuning() -> Dictionary:

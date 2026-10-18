@@ -116,6 +116,13 @@ structures) are in `data/vfx/shared.json`. Use these instead of procedural visua
 - Automatic hooks (by League naming `<Alias>_Base_<key>`): `BA_mis`/`BA_crit_mis`, `BA_tar`/`BA_crit_tar`,
   `<K>_cas` (on cast), `<K>_mis` (K helper missiles), `<K>_tar` (spell damage). Override/disable per kit with
   `func vfx_map() -> Dictionary` (`""` disables a key); force one missile's visual with K helper opts `{"lol": name}`.
+- Animation events are data-driven (`src/core/anim_events.gd`, data from `tools/lol/extract_anim.py` into
+  `data/anim/<alias>.json`): every particle / sound / submesh-visibility / joint-snap event of League's clips
+  (attack swing trails and muzzle flashes, cast flashes on the cast clip, emote and death particles) and the skin's
+  idle particles (Lux staff glints, Leona's flames, turret weapon glow) play by themselves at League's bone and
+  frame. Do NOT spawn those from kit code; `<K>_cas` is skipped automatically when the cast clip carries it. For
+  buff-swapped clip variants set `unit.anim_ev.fx_swap = {League system: replacement}` (Master Yi's Wuju trails).
+  `--animevlog` prints every event particle; `--noanimev` turns the runner off (A/B).
 - Preview without disturbing the desktop: `tools/preview.sh 150 -- --champ=<Alias> --vfxtest=<Name1>,<Name2>
   --vfxdir=<dir>` (serialized, off-screen; screenshots in `%APPDATA%/Godot/app_userdata/ARAM- Mayhem/<dir>/`).
 

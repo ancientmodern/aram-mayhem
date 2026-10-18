@@ -77,15 +77,25 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#251cfba3",
+     "effect": "Annie_Base_Idle_cas",
+     "key": "Annie_Idle_cas",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Idle_Fire"
+      }
+     ],
      "bones": [
-      1418910098
-     ]
+      "Cstm_Buffbone_Idle_Fire"
+     ],
+     "set": "annie"
     }
    ]
   },
-  "attack2": {
+  "Attack2": {
    "type": "Atomic",
    "track": "Default",
    "anim": "attack2",
@@ -93,15 +103,25 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#251cfba3",
+     "effect": "Annie_Base_Idle_cas",
+     "key": "Annie_Idle_cas",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Idle_Fire"
+      }
+     ],
      "bones": [
-      1418910098
-     ]
+      "Cstm_Buffbone_Idle_Fire"
+     ],
+     "set": "annie"
     }
    ]
   },
-  "channel": {
+  "Channel": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -115,7 +135,7 @@
    "anim": "channel_wndup",
    "file": "3accca5b37a12a46"
   },
-  "crit": {
+  "Crit": {
    "type": "Atomic",
    "track": "Default",
    "anim": "attack1",
@@ -123,11 +143,21 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#251cfba3",
+     "effect": "Annie_Base_Idle_cas",
+     "key": "Annie_Idle_cas",
+     "pairs": [
+      {
+       "bone": "R_Hand"
+      }
+     ],
      "bones": [
-      1815519491
-     ]
+      "R_Hand"
+     ],
+     "set": "annie"
     }
    ]
   },
@@ -138,7 +168,7 @@
    "anim": "dance_in",
    "file": "20ec3e666df111ac"
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "anim": "death",
@@ -153,11 +183,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#c9e80772",
+     "name": "#8eab16d9",
+     "effect": "Annie_Base_Idle_fire",
+     "key": "Annie_Idle_fire",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Idle_Fire"
+      }
+     ],
      "bones": [
-      1418910098
-     ]
+      "Cstm_Buffbone_Idle_Fire"
+     ],
+     "set": "annie"
     }
    ]
   },
@@ -168,7 +209,7 @@
    "anim": "laugh_in",
    "file": "de066f114bb3ecc7"
   },
-  "run": {
+  "Run": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -183,21 +224,31 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#57cf743c",
+     "effect": "Annie_Base_Q_cas",
+     "key": "Annie_Q_cas",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Idle_Fire"
+      }
+     ],
      "bones": [
-      1418910098
-     ]
+      "Cstm_Buffbone_Idle_Fire"
+     ],
+     "set": "annie"
     }
    ]
   },
-  "spell2": {
+  "Spell2": {
    "type": "Atomic",
    "track": "Default",
    "anim": "spell2",
    "file": "c92b81b5aa05da2e"
   },
-  "spell3": {
+  "Spell3": {
    "type": "Atomic",
    "track": "Default",
    "anim": "spell3",
@@ -233,11 +284,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 12.0,
-     "effect": "#c9e80772",
+     "name": "#59fccb29",
+     "effect": "Annie_Base_Idle_fire",
+     "key": "Annie_Idle_fire",
+     "pairs": [
+      {
+       "bone": "Cstm_Buffbone_Idle_Fire"
+      }
+     ],
      "bones": [
-      1418910098
-     ]
+      "Cstm_Buffbone_Idle_Fire"
+     ],
+     "set": "annie"
     }
    ]
   },
@@ -263,7 +325,7 @@
    "anim": "dance",
    "file": "4689b8b27788898d"
   },
-  "dance": {
+  "Dance": {
    "type": "Sequencer",
    "flags": 2,
    "list": [
@@ -271,7 +333,7 @@
     "#a9b4f39c"
    ]
   },
-  "joke": {
+  "Joke": {
    "type": "Sequencer",
    "list": [
     "#bbee8205",
@@ -282,7 +344,7 @@
     "#ba9fda17"
    ]
   },
-  "taunt": {
+  "Taunt": {
    "type": "Sequencer",
    "list": [
     "#b3d0c366",
@@ -293,7 +355,7 @@
     "#ba9fda17"
    ]
   },
-  "laugh": {
+  "Laugh": {
    "type": "Sequencer",
    "list": [
     "#e7a9a7b3",
@@ -304,7 +366,7 @@
     "#ba9fda17"
    ]
   },
-  "recall": {
+  "Recall": {
    "type": "Sequencer",
    "flags": 2,
    "list": [
@@ -321,34 +383,35 @@
    ]
   }
  },
+ "idle_particles": [],
  "blends": {
-  "#0aab9979>death": 0.0,
-  "channel>death": 0.0,
-  "run>death": 0.0,
-  "attack1>death": 0.0,
-  "attack2>death": 0.0,
-  "recall>death": 0.0,
-  "#718771fa>death": 0.0,
-  "#8b60d0a7>death": 0.0,
-  "crit>death": 0.0,
-  "#9b58589d>death": 0.0,
-  "idle1>death": 0.0,
-  "Channel_Wndup>channel": 0.10000000149011612,
-  "Channel_Wndup>death": 0.0,
-  "#a9b4f39c>death": 0.0,
-  "Spell1>death": 0.0,
-  "#b3d0c366>death": 0.0,
-  "spell3>death": 0.0,
-  "spell2>death": 0.0,
-  "laugh>death": 0.0,
-  "Spell4>death": 0.0,
-  "#ba9fda17>death": 0.0,
-  "#bbee8205>death": 0.0,
-  "taunt>death": 0.0,
-  "death>death": 0.0,
-  "joke>death": 0.0,
-  "#e7a9a7b3>death": 0.0,
-  "dance>death": 0.0
+  "#0aab9979>Death": 0.0,
+  "Channel>Death": 0.0,
+  "Run>Death": 0.0,
+  "attack1>Death": 0.0,
+  "Attack2>Death": 0.0,
+  "Recall>Death": 0.0,
+  "#718771fa>Death": 0.0,
+  "#8b60d0a7>Death": 0.0,
+  "Crit>Death": 0.0,
+  "#9b58589d>Death": 0.0,
+  "idle1>Death": 0.0,
+  "Channel_Wndup>Channel": 0.10000000149011612,
+  "Channel_Wndup>Death": 0.0,
+  "#a9b4f39c>Death": 0.0,
+  "Spell1>Death": 0.0,
+  "#b3d0c366>Death": 0.0,
+  "Spell3>Death": 0.0,
+  "Spell2>Death": 0.0,
+  "Laugh>Death": 0.0,
+  "Spell4>Death": 0.0,
+  "#ba9fda17>Death": 0.0,
+  "#bbee8205>Death": 0.0,
+  "Taunt>Death": 0.0,
+  "Death>Death": 0.0,
+  "Joke>Death": 0.0,
+  "#e7a9a7b3>Death": 0.0,
+  "Dance>Death": 0.0
  },
  "tracks": {
   "Default": {

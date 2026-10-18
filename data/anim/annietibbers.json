@@ -1,0 +1,214 @@
+{
+ "alias": "AnnieTibbers",
+ "attacks": [
+  {
+   "name": "AnnieTibbersBasicAttack",
+   "cast_offset": 0.10000000149011612,
+   "cast_frame": 11.0,
+   "missile_speed": 0.0,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  },
+  {
+   "name": "AnnieTibbersBasicAttack2",
+   "clip": "Attack2",
+   "cast_frame": 11.0,
+   "missile_speed": 0.0,
+   "hit_bone": "C_BUFFBONE_GLB_CHEST_LOC"
+  }
+ ],
+ "crits": [],
+ "spells": [],
+ "stats": {
+  "pathfindingCollisionRadius": 35.0,
+  "overrideGameplayCollisionRadius": 80.0,
+  "selectionRadius": 155.0,
+  "selectionHeight": 180.0,
+  "healthBarHeight": 92.0
+ },
+ "clips": {
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack1",
+   "file": "f80af1ec2c40b7e0",
+   "events": [
+    {
+     "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
+     "start": 9.0,
+     "effect": "AnnieTibbers_Base_BA_ArmSwipe_01",
+     "key": "AnnieTibbers_BA_ArmSwipe_01",
+     "pairs": [
+      {
+       "bone": "Root"
+      }
+     ],
+     "bones": [
+      "Root"
+     ],
+     "set": "annietibbers"
+    }
+   ]
+  },
+  "Attack2": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "attack2",
+   "file": "89f62ed6c890a1f7",
+   "events": [
+    {
+     "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
+     "start": 9.0,
+     "effect": "AnnieTibbers_Base_BA_ArmSwipe_02",
+     "key": "AnnieTibbers_BA_ArmSwipe_02",
+     "pairs": [
+      {
+       "bone": "Root"
+      }
+     ],
+     "bones": [
+      "Root"
+     ],
+     "set": "annietibbers"
+    }
+   ]
+  },
+  "Death": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "61f7dc1231d19e02",
+   "events": [
+    {
+     "type": "Sound",
+     "loop": false,
+     "kill": true,
+     "start": 0.0,
+     "sound": "Play_sfx_AnnieTibbers_AnnieR_death_buffactivate"
+    }
+   ]
+  },
+  "#ba9fda17": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "2670305b9eb6ec78"
+  },
+  "Run": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "run",
+   "file": "718eac65740895f7"
+  },
+  "idle1": {
+   "type": "Sequencer",
+   "list": [
+    "#0aab9979",
+    "#ba9fda17",
+    "#ba9fda17",
+    "#ba9fda17",
+    "#ba9fda17",
+    "#ba9fda17"
+   ]
+  },
+  "#0aab9979": {
+   "type": "Atomic",
+   "flags": 8,
+   "track": "Default",
+   "anim": "idle1_in",
+   "file": "25676b32fc505b41"
+  }
+ },
+ "idle_particles": [
+  {
+   "effect": "AnnieTibbers_Base_Idle_head",
+   "key": "AnnieTibbers_Idle_head",
+   "bone": "head"
+  },
+  {
+   "effect": "AnnieTibbers_Base_Idle_body",
+   "key": "AnnieTibbers_Idle_body",
+   "bone": "spine1",
+   "set": "annietibbers"
+  },
+  {
+   "effect": "AnnieTibbers_Base_Idle_arm",
+   "key": "AnnieTibbers_Idle_arm",
+   "bone": "R_Elbow",
+   "set": "annietibbers"
+  },
+  {
+   "effect": "AnnieTibbers_Base_Idle_arm",
+   "key": "AnnieTibbers_Idle_arm",
+   "bone": "L_Elbow",
+   "set": "annietibbers"
+  },
+  {
+   "effect": "AnnieTibbers_Base_Idle_hand",
+   "key": "AnnieTibbers_Idle_hand",
+   "bone": "R_Buffbone_Glb_hand_Loc",
+   "set": "annietibbers"
+  },
+  {
+   "effect": "AnnieTibbers_Base_Idle_hand",
+   "key": "AnnieTibbers_Idle_hand",
+   "bone": "L_Buffbone_Glb_hand_Loc",
+   "set": "annietibbers"
+  },
+  {
+   "effect": "AnnieTibbers_Base_Idle_leg",
+   "key": "AnnieTibbers_Idle_leg",
+   "bone": "R_KneeLower",
+   "set": "annietibbers"
+  },
+  {
+   "effect": "AnnieTibbers_Base_Idle_leg",
+   "key": "AnnieTibbers_Idle_leg",
+   "bone": "L_KneeLower",
+   "set": "annietibbers"
+  },
+  {
+   "effect": "AnnieTibbers_Base_Idle_foot",
+   "key": "AnnieTibbers_Idle_foot",
+   "bone": "R_foot",
+   "set": "annietibbers"
+  },
+  {
+   "effect": "AnnieTibbers_Base_Idle_foot",
+   "key": "AnnieTibbers_Idle_foot",
+   "bone": "L_foot",
+   "set": "annietibbers"
+  },
+  {
+   "effect": "AnnieTibbers_Base_Idle_Ground",
+   "key": "AnnieTibbers_Idle_Ground",
+   "bone": "Buffbone_Glb_Ground_Loc",
+   "set": "annietibbers"
+  }
+ ],
+ "blends": {
+  "#0aab9979>Death": 0.0,
+  "Run>Death": 0.0,
+  "attack1>Death": 0.0,
+  "Attack2>Death": 0.0,
+  "idle1>Death": 0.0,
+  "#ba9fda17>Death": 0.0,
+  "Death>Death": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

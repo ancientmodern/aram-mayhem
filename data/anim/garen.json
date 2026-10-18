@@ -75,23 +75,45 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 5.0,
-     "effect": "#82e6ee3e",
+     "name": "#3f100237",
+     "effect": "Garen_Base_AA_Sword_Swipe_Front",
+     "key": "Garen_AA_Sword_Swipe_Front",
+     "pairs": [
+      {
+       "bone": "Weapon"
+      }
+     ],
      "bones": [
-      1865621569
-     ]
+      "Weapon"
+     ],
+     "set": "garen"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 6.0,
-     "effect": "#83f0d65e",
+     "name": "#1deac818",
+     "effect": "Garen_Base_AA_Atk_01",
+     "key": "Garen_AA_Atk_01",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "garen"
     }
    ]
   },
-  "attack2": {
+  "Attack2": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -100,23 +122,45 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 5.0,
-     "effect": "#82e6ee3e",
+     "name": "#3f100237",
+     "effect": "Garen_Base_AA_Sword_Swipe_Front",
+     "key": "Garen_AA_Sword_Swipe_Front",
+     "pairs": [
+      {
+       "bone": "Weapon"
+      }
+     ],
      "bones": [
-      1865621569
-     ]
+      "Weapon"
+     ],
+     "set": "garen"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 7.0,
-     "effect": "#82f0d4cb",
+     "name": "#20eaccd1",
+     "effect": "Garen_Base_AA_Atk_02",
+     "key": "Garen_AA_Atk_02",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "garen"
     }
    ]
   },
-  "channel": {
+  "Channel": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -132,7 +176,7 @@
    "anim": "channel_wndup",
    "file": "cca3118ee9432a4d"
   },
-  "crit": {
+  "Crit": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -149,20 +193,34 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#33224f01",
+     "name": "#bc45bbc5",
+     "effect": "garen_base_emote_dance_sound",
+     "key": "Garen_emote_dance_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     },
     {
      "type": "JointSnap",
      "start": 60.0,
-     "end": 81.0
+     "name": "#e27bda34",
+     "end": 81.0,
+     "joint": "Weapon",
+     "snap_to": "Buffbone_Glb_Channel_Loc"
     }
    ]
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -171,16 +229,30 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#2ad4b1c0",
+     "name": "#4aa50760",
+     "effect": "garen_base_emote_death_sound",
+     "key": "Garen_emote_death_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     },
     {
      "type": "JointSnap",
      "start": 18.0,
-     "end": 130.0
+     "name": "#e27bda34",
+     "end": 130.0,
+     "joint": "Weapon",
+     "snap_to": "Buffbone_Glb_Channel_Loc"
     }
    ]
   },
@@ -192,7 +264,7 @@
    "anim": "idle1_in",
    "file": "d531f1bafb89cffb"
   },
-  "idle1_base": {
+  "Idle1_Base": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -223,23 +295,47 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#65fab709",
+     "name": "#eed2417d",
+     "effect": "garen_base_emote_joke_sound",
+     "key": "Garen_emote_joke_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#dd33a249",
+     "name": "#67b66fad",
+     "effect": "garen_base_emote_joke_vo",
+     "key": "Garen_emote_joke_vo",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     },
     {
      "type": "JointSnap",
-     "start": 8.0
+     "start": 8.0,
+     "joint": "Weapon",
+     "snap_to": "Buffbone_Glb_Channel_Loc"
     }
    ]
   },
@@ -253,15 +349,28 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#f6ae2bcc",
+     "name": "#8c870fbc",
+     "effect": "garen_base_emote_joke_loop_sound",
+     "key": "Garen_emote_joke_loop_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "joint": "Weapon",
+     "snap_to": "Buffbone_Glb_Channel_Loc"
     }
    ]
   },
@@ -275,11 +384,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#85431767",
+     "name": "#0cf0606b",
+     "effect": "garen_base_emote_laugh_sound",
+     "key": "Garen_emote_laugh_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     }
    ]
   },
@@ -316,39 +436,90 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#95142e1b",
-     "bones": []
+     "name": "#c1241270",
+     "effect": "Garen_Base_Q_Jump",
+     "key": "Garen_Q_Jump",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "garen"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#8fefcf15",
+     "name": "#f5391780",
+     "effect": "Garen_Base_Q_Jump_Blur",
+     "key": "Garen_Q_Jump_Blur",
+     "pairs": [
+      {
+       "bone": "Root"
+      }
+     ],
      "bones": [
-      553455173
-     ]
+      "Root"
+     ],
+     "set": "garen"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#82e6ee3e",
+     "name": "#3f100237",
+     "effect": "Garen_Base_AA_Sword_Swipe_Front",
+     "key": "Garen_AA_Sword_Swipe_Front",
+     "pairs": [
+      {
+       "bone": "Weapon"
+      }
+     ],
      "bones": [
-      1865621569
-     ]
+      "Weapon"
+     ],
+     "set": "garen"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 8.0,
-     "effect": "#51fb019f",
+     "name": "#e35b3364",
+     "effect": "Garen_Base_Q_Sword_Trail",
+     "key": "Garen_Q_Sword_Trail",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "garen"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 9.0,
-     "effect": "#e284bf62",
-     "bones": []
+     "name": "#ec25cf91",
+     "effect": "Garen_Base_Q_Land",
+     "key": "Garen_Q_Land",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "garen"
     }
    ]
   },
@@ -361,11 +532,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 10.0,
-     "effect": "#88bec769",
+     "name": "#d0452dec",
+     "effect": "Garen_Base_R_Cas",
+     "key": "Garen_R_Cas",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Layout_Loc"
+      }
+     ],
      "bones": [
-      2528140958
-     ]
+      "C_Buffbone_Glb_Layout_Loc"
+     ],
+     "set": "garen"
     }
    ]
   },
@@ -379,23 +561,45 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#fa32947e",
+     "name": "#968821ce",
+     "effect": "garen_base_emote_taunt_sound",
+     "key": "Garen_emote_taunt_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#a5545c64",
+     "name": "#0c7cd800",
+     "effect": "garen_base_emote_taunt_vo",
+     "key": "Garen_emote_taunt_vo",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     }
    ]
   },
-  "joke": {
+  "Joke": {
    "type": "Sequencer",
    "list": [
     "joke_base",
@@ -406,7 +610,7 @@
    "type": "Sequencer",
    "list": [
     "#e9ba192a",
-    "idle1_base",
+    "Idle1_Base",
     "idle2"
    ]
   },
@@ -414,24 +618,24 @@
    "type": "Sequencer",
    "flags": 2,
    "list": [
-    "idle1_base",
-    "idle1_base",
+    "Idle1_Base",
+    "Idle1_Base",
     "idle2_base",
-    "idle1_base",
-    "idle1_base",
-    "idle1_base",
+    "Idle1_Base",
+    "Idle1_Base",
+    "Idle1_Base",
     "idle3_base",
-    "idle1_base"
+    "Idle1_Base"
    ]
   },
-  "laugh": {
+  "Laugh": {
    "type": "Sequencer",
    "list": [
     "laugh_base",
     "idle2"
    ]
   },
-  "taunt": {
+  "Taunt": {
    "type": "Sequencer",
    "list": [
     "taunt_base",
@@ -448,26 +652,40 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#aeadf5b4",
+     "name": "#a97c2af4",
+     "effect": "garen_base_emote_dance_loop_sound",
+     "key": "Garen_emote_dance_loop_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#9520ddb7",
+     "joint": "Weapon",
+     "snap_to": "Buffbone_Glb_Channel_Loc"
     }
    ]
   },
-  "dance": {
+  "Dance": {
    "type": "Sequencer",
    "list": [
     "dance_base",
     "dance_loop_base"
    ]
   },
-  "recall": {
+  "Recall": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -503,7 +721,7 @@
     "idle2"
    ]
   },
-  "respawn": {
+  "Respawn": {
    "type": "Sequencer",
    "flags": 8,
    "list": [
@@ -511,7 +729,7 @@
     "idle2"
    ]
   },
-  "run_haste": {
+  "Run_Haste": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -527,7 +745,7 @@
    "anim": "run",
    "file": "fe30f0ef84ebd72a"
   },
-  "run_fast": {
+  "Run_Fast": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -539,7 +757,7 @@
    "flags": 8,
    "list": [
     "spell4_base",
-    "idle1_base"
+    "Idle1_Base"
    ]
   },
   "#1d0e4fa6": {
@@ -552,19 +770,41 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#6a4e0a74",
+     "name": "#1edea96f",
+     "effect": "garen_base_interactive1_sound",
+     "key": "garen_interactive1_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#fa32947e",
+     "name": "#968821ce",
+     "effect": "garen_base_emote_taunt_sound",
+     "key": "Garen_emote_taunt_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     }
    ]
   },
@@ -578,19 +818,41 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#54493cc3",
+     "name": "#d25fe050",
+     "effect": "garen_base_interactive0_sound",
+     "key": "garen_interactive0_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#65fab709",
+     "name": "#eed2417d",
+     "effect": "garen_base_emote_joke_sound",
+     "key": "Garen_emote_joke_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     }
    ]
   },
@@ -604,19 +866,41 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#700b2781",
+     "name": "#be1fb8f9",
+     "effect": "garen_base_interactive2_sound",
+     "key": "garen_interactive2_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#65fab709",
+     "name": "#eed2417d",
+     "effect": "garen_base_emote_joke_sound",
+     "key": "Garen_emote_joke_sound",
+     "pairs": [
+      {
+       "bone": "#95dabe4f"
+      }
+     ],
      "bones": [
-      2514140751
-     ]
+      "#95dabe4f"
+     ],
+     "set": "garen"
     }
    ]
   },
@@ -686,13 +970,13 @@
      null
     ],
     [
-     "run_fast",
+     "Run_Fast",
      341.0,
      null,
      null
     ],
     [
-     "run_haste",
+     "Run_Haste",
      385.0,
      null,
      null
@@ -701,7 +985,7 @@
    "updater": "MoveSpeed",
    "changeAnimationMidPlay": true
   },
-  "run": {
+  "Run": {
    "type": "ConditionBool",
    "true": "#83cf436e",
    "false": "#bc1ef3fb",
@@ -709,6 +993,7 @@
    "changeAnimationMidPlay": true
   }
  },
+ "idle_particles": [],
  "blends": {
   "#00f67dce>#00f67dce": 0.0,
   "#00f67dce>taunt_base": 0.0,
@@ -716,8 +1001,8 @@
   "#00f67dce>Respawn_Base": 0.0,
   "#00f67dce>recall_base": 0.0,
   "#00f67dce>#1d0e4fa6": 0.0,
-  "#00f67dce>channel": 0.0,
-  "#00f67dce>run_haste": 0.0,
+  "#00f67dce>Channel": 0.0,
+  "#00f67dce>Run_Haste": 0.0,
   "#00f67dce>Run_Base": 0.0,
   "#00f67dce>#2ee891b9": 0.0,
   "#00f67dce>#35f21911": 0.0,
@@ -725,23 +1010,23 @@
   "#00f67dce>#3f226e49": 0.0,
   "#00f67dce>#4b856cdb": 0.0,
   "#00f67dce>attack1": 0.0,
-  "#00f67dce>attack2": 0.0,
-  "#00f67dce>recall": 0.0,
+  "#00f67dce>Attack2": 0.0,
+  "#00f67dce>Recall": 0.0,
   "#00f67dce>dance_base": 0.0,
   "#00f67dce>#5dbf4f4f": 0.0,
-  "#00f67dce>idle1_base": 0.0,
+  "#00f67dce>Idle1_Base": 0.0,
   "#00f67dce>idle3_base": 0.0,
   "#00f67dce>#7b201d91": 0.0,
   "#00f67dce>#83cf436e": 0.0,
-  "#00f67dce>crit": 0.0,
+  "#00f67dce>Crit": 0.0,
   "#00f67dce>joke_base": 0.0,
   "#00f67dce>laugh_base": 0.0,
   "#00f67dce>Channel_Wndup": 0.0,
   "#00f67dce>spell4_base": 0.0,
-  "#00f67dce>run_fast": 0.0,
+  "#00f67dce>Run_Fast": 0.0,
   "#00f67dce>Spell1": 0.0,
   "#00f67dce>spell3": 0.0,
-  "#00f67dce>death": 0.0,
+  "#00f67dce>Death": 0.0,
   "#00f67dce>#c2cae43a": 0.0,
   "#00f67dce>idle2_base": 0.0,
   "#00f67dce>#e645415a": 0.0,
@@ -755,7 +1040,7 @@
   "taunt_base>spell4_base": 0.0,
   "taunt_base>Spell1": 0.10000000149011612,
   "taunt_base>spell3": 0.0,
-  "taunt_base>death": 0.0,
+  "taunt_base>Death": 0.0,
   "taunt_base>#e645415a": 0.0,
   "#13f95189>#00f67dce": 0.0,
   "#13f95189>#35f21911": 0.0,
@@ -764,7 +1049,7 @@
   "#13f95189>spell4_base": 0.0,
   "#13f95189>Spell1": 0.10000000149011612,
   "#13f95189>spell3": 0.0,
-  "#13f95189>death": 0.0,
+  "#13f95189>Death": 0.0,
   "#13f95189>#e645415a": 0.0,
   "Respawn_Base>#00f67dce": 0.0,
   "Respawn_Base>#35f21911": 0.0,
@@ -773,7 +1058,7 @@
   "Respawn_Base>spell4_base": 0.0,
   "Respawn_Base>Spell1": 0.10000000149011612,
   "Respawn_Base>spell3": 0.0,
-  "Respawn_Base>death": 0.0,
+  "Respawn_Base>Death": 0.0,
   "Respawn_Base>#e645415a": 0.0,
   "recall_base>#00f67dce": 0.0,
   "recall_base>#35f21911": 0.0,
@@ -783,35 +1068,35 @@
   "recall_base>spell4_base": 0.0,
   "recall_base>Spell1": 0.10000000149011612,
   "recall_base>spell3": 0.0,
-  "recall_base>death": 0.0,
+  "recall_base>Death": 0.0,
   "recall_base>#e645415a": 0.0,
   "#1d0e4fa6>#00f67dce": 0.0,
   "#1d0e4fa6>#35f21911": 0.0,
   "#1d0e4fa6>#3f226e49": 0.0,
   "#1d0e4fa6>#4b856cdb": 0.0,
   "#1d0e4fa6>spell3": 0.0,
-  "#1d0e4fa6>death": 0.0,
+  "#1d0e4fa6>Death": 0.0,
   "#1d0e4fa6>#e645415a": 0.0,
-  "channel>#00f67dce": 0.0,
-  "channel>#35f21911": 0.0,
-  "channel>#3f226e49": 0.0,
-  "channel>#4b856cdb": 0.0,
-  "channel>attack1": 0.0,
-  "channel>joke_base": 0.10000000149011612,
-  "channel>spell4_base": 0.0,
-  "channel>Spell1": 0.10000000149011612,
-  "channel>spell3": 0.0,
-  "channel>death": 0.0,
-  "channel>#e645415a": 0.0,
-  "run_haste>#00f67dce": 0.0,
-  "run_haste>#35f21911": 0.0,
-  "run_haste>#3f226e49": 0.0,
-  "run_haste>#4b856cdb": 0.0,
-  "run_haste>spell4_base": 0.0,
-  "run_haste>Spell1": 0.10000000149011612,
-  "run_haste>spell3": 0.0,
-  "run_haste>death": 0.0,
-  "run_haste>#e645415a": 0.0,
+  "Channel>#00f67dce": 0.0,
+  "Channel>#35f21911": 0.0,
+  "Channel>#3f226e49": 0.0,
+  "Channel>#4b856cdb": 0.0,
+  "Channel>attack1": 0.0,
+  "Channel>joke_base": 0.10000000149011612,
+  "Channel>spell4_base": 0.0,
+  "Channel>Spell1": 0.10000000149011612,
+  "Channel>spell3": 0.0,
+  "Channel>Death": 0.0,
+  "Channel>#e645415a": 0.0,
+  "Run_Haste>#00f67dce": 0.0,
+  "Run_Haste>#35f21911": 0.0,
+  "Run_Haste>#3f226e49": 0.0,
+  "Run_Haste>#4b856cdb": 0.0,
+  "Run_Haste>spell4_base": 0.0,
+  "Run_Haste>Spell1": 0.10000000149011612,
+  "Run_Haste>spell3": 0.0,
+  "Run_Haste>Death": 0.0,
+  "Run_Haste>#e645415a": 0.0,
   "Run_Base>#00f67dce": 0.0,
   "Run_Base>#35f21911": 0.0,
   "Run_Base>#3f226e49": 0.0,
@@ -820,14 +1105,14 @@
   "Run_Base>spell4_base": 0.0,
   "Run_Base>Spell1": 0.10000000149011612,
   "Run_Base>spell3": 0.0,
-  "Run_Base>death": 0.0,
+  "Run_Base>Death": 0.0,
   "Run_Base>#e645415a": 0.0,
   "#2ee891b9>#00f67dce": 0.0,
   "#2ee891b9>#35f21911": 0.0,
   "#2ee891b9>#3f226e49": 0.0,
   "#2ee891b9>#4b856cdb": 0.0,
   "#2ee891b9>spell3": 0.0,
-  "#2ee891b9>death": 0.0,
+  "#2ee891b9>Death": 0.0,
   "#2ee891b9>#e645415a": 0.0,
   "#35f21911>#00f67dce": 0.0,
   "#35f21911>taunt_base": 0.0,
@@ -835,8 +1120,8 @@
   "#35f21911>Respawn_Base": 0.0,
   "#35f21911>recall_base": 0.0,
   "#35f21911>#1d0e4fa6": 0.0,
-  "#35f21911>channel": 0.0,
-  "#35f21911>run_haste": 0.0,
+  "#35f21911>Channel": 0.0,
+  "#35f21911>Run_Haste": 0.0,
   "#35f21911>Run_Base": 0.0,
   "#35f21911>#2ee891b9": 0.0,
   "#35f21911>#35f21911": 0.0,
@@ -844,23 +1129,23 @@
   "#35f21911>#3f226e49": 0.0,
   "#35f21911>#4b856cdb": 0.0,
   "#35f21911>attack1": 0.0,
-  "#35f21911>attack2": 0.0,
-  "#35f21911>recall": 0.0,
+  "#35f21911>Attack2": 0.0,
+  "#35f21911>Recall": 0.0,
   "#35f21911>dance_base": 0.0,
   "#35f21911>#5dbf4f4f": 0.0,
-  "#35f21911>idle1_base": 0.0,
+  "#35f21911>Idle1_Base": 0.0,
   "#35f21911>idle3_base": 0.0,
   "#35f21911>#7b201d91": 0.0,
   "#35f21911>#83cf436e": 0.0,
-  "#35f21911>crit": 0.0,
+  "#35f21911>Crit": 0.0,
   "#35f21911>joke_base": 0.0,
   "#35f21911>laugh_base": 0.0,
   "#35f21911>Channel_Wndup": 0.0,
   "#35f21911>spell4_base": 0.0,
-  "#35f21911>run_fast": 0.0,
+  "#35f21911>Run_Fast": 0.0,
   "#35f21911>Spell1": 0.0,
   "#35f21911>spell3": 0.0,
-  "#35f21911>death": 0.0,
+  "#35f21911>Death": 0.0,
   "#35f21911>#c2cae43a": 0.0,
   "#35f21911>idle2_base": 0.0,
   "#35f21911>#e645415a": 0.0,
@@ -873,7 +1158,7 @@
   "Recall_Leadout>spell4_base": 0.0,
   "Recall_Leadout>Spell1": 0.10000000149011612,
   "Recall_Leadout>spell3": 0.0,
-  "Recall_Leadout>death": 0.0,
+  "Recall_Leadout>Death": 0.0,
   "Recall_Leadout>#e645415a": 0.0,
   "#3f226e49>#00f67dce": 0.0,
   "#3f226e49>taunt_base": 0.0,
@@ -881,8 +1166,8 @@
   "#3f226e49>Respawn_Base": 0.0,
   "#3f226e49>recall_base": 0.0,
   "#3f226e49>#1d0e4fa6": 0.0,
-  "#3f226e49>channel": 0.0,
-  "#3f226e49>run_haste": 0.0,
+  "#3f226e49>Channel": 0.0,
+  "#3f226e49>Run_Haste": 0.0,
   "#3f226e49>Run_Base": 0.0,
   "#3f226e49>#2ee891b9": 0.0,
   "#3f226e49>#35f21911": 0.0,
@@ -890,23 +1175,23 @@
   "#3f226e49>#3f226e49": 0.0,
   "#3f226e49>#4b856cdb": 0.0,
   "#3f226e49>attack1": 0.0,
-  "#3f226e49>attack2": 0.0,
-  "#3f226e49>recall": 0.0,
+  "#3f226e49>Attack2": 0.0,
+  "#3f226e49>Recall": 0.0,
   "#3f226e49>dance_base": 0.0,
   "#3f226e49>#5dbf4f4f": 0.0,
-  "#3f226e49>idle1_base": 0.0,
+  "#3f226e49>Idle1_Base": 0.0,
   "#3f226e49>idle3_base": 0.0,
   "#3f226e49>#7b201d91": 0.0,
   "#3f226e49>#83cf436e": 0.0,
-  "#3f226e49>crit": 0.0,
+  "#3f226e49>Crit": 0.0,
   "#3f226e49>joke_base": 0.0,
   "#3f226e49>laugh_base": 0.0,
   "#3f226e49>Channel_Wndup": 0.0,
   "#3f226e49>spell4_base": 0.0,
-  "#3f226e49>run_fast": 0.0,
+  "#3f226e49>Run_Fast": 0.0,
   "#3f226e49>Spell1": 0.0,
   "#3f226e49>spell3": 0.0,
-  "#3f226e49>death": 0.0,
+  "#3f226e49>Death": 0.0,
   "#3f226e49>#c2cae43a": 0.0,
   "#3f226e49>idle2_base": 0.0,
   "#3f226e49>#e645415a": 0.0,
@@ -918,8 +1203,8 @@
   "#4b856cdb>Respawn_Base": 0.0,
   "#4b856cdb>recall_base": 0.0,
   "#4b856cdb>#1d0e4fa6": 0.0,
-  "#4b856cdb>channel": 0.0,
-  "#4b856cdb>run_haste": 0.0,
+  "#4b856cdb>Channel": 0.0,
+  "#4b856cdb>Run_Haste": 0.0,
   "#4b856cdb>Run_Base": 0.0,
   "#4b856cdb>#2ee891b9": 0.0,
   "#4b856cdb>#35f21911": 0.0,
@@ -927,29 +1212,29 @@
   "#4b856cdb>#3f226e49": 0.0,
   "#4b856cdb>#4b856cdb": 0.0,
   "#4b856cdb>attack1": 0.0,
-  "#4b856cdb>attack2": 0.0,
-  "#4b856cdb>recall": 0.0,
+  "#4b856cdb>Attack2": 0.0,
+  "#4b856cdb>Recall": 0.0,
   "#4b856cdb>dance_base": 0.0,
   "#4b856cdb>#5dbf4f4f": 0.0,
-  "#4b856cdb>idle1_base": 0.0,
+  "#4b856cdb>Idle1_Base": 0.0,
   "#4b856cdb>idle3_base": 0.0,
   "#4b856cdb>#7b201d91": 0.0,
   "#4b856cdb>#83cf436e": 0.0,
-  "#4b856cdb>crit": 0.0,
+  "#4b856cdb>Crit": 0.0,
   "#4b856cdb>joke_base": 0.0,
   "#4b856cdb>laugh_base": 0.0,
   "#4b856cdb>Channel_Wndup": 0.0,
   "#4b856cdb>spell4_base": 0.0,
-  "#4b856cdb>run_fast": 0.0,
+  "#4b856cdb>Run_Fast": 0.0,
   "#4b856cdb>Spell1": 0.0,
   "#4b856cdb>spell3": 0.0,
-  "#4b856cdb>death": 0.0,
+  "#4b856cdb>Death": 0.0,
   "#4b856cdb>#c2cae43a": 0.0,
   "#4b856cdb>idle2_base": 0.0,
   "#4b856cdb>#e645415a": 0.0,
   "#4b856cdb>#e9ba192a": 0.0,
   "#4b856cdb>dance_loop_base": 0.0,
-  "#504bd08d>death": 0.0,
+  "#504bd08d>Death": 0.0,
   "attack1>#00f67dce": 0.0,
   "attack1>#35f21911": 0.0,
   "attack1>#3f226e49": 0.0,
@@ -959,27 +1244,27 @@
   "attack1>spell4_base": 0.0,
   "attack1>Spell1": 0.10000000149011612,
   "attack1>spell3": 0.0,
-  "attack1>death": 0.0,
+  "attack1>Death": 0.0,
   "attack1>#e645415a": 0.0,
-  "attack2>#00f67dce": 0.0,
-  "attack2>#35f21911": 0.0,
-  "attack2>#3f226e49": 0.0,
-  "attack2>#4b856cdb": 0.0,
-  "attack2>joke_base": 0.10000000149011612,
-  "attack2>spell4_base": 0.0,
-  "attack2>Spell1": 0.10000000149011612,
-  "attack2>spell3": 0.0,
-  "attack2>death": 0.0,
-  "attack2>#e645415a": 0.0,
-  "recall>#00f67dce": 0.0,
-  "recall>#35f21911": 0.0,
-  "recall>#3f226e49": 0.0,
-  "recall>#4b856cdb": 0.0,
-  "recall>spell4_base": 0.0,
-  "recall>Spell1": 0.10000000149011612,
-  "recall>spell3": 0.0,
-  "recall>death": 0.0,
-  "recall>#e645415a": 0.0,
+  "Attack2>#00f67dce": 0.0,
+  "Attack2>#35f21911": 0.0,
+  "Attack2>#3f226e49": 0.0,
+  "Attack2>#4b856cdb": 0.0,
+  "Attack2>joke_base": 0.10000000149011612,
+  "Attack2>spell4_base": 0.0,
+  "Attack2>Spell1": 0.10000000149011612,
+  "Attack2>spell3": 0.0,
+  "Attack2>Death": 0.0,
+  "Attack2>#e645415a": 0.0,
+  "Recall>#00f67dce": 0.0,
+  "Recall>#35f21911": 0.0,
+  "Recall>#3f226e49": 0.0,
+  "Recall>#4b856cdb": 0.0,
+  "Recall>spell4_base": 0.0,
+  "Recall>Spell1": 0.10000000149011612,
+  "Recall>spell3": 0.0,
+  "Recall>Death": 0.0,
+  "Recall>#e645415a": 0.0,
   "dance_base>#00f67dce": 0.0,
   "dance_base>#35f21911": 0.0,
   "dance_base>#3f226e49": 0.0,
@@ -989,7 +1274,7 @@
   "dance_base>spell4_base": 0.0,
   "dance_base>Spell1": 0.10000000149011612,
   "dance_base>spell3": 0.0,
-  "dance_base>death": 0.0,
+  "dance_base>Death": 0.0,
   "dance_base>#e645415a": 0.0,
   "#5dbf4f4f>#00f67dce": 0.0,
   "#5dbf4f4f>#35f21911": 0.0,
@@ -999,19 +1284,19 @@
   "#5dbf4f4f>spell4_base": 0.0,
   "#5dbf4f4f>Spell1": 0.10000000149011612,
   "#5dbf4f4f>spell3": 0.0,
-  "#5dbf4f4f>death": 0.0,
+  "#5dbf4f4f>Death": 0.0,
   "#5dbf4f4f>#e645415a": 0.0,
-  "idle1_base>#00f67dce": 0.0,
-  "idle1_base>#35f21911": 0.0,
-  "idle1_base>#3f226e49": 0.0,
-  "idle1_base>#4b856cdb": 0.0,
-  "idle1_base>joke_base": 0.10000000149011612,
-  "idle1_base>spell4_base": 0.0,
-  "idle1_base>Spell1": 0.10000000149011612,
-  "idle1_base>spell3": 0.0,
-  "idle1_base>death": 0.0,
-  "idle1_base>#e645415a": 0.0,
-  "#755f645c>death": 0.0,
+  "Idle1_Base>#00f67dce": 0.0,
+  "Idle1_Base>#35f21911": 0.0,
+  "Idle1_Base>#3f226e49": 0.0,
+  "Idle1_Base>#4b856cdb": 0.0,
+  "Idle1_Base>joke_base": 0.10000000149011612,
+  "Idle1_Base>spell4_base": 0.0,
+  "Idle1_Base>Spell1": 0.10000000149011612,
+  "Idle1_Base>spell3": 0.0,
+  "Idle1_Base>Death": 0.0,
+  "Idle1_Base>#e645415a": 0.0,
+  "#755f645c>Death": 0.0,
   "idle3_base>#00f67dce": 0.0,
   "idle3_base>#35f21911": 0.0,
   "idle3_base>#3f226e49": 0.0,
@@ -1020,7 +1305,7 @@
   "idle3_base>spell4_base": 0.0,
   "idle3_base>Spell1": 0.10000000149011612,
   "idle3_base>spell3": 0.0,
-  "idle3_base>death": 0.0,
+  "idle3_base>Death": 0.0,
   "idle3_base>#e645415a": 0.0,
   "#7b201d91>#00f67dce": 0.0,
   "#7b201d91>#35f21911": 0.0,
@@ -1030,7 +1315,7 @@
   "#7b201d91>spell4_base": 0.0,
   "#7b201d91>Spell1": 0.10000000149011612,
   "#7b201d91>spell3": 0.0,
-  "#7b201d91>death": 0.0,
+  "#7b201d91>Death": 0.0,
   "#7b201d91>#e645415a": 0.0,
   "#83cf436e>#00f67dce": 0.0,
   "#83cf436e>#35f21911": 0.0,
@@ -1039,19 +1324,19 @@
   "#83cf436e>spell4_base": 0.0,
   "#83cf436e>Spell1": 0.10000000149011612,
   "#83cf436e>spell3": 0.0,
-  "#83cf436e>death": 0.0,
+  "#83cf436e>Death": 0.0,
   "#83cf436e>#e645415a": 0.0,
-  "crit>#00f67dce": 0.0,
-  "crit>#35f21911": 0.0,
-  "crit>#3f226e49": 0.0,
-  "crit>#4b856cdb": 0.0,
-  "crit>joke_base": 0.10000000149011612,
-  "crit>spell4_base": 0.0,
-  "crit>Spell1": 0.10000000149011612,
-  "crit>spell3": 0.0,
-  "crit>death": 0.0,
-  "crit>#e645415a": 0.0,
-  "idle2>death": 0.0,
+  "Crit>#00f67dce": 0.0,
+  "Crit>#35f21911": 0.0,
+  "Crit>#3f226e49": 0.0,
+  "Crit>#4b856cdb": 0.0,
+  "Crit>joke_base": 0.10000000149011612,
+  "Crit>spell4_base": 0.0,
+  "Crit>Spell1": 0.10000000149011612,
+  "Crit>spell3": 0.0,
+  "Crit>Death": 0.0,
+  "Crit>#e645415a": 0.0,
+  "idle2>Death": 0.0,
   "joke_base>#00f67dce": 0.0,
   "joke_base>#35f21911": 0.0,
   "joke_base>#3f226e49": 0.0,
@@ -1060,22 +1345,22 @@
   "joke_base>spell4_base": 0.0,
   "joke_base>Spell1": 0.10000000149011612,
   "joke_base>spell3": 0.0,
-  "joke_base>death": 0.0,
+  "joke_base>Death": 0.0,
   "joke_base>#e645415a": 0.0,
-  "idle1>death": 0.0,
+  "idle1>Death": 0.0,
   "laugh_base>#00f67dce": 0.0,
   "laugh_base>#35f21911": 0.0,
   "laugh_base>#3f226e49": 0.0,
   "laugh_base>#4b856cdb": 0.0,
-  "laugh_base>idle1_base": 0.10000000149011612,
+  "laugh_base>Idle1_Base": 0.10000000149011612,
   "laugh_base>joke_base": 0.10000000149011612,
   "laugh_base>spell4_base": 0.0,
   "laugh_base>Spell1": 0.10000000149011612,
   "laugh_base>spell3": 0.0,
-  "laugh_base>death": 0.0,
+  "laugh_base>Death": 0.0,
   "laugh_base>#e645415a": 0.0,
-  "respawn>death": 0.0,
-  "#a2d214c6>death": 0.0,
+  "Respawn>Death": 0.0,
+  "#a2d214c6>Death": 0.0,
   "Channel_Wndup>#00f67dce": 0.0,
   "Channel_Wndup>#35f21911": 0.0,
   "Channel_Wndup>#3f226e49": 0.0,
@@ -1085,7 +1370,7 @@
   "Channel_Wndup>spell4_base": 0.0,
   "Channel_Wndup>Spell1": 0.10000000149011612,
   "Channel_Wndup>spell3": 0.0,
-  "Channel_Wndup>death": 0.0,
+  "Channel_Wndup>Death": 0.0,
   "Channel_Wndup>#e645415a": 0.0,
   "spell4_base>#00f67dce": 0.0,
   "spell4_base>#35f21911": 0.0,
@@ -1095,18 +1380,18 @@
   "spell4_base>spell4_base": 0.0,
   "spell4_base>Spell1": 0.10000000149011612,
   "spell4_base>spell3": 0.0,
-  "spell4_base>death": 0.0,
+  "spell4_base>Death": 0.0,
   "spell4_base>#e645415a": 0.0,
-  "run_fast>#00f67dce": 0.0,
-  "run_fast>#35f21911": 0.0,
-  "run_fast>#3f226e49": 0.0,
-  "run_fast>#4b856cdb": 0.0,
-  "run_fast>spell4_base": 0.0,
-  "run_fast>Spell1": 0.10000000149011612,
-  "run_fast>spell3": 0.0,
-  "run_fast>death": 0.0,
-  "run_fast>#e645415a": 0.0,
-  "Recall_Winddown>death": 0.0,
+  "Run_Fast>#00f67dce": 0.0,
+  "Run_Fast>#35f21911": 0.0,
+  "Run_Fast>#3f226e49": 0.0,
+  "Run_Fast>#4b856cdb": 0.0,
+  "Run_Fast>spell4_base": 0.0,
+  "Run_Fast>Spell1": 0.10000000149011612,
+  "Run_Fast>spell3": 0.0,
+  "Run_Fast>Death": 0.0,
+  "Run_Fast>#e645415a": 0.0,
+  "Recall_Winddown>Death": 0.0,
   "Spell1>#00f67dce": 0.0,
   "Spell1>#35f21911": 0.0,
   "Spell1>#3f226e49": 0.0,
@@ -1115,7 +1400,7 @@
   "Spell1>spell4_base": 0.0,
   "Spell1>Spell1": 0.10000000149011612,
   "Spell1>spell3": 0.0,
-  "Spell1>death": 0.0,
+  "Spell1>Death": 0.0,
   "Spell1>#e645415a": 0.0,
   "spell3>#00f67dce": 0.0,
   "spell3>taunt_base": 0.0,
@@ -1123,8 +1408,8 @@
   "spell3>Respawn_Base": 0.0,
   "spell3>recall_base": 0.0,
   "spell3>#1d0e4fa6": 0.0,
-  "spell3>channel": 0.0,
-  "spell3>run_haste": 0.0,
+  "spell3>Channel": 0.0,
+  "spell3>Run_Haste": 0.0,
   "spell3>Run_Base": 0.0,
   "spell3>#2ee891b9": 0.0,
   "spell3>#35f21911": 0.0,
@@ -1132,48 +1417,48 @@
   "spell3>#3f226e49": 0.0,
   "spell3>#4b856cdb": 0.0,
   "spell3>attack1": 0.0,
-  "spell3>attack2": 0.0,
-  "spell3>recall": 0.0,
+  "spell3>Attack2": 0.0,
+  "spell3>Recall": 0.0,
   "spell3>dance_base": 0.0,
   "spell3>#5dbf4f4f": 0.0,
-  "spell3>idle1_base": 0.0,
+  "spell3>Idle1_Base": 0.0,
   "spell3>idle3_base": 0.0,
   "spell3>#7b201d91": 0.0,
   "spell3>#83cf436e": 0.0,
-  "spell3>crit": 0.0,
+  "spell3>Crit": 0.0,
   "spell3>joke_base": 0.0,
   "spell3>laugh_base": 0.0,
   "spell3>Channel_Wndup": 0.0,
   "spell3>spell4_base": 0.0,
-  "spell3>run_fast": 0.0,
+  "spell3>Run_Fast": 0.0,
   "spell3>Spell1": 0.0,
   "spell3>spell3": 0.0,
-  "spell3>death": 0.0,
+  "spell3>Death": 0.0,
   "spell3>#c2cae43a": 0.0,
   "spell3>idle2_base": 0.0,
   "spell3>#e645415a": 0.0,
   "spell3>#e9ba192a": 0.0,
   "spell3>dance_loop_base": 0.0,
-  "laugh>death": 0.0,
-  "Spell4>death": 0.0,
-  "taunt>death": 0.0,
-  "death>#00f67dce": 0.0,
-  "death>#35f21911": 0.0,
-  "death>#3f226e49": 0.0,
-  "death>#4b856cdb": 0.0,
-  "death>joke_base": 0.10000000149011612,
-  "death>spell4_base": 0.0,
-  "death>Spell1": 0.10000000149011612,
-  "death>spell3": 0.0,
-  "death>death": 0.0,
-  "death>#e645415a": 0.0,
-  "joke>death": 0.0,
+  "Laugh>Death": 0.0,
+  "Spell4>Death": 0.0,
+  "Taunt>Death": 0.0,
+  "Death>#00f67dce": 0.0,
+  "Death>#35f21911": 0.0,
+  "Death>#3f226e49": 0.0,
+  "Death>#4b856cdb": 0.0,
+  "Death>joke_base": 0.10000000149011612,
+  "Death>spell4_base": 0.0,
+  "Death>Spell1": 0.10000000149011612,
+  "Death>spell3": 0.0,
+  "Death>Death": 0.0,
+  "Death>#e645415a": 0.0,
+  "Joke>Death": 0.0,
   "#c2cae43a>#00f67dce": 0.0,
   "#c2cae43a>#35f21911": 0.0,
   "#c2cae43a>#3f226e49": 0.0,
   "#c2cae43a>#4b856cdb": 0.0,
   "#c2cae43a>spell3": 0.0,
-  "#c2cae43a>death": 0.0,
+  "#c2cae43a>Death": 0.0,
   "#c2cae43a>#e645415a": 0.0,
   "idle2_base>#00f67dce": 0.0,
   "idle2_base>#35f21911": 0.0,
@@ -1183,7 +1468,7 @@
   "idle2_base>spell4_base": 0.0,
   "idle2_base>Spell1": 0.10000000149011612,
   "idle2_base>spell3": 0.0,
-  "idle2_base>death": 0.0,
+  "idle2_base>Death": 0.0,
   "idle2_base>#e645415a": 0.0,
   "#e645415a>#00f67dce": 0.0,
   "#e645415a>taunt_base": 0.0,
@@ -1191,8 +1476,8 @@
   "#e645415a>Respawn_Base": 0.0,
   "#e645415a>recall_base": 0.0,
   "#e645415a>#1d0e4fa6": 0.0,
-  "#e645415a>channel": 0.0,
-  "#e645415a>run_haste": 0.0,
+  "#e645415a>Channel": 0.0,
+  "#e645415a>Run_Haste": 0.0,
   "#e645415a>Run_Base": 0.0,
   "#e645415a>#2ee891b9": 0.0,
   "#e645415a>#35f21911": 0.0,
@@ -1200,23 +1485,23 @@
   "#e645415a>#3f226e49": 0.0,
   "#e645415a>#4b856cdb": 0.0,
   "#e645415a>attack1": 0.0,
-  "#e645415a>attack2": 0.0,
-  "#e645415a>recall": 0.0,
+  "#e645415a>Attack2": 0.0,
+  "#e645415a>Recall": 0.0,
   "#e645415a>dance_base": 0.0,
   "#e645415a>#5dbf4f4f": 0.0,
-  "#e645415a>idle1_base": 0.0,
+  "#e645415a>Idle1_Base": 0.0,
   "#e645415a>idle3_base": 0.0,
   "#e645415a>#7b201d91": 0.0,
   "#e645415a>#83cf436e": 0.0,
-  "#e645415a>crit": 0.0,
+  "#e645415a>Crit": 0.0,
   "#e645415a>joke_base": 0.0,
   "#e645415a>laugh_base": 0.0,
   "#e645415a>Channel_Wndup": 0.0,
   "#e645415a>spell4_base": 0.0,
-  "#e645415a>run_fast": 0.0,
+  "#e645415a>Run_Fast": 0.0,
   "#e645415a>Spell1": 0.0,
   "#e645415a>spell3": 0.0,
-  "#e645415a>death": 0.0,
+  "#e645415a>Death": 0.0,
   "#e645415a>#c2cae43a": 0.0,
   "#e645415a>idle2_base": 0.0,
   "#e645415a>#e645415a": 0.0,
@@ -1230,9 +1515,9 @@
   "#e9ba192a>spell4_base": 0.0,
   "#e9ba192a>Spell1": 0.10000000149011612,
   "#e9ba192a>spell3": 0.0,
-  "#e9ba192a>death": 0.0,
+  "#e9ba192a>Death": 0.0,
   "#e9ba192a>#e645415a": 0.0,
-  "dance>death": 0.0,
+  "Dance>Death": 0.0,
   "dance_loop_base>#00f67dce": 0.0,
   "dance_loop_base>#35f21911": 0.0,
   "dance_loop_base>#3f226e49": 0.0,
@@ -1241,12 +1526,12 @@
   "dance_loop_base>spell4_base": 0.0,
   "dance_loop_base>Spell1": 0.10000000149011612,
   "dance_loop_base>spell3": 0.0,
-  "dance_loop_base>death": 0.0,
+  "dance_loop_base>Death": 0.0,
   "dance_loop_base>#e645415a": 0.0,
-  "attack2>attack1": 0.0,
-  "crit>attack1": 0.0,
+  "Attack2>attack1": 0.0,
+  "Crit>attack1": 0.0,
   "#bc1ef3fb>joke_base": 0.10000000149011612,
-  "#bc1ef3fb>death": 0.0,
+  "#bc1ef3fb>Death": 0.0,
   "#bc1ef3fb>Spell1": 0.10000000149011612,
   "#bc1ef3fb>spell3": 0.0,
   "#bc1ef3fb>#35f21911": 0.0,
@@ -1255,16 +1540,16 @@
   "#bc1ef3fb>#00f67dce": 0.0,
   "#bc1ef3fb>#e645415a": 0.0,
   "#bc1ef3fb>spell4_base": 0.0,
-  "run>death": 0.0,
-  "run>joke_base": 0.10000000149011612,
-  "run>Spell1": 0.10000000149011612,
-  "run>spell3": 0.0,
-  "run>#35f21911": 0.0,
-  "run>#4b856cdb": 0.0,
-  "run>#3f226e49": 0.0,
-  "run>#00f67dce": 0.0,
-  "run>#e645415a": 0.0,
-  "run>spell4_base": 0.0
+  "Run>Death": 0.0,
+  "Run>joke_base": 0.10000000149011612,
+  "Run>Spell1": 0.10000000149011612,
+  "Run>spell3": 0.0,
+  "Run>#35f21911": 0.0,
+  "Run>#4b856cdb": 0.0,
+  "Run>#3f226e49": 0.0,
+  "Run>#00f67dce": 0.0,
+  "Run>#e645415a": 0.0,
+  "Run>spell4_base": 0.0
  },
  "tracks": {
   "Default": {

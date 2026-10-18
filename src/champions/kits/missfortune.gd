@@ -18,7 +18,9 @@ func build_kit() -> void:
 	r.ind_length = r.cast_range
 	c.abilities[3] = r
 	c.add_effect(StrutPassive.new(w))
-	c.add_effect(AttackFx.new())
+	# [anim-events] the pistol muzzle flashes are the Attack1 (right) / Attack2 (left) clip events; League alternates
+	# her pistols every attack
+	c.attack_alternate = true
 	c.add_effect(BotLeveler.new())
 
 
@@ -91,26 +93,6 @@ class FX extends RefCounted:
 	## Body-height point of a unit (where League hit effects play).
 	static func body(u) -> Vector3:
 		return u.global_position + Vector3(0, (u.height if u.kind == G.Kind.CHAMPION else 1.6) * 0.5, 0)
-
-
-## League double-pistol muzzle flashes: right gun (BA_cas) and left gun (BA_cas_left) alternate.
-class AttackFx extends Effect:
-	var _left := false
-
-	func _init() -> void:
-		id = "mf_attack_fx"
-		hidden = true
-
-	func on_attack_launch(target) -> void:
-		var o = owner
-		var dir: Vector3 = o.facing
-		if target != null and is_instance_valid(target):
-			dir = G.flat_dir(o.global_position, target.global_position)
-		var side := Vector3(-dir.z, 0, dir.x)
-		var fx := LolVfx.attach(o, "MissFortune_Base_BA_cas_left" if _left else "MissFortune_Base_BA_cas", {"dir": dir, "height": o.height * 0.55})
-		if fx != null:
-			fx.position += dir * o.radius + side * (-0.3 if _left else 0.3)
-		_left = not _left
 
 
 # ===================================================================== passive
@@ -193,7 +175,7 @@ class DoubleUp extends KitAbility:
 		var from: Vector3 = K.cast_pos(o, 1.2)
 		var dir := G.flat_dir(o.global_position, u.global_position)
 		var self_ref := self
-		LolVfx.spawn(m, "MissFortune_Base_Q_Cas", from, {"dir": dir})
+		# [anim-events] MissFortune_Base_Q_Cas is the Spell1 clip's particle event (right pistol, frame 5)
 		K.homing_missile(self, from, u, 1400.0, func(_mi, tu): self_ref._first_hit(tu, dir), {"lol": "MissFortune_Base_Q_Mis", "height": 1.2})
 		notify_cast(t)
 

@@ -557,7 +557,9 @@ func emote(u, kind: String) -> void:
 	if not _is_champ(u):
 		return
 	var k := {"joke": "Joke3D", "taunt": "Taunt3D", "laugh": "Laugh3D", "dance": "Dance3D"}.get(kind, "")
-	play("Play_sfx_%s_%s_buffactivate" % [u.alias, k], u.global_position, _vol(u) - 2.0)
+	var sev := "Play_sfx_%s_%s_buffactivate" % [u.alias, k]
+	if not u.anim_sound_bound(sev):   # [anim-events] else the emote clip's sound event plays it
+		play(sev, u.global_position, _vol(u) - 2.0)
 	_vo_line(u, ["%sGeneral" % k], 0.0, 800)
 
 
@@ -584,7 +586,7 @@ func _on_champion_killed_impl(victim, killer) -> void:
 	if _is_champ(victim):
 		# the death cry always; the body-fall sfx exists for most champions; your own death adds League's low "Death_Self" hit
 		var dev := "Play_sfx_%s_Death3D_cast" % victim.alias
-		if events.has(dev):      # Annie / Malphite / Miss Fortune / Sona / Veigar only have the voice line
+		if events.has(dev) and not victim.anim_sound_bound(dev):   # [anim-events] else the death clip's event plays it      # Annie / Malphite / Miss Fortune / Sona / Veigar only have the voice line
 			play(dev, victim.global_position, -2.0, 0.0)
 		_vo_line(victim, ["Death3D"], 0.0, 0)
 		if victim == G.player:

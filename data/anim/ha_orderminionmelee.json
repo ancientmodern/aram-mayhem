@@ -82,14 +82,26 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 7.0,
+     "name": "attack1",
+     "effect_name": "DATA/Particles/SRU_Order_MM_BA1_cas.troy",
+     "pairs": [
+      {
+       "bone": "Buffbone_Cstm_Weapon_1"
+      }
+     ],
      "bones": [
-      3902107307
-     ]
+      "Buffbone_Cstm_Weapon_1"
+     ],
+     "effect": "SRU_Order_MM_BA1_cas",
+     "set": "shared"
     }
    ]
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "anim": "death",
@@ -101,7 +113,7 @@
    "anim": "idle1",
    "file": "f5a12f2c1262cbe7"
   },
-  "run": {
+  "Run": {
    "type": "Atomic",
    "track": "Default",
    "anim": "run",
@@ -136,10 +148,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 1.0,
+     "name": "attack2",
+     "effect_name": "DATA/Particles/SRU_Order_MM_BA1_cas.troy",
+     "pairs": [
+      {
+       "bone": "Buffbone_Cstm_Weapon_1"
+      }
+     ],
      "bones": [
-      3902107307
-     ]
+      "Buffbone_Cstm_Weapon_1"
+     ],
+     "effect": "SRU_Order_MM_BA1_cas",
+     "set": "shared"
     }
    ]
   },
@@ -151,10 +175,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 2.0,
+     "name": "#cb16c7b1",
+     "effect_name": "DATA/Particles/SRU_Order_MM_BA1_cas.troy",
+     "pairs": [
+      {
+       "bone": "Buffbone_Cstm_Weapon_1"
+      }
+     ],
      "bones": [
-      3902107307
-     ]
+      "Buffbone_Cstm_Weapon_1"
+     ],
+     "effect": "SRU_Order_MM_BA1_cas",
+     "set": "shared"
     }
    ]
   },
@@ -166,10 +202,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
+     "name": "#c816c2f8",
+     "effect_name": "DATA/Particles/SRU_Order_MM_BA1_cas.troy",
+     "pairs": [
+      {
+       "bone": "Buffbone_Cstm_Weapon_1"
+      }
+     ],
      "bones": [
-      3902107307
-     ]
+      "Buffbone_Cstm_Weapon_1"
+     ],
+     "effect": "SRU_Order_MM_BA1_cas",
+     "set": "shared"
     }
    ]
   },
@@ -187,43 +235,44 @@
    ]
   }
  },
+ "idle_particles": [],
  "blends": {
-  "run>run": 0.0,
-  "run>death": 0.0,
+  "Run>Run": 0.0,
+  "Run>Death": 0.0,
   "#3f1534b8>#3f1534b8": 0.0,
-  "#3f1534b8>death": 0.0,
+  "#3f1534b8>Death": 0.0,
   "#411537de>#411537de": 0.0,
-  "#411537de>death": 0.0,
+  "#411537de>Death": 0.0,
   "#41f434dd>#41f434dd": 0.0,
-  "#41f434dd>death": 0.0,
+  "#41f434dd>Death": 0.0,
   "#42153971>#42153971": 0.0,
-  "#42153971>death": 0.0,
+  "#42153971>Death": 0.0,
   "#44153c97>#44153c97": 0.0,
-  "#44153c97>death": 0.0,
+  "#44153c97>Death": 0.0,
   "attack1>attack1": 0.0,
-  "attack1>death": 0.0,
-  "attack3>death": 0.0,
+  "attack1>Death": 0.0,
+  "attack3>Death": 0.0,
   "run2>run2": 0.0,
-  "run2>death": 0.0,
+  "run2>Death": 0.0,
   "attack2>attack2": 0.0,
-  "attack2>death": 0.0,
+  "attack2>Death": 0.0,
   "idle2>idle2": 0.0,
-  "idle2>death": 0.0,
+  "idle2>Death": 0.0,
   "idle1>idle1": 0.0,
-  "idle1>death": 0.0,
+  "idle1>Death": 0.0,
   "#9e66faeb>#9e66faeb": 0.0,
-  "#9e66faeb>death": 0.0,
+  "#9e66faeb>Death": 0.0,
   "#9f66fc7e>#9f66fc7e": 0.0,
-  "#9f66fc7e>death": 0.0,
+  "#9f66fc7e>Death": 0.0,
   "#a066fe11>#a066fe11": 0.0,
-  "#a066fe11>death": 0.0,
+  "#a066fe11>Death": 0.0,
   "#ac236dee>#ac236dee": 0.0,
-  "#ac236dee>death": 0.0,
-  "death>death": 0.0,
-  "#bec63b4e>death": 0.0,
+  "#ac236dee>Death": 0.0,
+  "Death>Death": 0.0,
+  "#bec63b4e>Death": 0.0,
   "#bec63b4e>#bec63b4e": 0.0,
-  "#c816c2f8>death": 0.0,
-  "#cb16c7b1>death": 0.0,
+  "#c816c2f8>Death": 0.0,
+  "#cb16c7b1>Death": 0.0,
   "#cb16c7b1>#cb16c7b1": 0.0
  },
  "tracks": {

@@ -408,6 +408,7 @@ func tick(dt: float) -> void:
 	if dead:
 		tick_dead(dt)
 		_anim_advance(dt)
+		_ev_tick(dt)
 		return
 	var pt := Prof.t0()
 	_tick_buffs(dt)
@@ -445,6 +446,7 @@ func tick(dt: float) -> void:
 	Prof.add("u.visual", pt)
 	pt = Prof.t0()
 	_anim_advance(dt)
+	_ev_tick(dt)
 	Prof.add("u.anim", pt)
 	var gp := global_position
 	if _prev_pos != Vector3.INF and dt > 0.0:
@@ -1227,6 +1229,8 @@ func set_model(m: Node3D) -> void:
 	_collect_materials(m)
 	_alpha = -1.0
 	_model_y = INF
+	if anim_ev != null:
+		anim_ev.reset()   # [anim-events]
 	recompute_stats()
 
 
@@ -1449,6 +1453,7 @@ const _LOGICAL_CLIPS := {
 	"knockup": ["KnockUp"],
 	"crit": ["Crit"],
 	"attack": ["Attack1", "Attack"],
+	"passive": ["Passive"],   # [anim-events] e.g. Master Yi's Double Strike clip (carries its own trail events)
 }
 ## States that keep playing (re-resolving selectors) until something else is wanted.
 const _CYCLIC := {"idle": true, "run": true, "run_fast": true, "channel": true, "stunned": true, "knockup": true,
@@ -1472,6 +1477,8 @@ var _strides := {}            ## glb run clip -> skeleton-space ground speed (fr
 ## Attach the League animation graph (call after anim_map is built).
 func set_anim_graph(g: AnimGraph) -> void:
 	graph = g
+	if g != null and anim_ev == null:
+		setup_anim_events(g.alias, g)
 	_anim_base = {}
 	for k in anim_map:
 		_anim_base[k] = anim_map[k].duplicate()
@@ -1644,12 +1651,16 @@ func _g_start_step(blend: float) -> void:
 	else:
 		a.loop_mode = Animation.LOOP_NONE
 		_g_t = a.length
+	var prev_atomic := _g_atomic
 	_g_atomic = String(s.clip)
 	if String(anim_player.current_animation) == String(s.anim) and anim_player.is_playing():
 		anim_player.seek(0.0, true)   # replaying the same clip (idle cycles, attack chains)
 	else:
 		anim_player.play(s.anim, maxf(blend, 0.0), 1.0)
 	anim_player.speed_scale = _safe_speed(_g_speed)
+	if anim_ev != null:
+		# [anim-events] the clip's League events run on this step's clock (a cyclic state replaying its clip = next pass)
+		anim_ev.on_clip(_g_atomic, String(s.anim), a.length, _g_t == INF, cyc and prev_atomic == _g_atomic)
 
 
 func _g_tick(dt: float) -> void:
@@ -1718,6 +1729,9 @@ func play_anim(logical: String, speed: float = 1.0, blend: float = 0.12, duratio
 	cur_anim = logical
 	_g_top = ""
 	_g_atomic = ""
+	if anim_ev != null:
+		var la := anim_player.get_animation(n)
+		anim_ev.on_clip("", n, la.length, la.loop_mode != Animation.LOOP_NONE)   # [anim-events]
 
 
 func play_attack_anim(crit: bool, period: float) -> void:
@@ -1727,6 +1741,8 @@ func play_attack_anim(crit: bool, period: float) -> void:
 	var key := "crit" if crit and has_anim("crit") else "attack"
 	if graph != null and not _kit_override("attack") and not (crit and _kit_override("crit")):
 		var a: Dictionary = graph.pick_attack(crit)
+		if attack_alternate and not crit and graph.attacks.size() > 1:
+			a = graph.attacks[attack_count % graph.attacks.size()]   # [anim-events] scripted alternation (MF pistols)
 		if String(a.get("start_bone", "")) != "":
 			attack_bone = String(a.start_bone)
 		var top := graph.attack_clip(a, crit)
@@ -1756,6 +1772,8 @@ func play_attack_anim(crit: bool, period: float) -> void:
 	anim_player.play(n, 0.05, spd2)
 	cur_anim = key
 	_g_top = ""
+	if anim_ev != null:
+		anim_ev.on_clip("", n, length2, false)   # [anim-events]
 	anim_lock = minf(length2 / spd2, period)
 	_attack_anim = true
 
@@ -1878,6 +1896,40 @@ func base_run_speed() -> float:
 	return 340.0
 
 
+# ===================================================================== [anim-events] League animation events
+## Clip events (particles at bones, sounds, submesh visibility, fades) and skin idle particles, run from data
+## (core/anim_events.gd). Bound automatically with the animation graph; units without a graph (turrets, summons)
+## call setup_anim_events(<data/anim file>) after their model is set.
+var anim_ev: AnimEvents = null
+var attack_alternate := false ## basic attacks cycle basic / extra attacks in order (League scripts, e.g. Miss Fortune)
+var anim_fade := 0.0          ## extra transparency from League FadeEventData
+
+
+func setup_anim_events(file: String, g: AnimGraph = null, idle_only: bool = false) -> void:
+	if AnimEvents.disabled:
+		return
+	var t := AnimEvents.table(file, g)
+	if t.clips.is_empty() and t.idle.is_empty() and t.hidden.is_empty():
+		return
+	anim_ev = AnimEvents.new(self, t)
+	anim_ev.clip_events = not idle_only
+	anim_ev.poll = g == null and graph == null and not idle_only   # legacy playback: also watch the AnimationPlayer
+
+
+## True when one of this unit's animation events plays the sound event (GameAudio skips its own copy).
+func anim_sound_bound(ev: String) -> bool:
+	return anim_ev != null and anim_ev.has_sound(ev)
+
+
+func _ev_tick(dt: float) -> void:
+	if anim_ev == null:
+		return
+	var spd := 1.0
+	if anim_player != null:
+		spd = _g_speed if _g_top != "" else anim_player.get_playing_speed()
+	anim_ev.tick(dt, spd, anim_player)
+
+
 # ===================================================================== animation LOD (manual mixer advance)
 ## Champions and minions drive their AnimationPlayer by hand (callback mode MANUAL) from tick():
 ## animation follows game time (pause / game speed), and units the player can't see (off screen or
@@ -1965,7 +2017,7 @@ const FOW_FADE_RATE := 8.0     ## alpha / s: units fade out / in over ~0.12 s wh
 func _target_transparency() -> float:
 	if _fow_hidden:
 		return 1.0
-	var want := corpse_fade
+	var want := maxf(corpse_fade, anim_fade)
 	# League: a unit standing in brush is drawn semi-transparent for its own team
 	if in_brush > 0 and _fow_kind == 1 and not dead and G.player != null and G.player.team == team:
 		want = maxf(want, BRUSH_TRANSPARENCY)

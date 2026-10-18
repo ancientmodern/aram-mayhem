@@ -74,13 +74,13 @@
    "anim": "attack1",
    "file": "a0fd74002986bcf4"
   },
-  "attack2": {
+  "Attack2": {
    "type": "Atomic",
    "track": "Default",
    "anim": "attack2",
    "file": "573829936871cd74"
   },
-  "channel": {
+  "Channel": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -94,13 +94,13 @@
    "anim": "channel_windup",
    "file": "40713f4f8c656dde"
   },
-  "crit": {
+  "Crit": {
    "type": "Atomic",
    "track": "Default",
    "anim": "crit",
    "file": "f6f78ea8296e3b54"
   },
-  "dance": {
+  "Dance": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -108,7 +108,7 @@
    "anim": "dance",
    "file": "c32445dafa008877"
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "anim": "death",
@@ -116,6 +116,8 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": false,
      "start": 6.0,
      "sound": "Play_sfx_Lux_Death3D_cast"
     }
@@ -147,13 +149,13 @@
    "anim": "idle4",
    "file": "86ce85aa131a2fe0"
   },
-  "joke": {
+  "Joke": {
    "type": "Atomic",
    "track": "Default",
    "anim": "joke",
    "file": "1f5a7b2d41fadbfe"
   },
-  "laugh": {
+  "Laugh": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.01666666753590107,
@@ -168,27 +170,38 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#8ef00470",
+     "name": "#5ba4a083",
+     "effect": "Lux_Base_Q_cas",
+     "key": "Lux_Q_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_6"
+      }
+     ],
      "bones": [
-      3985995402
-     ]
+      "BUFFBONE_CSTM_WEAPON_6"
+     ],
+     "set": "lux"
     }
    ]
   },
-  "spell2": {
+  "Spell2": {
    "type": "Atomic",
    "track": "Default",
    "anim": "spell2",
    "file": "0cf8e36579c7eb83"
   },
-  "spell3": {
+  "Spell3": {
    "type": "Atomic",
    "track": "Default",
    "anim": "spell3",
    "file": "177d5c84adf85a42"
   },
-  "taunt": {
+  "Taunt": {
    "type": "Atomic",
    "track": "Default",
    "anim": "taunt",
@@ -200,7 +213,7 @@
    "anim": "spell4",
    "file": "37ba660d1d724c06"
   },
-  "recall": {
+  "Recall": {
    "type": "Sequencer",
    "list": [
     "idle3",
@@ -213,13 +226,13 @@
    "anim": "respawn",
    "file": "77163634744e96e9"
   },
-  "respawn": {
+  "Respawn": {
    "type": "Atomic",
    "track": "Default",
    "anim": "respawn",
    "file": "77163634744e96e9"
   },
-  "run": {
+  "Run": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -234,25 +247,39 @@
    "file": "180cd449dca7b759"
   }
  },
+ "idle_particles": [
+  {
+   "effect": "Lux_Base_I_weapon",
+   "key": "Lux_I_weapon",
+   "bone": "BUFFBONE_CSTM_WEAPON_2",
+   "set": "lux"
+  },
+  {
+   "effect": "Lux_Base_I_weapon",
+   "key": "Lux_I_weapon",
+   "bone": "BUFFBONE_CSTM_WEAPON_4",
+   "set": "lux"
+  }
+ ],
  "blends": {
-  "channel>death": 0.0,
-  "attack1>death": 0.0,
-  "attack2>death": 0.0,
-  "crit>death": 0.0,
-  "idle3>death": 0.0,
-  "idle2>death": 0.0,
-  "idle1>death": 0.0,
-  "idle4>death": 0.0,
-  "Channel_Wndup>death": 0.0,
-  "Spell1>death": 0.0,
-  "spell3>death": 0.0,
-  "spell2>death": 0.0,
-  "laugh>death": 0.0,
-  "Spell4>death": 0.0,
-  "taunt>death": 0.0,
-  "death>death": 0.0,
-  "joke>death": 0.0,
-  "dance>death": 0.0
+  "Channel>Death": 0.0,
+  "attack1>Death": 0.0,
+  "Attack2>Death": 0.0,
+  "Crit>Death": 0.0,
+  "idle3>Death": 0.0,
+  "idle2>Death": 0.0,
+  "idle1>Death": 0.0,
+  "idle4>Death": 0.0,
+  "Channel_Wndup>Death": 0.0,
+  "Spell1>Death": 0.0,
+  "Spell3>Death": 0.0,
+  "Spell2>Death": 0.0,
+  "Laugh>Death": 0.0,
+  "Spell4>Death": 0.0,
+  "Taunt>Death": 0.0,
+  "Death>Death": 0.0,
+  "Joke>Death": 0.0,
+  "Dance>Death": 0.0
  },
  "tracks": {
   "Default": {

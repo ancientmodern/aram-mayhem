@@ -74,12 +74,13 @@ class SwingTrails extends Effect:
 		hidden = true
 
 	func on_attack_launch(_target) -> void:
-		var nm := "Garen_Base_AA_Atk_01" if n % 2 == 0 else "Garen_Base_AA_Atk_02"
-		n += 1
+		var nm := ""
 		if q.is_empowered():
 			nm = "Garen_Base_Q_Sword_Trail"
 		elif owner._pending_crit:
 			nm = "Garen_Base_AA_Crit"
+		else:
+			return   # [anim-events] normal swings: AA_Atk_01/02 + Sword_Swipe_Front are the Attack1/2 clip events
 		# attack / spell1 animation events: the weapon trail at the centre bone, the swipe flare at the Weapon bone
 		# (the empowered swing also kicks up Q_Jump_Blur at Root)
 		K.attach_fx(owner, {"lol": nm, "bone": "C_Buffbone_Glb_Center_Loc", "dir": owner.facing}, false)

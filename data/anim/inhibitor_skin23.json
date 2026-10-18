@@ -1,0 +1,197 @@
+{
+ "alias": "Inhibitor",
+ "attacks": [],
+ "crits": [],
+ "spells": [],
+ "stats": {
+  "pathfindingCollisionRadius": 213.75,
+  "healthBarHeight": 370.0
+ },
+ "initial_hidden": [
+  "Destroyed",
+  "HA_Inhib_Destroyed_Cap"
+ ],
+ "clips": {
+  "Death_Base": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death_in",
+   "file": "945ae590aa880a78",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "name": "#aad7612c",
+     "show": [
+      "Destroyed"
+     ],
+     "hide": [
+      "HA_Inhib_Mat"
+     ]
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "name": "#0e0de0a7",
+     "show": [
+      "HA_Inhib_Destroyed_Cap"
+     ],
+     "hide": [
+      "HA_Inhib_Cap_Mat"
+     ]
+    },
+    {
+     "type": "Sound",
+     "loop": false,
+     "kill": true,
+     "start": 0.0,
+     "name": "#4aa50760",
+     "sound": "Play_sfx_Env_map12_order_inhibitor_death_cast"
+    }
+   ]
+  },
+  "#41fd684f": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.3333333432674408,
+   "anim": "idle1",
+   "file": "df79f6b914ea5556",
+   "events": [
+    {
+     "type": "Sound",
+     "loop": false,
+     "kill": true,
+     "start": 0.0,
+     "name": "#bd5d7a8f",
+     "sound": "Play_sfx_Env_map12_order_inhibitor_alive_loop"
+    }
+   ]
+  },
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "df79f6b914ea5556"
+  },
+  "#62317319": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1_in",
+   "file": "408938a39652c218"
+  },
+  "Respawn": {
+   "type": "Sequencer",
+   "list": [
+    "Respawn_Base",
+    "#41fd684f"
+   ]
+  },
+  "Respawn_Base": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "respawn_in",
+   "file": "3fb40002c53bd054",
+   "events": [
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": true,
+     "start": 0.0,
+     "name": "#af85ad29",
+     "effect_name": "DATA/Particles/HA_Order_Inhibitor_Respawn.troy",
+     "pairs": [
+      {
+       "bone": "Tower"
+      }
+     ],
+     "bones": [
+      "Tower"
+     ],
+     "effect": "HA_Order_Inhibitor_Respawn"
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 290.0,
+     "name": "#0e0de0a7",
+     "show": [
+      "HA_Inhib_Cap_Mat"
+     ],
+     "hide": [
+      "HA_Inhib_Destroyed_Cap"
+     ]
+    },
+    {
+     "type": "SubmeshVisibility",
+     "start": 290.0,
+     "name": "#aad7612c",
+     "show": [
+      "HA_Inhib_Mat"
+     ],
+     "hide": [
+      "Destroyed"
+     ]
+    }
+   ]
+  },
+  "Spawn": {
+   "type": "Sequencer",
+   "list": [
+    "Respawn_Base"
+   ]
+  },
+  "#e4cb0f58": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1_seq1",
+   "file": "b12841a266fbed39"
+  },
+  "Death": {
+   "type": "Sequencer",
+   "list": [
+    "Death_Base",
+    "#c3247102"
+   ]
+  },
+  "#c3247102": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "tick": 0.20000000298023224,
+   "anim": "death",
+   "file": "495c2b68e7c75942"
+  },
+  "idle1": {
+   "type": "Sequencer",
+   "list": [
+    "#62317319",
+    "#e4cb0f58",
+    "#41fd684f"
+   ]
+  }
+ },
+ "idle_particles": [
+  {
+   "effect": "HA_Chaos_Inhibitor_Idle",
+   "key": "HA_Chaos_Inhibitor_Idle",
+   "bone": "Root",
+   "set": "shared"
+  }
+ ],
+ "blends": {
+  "#41fd684f>Death_Base": 0.0,
+  "attack1>Death_Base": 0.0,
+  "Death_Base>Death_Base": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

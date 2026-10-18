@@ -19,7 +19,7 @@ var ad_per_min := 7.0
 func _init() -> void:
 	super._init()
 	kind = G.Kind.TURRET
-	radius = 1.1
+	radius = 0.884                 ## [spatial] League overrideGameplayCollisionRadius 88.4 (HA_Outer / HA_Nexus / shrine)
 	path_radius = 1.2
 	mass = 0.0
 	height = 6.2
@@ -40,7 +40,7 @@ func setup(p_team: int, p_tier: int) -> void:
 		"base_hp": hp_by_tier[p_tier], "hp_per_level": 0.0, "base_hp_regen": 0.0, "hp_regen_per_level": 0.0,
 		"base_ad": base_ad, "ad_per_level": 0.0, "base_armor": armor_by_tier[p_tier], "armor_per_level": 0.0,
 		"base_mr": armor_by_tier[p_tier], "mr_per_level": 0.0, "base_ms": 0.0,
-		"attack_range": 750.0 if p_tier != Tier.FOUNTAIN else 1250.0,
+		"attack_range": 750.0 if p_tier != Tier.FOUNTAIN else 1100.0,   # [spatial] League HA shrine attackRange 1100
 		"attack_speed": 0.833 if p_tier != Tier.FOUNTAIN else 3.0, "attack_speed_ratio": 0.833, "attack_speed_per_level": 0.0,
 		"mana_base": 0.0, "mana_per_level": 0.0, "mana_regen": 0.0, "mana_regen_per_level": 0.0,
 	})
@@ -54,6 +54,9 @@ func setup(p_team: int, p_tier: int) -> void:
 	set_model(m)
 	anim_map = Assets.build_anim_map(anim_player, {})
 	_index_turret_meshes()
+	# [anim-events] the skin's idle particle (HA_<team>_Turret_Weapon_Glow on joint2); this script runs the
+	# damage-state clips itself
+	setup_anim_events("turret_skin%d" % skin, null, true)
 	# League ships Left/Right collapse variants per turret; alternate them so the two nexus turrets differ
 	_nexus_count += 1 if p_tier == Tier.NEXUS else 0
 	rubble_side = "right" if p_tier == Tier.INHIBITOR or (p_tier == Tier.NEXUS and _nexus_count % 2 == 0) else "left"

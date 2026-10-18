@@ -99,6 +99,10 @@
   "selectionHeight": 180.0,
   "healthBarHeight": 103.0
  },
+ "initial_hidden": [
+  "Yasuo_Instrument_Mat",
+  "Weapon_Trail"
+ ],
  "clips": {
   "#08b0f422": {
    "type": "Atomic",
@@ -117,15 +121,21 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     }
    ]
   },
-  "attack2": {
+  "Attack2": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -135,17 +145,29 @@
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#f4ea4345",
      "show": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 3.0,
-     "effect": "#90f3da12",
+     "name": "#96ee59ff",
+     "effect": "Yasuo_base_BA_trail_2",
+     "key": "Yasuo_BA_trail_2",
+     "pairs": [
+      {
+       "bone": "Buffbone_Glb_Ground_Loc"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "Buffbone_Glb_Ground_Loc"
+     ],
+     "set": "yasuo"
     }
    ]
   },
@@ -162,22 +184,28 @@
   "#401ff3c4": {
    "type": "Atomic",
    "track": "Default",
-   "sync": "run",
+   "sync": "Run",
    "tick": 0.03333299979567528,
    "anim": "run",
    "file": "c385ebb7335d1ed6",
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     }
    ]
   },
-  "run": {
+  "Run": {
    "type": "Sequencer",
    "flags": 2,
    "list": [
@@ -193,15 +221,26 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 3.0,
-     "effect": "#91f3dba5",
+     "name": "#95ee586c",
+     "effect": "Yasuo_base_BA_trail_3",
+     "key": "Yasuo_BA_trail_3",
+     "pairs": [
+      {
+       "bone": "Buffbone_Glb_Ground_Loc"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "Buffbone_Glb_Ground_Loc"
+     ],
+     "set": "yasuo"
     }
    ]
   },
-  "attack4": {
+  "Attack4": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -210,11 +249,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#8af3d0a0",
+     "name": "#94ee56d9",
+     "effect": "Yasuo_base_BA_trail_4",
+     "key": "Yasuo_BA_trail_4",
+     "pairs": [
+      {
+       "bone": "Buffbone_Glb_Ground_Loc"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "Buffbone_Glb_Ground_Loc"
+     ],
+     "set": "yasuo"
     }
    ]
   },
@@ -227,11 +277,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 3.0,
-     "effect": "#8ff3d87f",
+     "name": "#1113e4d8",
+     "effect": "Yasuo_base_BA_trail_1",
+     "key": "Yasuo_BA_trail_1",
+     "pairs": [
+      {
+       "bone": "Buffbone_Glb_Ground_Loc"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "Buffbone_Glb_Ground_Loc"
+     ],
+     "set": "yasuo"
     }
    ]
   },
@@ -245,8 +306,9 @@
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#f4ea4345",
      "show": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     }
    ]
@@ -260,14 +322,17 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#286aa358",
+     "joint": "Sword",
+     "snap_to": "Sword_World"
     }
    ]
   },
   "run2": {
    "type": "Atomic",
    "track": "Default",
-   "sync": "run",
+   "sync": "Run",
    "tick": 0.03333299979567528,
    "anim": "run2",
    "file": "914cccfafa983f69"
@@ -289,8 +354,9 @@
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#f4ea4345",
      "show": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     }
    ]
@@ -302,7 +368,7 @@
    "anim": "spell2",
    "file": "15d1be0c8c6101e8"
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Upper",
    "anim": "death",
@@ -310,13 +376,25 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#97592a2e",
-     "bones": []
+     "name": "#4aa50760",
+     "effect": "Yasuo_Base_Emote_death_sound",
+     "key": "Yasuo_Emote_death_sound",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#286aa358",
+     "joint": "Sword",
+     "snap_to": "Sword_World"
     }
    ]
   },
@@ -324,7 +402,7 @@
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
-   "sync": "run",
+   "sync": "Run",
    "anim": "run_fast",
    "file": "ecbe4687cb38ebf2"
   },
@@ -345,11 +423,17 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     }
    ]
   },
@@ -363,8 +447,9 @@
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#f4ea4345",
      "show": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     }
    ]
@@ -379,8 +464,9 @@
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#f4ea4345",
      "show": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     }
    ]
@@ -395,8 +481,9 @@
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#f4ea4345",
      "show": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     }
    ]
@@ -411,7 +498,7 @@
    "xanim": "x/clip_cef8ea27",
    "file": "8e723b23cef8ea27"
   },
-  "channel": {
+  "Channel": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -422,8 +509,9 @@
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#4100ffc8",
      "hide": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     }
    ]
@@ -438,8 +526,9 @@
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#4100ffc8",
      "hide": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     }
    ]
@@ -458,7 +547,7 @@
    "anim": "spell2_var2",
    "file": "48c77bdeda06cc48"
   },
-  "run_fast": {
+  "Run_Fast": {
    "type": "Sequencer",
    "flags": 2,
    "list": [
@@ -477,7 +566,7 @@
    "anim": "run_fast_in",
    "file": "65e5845dd83fcbe5"
   },
-  "joke": {
+  "Joke": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -486,32 +575,46 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": -2.0,
-     "effect": "#459c9d97",
-     "bones": []
+     "name": "#eed2417d",
+     "effect": "Yasuo_Base_Emote_joke_sound",
+     "key": "Yasuo_Emote_joke_sound",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     },
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#4d92f4fb",
      "end": 2.0,
      "hide": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     },
     {
      "type": "JointSnap",
-     "start": 166.0
+     "start": 166.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "SubmeshVisibility",
      "start": 169.0,
+     "name": "#4e92f68e",
      "hide": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     }
    ]
   },
-  "taunt": {
+  "Taunt": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -520,59 +623,97 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#b10c477e",
+     "name": "Taunt",
+     "effect": "Yasuo_base_Taunt_spit",
+     "key": "Yasuo_Taunt_spit",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Head_Loc"
+      }
+     ],
      "bones": [
-      669624314
-     ]
+      "C_Buffbone_Glb_Head_Loc"
+     ],
+     "set": "yasuo"
     },
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#4d92f4fb",
      "end": 103.0,
      "hide": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
-    },
-    {
-     "type": "Particle",
      "start": 0.0,
-     "effect": "#ecaa9bde",
-     "bones": []
+     "name": "#fe09406e",
+     "joint": "Sheath2LHand",
+     "snap_to": "Sheath"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
+     "start": 0.0,
+     "name": "#632cebf2",
+     "effect": "Yasuo_Base_Emote_taunt_generic",
+     "key": "Yasuo_Emote_taunt_generic",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 2.0,
-     "effect": "#17e1e978",
-     "bones": []
+     "name": "#968821ce",
+     "effect": "Yasuo_Base_Emote_taunt_sound",
+     "key": "Yasuo_Emote_taunt_sound",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     },
     {
      "type": "SubmeshVisibility",
      "start": 104.0,
+     "name": "#4100ffc8",
      "end": 166.0,
      "show": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     },
     {
      "type": "SubmeshVisibility",
      "start": 167.0,
+     "name": "#4e92f68e",
      "end": 222.0,
      "hide": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     }
    ]
   },
-  "laugh": {
+  "Laugh": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333299979567528,
@@ -581,20 +722,33 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#6b1f27d9",
-     "bones": []
+     "name": "#0cf0606b",
+     "effect": "Yasuo_Base_Emote_laugh_sound",
+     "key": "Yasuo_Emote_laugh_sound",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     },
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#4100ffc8",
      "hide": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     }
    ]
   },
@@ -608,8 +762,9 @@
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#f4ea4345",
      "show": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     }
    ]
@@ -630,7 +785,7 @@
   "#cbc78130": {
    "type": "Atomic",
    "track": "Default",
-   "sync": "run",
+   "sync": "Run",
    "tick": 0.03333299979567528,
    "anim": "run_fast_seq1",
    "file": "77f58d7f55c21908"
@@ -638,13 +793,16 @@
   "#f1b6fdb7": {
    "type": "Atomic",
    "track": "Default",
-   "sync": "run",
+   "sync": "Run",
    "anim": "run",
    "file": "c385ebb7335d1ed6",
    "events": [
     {
      "type": "JointSnap",
-     "start": 32.0
+     "start": 32.0,
+     "name": "#f724b619",
+     "joint": "Sword",
+     "snap_to": "Sword_Sheathed"
     }
    ]
   },
@@ -659,7 +817,10 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#f724b619",
+     "joint": "Sword",
+     "snap_to": "Sword_Sheathed"
     }
    ]
   },
@@ -682,7 +843,10 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#f724b619",
+     "joint": "Sword",
+     "snap_to": "Sword_Sheathed"
     }
    ]
   },
@@ -703,26 +867,49 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "Yasuo_Recall",
+     "name": "Recall",
+     "effect": "Yasuo_base_Recall",
+     "key": "Yasuo_Recall",
+     "pairs": [
+      {
+       "bone": "Buffbone_Glb_Ground_Loc"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "Buffbone_Glb_Ground_Loc"
+     ],
+     "set": "yasuo"
     },
     {
      "type": "JointSnap",
      "start": 0.0,
-     "end": 86.0
+     "name": "#286aa358",
+     "end": 86.0,
+     "joint": "Sword",
+     "snap_to": "Sword_World"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 14.0,
-     "effect": "#36a5a16b",
-     "bones": []
+     "name": "#39ebc1cf",
+     "effect": "Yasuo_Base_recall_start_sound",
+     "key": "Yasuo_recall_start_sound",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     }
    ]
   },
-  "recall": {
+  "Recall": {
    "type": "Sequencer",
    "list": [
     "#5a558fb9",
@@ -739,17 +926,24 @@
     {
      "type": "SubmeshVisibility",
      "start": 9.0,
+     "name": "#4100ffc8",
      "show": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     },
     {
      "type": "JointSnap",
-     "start": 136.0
+     "start": 136.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "JointSnap",
-     "start": 136.0
+     "start": 136.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     }
    ]
   },
@@ -774,7 +968,7 @@
     "#31084864"
    ]
   },
-  "spell2": {
+  "Spell2": {
    "type": "Parallel",
    "list": [
     "spell2_base",
@@ -792,34 +986,59 @@
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#b5ed4791",
      "show": [
-      3478600801
+      "Yasuo_Instrument_Mat"
      ]
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#286aa358",
+     "joint": "Sword",
+     "snap_to": "Sword_World"
     },
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#4100ffc8",
      "hide": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 2.0,
-     "effect": "#84bc6347",
-     "bones": []
+     "name": "#bc45bbc5",
+     "effect": "Yasuo_Base_Emote_dance_sound",
+     "key": "Yasuo_Emote_dance_sound",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 2.0,
-     "effect": "#4e6ca6e8",
+     "name": "#02ddc2b8",
+     "effect": "Yasuo_base_Dance_flute_wind",
+     "key": "Yasuo_Dance_flute_wind",
+     "pairs": [
+      {
+       "bone": "Buffbone_Glb_Ground_Loc"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "Buffbone_Glb_Ground_Loc"
+     ],
+     "set": "yasuo"
     }
    ]
   },
@@ -832,56 +1051,77 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#286aa358",
+     "joint": "Sword",
+     "snap_to": "Sword_World"
     },
     {
      "type": "SubmeshVisibility",
      "start": 0.0,
+     "name": "#4100ffc8",
      "hide": [
-      157494532
+      "Yasuo_Base_Weapon_Mat"
      ]
     },
     {
      "type": "FaceTarget",
-     "start": 0.0
+     "start": 0.0,
+     "y_rotation": 135.0
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 35.0,
-     "effect": "#fb46cc27",
-     "bones": []
+     "name": "#ddf80471",
+     "effect": "Yasuo_Base_Emote_dance_in_sound",
+     "key": "Yasuo_Emote_dance_in_sound",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     },
     {
      "type": "SubmeshVisibility",
      "start": 64.0,
+     "name": "#b5ed4791",
      "show": [
-      3478600801
+      "Yasuo_Instrument_Mat"
      ]
     }
    ]
   },
-  "dance": {
+  "Dance": {
    "type": "Sequencer",
    "list": [
     "#4e29720f",
     "#18d5b1ae"
    ]
   },
-  "run_haste": {
+  "Run_Haste": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
-   "sync": "run",
+   "sync": "Run",
    "anim": "run_fast",
    "file": "ecbe4687cb38ebf2",
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     }
    ]
   },
@@ -894,19 +1134,36 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     },
     {
      "type": "JointSnap",
-     "start": 36.0
+     "start": 36.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 40.0,
-     "effect": "#23276686",
+     "name": "#43cbc356",
+     "effect": "Yasuo_Base_I_sheath_spark",
+     "key": "Yasuo_I_sheath_spark",
+     "pairs": [
+      {
+       "bone": "Sheath"
+      }
+     ],
      "bones": [
-      806132380
-     ]
+      "Sheath"
+     ],
+     "set": "yasuo"
     }
    ]
   },
@@ -920,19 +1177,36 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     },
     {
      "type": "JointSnap",
-     "start": 35.0
+     "start": 35.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 40.0,
-     "effect": "#23276686",
+     "name": "#43cbc356",
+     "effect": "Yasuo_Base_I_sheath_spark",
+     "key": "Yasuo_I_sheath_spark",
+     "pairs": [
+      {
+       "bone": "Sheath"
+      }
+     ],
      "bones": [
-      806132380
-     ]
+      "Sheath"
+     ],
+     "set": "yasuo"
     }
    ]
   },
@@ -955,17 +1229,23 @@
    "type": "Atomic",
    "flags": 6,
    "track": "Default",
-   "sync": "run",
+   "sync": "Run",
    "anim": "run",
    "file": "c385ebb7335d1ed6",
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     }
    ]
   },
@@ -973,14 +1253,17 @@
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
-   "sync": "run",
+   "sync": "Run",
    "anim": null,
    "xanim": "x/clip_a5a9b825",
    "file": "2a38ce95a5a9b825",
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     }
    ]
   },
@@ -994,19 +1277,36 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 0.0
+     "start": 0.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     },
     {
      "type": "JointSnap",
-     "start": 34.0
+     "start": 34.0,
+     "name": "#42da2f84",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 40.0,
-     "effect": "#23276686",
+     "name": "#43cbc356",
+     "effect": "Yasuo_Base_I_sheath_spark",
+     "key": "Yasuo_I_sheath_spark",
+     "pairs": [
+      {
+       "bone": "Sheath"
+      }
+     ],
      "bones": [
-      806132380
-     ]
+      "Sheath"
+     ],
+     "set": "yasuo"
     }
    ]
   },
@@ -1014,7 +1314,7 @@
    "type": "Atomic",
    "flags": 8,
    "track": "Default",
-   "sync": "run",
+   "sync": "Run",
    "anim": "run_out",
    "file": "af4807ca49a70312"
   },
@@ -1022,12 +1322,12 @@
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
-   "sync": "run",
+   "sync": "Run",
    "anim": null,
    "xanim": "x/clip_e7ac92e5",
    "file": "609d500be7ac92e5"
   },
-  "run_out": {
+  "Run_Out": {
    "type": "Sequencer",
    "flags": 3,
    "list": [
@@ -1043,11 +1343,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 3.0,
-     "effect": "#8ff3d87f",
+     "name": "#cf539fae",
+     "effect": "Yasuo_base_BA_trail_1",
+     "key": "Yasuo_BA_trail_1",
+     "pairs": [
+      {
+       "bone": "Buffbone_Glb_Ground_Loc"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "Buffbone_Glb_Ground_Loc"
+     ],
+     "set": "yasuo"
     }
    ]
   },
@@ -1059,23 +1370,47 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 1.0,
-     "effect": "#2282701e",
-     "bones": []
+     "name": "#f44d7fb4",
+     "effect": "Yasuo_Base_Emote_taunt2_sound",
+     "key": "Yasuo_Emote_taunt2_sound",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 13.0,
-     "effect": "#78ec87a6",
-     "bones": []
+     "name": "#c29e922c",
+     "effect": "Yasuo_Base_Emote_taunt_interactive_riven",
+     "key": "Yasuo_Emote_taunt_interactive_riven",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     },
     {
      "type": "JointSnap",
-     "start": 136.0
+     "start": 136.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "JointSnap",
-     "start": 136.0
+     "start": 136.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     }
    ]
   },
@@ -1087,23 +1422,47 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 1.0,
-     "effect": "#2282701e",
-     "bones": []
+     "name": "#f44d7fb4",
+     "effect": "Yasuo_Base_Emote_taunt2_sound",
+     "key": "Yasuo_Emote_taunt2_sound",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 10.0,
-     "effect": "#15dc2ea4",
-     "bones": []
+     "name": "#cdaa1a22",
+     "effect": "Yasuo_Base_Emote_taunt_interactive_ninja",
+     "key": "Yasuo_Emote_taunt_interactive_ninja",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     },
     {
      "type": "JointSnap",
-     "start": 136.0
+     "start": 136.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "JointSnap",
-     "start": 136.0
+     "start": 136.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     }
    ]
   },
@@ -1115,110 +1474,135 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 1.0,
-     "effect": "#2282701e",
-     "bones": []
+     "name": "#f44d7fb4",
+     "effect": "Yasuo_Base_Emote_taunt2_sound",
+     "key": "Yasuo_Emote_taunt2_sound",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 14.0,
-     "effect": "#9675a9f6",
-     "bones": []
+     "name": "#7baeda82",
+     "effect": "Yasuo_Base_Emote_taunt_interactive_yi",
+     "key": "Yasuo_Emote_taunt_interactive_yi",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "yasuo"
     },
     {
      "type": "JointSnap",
-     "start": 136.0
+     "start": 136.0,
+     "name": "#73cd5838",
+     "joint": "Sword",
+     "snap_to": "Sword2LHandSheath"
     },
     {
      "type": "JointSnap",
-     "start": 136.0
+     "start": 136.0,
+     "name": "#31f1d317",
+     "joint": "Sheath",
+     "snap_to": "Sheath2LHand"
     }
    ]
   }
  },
+ "idle_particles": [],
  "blends": {
-  "#0138ce20>death": 0.0,
+  "#0138ce20>Death": 0.0,
   "#08b0f422>spell1_dash": 0.10000000149011612,
   "#08b0f422>spell2_base": 0.10000000149011612,
   "#08b0f422>Channel_Wndup": 0.10000000149011612,
   "#08b0f422>spell3": 0.10000000149011612,
-  "#08b0f422>death": 0.0,
+  "#08b0f422>Death": 0.0,
   "#08b0f422>spell1a": 0.10000000149011612,
   "#08b0f422>spell1b": 0.10000000149011612,
   "#08b0f422>spell1c": 0.10000000149011612,
-  "#0c4d3736>death": 0.0,
+  "#0c4d3736>Death": 0.0,
   "#120aa0ea>spell1_dash": 0.10000000149011612,
   "#120aa0ea>spell2_base": 0.10000000149011612,
   "#120aa0ea>Channel_Wndup": 0.10000000149011612,
   "#120aa0ea>spell3": 0.10000000149011612,
-  "#120aa0ea>death": 0.0,
+  "#120aa0ea>Death": 0.0,
   "#120aa0ea>spell1a": 0.10000000149011612,
   "#120aa0ea>spell1b": 0.10000000149011612,
   "#120aa0ea>spell1c": 0.10000000149011612,
-  "#18d5b1ae>death": 0.0,
+  "#18d5b1ae>Death": 0.0,
   "spell1_dash>spell1_dash": 0.10000000149011612,
-  "spell1_dash>attack2": 0.10000000149011612,
+  "spell1_dash>Attack2": 0.10000000149011612,
   "spell1_dash>spell2_base": 0.10000000149011612,
   "spell1_dash>Channel_Wndup": 0.10000000149011612,
   "spell1_dash>spell3": 0.10000000149011612,
-  "spell1_dash>death": 0.0,
+  "spell1_dash>Death": 0.0,
   "spell1_dash>spell1a": 0.10000000149011612,
   "spell1_dash>spell1b": 0.10000000149011612,
   "spell1_dash>spell1c": 0.10000000149011612,
-  "run_out>death": 0.0,
-  "channel>run_haste": 0.0,
-  "channel>#401ff3c4": 0.0,
-  "channel>#4f00d30c": 0.0,
-  "channel>run2": 0.0,
-  "channel>#6b01d0e8": 0.0,
-  "channel>Channel_Wndup": 0.10000000149011612,
-  "channel>death": 0.0,
-  "run_haste>death": 0.0,
-  "#294bef88>death": 0.0,
-  "run>death": 0.0,
-  "#300c9a9c>death": 0.0,
-  "#31084864>death": 0.0,
-  "Run_Fast_In>death": 0.0,
-  "#34dfd7e6>death": 0.0,
-  "#3a495dde>death": 0.0,
-  "#3f589716>death": 0.0,
+  "Run_Out>Death": 0.0,
+  "Channel>Run_Haste": 0.0,
+  "Channel>#401ff3c4": 0.0,
+  "Channel>#4f00d30c": 0.0,
+  "Channel>run2": 0.0,
+  "Channel>#6b01d0e8": 0.0,
+  "Channel>Channel_Wndup": 0.10000000149011612,
+  "Channel>Death": 0.0,
+  "Run_Haste>Death": 0.0,
+  "#294bef88>Death": 0.0,
+  "Run>Death": 0.0,
+  "#300c9a9c>Death": 0.0,
+  "#31084864>Death": 0.0,
+  "Run_Fast_In>Death": 0.0,
+  "#34dfd7e6>Death": 0.0,
+  "#3a495dde>Death": 0.0,
+  "#3f589716>Death": 0.0,
   "#401ff3c4>spell1_dash": 0.10000000149011612,
   "#401ff3c4>#401ff3c4": 0.0,
   "#401ff3c4>spell2_base": 0.10000000149011612,
   "#401ff3c4>Channel_Wndup": 0.10000000149011612,
   "#401ff3c4>spell3": 0.10000000149011612,
-  "#401ff3c4>death": 0.0,
+  "#401ff3c4>Death": 0.0,
   "#401ff3c4>spell1a": 0.10000000149011612,
   "#401ff3c4>spell1b": 0.10000000149011612,
   "#401ff3c4>spell1c": 0.10000000149011612,
   "#49b908d9>spell1_dash": 0.10000000149011612,
   "#49b908d9>Channel_Wndup": 0.10000000149011612,
-  "#49b908d9>death": 0.0,
+  "#49b908d9>Death": 0.0,
   "#49b908d9>spell1a": 0.10000000149011612,
   "#49b908d9>spell1b": 0.10000000149011612,
   "#49b908d9>spell1c": 0.10000000149011612,
-  "#4e29720f>death": 0.0,
+  "#4e29720f>Death": 0.0,
   "#4f00d30c>spell1_dash": 0.10000000149011612,
   "#4f00d30c>Channel_Wndup": 0.10000000149011612,
-  "#4f00d30c>death": 0.0,
+  "#4f00d30c>Death": 0.0,
   "#4f00d30c>spell1a": 0.10000000149011612,
   "#4f00d30c>spell1b": 0.10000000149011612,
   "#4f00d30c>spell1c": 0.10000000149011612,
-  "#4f62db84>death": 0.0,
-  "attack4>spell1_dash": 0.10000000149011612,
-  "attack4>spell2_base": 0.10000000149011612,
-  "attack4>Channel_Wndup": 0.10000000149011612,
-  "attack4>spell3": 0.10000000149011612,
-  "attack4>death": 0.0,
-  "attack4>spell1a": 0.10000000149011612,
-  "attack4>spell1b": 0.10000000149011612,
-  "attack4>spell1c": 0.10000000149011612,
-  "attack1>death": 0.0,
+  "#4f62db84>Death": 0.0,
+  "Attack4>spell1_dash": 0.10000000149011612,
+  "Attack4>spell2_base": 0.10000000149011612,
+  "Attack4>Channel_Wndup": 0.10000000149011612,
+  "Attack4>spell3": 0.10000000149011612,
+  "Attack4>Death": 0.0,
+  "Attack4>spell1a": 0.10000000149011612,
+  "Attack4>spell1b": 0.10000000149011612,
+  "Attack4>spell1c": 0.10000000149011612,
+  "attack1>Death": 0.0,
   "#56f6d84b>spell1_dash": 0.10000000149011612,
   "#56f6d84b>spell2_base": 0.10000000149011612,
   "#56f6d84b>Channel_Wndup": 0.10000000149011612,
   "#56f6d84b>spell3": 0.10000000149011612,
-  "#56f6d84b>death": 0.0,
+  "#56f6d84b>Death": 0.0,
   "#56f6d84b>spell1a": 0.10000000149011612,
   "#56f6d84b>spell1b": 0.10000000149011612,
   "#56f6d84b>spell1c": 0.10000000149011612,
@@ -1226,7 +1610,7 @@
   "Attack3>spell2_base": 0.10000000149011612,
   "Attack3>Channel_Wndup": 0.10000000149011612,
   "Attack3>spell3": 0.10000000149011612,
-  "Attack3>death": 0.0,
+  "Attack3>Death": 0.0,
   "Attack3>spell1a": 0.10000000149011612,
   "Attack3>spell1b": 0.10000000149011612,
   "Attack3>spell1c": 0.10000000149011612,
@@ -1234,45 +1618,45 @@
   "run2>spell2_base": 0.10000000149011612,
   "run2>Channel_Wndup": 0.10000000149011612,
   "run2>spell3": 0.10000000149011612,
-  "run2>death": 0.0,
+  "run2>Death": 0.0,
   "run2>spell1a": 0.10000000149011612,
   "run2>spell1b": 0.10000000149011612,
   "run2>spell1c": 0.10000000149011612,
-  "attack2>spell1_dash": 0.10000000149011612,
-  "attack2>spell2_base": 0.10000000149011612,
-  "attack2>Channel_Wndup": 0.10000000149011612,
-  "attack2>spell3": 0.10000000149011612,
-  "attack2>death": 0.0,
-  "attack2>spell1a": 0.10000000149011612,
-  "attack2>spell1b": 0.10000000149011612,
-  "attack2>spell1c": 0.10000000149011612,
-  "#5a558fb9>death": 0.0,
-  "#5a7fb1dc>death": 0.0,
-  "recall>death": 0.0,
-  "#6438e53a>death": 0.0,
+  "Attack2>spell1_dash": 0.10000000149011612,
+  "Attack2>spell2_base": 0.10000000149011612,
+  "Attack2>Channel_Wndup": 0.10000000149011612,
+  "Attack2>spell3": 0.10000000149011612,
+  "Attack2>Death": 0.0,
+  "Attack2>spell1a": 0.10000000149011612,
+  "Attack2>spell1b": 0.10000000149011612,
+  "Attack2>spell1c": 0.10000000149011612,
+  "#5a558fb9>Death": 0.0,
+  "#5a7fb1dc>Death": 0.0,
+  "Recall>Death": 0.0,
+  "#6438e53a>Death": 0.0,
   "#6b01d0e8>spell1_dash": 0.10000000149011612,
   "#6b01d0e8>spell2_base": 0.10000000149011612,
   "#6b01d0e8>Channel_Wndup": 0.10000000149011612,
   "#6b01d0e8>spell3": 0.10000000149011612,
-  "#6b01d0e8>death": 0.0,
+  "#6b01d0e8>Death": 0.0,
   "#6b01d0e8>spell1a": 0.10000000149011612,
   "#6b01d0e8>spell1b": 0.10000000149011612,
   "#6b01d0e8>spell1c": 0.10000000149011612,
-  "Run_Haste_Out>death": 0.0,
-  "Idle_Out>death": 0.0,
+  "Run_Haste_Out>Death": 0.0,
+  "Idle_Out>Death": 0.0,
   "Attack_First>spell1_dash": 0.10000000149011612,
   "Attack_First>Attack_First": 0.10000000149011612,
   "Attack_First>spell2_base": 0.10000000149011612,
   "Attack_First>Channel_Wndup": 0.10000000149011612,
   "Attack_First>spell3": 0.10000000149011612,
-  "Attack_First>death": 0.0,
+  "Attack_First>Death": 0.0,
   "Attack_First>spell1a": 0.10000000149011612,
   "Attack_First>spell1b": 0.10000000149011612,
   "Attack_First>spell1c": 0.10000000149011612,
   "#7b1ca9e4>spell1_dash": 0.10000000149011612,
-  "#7b1ca9e4>attack2": 0.10000000149011612,
+  "#7b1ca9e4>Attack2": 0.10000000149011612,
   "#7b1ca9e4>Channel_Wndup": 0.10000000149011612,
-  "#7b1ca9e4>death": 0.0,
+  "#7b1ca9e4>Death": 0.0,
   "#7b1ca9e4>spell1a": 0.10000000149011612,
   "#7b1ca9e4>spell1b": 0.10000000149011612,
   "#7b1ca9e4>spell1c": 0.10000000149011612,
@@ -1280,74 +1664,74 @@
   "spell2_base>spell2_base": 0.10000000149011612,
   "spell2_base>Channel_Wndup": 0.10000000149011612,
   "spell2_base>spell3": 0.10000000149011612,
-  "spell2_base>death": 0.0,
+  "spell2_base>Death": 0.0,
   "spell2_base>spell1a": 0.10000000149011612,
   "spell2_base>spell1b": 0.10000000149011612,
   "spell2_base>spell1c": 0.10000000149011612,
-  "#822d5260>death": 0.0,
-  "#86b7dee4>death": 0.0,
-  "idle1>death": 0.0,
+  "#822d5260>Death": 0.0,
+  "#86b7dee4>Death": 0.0,
+  "idle1>Death": 0.0,
   "Channel_Wndup>Channel_Wndup": 0.10000000149011612,
-  "Channel_Wndup>death": 0.0,
-  "#a56d84cb>death": 0.0,
-  "run_fast>death": 0.0,
+  "Channel_Wndup>Death": 0.0,
+  "#a56d84cb>Death": 0.0,
+  "Run_Fast>Death": 0.0,
   "#ae92aef7>Channel_Wndup": 0.10000000149011612,
-  "#ae92aef7>death": 0.0,
-  "#aec9ef19>death": 0.0,
+  "#ae92aef7>Death": 0.0,
+  "#aec9ef19>Death": 0.0,
   "spell3>spell1_dash": 0.10000000149011612,
   "spell3>spell2_base": 0.10000000149011612,
   "spell3>Channel_Wndup": 0.10000000149011612,
   "spell3>spell3": 0.10000000149011612,
-  "spell3>death": 0.0,
+  "spell3>Death": 0.0,
   "spell3>spell1a": 0.10000000149011612,
   "spell3>spell1b": 0.10000000149011612,
   "spell3>spell1c": 0.10000000149011612,
-  "spell2>death": 0.0,
-  "laugh>death": 0.0,
+  "Spell2>Death": 0.0,
+  "Laugh>Death": 0.0,
   "Spell4>spell1_dash": 0.10000000149011612,
   "Spell4>Channel_Wndup": 0.10000000149011612,
-  "Spell4>death": 0.0,
+  "Spell4>Death": 0.0,
   "Spell4>spell1a": 0.10000000149011612,
   "Spell4>spell1b": 0.10000000149011612,
   "Spell4>spell1c": 0.10000000149011612,
-  "taunt>death": 0.0,
-  "#bcf84a8e>death": 0.0,
-  "death>spell1_dash": 0.10000000149011612,
-  "death>Channel_Wndup": 0.10000000149011612,
-  "death>death": 0.0,
-  "death>spell1a": 0.10000000149011612,
-  "death>spell1b": 0.10000000149011612,
-  "death>spell1c": 0.10000000149011612,
-  "joke>death": 0.0,
+  "Taunt>Death": 0.0,
+  "#bcf84a8e>Death": 0.0,
+  "Death>spell1_dash": 0.10000000149011612,
+  "Death>Channel_Wndup": 0.10000000149011612,
+  "Death>Death": 0.0,
+  "Death>spell1a": 0.10000000149011612,
+  "Death>spell1b": 0.10000000149011612,
+  "Death>spell1c": 0.10000000149011612,
+  "Joke>Death": 0.0,
   "spell1a>Channel_Wndup": 0.10000000149011612,
-  "spell1a>death": 0.0,
+  "spell1a>Death": 0.0,
   "spell1a>spell1a": 0.10000000149011612,
   "spell1a>spell1b": 0.10000000149011612,
   "spell1a>spell1c": 0.10000000149011612,
-  "#c2cfde5a>death": 0.0,
+  "#c2cfde5a>Death": 0.0,
   "spell1b>Channel_Wndup": 0.10000000149011612,
-  "spell1b>death": 0.0,
+  "spell1b>Death": 0.0,
   "spell1b>spell1a": 0.10000000149011612,
   "spell1b>spell1b": 0.10000000149011612,
   "spell1b>spell1c": 0.10000000149011612,
   "spell1c>Channel_Wndup": 0.10000000149011612,
-  "spell1c>death": 0.0,
+  "spell1c>Death": 0.0,
   "spell1c>spell1a": 0.10000000149011612,
   "spell1c>spell1b": 0.10000000149011612,
   "spell1c>spell1c": 0.10000000149011612,
-  "#cbc78130>death": 0.0,
+  "#cbc78130>Death": 0.0,
   "#cd12c5c1>spell1_dash": 0.10000000149011612,
-  "#cd12c5c1>attack2": 0.10000000149011612,
+  "#cd12c5c1>Attack2": 0.10000000149011612,
   "#cd12c5c1>Channel_Wndup": 0.10000000149011612,
-  "#cd12c5c1>death": 0.0,
+  "#cd12c5c1>Death": 0.0,
   "#cd12c5c1>spell1a": 0.10000000149011612,
   "#cd12c5c1>spell1b": 0.10000000149011612,
   "#cd12c5c1>spell1c": 0.10000000149011612,
-  "#eed63eca>death": 0.0,
-  "#f1b6fdb7>death": 0.0,
-  "#f337510f>death": 0.0,
-  "dance>death": 0.0,
-  "#fb8f4ae2>death": 0.0
+  "#eed63eca>Death": 0.0,
+  "#f1b6fdb7>Death": 0.0,
+  "#f337510f>Death": 0.0,
+  "Dance>Death": 0.0,
+  "#fb8f4ae2>Death": 0.0
  },
  "tracks": {
   "Upper": {

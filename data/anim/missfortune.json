@@ -78,16 +78,27 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 6.0,
+     "name": "#7434fce3",
      "end": 14.0,
-     "effect": "#6c3afa5c",
+     "effect": "MissFortune_Base_BA_cas",
+     "key": "MissFortune_BA_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_1"
+      }
+     ],
      "bones": [
-      3902107307
-     ]
+      "BUFFBONE_CSTM_WEAPON_1"
+     ],
+     "set": "missfortune"
     }
    ]
   },
-  "attack2": {
+  "Attack2": {
    "type": "Atomic",
    "track": "Default",
    "anim": "attack2",
@@ -95,16 +106,27 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 7.0,
+     "name": "#7434fce3",
      "end": 14.0,
-     "effect": "#7495d294",
+     "effect": "MissFortune_Base_BA_cas_left",
+     "key": "MissFortune_BA_cas_left",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_3"
+      }
+     ],
      "bones": [
-      3935662545
-     ]
+      "BUFFBONE_CSTM_WEAPON_3"
+     ],
+     "set": "missfortune"
     }
    ]
   },
-  "channel": {
+  "Channel": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -118,7 +140,7 @@
    "anim": "channel_windup",
    "file": "dcb4dee9d804a86b"
   },
-  "crit": {
+  "Crit": {
    "type": "Atomic",
    "track": "Default",
    "anim": "crit",
@@ -126,30 +148,52 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 7.0,
-     "effect": "#7c0942a9",
+     "name": "#c56bfc1c",
+     "effect": "MissFortune_Base_BA_Crit_cas",
+     "key": "MissFortune_BA_Crit_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_3"
+      }
+     ],
      "bones": [
-      3935662545
-     ]
+      "BUFFBONE_CSTM_WEAPON_3"
+     ],
+     "set": "missfortune"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 7.0,
-     "effect": "#7c0942a9",
+     "name": "#f4fdf944",
+     "effect": "MissFortune_Base_BA_Crit_cas",
+     "key": "MissFortune_BA_Crit_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_1"
+      }
+     ],
      "bones": [
-      3902107307
-     ]
+      "BUFFBONE_CSTM_WEAPON_1"
+     ],
+     "set": "missfortune"
     }
    ]
   },
-  "dance": {
+  "Dance": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
    "anim": "dance",
    "file": "7a9175818164e99a"
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.03333333879709244,
@@ -158,15 +202,21 @@
    "events": [
     {
      "type": "JointSnap",
-     "start": 22.0
+     "start": 22.0,
+     "name": "#c5cd312b",
+     "joint": "L_WEAPON",
+     "snap_to": "Snap_LWeapon2World"
     },
     {
      "type": "JointSnap",
-     "start": 22.0
+     "start": 22.0,
+     "name": "#a3d84291",
+     "joint": "R_WEAPON",
+     "snap_to": "Snap_RWeapon2World"
     }
    ]
   },
-  "idle1_base": {
+  "Idle1_Base": {
    "type": "Atomic",
    "track": "Default",
    "anim": "idle1",
@@ -178,13 +228,13 @@
    "anim": "idle1_var3",
    "file": "a1133851b0898c8a"
   },
-  "joke": {
+  "Joke": {
    "type": "Atomic",
    "track": "Default",
    "anim": "joke",
    "file": "531e6245e28a15d7"
   },
-  "laugh": {
+  "Laugh": {
    "type": "Atomic",
    "track": "Default",
    "anim": "laugh",
@@ -212,11 +262,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 5.0,
-     "effect": "#9c2a03a4",
+     "name": "#7434fce3",
+     "effect": "MissFortune_Base_Q_Cas",
+     "key": "MissFortune_Q_Cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_1"
+      }
+     ],
      "bones": [
-      3902107307
-     ]
+      "BUFFBONE_CSTM_WEAPON_1"
+     ],
+     "set": "missfortune"
     }
    ]
   },
@@ -226,7 +287,7 @@
    "anim": "spell1",
    "file": "28dfcacb07826b1b"
   },
-  "spell3": {
+  "Spell3": {
    "type": "Atomic",
    "track": "Default",
    "anim": "spell3",
@@ -234,54 +295,120 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 8.0,
-     "effect": "#8e2be900",
+     "name": "#49db70b0",
+     "effect": "MissFortune_Base_E_cas",
+     "key": "MissFortune_E_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_3"
+      }
+     ],
      "bones": [
-      3935662545
-     ]
+      "BUFFBONE_CSTM_WEAPON_3"
+     ],
+     "set": "missfortune"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 8.0,
+     "name": "#afc1b784",
      "end": 14.0,
-     "effect": "#7495d294",
+     "effect": "MissFortune_Base_BA_cas_left",
+     "key": "MissFortune_BA_cas_left",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_3"
+      }
+     ],
      "bones": [
-      3935662545
-     ]
+      "BUFFBONE_CSTM_WEAPON_3"
+     ],
+     "set": "missfortune"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 15.0,
-     "effect": "#8e2be900",
+     "name": "#4cdb7569",
+     "effect": "MissFortune_Base_E_cas",
+     "key": "MissFortune_E_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_1"
+      }
+     ],
      "bones": [
-      3902107307
-     ]
+      "BUFFBONE_CSTM_WEAPON_1"
+     ],
+     "set": "missfortune"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 15.0,
+     "name": "#685f2b17",
      "end": 21.0,
-     "effect": "#6c3afa5c",
+     "effect": "MissFortune_Base_BA_cas",
+     "key": "MissFortune_BA_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_1"
+      }
+     ],
      "bones": [
-      3902107307
-     ]
+      "BUFFBONE_CSTM_WEAPON_1"
+     ],
+     "set": "missfortune"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 21.0,
-     "effect": "#8e2be900",
+     "name": "#4bdb73d6",
+     "effect": "MissFortune_Base_E_cas",
+     "key": "MissFortune_E_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_3"
+      }
+     ],
      "bones": [
-      3935662545
-     ]
+      "BUFFBONE_CSTM_WEAPON_3"
+     ],
+     "set": "missfortune"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 21.0,
+     "name": "#81e2521a",
      "end": 25.0,
-     "effect": "#7495d294",
+     "effect": "MissFortune_Base_BA_cas_left",
+     "key": "MissFortune_BA_cas_left",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_3"
+      }
+     ],
      "bones": [
-      3935662545
-     ]
+      "BUFFBONE_CSTM_WEAPON_3"
+     ],
+     "set": "missfortune"
     }
    ]
   },
@@ -294,71 +421,151 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 4.0,
-     "effect": "#b5d8a829",
+     "name": "#586f5056",
+     "effect": "MissFortune_Base_R_cas",
+     "key": "MissFortune_R_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_1"
+      }
+     ],
      "bones": [
-      3902107307
+      "BUFFBONE_CSTM_WEAPON_1"
      ]
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 12.0,
-     "effect": "#b5d8a829",
+     "name": "#ec6a2924",
+     "effect": "MissFortune_Base_R_cas",
+     "key": "MissFortune_R_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_3"
+      }
+     ],
      "bones": [
-      3935662545
+      "BUFFBONE_CSTM_WEAPON_3"
      ]
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 19.0,
-     "effect": "#b5d8a829",
+     "name": "#576f4ec3",
+     "effect": "MissFortune_Base_R_cas",
+     "key": "MissFortune_R_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_1"
+      }
+     ],
      "bones": [
-      3902107307
+      "BUFFBONE_CSTM_WEAPON_1"
      ]
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 27.0,
-     "effect": "#b5d8a829",
+     "name": "#ef6a2ddd",
+     "effect": "MissFortune_Base_R_cas",
+     "key": "MissFortune_R_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_3"
+      }
+     ],
      "bones": [
-      3935662545
+      "BUFFBONE_CSTM_WEAPON_3"
      ]
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 35.0,
-     "effect": "#b5d8a829",
+     "name": "#566f4d30",
+     "effect": "MissFortune_Base_R_cas",
+     "key": "MissFortune_R_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_1"
+      }
+     ],
      "bones": [
-      3902107307
+      "BUFFBONE_CSTM_WEAPON_1"
      ]
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 43.0,
-     "effect": "#b5d8a829",
+     "name": "#ee6a2c4a",
+     "effect": "MissFortune_Base_R_cas",
+     "key": "MissFortune_R_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_3"
+      }
+     ],
      "bones": [
-      3935662545
+      "BUFFBONE_CSTM_WEAPON_3"
      ]
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 51.0,
-     "effect": "#b5d8a829",
+     "name": "#5d6f5835",
+     "effect": "MissFortune_Base_R_cas",
+     "key": "MissFortune_R_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_1"
+      }
+     ],
      "bones": [
-      3902107307
+      "BUFFBONE_CSTM_WEAPON_1"
      ]
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 59.0,
-     "effect": "#b5d8a829",
+     "name": "#e96a246b",
+     "effect": "MissFortune_Base_R_cas",
+     "key": "MissFortune_R_cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_CSTM_WEAPON_3"
+      }
+     ],
      "bones": [
-      3935662545
+      "BUFFBONE_CSTM_WEAPON_3"
      ]
     }
    ]
   },
-  "taunt": {
+  "Taunt": {
    "type": "Atomic",
    "track": "Default",
    "anim": "taunt",
@@ -389,9 +596,9 @@
    "type": "Sequencer",
    "flags": 2,
    "list": [
-    "idle1_base",
-    "idle1_base",
-    "idle1_base",
+    "Idle1_Base",
+    "Idle1_Base",
+    "Idle1_Base",
     "#914db254"
    ]
   },
@@ -399,7 +606,7 @@
    "type": "Selector",
    "pairs": [
     [
-     "idle1_base",
+     "Idle1_Base",
      50.0
     ],
     [
@@ -427,12 +634,12 @@
     "spell4_loop"
    ]
   },
-  "recall": {
+  "Recall": {
    "type": "Sequencer",
    "list": [
     "idle3_base",
     "idle2_base",
-    "idle1_base"
+    "Idle1_Base"
    ]
   },
   "Recall_Winddown": {
@@ -441,7 +648,7 @@
    "anim": "respawn",
    "file": "bd40b836f690357c"
   },
-  "respawn": {
+  "Respawn": {
    "type": "Atomic",
    "track": "Default",
    "anim": "respawn",
@@ -454,7 +661,7 @@
    "updater": "IsHomeguard",
    "changeAnimationMidPlay": true
   },
-  "run": {
+  "Run": {
    "type": "ConditionBool",
    "true": "run2",
    "false": "#b87a3f27",
@@ -462,56 +669,57 @@
    "changeAnimationMidPlay": true
   }
  },
+ "idle_particles": [],
  "blends": {
-  "channel>Spell1": 0.0,
-  "channel>death": 0.0,
-  "Run_Base>idle1_base": {
+  "Channel>Spell1": 0.0,
+  "Channel>Death": 0.0,
+  "Run_Base>Idle1_Base": {
    "clip": "Idle_In"
   },
   "Run_Base>Spell1": 0.0,
-  "Run_Base>death": 0.0,
+  "Run_Base>Death": 0.0,
   "spell4_windup>Spell1": 0.0,
-  "spell4_windup>death": 0.0,
-  "attack1>crit": 0.4000000059604645,
+  "spell4_windup>Death": 0.0,
+  "attack1>Crit": 0.4000000059604645,
   "attack1>Spell1": 0.0,
-  "attack1>death": 0.0,
-  "run2>idle1_base": {
+  "attack1>Death": 0.0,
+  "run2>Idle1_Base": {
    "clip": "Idle_In"
   },
   "run2>Spell1": 0.0,
-  "run2>death": 0.0,
-  "attack2>crit": 0.4000000059604645,
-  "attack2>Spell1": 0.0,
-  "attack2>death": 0.0,
-  "idle1_base>idle1_base": 0.0,
-  "idle1_base>Spell1": 0.0,
-  "idle1_base>death": 0.0,
+  "run2>Death": 0.0,
+  "Attack2>Crit": 0.4000000059604645,
+  "Attack2>Spell1": 0.0,
+  "Attack2>Death": 0.0,
+  "Idle1_Base>Idle1_Base": 0.0,
+  "Idle1_Base>Spell1": 0.0,
+  "Idle1_Base>Death": 0.0,
   "idle3_base>idle3_base": 0.0,
   "idle3_base>Spell1": 0.0,
-  "idle3_base>death": 0.0,
-  "crit>attack1": 0.4000000059604645,
-  "crit>attack2": 0.4000000059604645,
-  "crit>Spell1": 0.0,
-  "crit>death": 0.0,
+  "idle3_base>Death": 0.0,
+  "Crit>attack1": 0.4000000059604645,
+  "Crit>Attack2": 0.4000000059604645,
+  "Crit>Spell1": 0.0,
+  "Crit>Death": 0.0,
   "Channel_Wndup>Spell1": 0.0,
-  "Channel_Wndup>death": 0.0,
+  "Channel_Wndup>Death": 0.0,
   "Spell1>Spell1": 0.0,
-  "Spell1>death": 0.0,
-  "spell3>Spell1": 0.0,
-  "spell3>death": 0.0,
+  "Spell1>Death": 0.0,
+  "Spell3>Spell1": 0.0,
+  "Spell3>Death": 0.0,
   "spell2>Spell1": 0.0,
-  "spell2>death": 0.0,
-  "laugh>Spell1": 0.0,
-  "laugh>death": 0.0,
-  "taunt>Spell1": 0.0,
-  "taunt>death": 0.0,
-  "death>Spell1": 0.0,
-  "death>death": 0.0,
-  "joke>Spell1": 0.0,
-  "joke>death": 0.0,
+  "spell2>Death": 0.0,
+  "Laugh>Spell1": 0.0,
+  "Laugh>Death": 0.0,
+  "Taunt>Spell1": 0.0,
+  "Taunt>Death": 0.0,
+  "Death>Spell1": 0.0,
+  "Death>Death": 0.0,
+  "Joke>Spell1": 0.0,
+  "Joke>Death": 0.0,
   "idle2_base>idle2_base": 0.0,
-  "dance>Spell1": 0.0,
-  "dance>death": 0.0
+  "Dance>Spell1": 0.0,
+  "Dance>Death": 0.0
  },
  "tracks": {
   "Default": {

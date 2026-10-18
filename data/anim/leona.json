@@ -79,7 +79,7 @@
    "anim": "attack1",
    "file": "70b904106d2305fa"
   },
-  "attack2": {
+  "Attack2": {
    "type": "Atomic",
    "track": "Default",
    "mask": "#25a6c4fd",
@@ -93,7 +93,7 @@
    "anim": "attack3",
    "file": "bdb2ce2d81561304"
   },
-  "channel": {
+  "Channel": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -109,14 +109,14 @@
    "anim": "channel_windup",
    "file": "721abb5112eafd87"
   },
-  "crit": {
+  "Crit": {
    "type": "Atomic",
    "track": "Default",
    "mask": "#25a6c4fd",
    "anim": "crit",
    "file": "b7af69110ce0cbb1"
   },
-  "dance": {
+  "Dance": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -126,15 +126,26 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 1.0,
-     "effect": "#b2d45245",
+     "name": "#19499b5b",
+     "effect": "Leona_Base_Emote_Dance_sfx_01",
+     "key": "Leona_Emote_Dance_sfx_01",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_GLB_GROUND_LOC"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "BUFFBONE_GLB_GROUND_LOC"
+     ],
+     "set": "leona"
     }
    ]
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "mask": "#25a6c4fd",
@@ -144,19 +155,41 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 40.0,
-     "effect": "#985d83c3",
+     "name": "#184999c8",
+     "effect": "Leona_Base_Death_sfx_01",
+     "key": "Leona_Death_sfx_01",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_GLB_GROUND_LOC"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "BUFFBONE_GLB_GROUND_LOC"
+     ],
+     "set": "leona"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 60.0,
-     "effect": "#96072278",
+     "name": "#19499b5b",
+     "effect": "Leona_Base_Death_pfx_01",
+     "key": "Leona_Death_pfx_01",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_GLB_GROUND_LOC"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "BUFFBONE_GLB_GROUND_LOC"
+     ],
+     "set": "leona"
     }
    ]
   },
@@ -183,7 +216,7 @@
    "anim": "idle3",
    "file": "3b422f8470fb33a9"
   },
-  "joke": {
+  "Joke": {
    "type": "Atomic",
    "track": "Default",
    "mask": "#25a6c4fd",
@@ -192,20 +225,34 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 1.0,
-     "effect": "#1825906d",
+     "name": "#19499b5b",
+     "effect": "Leona_Base_Emote_Joke_sfx_01",
+     "key": "Leona_Emote_Joke_sfx_01",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_GLB_GROUND_LOC"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "BUFFBONE_GLB_GROUND_LOC"
+     ],
+     "set": "leona"
     },
     {
      "type": "JointSnap",
      "start": 44.0,
-     "end": 401.0
+     "name": "Weapon",
+     "end": 401.0,
+     "joint": "weapon",
+     "snap_to": "Weapon_World"
     }
    ]
   },
-  "laugh": {
+  "Laugh": {
    "type": "Atomic",
    "track": "Default",
    "mask": "#25a6c4fd",
@@ -214,15 +261,26 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 3.0,
-     "effect": "#517243e7",
+     "name": "#19499b5b",
+     "effect": "Leona_Base_Emote_Laugh_sfx_01",
+     "key": "Leona_Emote_Laugh_sfx_01",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_GLB_GROUND_LOC"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "BUFFBONE_GLB_GROUND_LOC"
+     ],
+     "set": "leona"
     }
    ]
   },
-  "run": {
+  "Run": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -238,7 +296,7 @@
    "anim": "spell1",
    "file": "7c043dad7736d5a9"
   },
-  "spell2": {
+  "Spell2": {
    "type": "Atomic",
    "track": "Default",
    "mask": "#25a6c4fd",
@@ -260,7 +318,7 @@
    "anim": "spell2_attack",
    "file": "f9868ebc9366f1b3"
   },
-  "spell2_run": {
+  "Spell2_Run": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -269,7 +327,7 @@
    "anim": "spell2_run",
    "file": "6b6a3856c988f2a2"
   },
-  "spell3": {
+  "Spell3": {
    "type": "Atomic",
    "track": "Default",
    "mask": "#25a6c4fd",
@@ -283,7 +341,7 @@
    "anim": "spell4",
    "file": "ac76d855738163b9"
   },
-  "taunt": {
+  "Taunt": {
    "type": "Atomic",
    "track": "Default",
    "mask": "#25a6c4fd",
@@ -292,20 +350,34 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 1.0,
-     "effect": "#641adbe0",
+     "name": "#19499b5b",
+     "effect": "Leona_Base_Emote_Taunt_sfx_01",
+     "key": "Leona_Emote_Taunt_sfx_01",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_GLB_GROUND_LOC"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "BUFFBONE_GLB_GROUND_LOC"
+     ],
+     "set": "leona"
     },
     {
      "type": "JointSnap",
      "start": 35.0,
-     "end": 190.0
+     "name": "Weapon",
+     "end": 190.0,
+     "joint": "weapon",
+     "snap_to": "Weapon_World"
     }
    ]
   },
-  "recall": {
+  "Recall": {
    "type": "Sequencer",
    "list": [
     "#b4dcde19",
@@ -322,43 +394,71 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 1.0,
-     "effect": "#641adbe0",
+     "name": "#19499b5b",
+     "effect": "Leona_Base_Emote_Taunt_sfx_01",
+     "key": "Leona_Emote_Taunt_sfx_01",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_GLB_GROUND_LOC"
+      }
+     ],
      "bones": [
-      2094586845
-     ]
+      "BUFFBONE_GLB_GROUND_LOC"
+     ],
+     "set": "leona"
     },
     {
      "type": "JointSnap",
      "start": 35.0,
-     "end": 190.0
+     "name": "Weapon",
+     "end": 190.0,
+     "joint": "weapon",
+     "snap_to": "Weapon_World"
     }
    ]
   }
  },
+ "idle_particles": [
+  {
+   "effect": "Leona_Base_Idle_Sword",
+   "key": "Leona_Idle_Sword",
+   "bone": "BUFFBONE_GLB_WEAPON_1",
+   "set": "leona"
+  },
+  {
+   "effect": "Leona_Base_Idle_Shield",
+   "key": "Leona_Idle_Shield",
+   "bone": "BUFFBONE_CSTM_SHIELD_TOP",
+   "set": "leona"
+  }
+ ],
  "blends": {
-  "spell2_run>death": 0.0,
-  "channel>death": 0.0,
-  "run>death": 0.0,
-  "attack1>death": 0.0,
-  "Attack3>death": 0.0,
-  "attack2>death": 0.0,
-  "crit>death": 0.0,
-  "idle3>death": 0.0,
-  "idle2>death": 0.0,
-  "idle1>death": 0.0,
-  "Channel_Wndup>death": 0.0,
-  "Spell1>death": 0.0,
-  "spell3>death": 0.0,
-  "spell2>death": 0.0,
-  "laugh>death": 0.0,
-  "Spell4>death": 0.0,
-  "taunt>death": 0.0,
-  "death>death": 0.0,
-  "joke>death": 0.0,
-  "Spell2_Idle>death": 0.0,
-  "spell2_attack>death": 0.0,
-  "dance>death": 0.0
+  "Spell2_Run>Death": 0.0,
+  "Channel>Death": 0.0,
+  "Run>Death": 0.0,
+  "attack1>Death": 0.0,
+  "Attack3>Death": 0.0,
+  "Attack2>Death": 0.0,
+  "Crit>Death": 0.0,
+  "idle3>Death": 0.0,
+  "idle2>Death": 0.0,
+  "idle1>Death": 0.0,
+  "Channel_Wndup>Death": 0.0,
+  "Spell1>Death": 0.0,
+  "Spell3>Death": 0.0,
+  "Spell2>Death": 0.0,
+  "Laugh>Death": 0.0,
+  "Spell4>Death": 0.0,
+  "Taunt>Death": 0.0,
+  "Death>Death": 0.0,
+  "Joke>Death": 0.0,
+  "Spell2_Idle>Death": 0.0,
+  "spell2_attack>Death": 0.0,
+  "Dance>Death": 0.0
  },
  "tracks": {
   "Default": {

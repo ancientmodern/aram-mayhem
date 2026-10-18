@@ -1,0 +1,327 @@
+{
+ "alias": "Nexus",
+ "attacks": [],
+ "crits": [],
+ "spells": [],
+ "stats": {
+  "pathfindingCollisionRadius": 304.0,
+  "selectionRadius": 397.22198486328125,
+  "selectionHeight": 117.0,
+  "healthBarHeight": 500.0
+ },
+ "initial_hidden": [
+  "Khai_Destroyed"
+ ],
+ "clips": {
+  "Death": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "8f98954cb8f0f7ca",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "name": "#04c2aa37",
+     "show": [
+      "Khai_destroyed"
+     ],
+     "hide": [
+      "SRUAP_OrderNexus_Mat"
+     ]
+    },
+    {
+     "type": "Sound",
+     "loop": false,
+     "kill": false,
+     "start": 0.0,
+     "name": "#4aa50760",
+     "sound": "Play_sfx_Env_Global_EoG_OrderNexus_death_oc"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
+     "start": 0.0,
+     "effect": "HA_Order_Nexus_Explosion",
+     "key": "HA_Order_Nexus_Explosion",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "shared"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
+     "start": 130.0,
+     "name": "#5f5be1cb",
+     "end": 160.0,
+     "effect_name": "DATA/Particles/SRU_Order_nexus_swirlies.troy",
+     "pairs": [
+      {
+       "bone": "bone_cp2"
+      }
+     ],
+     "bones": [
+      "bone_cp2"
+     ],
+     "effect": "SRU_Order_nexus_swirlies"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
+     "start": 132.0,
+     "name": "#1ba70171",
+     "effect_name": "DATA/Particles/SRU_Order_nexus_swirlies.troy",
+     "pairs": [
+      {
+       "bone": "bone_cp15"
+      }
+     ],
+     "bones": [
+      "bone_cp15"
+     ],
+     "effect": "SRU_Order_nexus_swirlies"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
+     "start": 135.0,
+     "name": "#595bd859",
+     "effect_name": "DATA/Particles/SRU_Order_nexus_swirlies.troy",
+     "pairs": [
+      {
+       "bone": "bone_cp8"
+      }
+     ],
+     "bones": [
+      "bone_cp8"
+     ],
+     "effect": "SRU_Order_nexus_swirlies"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
+     "start": 138.0,
+     "name": "#1ca70304",
+     "effect_name": "DATA/Particles/SRU_Order_nexus_swirlies.troy",
+     "pairs": [
+      {
+       "bone": "bone_cp12"
+      }
+     ],
+     "bones": [
+      "bone_cp12"
+     ],
+     "effect": "SRU_Order_nexus_swirlies"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
+     "start": 147.0,
+     "name": "#1ea7062a",
+     "effect_name": "DATA/Particles/SRU_Order_nexus_swirlies.troy",
+     "pairs": [
+      {
+       "bone": "bone_cp10"
+      }
+     ],
+     "bones": [
+      "bone_cp10"
+     ],
+     "effect": "SRU_Order_nexus_swirlies"
+    }
+   ]
+  },
+  "idle1": {
+   "type": "Atomic",
+   "flags": 2,
+   "track": "Default",
+   "anim": "idle1",
+   "file": "0a00ee6a1a904cfe",
+   "events": [
+    {
+     "type": "Sound",
+     "loop": false,
+     "kill": true,
+     "start": 0.0,
+     "name": "#bd5d7a8f",
+     "sound": "Play_sfx_Env_map12_order_nexus_alive_loop"
+    }
+   ]
+  },
+  "attack1": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "idle1",
+   "file": "0a00ee6a1a904cfe"
+  },
+  "#4a169c5f": {
+   "type": "Atomic",
+   "track": "Default",
+   "anim": "death",
+   "file": "8f98954cb8f0f7ca",
+   "events": [
+    {
+     "type": "SubmeshVisibility",
+     "start": 0.0,
+     "name": "#04c2aa37",
+     "show": [
+      "Khai_destroyed"
+     ],
+     "hide": [
+      "SRUAP_OrderNexus_Mat"
+     ]
+    },
+    {
+     "type": "Sound",
+     "loop": false,
+     "kill": false,
+     "start": 0.0,
+     "name": "#4aa50760",
+     "sound": "Play_sfx_Env_Global_EoG_OrderNexus_death_oc"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
+     "start": 0.0,
+     "effect": "HA_Order_Nexus_ExplosionReduced",
+     "key": "HA_Order_Nexus_ExplosionReduced",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "shared"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
+     "start": 130.0,
+     "name": "#5f5be1cb",
+     "end": 160.0,
+     "effect_name": "DATA/Particles/SRU_Order_nexus_swirlies.troy",
+     "pairs": [
+      {
+       "bone": "bone_cp2"
+      }
+     ],
+     "bones": [
+      "bone_cp2"
+     ],
+     "effect": "SRU_Order_nexus_swirlies"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
+     "start": 132.0,
+     "name": "#1ba70171",
+     "effect_name": "DATA/Particles/SRU_Order_nexus_swirlies.troy",
+     "pairs": [
+      {
+       "bone": "bone_cp15"
+      }
+     ],
+     "bones": [
+      "bone_cp15"
+     ],
+     "effect": "SRU_Order_nexus_swirlies"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
+     "start": 135.0,
+     "name": "#595bd859",
+     "effect_name": "DATA/Particles/SRU_Order_nexus_swirlies.troy",
+     "pairs": [
+      {
+       "bone": "bone_cp8"
+      }
+     ],
+     "bones": [
+      "bone_cp8"
+     ],
+     "effect": "SRU_Order_nexus_swirlies"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
+     "start": 138.0,
+     "name": "#1ca70304",
+     "effect_name": "DATA/Particles/SRU_Order_nexus_swirlies.troy",
+     "pairs": [
+      {
+       "bone": "bone_cp12"
+      }
+     ],
+     "bones": [
+      "bone_cp12"
+     ],
+     "effect": "SRU_Order_nexus_swirlies"
+    },
+    {
+     "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
+     "start": 147.0,
+     "name": "#1ea7062a",
+     "effect_name": "DATA/Particles/SRU_Order_nexus_swirlies.troy",
+     "pairs": [
+      {
+       "bone": "bone_cp10"
+      }
+     ],
+     "bones": [
+      "bone_cp10"
+     ],
+     "effect": "SRU_Order_nexus_swirlies"
+    }
+   ]
+  }
+ },
+ "idle_particles": [
+  {
+   "effect": "HA_Chaos_Nexus_Idle",
+   "key": "HA_Chaos_Nexus_Idle",
+   "bone": "Root",
+   "set": "shared"
+  }
+ ],
+ "blends": {
+  "attack1>Death": 0.0,
+  "idle1>Death": 0.0,
+  "Death>Death": 0.0
+ },
+ "tracks": {
+  "Default": {
+   "priority": null,
+   "blend_mode": null,
+   "weight": null
+  }
+ },
+ "masks": [],
+ "cascade_blend": 0.0,
+ "use_cascade_blend": null
+}

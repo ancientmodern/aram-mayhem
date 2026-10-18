@@ -75,7 +75,7 @@
    "anim": "attack1",
    "file": "5bc068fe22070112"
   },
-  "attack2": {
+  "Attack2": {
    "type": "Atomic",
    "track": "Default",
    "anim": "attack2",
@@ -87,7 +87,7 @@
    "anim": "attack3",
    "file": "8a5b734321e8791c"
   },
-  "channel": {
+  "Channel": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -101,13 +101,13 @@
    "anim": "channel_windup",
    "file": "1d57be528dc613e3"
   },
-  "crit": {
+  "Crit": {
    "type": "Atomic",
    "track": "Default",
    "anim": "crit",
    "file": "ede829045319400c"
   },
-  "dance": {
+  "Dance": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -116,25 +116,45 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 19.0,
      "end": 187.0,
-     "effect": "#a5e3e738",
+     "effect": "Sona_Base_Dance_Dance_HandMagic_R",
+     "key": "Sona_Dance_Dance_HandMagic_R",
+     "pairs": [
+      {
+       "bone": "R_hand"
+      }
+     ],
      "bones": [
-      1815519491
-     ]
+      "R_hand"
+     ],
+     "set": "sona"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 19.0,
      "end": 150.0,
-     "effect": "#c2dcd581",
+     "effect": "Sona_Base_Dance_HandMagic",
+     "key": "Sona_Dance_HandMagic",
+     "pairs": [
+      {
+       "bone": "L_hand"
+      }
+     ],
      "bones": [
-      3669896029
-     ]
+      "L_hand"
+     ],
+     "set": "sona"
     }
    ]
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "anim": "death",
@@ -159,7 +179,7 @@
    "anim": "idle3",
    "file": "0f85b4bcfd6e92c0"
   },
-  "joke": {
+  "Joke": {
    "type": "Atomic",
    "track": "Default",
    "anim": "joke",
@@ -167,28 +187,50 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Sona_Joke3D_buffactivate"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 24.0,
-     "effect": "#c2dcd581",
+     "effect": "Sona_Base_Dance_HandMagic",
+     "key": "Sona_Dance_HandMagic",
+     "pairs": [
+      {
+       "bone": "R_hand"
+      }
+     ],
      "bones": [
-      1815519491
-     ]
+      "R_hand"
+     ],
+     "set": "sona"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 40.0,
-     "effect": "#a26d1957",
+     "effect": "Sona_Base_Emote_Laught_Hit",
+     "key": "Sona_Emote_Laught_Hit",
+     "pairs": [
+      {
+       "bone": "R_hand"
+      }
+     ],
      "bones": [
-      1815519491
-     ]
+      "R_hand"
+     ],
+     "set": "sona"
     }
    ]
   },
-  "laugh": {
+  "Laugh": {
    "type": "Atomic",
    "track": "Default",
    "anim": "laugh",
@@ -196,12 +238,14 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Sona_Laugh3D_buffactivate"
     }
    ]
   },
-  "run": {
+  "Run": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -232,7 +276,7 @@
    "anim": "spell4",
    "file": "dda5d4de5c41edbd"
   },
-  "taunt": {
+  "Taunt": {
    "type": "Atomic",
    "track": "Default",
    "anim": "taunt",
@@ -240,79 +284,122 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 4.0,
      "sound": "Play_sfx_Sona_Taunt3D_buffactivate"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 12.0,
-     "effect": "#6fdd4bc4",
+     "effect": "Sona_Base_Emote_Taunt_Hit",
+     "key": "Sona_Emote_Taunt_Hit",
+     "pairs": [
+      {
+       "bone": "L_hand"
+      }
+     ],
      "bones": [
-      3669896029
-     ]
+      "L_hand"
+     ],
+     "set": "sona"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 17.0,
-     "effect": "#6fdd4bc4",
+     "effect": "Sona_Base_Emote_Taunt_Hit",
+     "key": "Sona_Emote_Taunt_Hit",
+     "pairs": [
+      {
+       "bone": "R_hand"
+      }
+     ],
      "bones": [
-      1815519491
-     ]
+      "R_hand"
+     ],
+     "set": "sona"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 20.0,
-     "effect": "#6fdd4bc4",
+     "effect": "Sona_Base_Emote_Taunt_Hit",
+     "key": "Sona_Emote_Taunt_Hit",
+     "pairs": [
+      {
+       "bone": "L_hand"
+      }
+     ],
      "bones": [
-      3669896029
-     ]
+      "L_hand"
+     ],
+     "set": "sona"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 26.0,
-     "effect": "#076b5ec3",
+     "effect": "Sona_Base_Emote_Taunt_Hit_02",
+     "key": "Sona_Emote_Taunt_Hit_02",
+     "pairs": [
+      {
+       "bone": "spine"
+      }
+     ],
      "bones": [
-      3352349492
-     ]
+      "spine"
+     ],
+     "set": "sona"
     }
    ]
   },
-  "recall": {
+  "Recall": {
    "type": "Atomic",
    "track": "Default",
    "anim": "idle2",
    "file": "3ba341997676fe74"
   }
  },
+ "idle_particles": [],
  "blends": {
-  "channel>death": 0.0,
-  "run>death": 0.0,
-  "attack1>death": 0.0,
-  "attack3>death": 0.0,
-  "attack2>death": 0.0,
-  "crit>death": 0.0,
+  "Channel>Death": 0.0,
+  "Run>Death": 0.0,
+  "attack1>Death": 0.0,
+  "attack3>Death": 0.0,
+  "Attack2>Death": 0.0,
+  "Crit>Death": 0.0,
   "idle3>idle3": 0.5,
   "idle3>idle2": 0.5,
   "idle3>idle1": 0.5,
-  "idle3>death": 0.0,
+  "idle3>Death": 0.0,
   "idle2>idle3": 0.5,
   "idle2>idle2": 0.5,
   "idle2>idle1": 0.5,
-  "idle2>death": 0.0,
+  "idle2>Death": 0.0,
   "idle1>idle3": 0.5,
   "idle1>idle2": 0.5,
   "idle1>idle1": 0.5,
-  "idle1>death": 0.0,
-  "Channel_Wndup>death": 0.0,
-  "Spell1>death": 0.0,
-  "spell3>death": 0.0,
-  "spell2>death": 0.0,
-  "laugh>death": 0.0,
-  "Spell4>death": 0.0,
-  "taunt>death": 0.0,
-  "death>death": 0.0,
-  "joke>death": 0.0,
-  "dance>death": 0.0
+  "idle1>Death": 0.0,
+  "Channel_Wndup>Death": 0.0,
+  "Spell1>Death": 0.0,
+  "spell3>Death": 0.0,
+  "spell2>Death": 0.0,
+  "Laugh>Death": 0.0,
+  "Spell4>Death": 0.0,
+  "Taunt>Death": 0.0,
+  "Death>Death": 0.0,
+  "Joke>Death": 0.0,
+  "Dance>Death": 0.0
  },
  "tracks": {
   "Default": {

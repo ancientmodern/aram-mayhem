@@ -79,15 +79,25 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 10.0,
-     "effect": "#02af22b5",
+     "effect": "Veigar_Base_BA_Cas",
+     "key": "Veigar_Base_BA_Cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_GLB_WEAPON_1"
+      }
+     ],
      "bones": [
-      2037822235
-     ]
+      "BUFFBONE_GLB_WEAPON_1"
+     ],
+     "set": "veigar"
     }
    ]
   },
-  "attack2": {
+  "Attack2": {
    "type": "Atomic",
    "track": "Default",
    "anim": "attack2",
@@ -95,15 +105,25 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 10.0,
-     "effect": "#02af22b5",
+     "effect": "Veigar_Base_BA_Cas",
+     "key": "Veigar_Base_BA_Cas",
+     "pairs": [
+      {
+       "bone": "BUFFBONE_GLB_WEAPON_1"
+      }
+     ],
      "bones": [
-      2037822235
-     ]
+      "BUFFBONE_GLB_WEAPON_1"
+     ],
+     "set": "veigar"
     }
    ]
   },
-  "channel": {
+  "Channel": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -117,13 +137,13 @@
    "anim": "channel_windup",
    "file": "98466e35d531d7d4"
   },
-  "crit": {
+  "Crit": {
    "type": "Atomic",
    "track": "Default",
    "anim": "attack2",
    "file": "11e1b381894992aa"
   },
-  "dance": {
+  "Dance": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -132,37 +152,69 @@
    "events": [
     {
      "type": "Sound",
+     "loop": true,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_Veigar_Dance_buffactivate"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 10.0,
-     "effect": "#94e931f8",
+     "effect": "Veigar_Base_Dance_Jump",
+     "key": "Veigar_Dance_Jump",
+     "pairs": [
+      {
+       "bone": "root"
+      }
+     ],
      "bones": [
-      553455173
-     ]
+      "root"
+     ],
+     "set": "veigar"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 38.0,
      "end": 138.0,
-     "effect": "#cd31d084",
+     "effect": "Veigar_Base_Dance_Ground_Dust",
+     "key": "Veigar_Dance_Ground_Dust",
+     "pairs": [
+      {
+       "bone": "root"
+      }
+     ],
      "bones": [
-      553455173
-     ]
+      "root"
+     ],
+     "set": "veigar"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 132.0,
-     "effect": "#94e931f8",
+     "effect": "Veigar_Base_Dance_Jump",
+     "key": "Veigar_Dance_Jump",
+     "pairs": [
+      {
+       "bone": "root"
+      }
+     ],
      "bones": [
-      553455173
-     ]
+      "root"
+     ],
+     "set": "veigar"
     }
    ]
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "anim": "death",
@@ -187,13 +239,13 @@
    "anim": "idle3",
    "file": "6e49181b9025dca1"
   },
-  "laugh": {
+  "Laugh": {
    "type": "Atomic",
    "track": "Default",
    "anim": "laugh",
    "file": "fe70aaedaea83cee"
   },
-  "run": {
+  "Run": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -209,15 +261,25 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 8.0,
-     "effect": "#d57ecaa1",
+     "effect": "Veigar_Base_Q_cas",
+     "key": "Veigar_Q_Cas",
+     "pairs": [
+      {
+       "bone": "root"
+      }
+     ],
      "bones": [
-      553455173
-     ]
+      "root"
+     ],
+     "set": "veigar"
     }
    ]
   },
-  "spell2": {
+  "Spell2": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.01666666753590107,
@@ -226,15 +288,25 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 1.0,
-     "effect": "#6597d5c3",
+     "effect": "Veigar_Base_W_cas_01",
+     "key": "Veigar_W_cas_01",
+     "pairs": [
+      {
+       "bone": "R_PARENTING_HAND_LOC"
+      }
+     ],
      "bones": [
-      3289963135
-     ]
+      "R_PARENTING_HAND_LOC"
+     ],
+     "set": "veigar"
     }
    ]
   },
-  "spell3": {
+  "Spell3": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.01666666753590107,
@@ -249,29 +321,49 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#f1659be7",
+     "effect": "Veigar_Base_R_Charge",
+     "key": "Veigar_R_Charge",
+     "pairs": [
+      {
+       "bone": "root"
+      }
+     ],
      "bones": [
-      553455173
-     ]
+      "root"
+     ],
+     "set": "veigar"
     },
     {
      "type": "Particle",
+     "loop": true,
+     "kill": true,
+     "detach": false,
      "start": 6.0,
-     "effect": "#d6b9317c",
+     "effect": "Veigar_Base_R_cas",
+     "key": "Veigar_R_cas",
+     "pairs": [
+      {
+       "bone": "root"
+      }
+     ],
      "bones": [
-      553455173
-     ]
+      "root"
+     ],
+     "set": "veigar"
     }
    ]
   },
-  "taunt": {
+  "Taunt": {
    "type": "Atomic",
    "track": "Default",
    "anim": "taunt",
    "file": "891703fe495d4acf"
   },
-  "recall": {
+  "Recall": {
    "type": "Sequencer",
    "list": [
     "idle2",
@@ -286,24 +378,32 @@
    "file": "891703fe495d4acf"
   }
  },
+ "idle_particles": [
+  {
+   "effect": "Veigar_Base_Idle_Staff",
+   "key": "Veigar_Base_Idle_Staff",
+   "bone": "BUFFBONE_GLB_WEAPON_1",
+   "set": "veigar"
+  }
+ ],
  "blends": {
-  "channel>death": 0.0,
-  "run>death": 0.0,
-  "attack1>death": 0.0,
-  "attack2>death": 0.0,
-  "crit>death": 0.0,
-  "idle3>death": 0.0,
-  "idle2>death": 0.0,
-  "idle1>death": 0.0,
-  "Channel_Wndup>death": 0.0,
-  "Spell1>death": 0.0,
-  "spell3>death": 0.0,
-  "spell2>death": 0.0,
-  "laugh>death": 0.0,
-  "Spell4>death": 0.0,
-  "taunt>death": 0.0,
-  "death>death": 0.0,
-  "dance>death": 0.0
+  "Channel>Death": 0.0,
+  "Run>Death": 0.0,
+  "attack1>Death": 0.0,
+  "Attack2>Death": 0.0,
+  "Crit>Death": 0.0,
+  "idle3>Death": 0.0,
+  "idle2>Death": 0.0,
+  "idle1>Death": 0.0,
+  "Channel_Wndup>Death": 0.0,
+  "Spell1>Death": 0.0,
+  "Spell3>Death": 0.0,
+  "Spell2>Death": 0.0,
+  "Laugh>Death": 0.0,
+  "Spell4>Death": 0.0,
+  "Taunt>Death": 0.0,
+  "Death>Death": 0.0,
+  "Dance>Death": 0.0
  },
  "tracks": {
   "Default": {

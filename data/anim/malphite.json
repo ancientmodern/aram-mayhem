@@ -80,15 +80,25 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": false,
+     "detach": false,
      "start": 5.0,
-     "effect": "#266c4a14",
+     "effect": "Malphite_Base_BA_Sweep_01",
+     "key": "Malphite_BA_Sweep_01",
+     "pairs": [
+      {
+       "bone": "C_BUFFBONE_GLB_LAYOUT_LOC"
+      }
+     ],
      "bones": [
-      2528140958
-     ]
+      "C_BUFFBONE_GLB_LAYOUT_LOC"
+     ],
+     "set": "malphite"
     }
    ]
   },
-  "attack2": {
+  "Attack2": {
    "type": "Atomic",
    "track": "Default",
    "anim": "attack2",
@@ -96,15 +106,25 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": false,
+     "detach": false,
      "start": 5.0,
-     "effect": "#296c4ecd",
+     "effect": "Malphite_Base_BA_Sweep_02",
+     "key": "Malphite_BA_Sweep_02",
+     "pairs": [
+      {
+       "bone": "C_BUFFBONE_GLB_LAYOUT_LOC"
+      }
+     ],
      "bones": [
-      2528140958
-     ]
+      "C_BUFFBONE_GLB_LAYOUT_LOC"
+     ],
+     "set": "malphite"
     }
    ]
   },
-  "channel": {
+  "Channel": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -118,20 +138,20 @@
    "anim": "channel_windup",
    "file": "adff0a3abd197f20"
   },
-  "crit": {
+  "Crit": {
    "type": "Atomic",
    "track": "Default",
    "anim": "crit",
    "file": "d44f0f0d5108a799"
   },
-  "dance": {
+  "Dance": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
    "anim": "dance",
    "file": "ee1204cc686c1013"
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "anim": "death",
@@ -162,13 +182,13 @@
    "anim": "idle3",
    "file": "0dd0e765774b9114"
   },
-  "laugh": {
+  "Laugh": {
    "type": "Atomic",
    "track": "Default",
    "anim": "laugh",
    "file": "a7a6128012d44f53"
   },
-  "run": {
+  "Run": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -183,7 +203,7 @@
    "anim": "spell1",
    "file": "e097b0d414c9c06f"
   },
-  "spell2": {
+  "Spell2": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.022222226485610008,
@@ -197,13 +217,13 @@
    "anim": "spell4",
    "file": "f370938f635b8b06"
   },
-  "taunt": {
+  "Taunt": {
    "type": "Atomic",
    "track": "Default",
    "anim": "taunt",
    "file": "2a57e01de2f228d9"
   },
-  "spell3": {
+  "Spell3": {
    "type": "Atomic",
    "track": "Default",
    "tick": 0.032258063554763794,
@@ -212,15 +232,28 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": true,
      "start": 8.0,
-     "effect": "#cf086a21",
+     "name": "#abad8317",
+     "effect": "Malphite_Base_E_cas",
+     "key": "Malphite_E_cas",
+     "pairs": [
+      {
+       "bone": "R_BUFFBONE_GLB_HAND_LOC",
+       "target_bone": "R_BUFFBONE_GLB_HAND_LOC"
+      }
+     ],
      "bones": [
-      315212054
-     ]
+      "R_BUFFBONE_GLB_HAND_LOC"
+     ],
+     "set": "malphite"
     }
-   ]
+   ],
+   "fps": 31.0
   },
-  "recall": {
+  "Recall": {
    "type": "Sequencer",
    "list": [
     "#b4dcde19",
@@ -243,11 +276,21 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": false,
+     "detach": false,
      "start": 6.0,
-     "effect": "#b6728fd6",
+     "effect": "Malphite_Base_W_Crit_Sweeps",
+     "key": "Malphite_W_Crit_Sweeps",
+     "pairs": [
+      {
+       "bone": "C_BUFFBONE_GLB_LAYOUT_LOC"
+      }
+     ],
      "bones": [
-      2528140958
-     ]
+      "C_BUFFBONE_GLB_LAYOUT_LOC"
+     ],
+     "set": "malphite"
     }
    ]
   },
@@ -260,11 +303,21 @@
    "events": [
     {
      "type": "Particle",
+     "loop": true,
+     "kill": false,
+     "detach": false,
      "start": 6.0,
-     "effect": "#b6728fd6",
+     "effect": "Malphite_Base_W_Crit_Sweeps",
+     "key": "Malphite_W_Crit_Sweeps",
+     "pairs": [
+      {
+       "bone": "C_BUFFBONE_GLB_LAYOUT_LOC"
+      }
+     ],
      "bones": [
-      2528140958
-     ]
+      "C_BUFFBONE_GLB_LAYOUT_LOC"
+     ],
+     "set": "malphite"
     }
    ]
   },
@@ -281,25 +334,26 @@
    "file": "a7a6128012d44f53"
   }
  },
+ "idle_particles": [],
  "blends": {
-  "channel>death": 0.0,
-  "run>death": 0.0,
-  "attack1>death": 0.0,
-  "attack2>death": 0.0,
-  "crit>death": 0.0,
-  "idle3>death": 0.0,
-  "idle2>death": 0.0,
-  "idle1>death": 0.0,
-  "idle4>death": 0.0,
-  "Channel_Wndup>death": 0.0,
-  "Spell1>death": 0.0,
-  "spell3>death": 0.0,
-  "spell2>death": 0.0,
-  "laugh>death": 0.0,
-  "Spell4>death": 0.0,
-  "taunt>death": 0.0,
-  "death>death": 0.0,
-  "dance>death": 0.0
+  "Channel>Death": 0.0,
+  "Run>Death": 0.0,
+  "attack1>Death": 0.0,
+  "Attack2>Death": 0.0,
+  "Crit>Death": 0.0,
+  "idle3>Death": 0.0,
+  "idle2>Death": 0.0,
+  "idle1>Death": 0.0,
+  "idle4>Death": 0.0,
+  "Channel_Wndup>Death": 0.0,
+  "Spell1>Death": 0.0,
+  "Spell3>Death": 0.0,
+  "Spell2>Death": 0.0,
+  "Laugh>Death": 0.0,
+  "Spell4>Death": 0.0,
+  "Taunt>Death": 0.0,
+  "Death>Death": 0.0,
+  "Dance>Death": 0.0
  },
  "tracks": {
   "Default": {

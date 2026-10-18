@@ -23,25 +23,12 @@ func build_kit() -> void:
 	c.abilities[3].cast_range = c.abilities[3].dv("RDashDistance", 500.0)
 	# permanent skin particle: the fox-fire orb floating at her hand (SkinCharacterDataProperties)
 	c.add_effect(K.IdleFx.new([{"lol": "Ahri_Base_Orb", "bone": "BUFFBONE_GLB_WEAPON_1"}]))
-	c.add_effect(AttackFx.new())
+	# [anim-events] the attack fingertip flash is the Attack1/2 clip's particle event now (5 finger bones, frame 5)
 
 
 ## League VFX: Q hits are spawned by the kit (outbound Q_tar vs. return Q_tar_02).
 func vfx_map() -> Dictionary:
 	return {"Q_tar": ""}
-
-
-## Basic attack: the fingertip flash at the casting hand (AhriBasicAttack start bone R_hand).
-class AttackFx extends Effect:
-	func _init() -> void:
-		id = "ahri_attack_fx"
-		hidden = true
-
-	func on_attack_launch(target) -> void:
-		var d: Vector3 = owner.facing
-		if target != null and is_instance_valid(target):
-			d = G.flat_dir(owner.global_position, target.global_position)
-		K.attach_fx(owner, {"lol": "Ahri_Base_BA_cas_fingertips", "bone": "R_Hand", "dir": d}, false)
 
 
 class AhriFx:
@@ -116,7 +103,7 @@ class OrbOfDeception extends Ability:
 		var dmg := damage()
 		var out_hits := {}
 		var self_ref := self
-		LolVfx.spawn(o.match_ref, "Ahri_Base_Q_Orb_Cast", from, {"dir": dir})
+		# [anim-events] Ahri_Base_Q_Orb_Cast (Weapon_1 bone, frames 0-7) is a Spell1 clip event now
 		var mi := K.line_missile(self, from, dir, 2500.0, 970.0, {
 			"width": 100.0, "pierce": true, "lol": "Ahri_Base_Q_mis",
 			"accel": -3200.0, "max_speed": 2500.0,

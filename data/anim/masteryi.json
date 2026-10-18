@@ -103,7 +103,7 @@
    "anim": "attack2",
    "file": "f270dcb52660307f"
   },
-  "channel": {
+  "Channel": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -117,7 +117,7 @@
    "anim": "crit",
    "file": "fd8f7ef25ded936e"
   },
-  "death": {
+  "Death": {
    "type": "Atomic",
    "track": "Default",
    "anim": "death",
@@ -125,6 +125,8 @@
    "events": [
     {
      "type": "Sound",
+     "loop": true,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_MasterYi_Death3D_cast"
     }
@@ -151,10 +153,13 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_MasterYi_Joke3D_buffactivate"
     }
-   ]
+   ],
+   "fps": 60.0
   },
   "#195611d3": {
    "type": "Atomic",
@@ -164,6 +169,8 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_MasterYi_Laugh3D_buffactivate"
     }
@@ -178,12 +185,14 @@
    "events": [
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_MasterYi_Recall3d_buffactivate"
     }
    ]
   },
-  "run": {
+  "Run": {
    "type": "Atomic",
    "track": "Default",
    "anim": "run",
@@ -203,12 +212,23 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#58789ab3",
-     "bones": []
+     "name": "#632cebf2",
+     "effect": "masteryi_base_emote_taunt_generic",
+     "key": "MasterYi_emote_taunt_generic",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "masteryi"
     },
     {
      "type": "Sound",
+     "loop": false,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_MasterYi_Taunt3D_buffactivate"
     }
@@ -238,9 +258,18 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 1.0,
-     "effect": "#f6b9b0bb",
-     "bones": []
+     "name": "#875c32d5",
+     "effect": "masteryi_base_w_foley_sound",
+     "key": "MasterYi_w_foley_sound",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "masteryi"
     }
    ]
   },
@@ -251,7 +280,7 @@
    "anim": "spell2",
    "file": "98b8d084d17c3705"
   },
-  "spell2": {
+  "Spell2": {
    "type": "Sequencer",
    "list": [
     "spell2_loop"
@@ -264,7 +293,7 @@
    "anim": "recall",
    "file": "020ce5be7dccd9ff"
   },
-  "recall": {
+  "Recall": {
    "type": "Sequencer",
    "list": [
     "recall_in",
@@ -292,7 +321,7 @@
    "anim": "channel_wndup",
    "file": "99aa33d0075c4b3a"
   },
-  "dance": {
+  "Dance": {
    "type": "Atomic",
    "flags": 2,
    "track": "Default",
@@ -301,6 +330,8 @@
    "events": [
     {
      "type": "Sound",
+     "loop": true,
+     "kill": true,
      "start": 0.0,
      "sound": "Play_sfx_MasterYi_Dance3D_buffactivate"
     }
@@ -318,34 +349,34 @@
     "#56f6d84b"
    ]
   },
-  "taunt": {
+  "Taunt": {
    "type": "Sequencer",
    "list": [
     "#18329eba",
     "idle2"
    ]
   },
-  "laugh": {
+  "Laugh": {
    "type": "Sequencer",
    "list": [
     "#195611d3",
     "idle2"
    ]
   },
-  "joke": {
+  "Joke": {
    "type": "Sequencer",
    "list": [
     "#b3fbb18b",
     "idle2"
    ]
   },
-  "run_fast": {
+  "Run_Fast": {
    "type": "Atomic",
    "track": "Default",
    "anim": "run_fast",
    "file": "05824433cc9b635e"
   },
-  "run_haste": {
+  "Run_Haste": {
    "type": "Atomic",
    "track": "Default",
    "anim": "run_haste",
@@ -391,11 +422,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 5.0,
-     "effect": "#d9e6319c",
+     "name": "#bf75c8f9",
+     "effect": "MasterYi_Base_BA1_SC_Wuju_Trail",
+     "key": "MasterYi_BA1_SC_Wuju_Trail",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     }
    ]
   },
@@ -408,11 +450,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 5.0,
-     "effect": "#0e91c001",
+     "name": "#c752cfda",
+     "effect": "MasterYi_Base_BA1_Wuju_Trail",
+     "key": "MasterYi_BA1_Wuju_Trail",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     }
    ]
   },
@@ -425,11 +478,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 5.0,
-     "effect": "#58f6bd8d",
+     "name": "#2d55b65c",
+     "effect": "MasterYi_Base_BA1_Trail",
+     "key": "MasterYi_BA1_Trail",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     }
    ]
   },
@@ -440,14 +504,14 @@
     "#ab887b52"
    ]
   },
-  "attack2": {
+  "Attack2": {
    "type": "Parallel",
    "list": [
     "#0d6139b0",
     "#67da3820"
    ]
   },
-  "crit": {
+  "Crit": {
    "type": "Parallel",
    "list": [
     "#e1798980",
@@ -470,11 +534,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 5.0,
-     "effect": "#18106a76",
+     "name": "#af5d4a38",
+     "effect": "MasterYi_Base_BA2_Wuju_Trail",
+     "key": "MasterYi_BA2_Wuju_Trail",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     }
    ]
   },
@@ -487,11 +562,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 8.0,
-     "effect": "#87a27439",
+     "name": "#72c334cf",
+     "effect": "MasterYi_Base_Crit_Wuju_Trail",
+     "key": "MasterYi_Crit_Wuju_Trail",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     }
    ]
   },
@@ -505,19 +591,41 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 6.0,
-     "effect": "#3ebc0d61",
+     "name": "#1deac818",
+     "effect": "MasterYi_Base_P_Wuju_Trail_1",
+     "key": "MasterYi_P_Wuju_Trail_1",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 9.0,
-     "effect": "#3bbc08a8",
+     "name": "#20eaccd1",
+     "effect": "MasterYi_Base_P_Wuju_Trail_2",
+     "key": "MasterYi_P_Wuju_Trail_2",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     }
    ]
   },
@@ -530,11 +638,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 5.0,
-     "effect": "#2ad06144",
+     "name": "#5aaabd3e",
+     "effect": "MasterYi_Base_BA2_Trail",
+     "key": "MasterYi_BA2_Trail",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     }
    ]
   },
@@ -547,11 +666,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 8.0,
-     "effect": "#c3669915",
+     "name": "#f3056ffb",
+     "effect": "MasterYi_Base_Crit_Trail",
+     "key": "MasterYi_Crit_Trail",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     }
    ]
   },
@@ -565,19 +695,41 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 6.0,
-     "effect": "#cac1aad5",
+     "name": "#cf40bfff",
+     "effect": "MasterYi_Base_P_Trail_1",
+     "key": "MasterYi_P_Trail_1",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 9.0,
-     "effect": "#c7c1a61c",
+     "name": "#d040c192",
+     "effect": "MasterYi_Base_P_Trail_2",
+     "key": "MasterYi_P_Trail_2",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     }
    ]
   },
@@ -590,11 +742,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 5.0,
-     "effect": "#a5589cbb",
+     "name": "#3492d8e1",
+     "effect": "MasterYi_Base_BA2_Wuju_SC_Trail",
+     "key": "MasterYi_BA2_Wuju_SC_Trail",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     }
    ]
   },
@@ -607,11 +770,22 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 8.0,
-     "effect": "#63bad137",
+     "name": "#77f65ab0",
+     "effect": "MasterYi_Base_Crit_SC_Wuju",
+     "key": "MasterYi_Crit_SC_Wuju",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     }
    ]
   },
@@ -625,19 +799,41 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 6.0,
-     "effect": "#9ebee626",
+     "name": "#1deac818",
+     "effect": "MasterYi_Base_P_Wuju_SC_Trail_1",
+     "key": "MasterYi_P_Wuju_SC_Trail_1",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 9.0,
-     "effect": "#9dbee493",
+     "name": "#20eaccd1",
+     "effect": "MasterYi_Base_P_Wuju_SC_Trail_2",
+     "key": "MasterYi_P_Wuju_SC_Trail_2",
+     "pairs": [
+      {
+       "bone": "C_Buffbone_Glb_Center_Loc"
+      }
+     ],
      "bones": [
-      2309574905
-     ]
+      "C_Buffbone_Glb_Center_Loc"
+     ],
+     "set": "masteryi"
     }
    ]
   },
@@ -649,14 +845,30 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#71b71e01",
-     "bones": []
+     "name": "#88ba04b8",
+     "effect": "masteryi_base_emote_taunt_interactive_darius",
+     "key": "MasterYi_emote_taunt_interactive_darius",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "masteryi"
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#9b8260c1",
+     "name": "#968821ce",
+     "key": "MasterYi_emote_taunt_sound",
+     "pairs": [
+      {}
+     ],
      "bones": []
     }
    ]
@@ -669,15 +881,31 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#9b8260c1",
+     "name": "#968821ce",
+     "key": "MasterYi_emote_taunt_sound",
+     "pairs": [
+      {}
+     ],
      "bones": []
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#504fec0e",
-     "bones": []
+     "name": "#9849ec4b",
+     "effect": "masteryi_base_emote_taunt_interactive_wukong",
+     "key": "MasterYi_emote_taunt_interactive_wukong",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "masteryi"
     }
    ]
   },
@@ -689,15 +917,31 @@
    "events": [
     {
      "type": "Particle",
+     "loop": false,
+     "kill": true,
+     "detach": false,
      "start": 0.0,
-     "effect": "#9b8260c1",
+     "name": "#968821ce",
+     "key": "MasterYi_emote_taunt_sound",
+     "pairs": [
+      {}
+     ],
      "bones": []
     },
     {
      "type": "Particle",
+     "loop": false,
+     "kill": false,
+     "detach": false,
      "start": 0.0,
-     "effect": "#9ab1e305",
-     "bones": []
+     "name": "#b938e648",
+     "effect": "masteryi_base_emote_taunt_interactive_singed",
+     "key": "MasterYi_emote_taunt_interactive_singed",
+     "pairs": [
+      {}
+     ],
+     "bones": [],
+     "set": "masteryi"
     }
    ]
   },
@@ -707,79 +951,80 @@
    "anim": "respawn",
    "file": "e4b9399830c713c3"
   },
-  "respawn": {
+  "Respawn": {
    "type": "Atomic",
    "track": "#308026a3",
    "anim": "respawn",
    "file": "e4b9399830c713c3"
   }
  },
+ "idle_particles": [],
  "blends": {
-  "#06e62d70>death": 0.0,
+  "#06e62d70>Death": 0.0,
   "#0d6139b0>#85dac0b3": 0.10000000149011612,
-  "#0d6139b0>death": 0.0,
+  "#0d6139b0>Death": 0.0,
   "#0d6139b0>#d5c55cfd": 0.10000000149011612,
   "#0d6139b0>#e1798980": 0.10000000149011612,
-  "#120aa0ea>death": 0.0,
-  "#136c94bf>death": 0.0,
-  "#18329eba>death": 0.0,
+  "#120aa0ea>Death": 0.0,
+  "#136c94bf>Death": 0.0,
+  "#18329eba>Death": 0.0,
   "recall_loop>recall_loop": 0.0,
-  "recall_loop>death": 0.0,
-  "#195611d3>death": 0.0,
-  "#205e0207>death": 0.0,
-  "channel>death": 0.0,
-  "#257e3ae8>death": 0.0,
-  "run_haste>death": 0.0,
-  "run>death": 0.0,
-  "#2c049de2>death": 0.0,
-  "#3eb3562f>death": 0.0,
+  "recall_loop>Death": 0.0,
+  "#195611d3>Death": 0.0,
+  "#205e0207>Death": 0.0,
+  "Channel>Death": 0.0,
+  "#257e3ae8>Death": 0.0,
+  "Run_Haste>Death": 0.0,
+  "Run>Death": 0.0,
+  "#2c049de2>Death": 0.0,
+  "#3eb3562f>Death": 0.0,
   "recall_in>recall_loop": 0.0,
-  "recall_in>death": 0.0,
-  "#49105947>death": 0.0,
-  "#4a2185f2>death": 0.0,
-  "spell2_in>death": 0.0,
-  "attack1>death": 0.0,
-  "#56f6d84b>death": 0.0,
-  "attack2>death": 0.0,
-  "recall>death": 0.0,
-  "#5b2be1be>death": 0.0,
-  "#67da3820>death": 0.0,
-  "#72c58d40>death": 0.0,
-  "#85dac0b3>death": 0.0,
-  "spell2_loop>death": 0.0,
-  "#932ad59d>death": 0.0,
-  "crit>death": 0.0,
-  "#99050377>death": 0.0,
-  "idle2>death": 0.0,
-  "idle1>death": 0.0,
-  "#a2d214c6>death": 0.0,
-  "#a3c0c1e7>death": 0.0,
-  "Channel_Wndup>death": 0.0,
-  "run_fast>death": 0.0,
-  "Passive>death": 0.0,
-  "#ab887b52>death": 0.0,
-  "spell1>death": 0.0,
-  "#b3fbb18b>death": 0.0,
-  "spell3>death": 0.0,
-  "spell2>death": 0.0,
-  "laugh>death": 0.0,
-  "taunt>death": 0.0,
-  "death>death": 0.0,
-  "joke>death": 0.0,
-  "#c722c9e7>death": 0.0,
-  "#cb223827>death": 0.0,
-  "#cdc1a2ce>death": 0.0,
-  "#d1508fa7>death": 0.0,
+  "recall_in>Death": 0.0,
+  "#49105947>Death": 0.0,
+  "#4a2185f2>Death": 0.0,
+  "spell2_in>Death": 0.0,
+  "attack1>Death": 0.0,
+  "#56f6d84b>Death": 0.0,
+  "Attack2>Death": 0.0,
+  "Recall>Death": 0.0,
+  "#5b2be1be>Death": 0.0,
+  "#67da3820>Death": 0.0,
+  "#72c58d40>Death": 0.0,
+  "#85dac0b3>Death": 0.0,
+  "spell2_loop>Death": 0.0,
+  "#932ad59d>Death": 0.0,
+  "Crit>Death": 0.0,
+  "#99050377>Death": 0.0,
+  "idle2>Death": 0.0,
+  "idle1>Death": 0.0,
+  "#a2d214c6>Death": 0.0,
+  "#a3c0c1e7>Death": 0.0,
+  "Channel_Wndup>Death": 0.0,
+  "Run_Fast>Death": 0.0,
+  "Passive>Death": 0.0,
+  "#ab887b52>Death": 0.0,
+  "spell1>Death": 0.0,
+  "#b3fbb18b>Death": 0.0,
+  "spell3>Death": 0.0,
+  "Spell2>Death": 0.0,
+  "Laugh>Death": 0.0,
+  "Taunt>Death": 0.0,
+  "Death>Death": 0.0,
+  "Joke>Death": 0.0,
+  "#c722c9e7>Death": 0.0,
+  "#cb223827>Death": 0.0,
+  "#cdc1a2ce>Death": 0.0,
+  "#d1508fa7>Death": 0.0,
   "#d5c55cfd>#85dac0b3": 0.10000000149011612,
-  "#d5c55cfd>death": 0.0,
+  "#d5c55cfd>Death": 0.0,
   "#d5c55cfd>#e1798980": 0.10000000149011612,
-  "#db40631e>death": 0.0,
-  "stunned>death": 0.0,
+  "#db40631e>Death": 0.0,
+  "stunned>Death": 0.0,
   "#e1798980>#85dac0b3": 0.10000000149011612,
-  "#e1798980>death": 0.0,
+  "#e1798980>Death": 0.0,
   "#e1798980>#e1798980": 0.10000000149011612,
-  "#f239e3ba>death": 0.0,
-  "dance>death": 0.0
+  "#f239e3ba>Death": 0.0,
+  "Dance>Death": 0.0
  },
  "tracks": {
   "#308026a3": {

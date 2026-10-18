@@ -198,7 +198,8 @@ func _fx_nodes(root: Node, out: Array) -> void:
 func _attached(u: Node) -> Array:
 	var out := []
 	_fx_nodes(u, out)
-	return out.filter(func(n): return not (String(n.name) in PERSIST_FX))
+	# [anim-events] skin idle particles / clip events (anim_ev meta) belong to the animation, not to the kit
+	return out.filter(func(n): return not (String(n.name) in PERSIST_FX) and not n.has_meta("anim_ev"))
 
 
 func _fx_desc(arr: Array) -> String:

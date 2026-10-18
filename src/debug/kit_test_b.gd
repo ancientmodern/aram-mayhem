@@ -215,7 +215,7 @@ func _attached_fx(u: Node) -> Array:
 	var out := []
 	for ch in u.get_children():
 		if ch is LolVfx:
-			if ch.get("_loop") and not ch.get("_stopped"):
+			if ch.get("_loop") and not ch.get("_stopped") and not ch.has_meta("anim_ev"):   # [anim-events] animation-owned
 				out.append(_fx_name(ch))
 		elif ch is VfxNode and ch.is_processing() and ch.lifetime <= 0.0:
 			out.append("VfxNode")
@@ -225,7 +225,7 @@ func _attached_fx(u: Node) -> Array:
 func _world_loops() -> Array:
 	var out := []
 	for ch in m.fx_root.get_children():
-		if ch is LolVfx and ch.get("_loop") and not ch.get("_stopped"):
+		if ch is LolVfx and ch.get("_loop") and not ch.get("_stopped") and not ch.has_meta("anim_ev"):   # [anim-events]
 			out.append(_fx_name(ch))
 	return out
 
