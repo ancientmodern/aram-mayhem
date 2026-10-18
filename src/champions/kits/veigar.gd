@@ -219,8 +219,6 @@ class PhenomenalEvil extends Effect:
 			gain(float(data.get("dTakedownStacks", 5.0)), victim.global_position)
 
 	func on_tick(u, _dt: float) -> void:
-		if u.is_bot and u.level < 6 and u.match_ref.time > 45.0:  #DBG
-			u.gain_xp(3000.0)  #DBG
 		if u.is_bot and u.ability_points > 0:
 			u.auto_level_abilities()
 		if tier > 0 and not u.dead and (aura == null or not is_instance_valid(aura)):
@@ -269,7 +267,6 @@ class BalefulStrike extends KAbility:
 		K.line_missile(self, K.cast_pos(o, 1.1), t.dir, 2200.0, cast_range, {
 			"width": 70.0, "pierce": false, "max_hits": 2, "visual": vis, "on_hit": on_hit,
 		})
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) Q stacks=%d" % [o.display_name, o.team, int(VUtil.evil(o).stacks)])  #DBG
 		notify_cast(t)
 
 	## The first two enemies a bolt toward `aim` would hit, nearest first.
@@ -370,7 +367,6 @@ class DarkMatter extends KAbility:
 			Vfx.ground_circle(m, p, r_m * 0.9, DARK, 0.9, 0.5)
 			if m.camera_rig != null and G.player != null and G.flat_dist(G.player.global_position, p) < 12.0:
 				m.camera_rig.shake(0.15))
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) W" % [o.display_name, o.team])  #DBG
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -473,7 +469,6 @@ class EventHorizon extends KAbility:
 					state[u] = inside
 				first[0] = false
 				return true))
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) E" % [o.display_name, o.team])  #DBG
 		notify_cast(t)
 
 	func _cage_fx(m, pos: Vector3, R: float, life: float) -> void:
@@ -596,7 +591,6 @@ class PrimordialBurst extends KAbility:
 			if m.camera_rig != null and G.player != null and G.flat_dist(G.player.global_position, gp) < 14.0:
 				m.camera_rig.shake(0.35)
 		K.homing_missile(self, K.cast_pos(o, 1.4), u, 1100.0, on_hit, {"visual": vis})
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) R -> %s hp=%.2f" % [o.display_name, o.team, u.display_name, u.hp_ratio()])  #DBG
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:

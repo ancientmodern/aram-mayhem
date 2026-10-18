@@ -122,8 +122,6 @@ class Sunlight extends Effect:
 		target.add_buff(b, owner)
 
 	func on_tick(u, _dt: float) -> void:
-		if u.is_bot and u.level < 6 and u.match_ref.time > 45.0:  #DBG
-			u.gain_xp(3000.0)  #DBG
 		if u.is_bot and u.ability_points > 0:
 			u.auto_level_abilities()
 
@@ -189,7 +187,6 @@ class ShieldOfDawn extends KAbility:
 		n.add_child(Vfx.light(SUN, 1.5, 3.5))
 		fx = n
 		Vfx.rising(o, SUN, 0.3, 18, 0.5)
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) Q" % [o.display_name, o.team])  #DBG
 		notify_cast(t)
 
 	func is_empowered() -> bool:
@@ -212,7 +209,6 @@ class ShieldOfDawn extends KAbility:
 		LUtil.sun_burst(m, gp + Vector3(0, 1.1, 0), 1.2)
 		Vfx.ring(m, gp, SUN, 1.6, 0.35, 0.12, 0.15)
 		LUtil.shake(o, gp, 0.2)
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) Q bash -> %s" % [o.display_name, o.team, target.display_name])  #DBG
 
 	func ai_consider(ctx) -> Dictionary:
 		var o = owner
@@ -315,7 +311,6 @@ class Eclipse extends KAbility:
 		m.after(dur, func():
 			if is_instance_valid(o):
 				self_ref._detonate())
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) W" % [o.display_name, o.team])  #DBG
 		notify_cast(t)
 
 	func _set_stance(on: bool) -> void:
@@ -424,7 +419,6 @@ class ZenithBlade extends KAbility:
 		K.line_missile(self, K.cast_pos(o, 1.0), dir, 2000.0, TRAVEL, {
 			"width": 70.0, "pierce": true, "visual": _blade_visual(), "on_hit": on_hit, "on_end": on_end,
 		})
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) E" % [o.display_name, o.team])  #DBG
 		notify_cast(t)
 
 	func _dash_to(tgt, root: float) -> void:
@@ -442,7 +436,6 @@ class ZenithBlade extends KAbility:
 		trail.position.y = 0.6
 		o.start_dash(dest, {"speed": spd, "anim": "spell3", "on_arrive": func(_u):
 			Vfx.burst(m, o.global_position + Vector3(0, 0.8, 0), SUN, 1.0, {"sparks": 16, "ring": true})})
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) E dash -> %s" % [o.display_name, o.team, tgt.display_name])  #DBG
 
 	func _blade_visual() -> VfxNode:
 		var n := VfxNode.new()
@@ -549,7 +542,6 @@ class SolarFlare extends KAbility:
 			if not is_instance_valid(o):
 				return
 			self_ref._strike(pos, R, dmg, cc, slow))
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) R champs_in_area=%d" % [o.display_name, o.team, K.enemies_circle(self, pos, ind_radius, true).size()])  #DBG
 		notify_cast(t)
 
 	func _strike(pos: Vector3, R: float, dmg: float, cc: float, slow: float) -> void:

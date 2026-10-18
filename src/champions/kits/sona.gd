@@ -176,8 +176,6 @@ class PowerChord extends Effect:
 		return lerpf(30.0, 360.0, (lvl - 1.0) / 17.0) + 0.3 * owner.stats.ap
 
 	func on_tick(u, _dt: float) -> void:
-		if u.is_bot and u.level < 6 and u.match_ref.time > 45.0:  #DBG
-			u.gain_xp(3000.0)  #DBG
 		if u.is_bot and u.ability_points > 0:
 			u.auto_level_abilities()
 		if ready and not u.dead and (ready_fx == null or not is_instance_valid(ready_fx)):
@@ -308,7 +306,6 @@ class HymnOfValor extends KAbility:
 			b.icon = q_icon
 			b.vfx = Vfx.aura(a, BLUE, maxf(0.8, a.radius * 1.4), dur, 0.1)
 			a.add_buff(b, o))
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) Q targets=%d" % [o.display_name, o.team, targets.size()])  #DBG
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -400,7 +397,6 @@ class AriaOfPerseverance extends KAbility:
 				wb.threshold = bp
 				wb.hidden = true
 				u.add_buff(wb, o))
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) W ally=%s" % [o.display_name, o.team, a.display_name if a != null else "-"])  #DBG
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -487,7 +483,6 @@ class SongOfCelerity extends KAbility:
 				return
 			K.haste(u, ms, mdur, o, false, "sona_e_ally")
 			Vfx.rising(u, VIOLET, mdur * 0.6, 16, 0.4))
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) E" % [o.display_name, o.team])  #DBG
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -568,7 +563,6 @@ class Crescendo extends KAbility:
 		var gp: Vector3 = o.global_position
 		if m.camera_rig != null and G.player != null and G.flat_dist(G.player.global_position, gp) < 14.0:
 			m.camera_rig.shake(0.2)
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) R" % [o.display_name, o.team])  #DBG
 		notify_cast(t)
 
 	func _wave_visual() -> VfxNode:

@@ -225,8 +225,6 @@ class Pyromania extends Effect:
 
 	func on_tick(u, _dt: float) -> void:
 		# bots never spend level-up points in core; do it for them (no effect for human players)
-		if u.is_bot and u.level < 6 and u.match_ref.time > 45.0:  #DBG
-			u.gain_xp(3000.0)  #DBG
 		if u.is_bot and u.ability_points > 0:
 			u.auto_level_abilities()
 		if stacks >= 4 and not u.dead and (ready_fx == null or not is_instance_valid(ready_fx)):
@@ -307,7 +305,6 @@ class Disintegrate extends KAbility:
 				self_ref.cd = maxf(0.0, self_ref.cd - self_ref.cd_total * 0.5)
 				Vfx.rising(o, Color(0.5, 0.7, 1.0), 0.35, 14, 0.4)
 		K.homing_missile(self, K.cast_pos(o, 1.2), u, 1400.0, on_hit, {"visual": AnnieUtil.fireball(0.6 if stun <= 0.0 else 0.8, stun > 0.0)})
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) Q -> %s stun=%s" % [o.display_name, o.team, u.display_name, stun])  #DBG
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -403,7 +400,6 @@ class Incinerate extends KAbility:
 					K.stun(tgt, stun, o)
 				Vfx.hit_spark(m, tgt.global_position + Vector3(0, 1.0, 0), FIRE, 0.8))
 		AnnieUtil.shake(o, 0.08)
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) W stun=%s hits=%d" % [o.display_name, o.team, stun, K.enemies_cone(self, origin, dir, cast_range + 40.0, ANGLE).size()])  #DBG
 		notify_cast(t)
 
 	## Number of enemy champions hit by a cone from `from` toward `aim`.
@@ -496,7 +492,6 @@ class MoltenShield extends KAbility:
 		apply_to(u)
 		if u != owner:
 			Vfx.beam(owner.match_ref, K.cast_pos(owner, 1.1), u.global_position + Vector3(0, 1.0, 0), FIRE, 0.18, 0.25)
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) E on %s" % [owner.display_name, owner.team, u.display_name])  #DBG
 		notify_cast(t)
 
 	func apply_to(u) -> void:
@@ -650,11 +645,9 @@ class SummonTibbers extends KAbility:
 			var u = t.get("unit")
 			if u != null and is_instance_valid(u) and not u.dead and u.team != owner.team:
 				tibbers.command_attack(u)
-				print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) R command attack %s" % [owner.display_name, owner.team, u.display_name])  #DBG
 			else:
 				tibbers.command_move(t.pos)
 			return
-		print("[DBG] t=" + str(snappedf(G.match.time, 0.1)) + " " + "%s(%d) R summon stun_ready=%s enemies_in_area=%d" % [owner.display_name, owner.team, AnnieUtil.stun_ready(owner), K.enemies_circle(self, t.pos, ind_radius, true).size()])  #DBG
 		_summon(t.pos)
 		notify_cast(t)
 
