@@ -1,0 +1,302 @@
+{
+ "alias": "Veigar",
+ "name": "Veigar",
+ "stats": {
+  "base_hp": 580.0,
+  "hp_per_level": 108.0,
+  "base_hp_regen": 1.3,
+  "hp_regen_per_level": 0.12,
+  "base_ad": 52.0,
+  "ad_per_level": 2.7,
+  "base_armor": 18.0,
+  "armor_per_level": 5.2,
+  "base_mr": 32.0,
+  "mr_per_level": 1.3,
+  "base_ms": 340.0,
+  "attack_range": 550.0,
+  "attack_speed": 0.625,
+  "attack_speed_ratio": 0.625,
+  "attack_speed_per_level": 2.24,
+  "resource_type": 0,
+  "mana_base": 490.0,
+  "mana_per_level": 26.0,
+  "mana_regen": 1.6,
+  "mana_regen_per_level": 0.16,
+  "critDamageMultiplier": 2.0,
+  "acquisitionRange": 525.0,
+  "selectionHeight": 140.0,
+  "selectionRadius": 100.0,
+  "pathfindingCollisionRadius": 30.0,
+  "overrideGameplayCollisionRadius": 55.0,
+  "healthBarHeight": 90.0,
+  "attack_cast_offset": -0.10906250029802322,
+  "attack_total_time": null,
+  "attack_cast_time": null
+ },
+ "spell_slots": {
+  "Q": "VeigarBalefulStrike",
+  "W": "VeigarDarkMatter",
+  "E": "VeigarEventHorizon",
+  "R": "VeigarR"
+ },
+ "passive": "VeigarPassive",
+ "passive_name": "Phenomenal Evil Power",
+ "passive_desc": "Veigar is the greatest Evil to ever strike at the hearts of Runeterra - and he's only getting bigger! Striking an enemy Champion with a spell or scoring a takedown grants Veigar permanently increased Ability Power.",
+ "spells": {
+  "VeigarBalefulStrikeMis": {
+   "script": "VeigarBalefulStrikeMis",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 1050.0,
+   "castRangeDisplayOverride": 925.0,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 2200.0,
+   "mLineWidth": 70.0,
+   "mCastTime": 0.25099998712539673,
+   "mAnimationName": "Spell1",
+   "mAlternateName": "EzrealMysticShotMissile"
+  },
+  "VeigarBalefulStrike": {
+   "script": "VeigarBalefulStrike",
+   "data_values": {
+    "APRatio": [
+     0.45,
+     0.5,
+     0.55,
+     0.6,
+     0.65,
+     0.7,
+     0.75
+    ],
+    "BaseDamage": [
+     40.0,
+     80.0,
+     120.0,
+     160.0,
+     200.0,
+     240.0,
+     280.0
+    ]
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamage + APRatio*AP"
+   },
+   "cooldownTime": [
+    6.5,
+    6.0,
+    5.5,
+    5.0,
+    4.5,
+    4.0,
+    3.5
+   ],
+   "mana": [
+    30.0,
+    35.0,
+    40.0,
+    45.0,
+    50.0,
+    50.0
+   ],
+   "castRange": 10000.0,
+   "castRangeDisplayOverride": 1000.0,
+   "castRadius": 210.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1200.0,
+   "mLineWidth": 70.0,
+   "mAnimationName": "Spell1",
+   "name": "Baleful Strike",
+   "tooltip": "Veigar unleashes a bolt of dark energy, dealing <magicDamage>@TotalDamage@ magic damage</magicDamage> to the first two enemies hit.<br><br>If Veigar kills an enemy with this Ability, he gains @Spell.VeigarPassive:dQKillStacks@ stack of <keywordMajor>Phenomenal Evil</keywordMajor>. Large minions and large monsters grant @Spell.VeigarPassive:dQKillStacksLarge@ stacks instead.",
+   "summary": "Veigar unleashes a bolt of dark energy that deals magic damage to the first two enemies hit. Units killed by this bolt grant Veigar some ability power permanently."
+  },
+  "VeigarPassive": {
+   "script": "VeigarPassive",
+   "data_values": {
+    "dQKillStacks": 1.0,
+    "dAbilityStacks": 1.0,
+    "dTakedownStacks": 5.0,
+    "dQKillStacksLarge": 3.0,
+    "PStacksPerDarkMatterCDR": 50.0,
+    "DarkMatterCDRIncrement": 0.1
+   },
+   "calcs": {
+    "#e75ed4cd": "1"
+   },
+   "castRange": 0.0,
+   "name": "Phenomenal Evil Power",
+   "tooltip": "Veigar's Abilities grant him @dAbilityStacks@ stack of <keywordMajor>Phenomenal Evil</keywordMajor> when they strike enemy champions. Takedowns on champions grant an additional @dTakedownStacks@ stacks.<br><br>Each stack of <keywordMajor>Phenomenal Evil</keywordMajor> grants Veigar <scaleAP>@APPerStack@ Ability Power</scaleAP>.",
+   "summary": "Veigar is the greatest Evil to ever strike at the hearts of Runeterra - and he's only getting bigger! Striking an enemy Champion with a spell or scoring a takedown grants Veigar permanently increased Ability Power."
+  },
+  "VeigarEventHorizon": {
+   "script": "VeigarEventHorizon",
+   "data_values": {
+    "StunDuration": [
+     1.25,
+     1.5,
+     1.75,
+     2.0,
+     2.25,
+     2.5,
+     2.75
+    ],
+    "CageDelay": 0.5
+   },
+   "cooldownTime": [
+    20.0,
+    20.0,
+    18.5,
+    17.0,
+    15.5,
+    14.0,
+    14.0
+   ],
+   "mana": [
+    70.0,
+    75.0,
+    80.0,
+    85.0,
+    90.0,
+    95.0
+   ],
+   "castRange": 700.0,
+   "castRangeDisplayOverride": 725.0,
+   "castRadius": 390.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 20.0,
+   "mAnimationName": "Spell3",
+   "mAlternateName": "VeigarEventHorizon",
+   "name": "Event Horizon",
+   "tooltip": "Veigar twists the edges of space, creating a cage that <status>Stuns</status> enemies that pass through for @StunDuration@ seconds. The cage lasts for 3 seconds.",
+   "summary": "Veigar twists the edges of space, creating a cage that Stuns enemies that pass through."
+  },
+  "VeigarBasicAttack": {
+   "script": "VeigarBasicAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1100.0
+  },
+  "VeigarDarkMatter": {
+   "script": "VeigarDarkMatter",
+   "data_values": {
+    "APRatio": [
+     0.6,
+     0.7,
+     0.8,
+     0.9,
+     1.0,
+     1.1,
+     1.2
+    ],
+    "BaseDamage": [
+     30.0,
+     85.0,
+     140.0,
+     195.0,
+     250.0,
+     305.0,
+     360.0
+    ],
+    "ImpactDelay": 1.2,
+    "BaseCooldown": 8.0
+   },
+   "calcs": {
+    "#1ddee768": "BaseDamage + APRatio*AP"
+   },
+   "cooldownTime": 0.0,
+   "mana": [
+    60.0,
+    65.0,
+    70.0,
+    75.0,
+    80.0,
+    85.0
+   ],
+   "castRange": 950.0,
+   "castRadius": 225.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 20.0,
+   "mAnimationName": "Spell2",
+   "name": "Dark Matter",
+   "tooltip": "Veigar summons dark matter from the sky, dealing <magicDamage>@TotalDamage@ magic damage</magicDamage>.<br><br>Every @Spell.VeigarPassive:PStacksPerDarkMatterCDR@ stacks of <keywordMajor>Phenomenal Evil</keywordMajor> reduce this Ability's Cooldown by @Spell.VeigarPassive:DarkMatterCDRIncrement*100@%.",
+   "summary": "Veigar calls a great mass of dark matter to fall from the sky to the target location, dealing magic damage when it lands. Stacks of Phenomenal Evil reduce Dark Matter's cooldown."
+  },
+  "VeigarBasicAttack2": {
+   "script": "VeigarBasicAttack2",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1100.0,
+   "mAnimationName": "Attack2"
+  },
+  "VeigarR": {
+   "script": "VeigarR",
+   "data_values": {
+    "APRatio": [
+     0.6,
+     0.65,
+     0.7,
+     0.75,
+     0.8,
+     0.85,
+     0.9
+    ],
+    "BaseDamage": [
+     100.0,
+     175.0,
+     250.0,
+     325.0,
+     400.0,
+     475.0,
+     550.0
+    ],
+    "MaxExecuteMult": 2.0
+   },
+   "calcs": {
+    "#fe544f96": "BaseDamage + APRatio*AP",
+    "#47d0e794": "070e3593: () * 2"
+   },
+   "cooldownTime": [
+    120.0,
+    120.0,
+    90.0,
+    60.0,
+    30.0,
+    30.0,
+    30.0
+   ],
+   "mana": 100.0,
+   "castRange": 650.0,
+   "castConeDistance": 100.0,
+   "mAnimationName": "Spell4",
+   "name": "Primordial Burst",
+   "tooltip": "Veigar blasts an enemy champion with primal magic to deal between <magicDamage>@MinDamage@ and @MaxDamage@ magic damage</magicDamage>, increasing with the target's missing Health. Damage is maximized against enemies below 33% Health.",
+   "summary": "Blasts target enemy champion, dealing a large amount of magic damage, increasing based on the target's missing health."
+  },
+  "VeigarCritAttack": {
+   "script": "VeigarCritAttack",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 622.7,
+   "castRadius": 100.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 1100.0,
+   "mAnimationName": "Crit"
+  },
+  "VeigarDarkMatterCastLockout": {
+   "script": "VeigarDarkMatterCastLockout",
+   "data_values": {},
+   "cooldownTime": 0.0,
+   "castRange": 950.0,
+   "castRadius": 225.0,
+   "castConeDistance": 100.0,
+   "missileSpeed": 20.0,
+   "mAnimationName": "Spell2"
+  }
+ }
+}

@@ -1,0 +1,172 @@
+[
+ {
+  "id": 45000,
+  "num": 0,
+  "name": "Veigar",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45001,
+  "num": 1,
+  "name": "White Mage Veigar",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45002,
+  "num": 2,
+  "name": "Curling Veigar",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45003,
+  "num": 3,
+  "name": "Veigar Greybeard",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45004,
+  "num": 4,
+  "name": "Leprechaun Veigar",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45005,
+  "num": 5,
+  "name": "Baron Von Veigar",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45006,
+  "num": 6,
+  "name": "Superb Villain Veigar",
+  "rarity": "kNoRarity",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45007,
+  "num": 7,
+  "name": "Bad Santa Veigar",
+  "rarity": "kNoRarity",
+  "legacy": true,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45008,
+  "num": 8,
+  "name": "Final Boss Veigar",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45009,
+  "num": 9,
+  "name": "Omega Squad Veigar",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45013,
+  "num": 13,
+  "name": "Elderwood Veigar",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45023,
+  "num": 23,
+  "name": "Furyhorn Cosplay Veigar",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45032,
+  "num": 32,
+  "name": "Astronaut Veigar",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45041,
+  "num": 41,
+  "name": "Monster Tamer Veigar",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45051,
+  "num": 51,
+  "name": "King Beegar",
+  "rarity": "kEpic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45060,
+  "num": 60,
+  "name": "Fright Night Veigar",
+  "rarity": "kLegendary",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ },
+ {
+  "id": 45067,
+  "num": 67,
+  "name": "Prestige Magma Chamber Veigar",
+  "rarity": "kMythic",
+  "legacy": false,
+  "load": true,
+  "splash": true,
+  "tile": true
+ }
+]
