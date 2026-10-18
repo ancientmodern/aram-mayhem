@@ -36,6 +36,7 @@ func _run() -> void:
 		m.get_offer(c)
 		m.choose_augment(c, 0)
 	LolVfx.load_set(c.alias)
+	LolVfx.load_set("shared")
 	if names.is_empty():
 		var p := "%s_Base_" % c.alias
 		names = [p + "BA_mis", p + "BA_tar", p + "Q_mis", p + "Q_tar", p + "W_cas", p + "E_mis", p + "R_cas", p + "Q_cas"]

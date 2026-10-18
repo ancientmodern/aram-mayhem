@@ -139,9 +139,49 @@ static func _slot_key(ab) -> String:
 	return "QWER"[s] if s >= 0 and s <= 3 else ""
 
 
+static func _team_name(u) -> String:
+	return "Order" if u.team == G.Team.ORDER else "Chaos"
+
+
+## Missile visual for minion / turret basic attacks (shared League set) or null.
+static func unit_attack_visual(src, tgt) -> LolVfx:
+	load_set("shared")
+	var nm := ""
+	if src.kind == G.Kind.MINION:
+		var tn := _team_name(src)
+		match int(src.minion_type):
+			Minion.Type.CASTER: nm = "SRU_%sMinionRanged_Base_BA_Mis" % tn
+			Minion.Type.SIEGE: nm = "SRU_%sMinionSiege_Base_SRU_%s_CanM_BA1" % [tn, tn]
+	elif src.kind == G.Kind.TURRET:
+		if tgt != null and is_instance_valid(tgt) and tgt.kind == G.Kind.CHAMPION:
+			nm = "Turret_Skin24_BA_Champ_%02d" % clampi(int(src.ramp) + 1, 1, 4)
+		else:
+			nm = "Turret_Skin24_BA"
+	return make(nm, {"loop": true}) if nm != "" else null
+
+
 ## Basic attack impact on the target.
 static func on_attack_hit(src, t, crit: bool) -> void:
-	if src == null or not (src is Champion) or t == null or not is_instance_valid(t):
+	if src == null or t == null or not is_instance_valid(t):
+		return
+	if not (src is Champion):
+		var nm2 := ""
+		if src.kind == G.Kind.MINION:
+			var tn := _team_name(src)
+			match int(src.minion_type):
+				Minion.Type.CASTER: nm2 = "SRU_%sMinionRanged_Base_BA_Tar" % tn
+				Minion.Type.SIEGE: nm2 = "SRU_%sMinionSiege_Base_SRU_%s_CanM_Tar" % [tn, tn]
+		elif src.kind == G.Kind.TURRET:
+			if t.kind == G.Kind.CHAMPION:
+				var shot: int = clampi(int(src.ramp), 1, 4)
+				nm2 = "Turret_Skin24_BA_Tar_Champ" if shot <= 1 else "Turret_Skin24_BA_Tar_Champ_%02d" % shot
+			else:
+				nm2 = "Turret_Skin24_BA_Tar"
+		if nm2 != "" and src.match_ref != null:
+			load_set("shared")
+			spawn(src.match_ref, nm2, t.global_position + Vector3(0, t.height * 0.5, 0))
+		return
+	if not (src is Champion):
 		return
 	var nm := champ_fx(src, "BA_crit_tar") if crit else ""
 	if nm == "":
@@ -254,7 +294,10 @@ func stop() -> void:
 	for c in get_children():
 		if c is GPUParticles3D:
 			c.emitting = false
-			longest = maxf(longest, c.lifetime)
+			if c.has_meta("infinite"):
+				c.visible = false   # persistent particles end with their emitter
+			else:
+				longest = maxf(longest, c.lifetime)
 		elif c is LolTrail:
 			c.emitting = false
 			longest = maxf(longest, c.life)
@@ -283,8 +326,12 @@ func _build_emitter(e: Dictionary) -> void:
 	var p := GPUParticles3D.new()
 	var single: bool = e.get("single", false)
 	var plife: Array = e.get("plife", [1.0, 1.0])
-	var life_max: float = maxf(float(plife[1]), 0.05)
+	var infinite: bool = float(plife[1]) < 0.0
+	var life_max: float = 3600.0 if infinite else maxf(float(plife[1]), 0.05)
 	p.lifetime = life_max
+	if infinite:
+		p.set_meta("infinite", true)
+		single = true
 	var rate: float = float(e.get("rate", 1.0))
 	var elife: float = float(e.get("life", -1.0))
 	if single:

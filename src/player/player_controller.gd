@@ -217,6 +217,9 @@ func _right_click() -> void:
 
 
 func _click_marker(pos: Vector3, attack: bool) -> void:
+	if not attack and LolVfx.has("Cursor_Moveto"):
+		LolVfx.spawn(match_ref, "Cursor_Moveto", pos + Vector3(0, 0.05, 0))
+		return
 	var col := Color(1.0, 0.25, 0.2) if attack else Color(0.35, 1.0, 0.45)
 	Vfx.ring(match_ref, pos, col, 0.55, 0.35, 0.2, 0.0)
 

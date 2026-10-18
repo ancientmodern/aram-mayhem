@@ -81,6 +81,7 @@ class FlashSpell extends Ability:
 
 class MarkSpell extends Ability:
 	var marked = null
+	var tag_fx = null
 	var mark_time := 0.0
 
 	func _init(p_owner) -> void:
@@ -110,11 +111,18 @@ class MarkSpell extends Ability:
 			recast_window = 0.0
 			var tgt = marked
 			marked = null
+			if tag_fx != null and is_instance_valid(tag_fx):
+				tag_fx.stop()
+			var dash_fx := LolVfx.attach(owner, "Summoner_Snowball_Dash", {"loop": true, "dir": G.flat_dir(owner.global_position, tgt.global_position)})
+			LolVfx.spawn(m, "Summoner_Snowball_Dash_Cast", owner.global_position)
 			owner.start_dash(tgt.global_position, {"speed": 18.0, "on_arrive": func(_u):
 				for e in owner.effects.duplicate():
 					if e.has_method("on_snowball_dash_arrive"):
 						e.on_snowball_dash_arrive(tgt)
-				Vfx.burst(m, owner.global_position + Vector3(0, 0.5, 0), Color(0.8, 0.95, 1.0), 1.2)})
+				if dash_fx != null and is_instance_valid(dash_fx):
+					dash_fx.stop()
+				if LolVfx.spawn(m, "Summoner_Snowball_Dash_Arrival", owner.global_position) == null:
+					Vfx.burst(m, owner.global_position + Vector3(0, 0.5, 0), Color(0.8, 0.95, 1.0), 1.2)})
 			start_cooldown()
 			notify_cast(t)
 			return
@@ -122,13 +130,20 @@ class MarkSpell extends Ability:
 		var from: Vector3 = owner.global_position + Vector3(0, 1.0, 0)
 		mi.setup_linear(owner, from, t.dir, 13.0, range_m(), 0.6)
 		mi.hits_minions = true
-		mi.visual = Vfx.orb(Color(0.85, 0.95, 1.0), 0.45, false)
+		var ally_view: bool = G.player == null or owner.team == G.player.team
+		var lv := LolVfx.make("Summoner_Snowball_Mis" if ally_view else "Summoner_Snowball_Mis_Enemy", {"loop": true})
+		mi.visual = lv if lv != null else Vfx.orb(Color(0.85, 0.95, 1.0), 0.45, false)
+		mi.custom["keep_visual"] = true
 		mi.on_hit = func(_m, u):
 			hit(u, damage(), G.DmgType.TRUE, {"is_spell": false, "is_proc": true, "tag": "snowball"})
 			marked = u
 			recast_window = 3.0
 			cd = 0.0
-			Vfx.burst(m, u.global_position + Vector3(0, 1.0, 0), Color(0.85, 0.95, 1.0), 1.0, {"ring": false})
+			if LolVfx.spawn(m, "Summoner_Snowball_Explosion", u.global_position + Vector3(0, 1.0, 0)) == null:
+				Vfx.burst(m, u.global_position + Vector3(0, 1.0, 0), Color(0.85, 0.95, 1.0), 1.0, {"ring": false})
+			if tag_fx != null and is_instance_valid(tag_fx):
+				tag_fx.stop()
+			tag_fx = LolVfx.attach(u, "Summoner_Snowball_Tagged", {"loop": true})
 			for e in owner.effects.duplicate():
 				if e.has_method("on_snowball_hit"):
 					e.on_snowball_hit(u)
@@ -145,6 +160,9 @@ class MarkSpell extends Ability:
 
 	func on_recast_expired() -> void:
 		marked = null
+		if tag_fx != null and is_instance_valid(tag_fx):
+			tag_fx.stop()
+		tag_fx = null
 		start_cooldown()
 
 	func ai_consider(ctx) -> Dictionary:
@@ -169,7 +187,9 @@ class GhostSpell extends Ability:
 		b.stats = {"ms%": 0.24 + 0.24 * (owner.level - 1) / 17.0}
 		b.icon = icon
 		owner.add_buff(b, owner)
-		Vfx.rising(owner, Color(0.6, 0.85, 1.0), 1.0, 30)
+		b.vfx = LolVfx.attach(owner, "Global_Haste", {"loop": true})
+		if b.vfx == null:
+			Vfx.rising(owner, Color(0.6, 0.85, 1.0), 1.0, 30)
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -204,7 +224,8 @@ class HealSpell extends Ability:
 			b.stats = {"ms%": 0.3}
 			b.display_name = "Heal"
 			u.add_buff(b, owner)
-			Vfx.rising(u, Color(0.4, 1.0, 0.45), 0.5, 30)
+			if LolVfx.attach(u, "Item_Redemption_Hit_Heal") == null:
+				Vfx.rising(u, Color(0.4, 1.0, 0.45), 0.5, 30)
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -248,7 +269,8 @@ class CleanseSpell extends Ability:
 		var b := Buff.new("cleanse", 3.0)
 		b.stats = {"tenacity": 0.65}
 		owner.add_buff(b, owner)
-		Vfx.rising(owner, Color(0.7, 0.9, 1.0), 0.4, 30)
+		if LolVfx.attach(owner, "Jade_Summoner_Cleanse") == null:
+			Vfx.rising(owner, Color(0.7, 0.9, 1.0), 0.4, 30)
 		notify_cast(t)
 
 	func ai_consider(_ctx) -> Dictionary:
@@ -282,7 +304,9 @@ class IgniteSpell extends Ability:
 		gw.stats = {"_gw": 0.4}
 		gw.is_debuff = true
 		u.add_buff(gw, owner)
-		var fx := Vfx.rising(u, Color(1.0, 0.5, 0.15), 5.0, 25, 0.4)
+		b.vfx = LolVfx.attach(u, "Global_SS_Ignite", {"loop": true})
+		if b.vfx == null:
+			Vfx.rising(u, Color(1.0, 0.5, 0.15), 5.0, 25, 0.4)
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:

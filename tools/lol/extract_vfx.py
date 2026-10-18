@@ -377,6 +377,56 @@ def extract_champion(alias):
     return out
 
 
+SHARED_PATTERNS = [
+    r"^Cursor_Moveto$", r"^Summoner_Snowball_", r"^Global_SS_Ignite", r"^Global_Haste$", r"^Jade_Summoner_Cleanse$",
+    r"^Monster_Heal_Impact$", r"^Item_Redemption_Hit_Heal$", r"^Global_Slow$", r"^ARAMHealthPickup_",
+    r"^Turret_Skin24_", r"^HA_(Order|Chaos)_(Inhibitor|Nexus)_", r"^SRU_(Order|Chaos)Minion(Ranged|Siege)_Base_",
+    r"^ARAM_Hexgate_Base_(OpenLoop|PortalGroundLoop)",
+]
+
+
+def extract_shared():
+    import re
+    out = {}
+    pats = [re.compile(p) for p in SHARED_PATTERNS]
+    for wp in (f"{GAME}/Global.wad.client", f"{GAME}/Maps/Shipping/Map12.wad.client"):
+        w = wad(wp)
+        es = w.entries.values() if isinstance(w.entries, dict) else w.entries
+        for e in es:
+            if e.size > 30_000_000:
+                continue
+            try:
+                d = w.read_entry(e)
+            except Exception:
+                continue
+            if d[:4] not in (b"PROP", b"PTCH"):
+                continue
+            try:
+                bf = BinFile(d)
+            except Exception:
+                continue
+            for k, v in bf.entries.items():
+                if v.cls != 0x45cd899f:
+                    continue
+                nm = None
+                for fk, fv in v.fields.items():
+                    if TABLE.get(fk) == "particleName":
+                        nm = fv
+                if not nm or nm in out or not any(p.search(nm) for p in pats):
+                    continue
+                name, sysd = system(w, to_py(v, TABLE))
+                if sysd is not None:
+                    out[name] = sysd
+    path = os.path.join(ROOT, "data", "vfx", "shared.json")
+    json.dump(out, open(path, "w", encoding="utf-8"), separators=(",", ":"))
+    print(f"shared: {len(out)} systems")
+    print("   ", sorted(out))
+
+
 if __name__ == "__main__":
-    for a in (sys.argv[1:] or ROSTER):
-        extract_champion(a)
+    args = sys.argv[1:]
+    if args == ["--shared"]:
+        extract_shared()
+    else:
+        for a in (args or ROSTER):
+            extract_champion(a)
