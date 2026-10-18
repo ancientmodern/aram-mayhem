@@ -348,10 +348,11 @@ func draw_settings(r: Rect2) -> void:
 	y += 52
 	var toggles := [["set:edge", "Screen edge camera pan", "edge_pan"],
 			["set:lock", "Camera locked to champion", "camera_locked"], ["set:fs", "Fullscreen", "fullscreen"],
-			["set:dmg", "Show all damage numbers", "show_all_damage_numbers"]]
+			["set:dmg", "Show all damage numbers", "show_all_damage_numbers"],
+			["set:vsync", "Vertical sync (cap to monitor refresh)", "vsync"], ["set:cb", "Colorblind mode", "colorblind"]]
 	for tg in toggles:
 		text(tg[1], Vector2(x, y + 18), 17, C_TEXT, f_semi)
-		var on: bool = G.settings.get(tg[2], false)
+		var on: bool = G.settings.get(tg[2], tg[2] == "vsync")
 		pill(tg[0] + ":0", Rect2(x + w - 150, y, 72, 28), "On", on, 14)
 		pill(tg[0] + ":1", Rect2(x + w - 72, y, 72, 28), "Off", not on, 14)
 		y += 42
@@ -381,6 +382,11 @@ func handle_settings_action(id: String) -> bool:
 		"fs":
 			G.settings.fullscreen = parts[2] == "0"
 			G.apply_window_mode()
+		"vsync":
+			G.settings.vsync = parts[2] == "0"
+			G.apply_window_mode()
+		"cb":
+			G.settings.colorblind = parts[2] == "0"
 	G.save_settings()
 	return true
 
