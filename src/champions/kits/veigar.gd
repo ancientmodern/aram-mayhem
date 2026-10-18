@@ -1,10 +1,6 @@
 extends ChampionKit
 ## Veigar, the Tiny Master of Evil.
 
-const VIOLET := Color(0.62, 0.3, 1.0)
-const DARK := Color(0.32, 0.1, 0.75)
-const STAR := Color(1.0, 0.85, 0.4)
-const PINK := Color(1.0, 0.45, 0.95)
 const HOLD := {"hold": true}
 
 
@@ -84,38 +80,11 @@ class VUtil:
 			return Vector3(pos.x, m.nav.height_at(pos) + 0.05, pos.z)
 		return pos
 
-	## Soul wisp flying from a victim into Veigar.
-	static func soul(o, from: Vector3, big: bool) -> void:
-		var m = o.match_ref
-		if m == null:
-			return
-		var n := VfxNode.new()
-		n.lifetime = 1.0
-		m.add_fx(n, from + Vector3(0, 1.2, 0))
-		n.add_child(Vfx.sprite(PINK, 0.6 if big else 0.4, 3.0))
-		n.add_child(Vfx.sprite(VIOLET, 1.2 if big else 0.8, 1.6))
-		var e := Vfx.emitter(VIOLET, 30, 0.35, 0.35, {"vmin": 0.0, "vmax": 0.3})
-		n.add_child(e)
-		n.trails.append(e)
-		var start: Vector3 = n.global_position
-		var fly := func(k: float):
-			if not is_instance_valid(o) or not is_instance_valid(n):
-				return
-			var end: Vector3 = o.global_position + Vector3(0, 1.0, 0)
-			var p := start.lerp(end, k)
-			p.y += sin(k * PI) * 1.6
-			n.global_position = p
-		var tw := n.create_tween()
-		tw.tween_method(fly, 0.0, 1.0, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
-		tw.tween_callback(func(): n.detach_and_fade())
-
 
 # ===================================================================== passive
 class PhenomenalEvil extends Effect:
 	var data := {}
 	var stacks := 0.0
-	var tier := -1
-	var aura: Node3D = null
 
 	func _init(pd: Dictionary = {}) -> void:
 		data = pd
@@ -126,8 +95,7 @@ class PhenomenalEvil extends Effect:
 		return str(int(stacks))
 
 	func get_stat_mods() -> Dictionary:
-		# 1 AP per stack; Veigar visibly swells with power (+18% size cap)
-		return {"ap": stacks, "size": minf(0.18, stacks * 0.0006)}
+		return {"ap": stacks}   # 1 AP per stack (Veigar does not grow or glow in League)
 
 	## Dark Matter cooldown multiplier: -10% per 50 stacks (capped at -50%).
 	func w_cd_mult() -> float:
@@ -135,66 +103,16 @@ class PhenomenalEvil extends Effect:
 		var inc: float = float(data.get("DarkMatterCDRIncrement", 0.1))
 		return 1.0 - minf(0.5, floor(stacks / per) * inc)
 
-	func gain(n: float, from_pos: Vector3 = Vector3.INF) -> void:
+	## League shows a stack gain only through Veigar_Base_Q_powerup (the AP counter on the passive icon changes);
+	## there are no floating texts, souls or tier auras.
+	func gain(n: float, _from_pos: Vector3 = Vector3.INF) -> void:
 		var o = owner
 		if o == null or o.dead:
 			return
 		var g: float = n * o.permanent_stack_mult()
-		var before := stacks
 		stacks += g
 		refresh_stats()
-		var m = o.match_ref
-		if m == null:
-			return
-		m.fx_text(o, "+%d AP" % int(round(g)), PINK)
-		if from_pos != Vector3.INF:
-			VUtil.soul(o, from_pos, g >= 3.0)
-		LolVfx.attach(o, "Veigar_Base_Q_powerup", {"height": o.height * 0.5})
-		# milestones every 50 stacks
-		if floor(stacks / 50.0) > floor(before / 50.0):
-			Vfx.burst(m, o.global_position + Vector3(0, 1.0, 0), PINK, 1.1, {"sparks": 45})
-			Vfx.ring(m, o.global_position, VIOLET, 3.0, 0.6, 0.12, 0.25)
-			m.fx_text(o, "%d EVIL" % int(stacks), STAR)
-		_update_tier()
-
-	func _tier_for(s: float) -> int:
-		if s >= 500.0:
-			return 4
-		if s >= 250.0:
-			return 3
-		if s >= 100.0:
-			return 2
-		if s >= 30.0:
-			return 1
-		return 0
-
-	func _update_tier() -> void:
-		var t := _tier_for(stacks)
-		if t == tier and aura != null and is_instance_valid(aura):
-			return
-		tier = t
-		if aura != null and is_instance_valid(aura):
-			aura.detach_and_fade()
-		aura = null
-		if t <= 0 or owner == null or owner.dead:
-			return
-		var n := VfxNode.new()
-		owner.add_child(n)
-		n.position = Vector3(0, 0.6, 0)
-		var e := Vfx.emitter(VIOLET, 8 + t * 8, 1.1, 0.16 + t * 0.03, {"local": true, "radius": 0.55 + t * 0.08,
-				"dir": Vector3.UP, "spread": 25.0, "vmin": 0.3, "vmax": 0.9, "tex": Vfx.spark_texture()})
-		n.add_child(e)
-		n.trails.append(e)
-		if t >= 2:
-			var e2 := Vfx.emitter(DARK, 6 + t * 4, 1.4, 0.5 + t * 0.1, {"local": true, "radius": 0.4, "dir": Vector3.UP,
-					"spread": 15.0, "vmin": 0.2, "vmax": 0.6})
-			n.add_child(e2)
-			n.trails.append(e2)
-		if t >= 3:
-			var ring := Vfx.aura(owner, VIOLET, 1.1, 1.0e6, 0.06)
-			ring.reparent(n)
-			ring.position = Vector3(0, -0.54, 0)
-		aura = n
+		LolVfx.attach(o, "Veigar_Base_Q_powerup", {"bone": "C_BUFFBONE_GLB_CHEST_LOC"})
 
 	func on_takedown(victim) -> void:
 		if victim.kind == G.Kind.CHAMPION:
@@ -203,18 +121,6 @@ class PhenomenalEvil extends Effect:
 	func on_tick(u, _dt: float) -> void:
 		if u.is_bot and u.ability_points > 0:
 			u.auto_level_abilities()
-		if tier > 0 and not u.dead and (aura == null or not is_instance_valid(aura)):
-			tier = -1
-			_update_tier()
-
-	func on_death(_k) -> void:
-		if aura != null and is_instance_valid(aura):
-			aura.detach_and_fade()
-		aura = null
-
-	func on_respawn() -> void:
-		tier = -1
-		_update_tier()
 
 
 # ===================================================================== Q
@@ -323,7 +229,7 @@ class DarkMatter extends KAbility:
 		var boom := VUtil.team_variant(o, "Veigar_Base_W_aoe_explosionRed", "Veigar_Base_W_aoe_explosion")
 		var dmg := damage()
 		var pd: Dictionary = VUtil.evil(o).data if VUtil.evil(o) != null else {}
-		K.delayed_circle(self, pos, rad, delay, VIOLET, func(units, p):
+		K.delayed_circle(self, pos, rad, delay, "", func(units, p):
 			for u in units:
 				self_ref.hit(u, dmg, G.DmgType.MAGIC, {"is_aoe": true, "tag": "w"})
 				if u.kind == G.Kind.CHAMPION:

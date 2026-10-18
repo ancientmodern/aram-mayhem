@@ -180,7 +180,7 @@ class LightBinding extends KitAbility:
 			return
 		var p = illum()
 		hit(u, dmg, G.DmgType.MAGIC, {"tag": "q"})
-		var b := K.root(u, root_t, o, LIGHT)
+		var b := K.root(u, root_t, o)   # (League roots have no generic indicator: Lux attaches Q_tar below)
 		# League light prison on the target (replaces the generic root ring; freed with the root)
 		var fx := LolVfx.attach(u, "Lux_Base_Q_tar", {"height": 0.05, "dir": G.flat_dir(o.global_position, u.global_position)})
 		if b != null and fx != null:
@@ -248,21 +248,12 @@ class PrismaticBarrier extends KitAbility:
 		var dur := dv("ShieldDuration", 2.5)
 		var sh: Dictionary = Combat.shield(owner, u, shield_amount(), dur, {"id": ""})
 		var fx := LolVfx.attach(u, "Lux_Base_W_tar_shield", {"height": u.height * 0.5})
-		if fx != null and u.match_ref != null:
-			u.match_ref.add_ticker(dur + 0.1, func(_dt) -> bool:
-				var alive := false
-				if is_instance_valid(u) and not u.dead:
-					for s2 in u.shields:
-						if is_same(s2, sh):
-							alive = true
-				if not alive:
-					if is_instance_valid(fx):
-						fx.stop()
-					return false
-				return true)
-			u.match_ref.after(dur + 0.05, func():
-				if is_instance_valid(fx):
-					fx.stop())
+		if fx == null:
+			return
+		# One shared tracker (K.track_shield_fx: removed the moment the shield breaks / expires / its owner dies);
+		# a weakref-safe fallback timer replaces the per-shield lambda that captured the node.
+		K.track_shield_fx(u, sh, fx)
+		K.stop_later(u.match_ref, dur + 0.05, fx, true, 0.1)
 
 	func execute(t: Dictionary) -> void:
 		var o = owner

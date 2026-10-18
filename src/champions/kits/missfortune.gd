@@ -339,10 +339,22 @@ class Strut extends KitAbility:
 	func execute(t: Dictionary) -> void:
 		var o = owner
 		var dur := dv("ActiveDuration", 4.0)
-		var b: Buff = K.buff(o, "mf_w_active", dur, {"as": dv("ActiveAS", 0.4)}, o, {"name": "Strut", "icon": icon})
-		# League attack-speed buff aura (hearts / flares) for the active's duration
+		var b: Buff = K.buff(o, "mf_w_active", dur, {"as": dv("ActiveAS", 0.4)}, o, {"name": "Strut", "icon": icon, "kill_fx": true})
+		# League Strut active: the muzzle glow loops on each gun (W_Buf_RWeapon / LWeapon, bones R_WEAPON / L_WEAPON)
+		# for the duration and ends with the W_Buf_End_* flashes; W_buf is the one-shot hand flash at the cast
+		# (its 6 s starburst "glow" emitter must not be looped at the feet).
 		if b != null and (b.vfx == null or not is_instance_valid(b.vfx)):
-			b.vfx = LolVfx.attach(o, "MissFortune_Base_W_buf", {"loop": true, "height": 1.0})
+			b.vfx = LolVfx.attach(o, "MissFortune_Base_W_Buf_RWeapon", {"loop": true, "bone": "R_WEAPON"})
+			var fb := b as K.FxBuff
+			if fb != null:
+				fb.extra_fx.append(LolVfx.attach(o, "MissFortune_Base_W_Buf_LWeapon", {"loop": true, "bone": "L_WEAPON"}))
+			var wr := weakref(o)
+			b.on_expire = func(_bb):
+				var u = wr.get_ref()
+				if u != null:
+					LolVfx.attach(u, "MissFortune_Base_W_Buf_End_RWeapon", {"bone": "R_WEAPON"})
+					LolVfx.attach(u, "MissFortune_Base_W_Buf_End_LWeapon", {"bone": "L_WEAPON"})
+		LolVfx.attach(o, "MissFortune_Base_W_buf", {"bone": "R_Hand", "max_life": 1.2})
 		o.stats.mark_dirty()
 		notify_cast(t)
 
@@ -622,9 +634,11 @@ class BulletTime extends KitAbility:
 		var wr := weakref(o)
 		for u in targets:
 			var delay: float = clampf(G.flat_dist(origin, u.global_position) / 20.0, 0.0, 1.0)
+			var ur := weakref(u)   # a Unit captured directly would make the timer lambda error out once it is freed
 			m.after(delay, func():
-				if wr.get_ref() != null and is_instance_valid(u) and not u.dead:
-					self_ref.hit(u, dmg, G.DmgType.PHYSICAL, {"tag": "r", "is_aoe": true, "is_crit": crit}))
+				var tu = ur.get_ref()
+				if wr.get_ref() != null and tu != null and not tu.dead:
+					self_ref.hit(tu, dmg, G.DmgType.PHYSICAL, {"tag": "r", "is_aoe": true, "is_crit": crit}))
 		# visuals: alternate guns, a fan of tracer rounds
 		var side := Vector3(-dir.z, 0, dir.x)
 		var gun := side * (0.35 if ch.n % 2 == 0 else -0.35)

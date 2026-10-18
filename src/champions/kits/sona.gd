@@ -110,9 +110,7 @@ class SonaUtil:
 		var zone := LolVfx.attach(o, "Sona_Base_%s_Zone%s" % [key, "_Self" if o == G.player else ""], {"loop": true, "dir": o.facing})
 		o.set_meta("sona_melody_fx", zone)
 		if zone != null:
-			m.after(dur, func():
-				if is_instance_valid(zone):
-					zone.stop())
+			K.stop_later(m, dur, zone)   # weakref-safe: the zone node may be freed before the timer fires
 		var touched := {}
 		m.add_ticker(dur, func(_dt):
 			if not is_instance_valid(o) or o.dead or int(o.get_meta("sona_melody", 0)) != token:
@@ -391,7 +389,8 @@ class AriaOfPerseverance extends KAbility:
 			if injured:
 				SonaUtil.add_accel(o, 1.0)
 			# League heal note flying to the ally (visual only, the heal is instant)
-			SonaUtil.fly(m, "Sona_Base_W_Mis", o.global_position + Vector3(0, 1.3, 0), a, 0.25, func(): SonaUtil.fx_on(a, "Sona_Base_W_tar"))
+			var aw := weakref(a)   # (a captured Unit freed before the callback runs would log an error)
+			SonaUtil.fly(m, "Sona_Base_W_Mis", o.global_position + Vector3(0, 1.3, 0), a, 0.25, func(): SonaUtil.fx_on(aw.get_ref(), "Sona_Base_W_tar"))
 		var shield := dv("BaseShield") + dv("ShieldRatio", 0.25) * ap()
 		var sdur := dv("ShieldDuration", 1.5)
 		var bp := dv("AccelerandoShieldBreakpoint", 25.0)
@@ -400,20 +399,8 @@ class AriaOfPerseverance extends KAbility:
 			var sfx := SonaUtil.fx_on(u, "Sona_Base_W_Shield", {"loop": true})
 			if sfx != null:
 				# the shield bubble ends with the shield (broken early, expired or the unit died)
-				m.add_ticker(sdur + 0.1, func(_dt) -> bool:
-					var alive := false
-					if is_instance_valid(u) and not u.dead:
-						for s2 in u.shields:
-							if is_same(s2, sh):
-								alive = true
-					if not alive:
-						if is_instance_valid(sfx):
-							sfx.stop()
-						return false
-					return true)
-				m.after(sdur + 0.05, func():
-					if is_instance_valid(sfx):
-						sfx.stop())
+				K.track_shield_fx(u, sh, sfx)
+				K.stop_later(m, sdur + 0.05, sfx, true, 0.1)
 			if u != o:
 				u.remove_buffs_by_id("sona_w_watch")
 				var wb := AriaWatch.new()

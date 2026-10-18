@@ -57,22 +57,43 @@ func vfx_map() -> Dictionary:
 	}
 
 
-## Basic attack visuals: one of League's four swing trails and the matching impact (crit variant on crits).
+## Basic attack visuals. League plays the swing trail from an animation event on the Attack1-4 clip (frame 3, bone
+## Buffbone_Glb_Ground_Loc: the system carries its own 1.4 m offset, so it is NOT raised) and the impact on the hit.
 class YasuoFx extends Effect:
+	var _was_winding := false
+	var _total := 0.0
+	var _due := -1.0
+	var _i := 1
+
 	func _init() -> void:
 		id = "yasuo_lol_fx"
 		hidden = true
+
+	func on_tick(u, dt: float) -> void:
+		var winding: bool = u.windup_timer >= 0.0
+		if winding and not _was_winding:
+			_total = u.windup_timer + dt
+			var clip := String(u.anim_player.current_animation).to_lower() if u.anim_player != null else ""
+			_i = clampi(int(clip.right(1)), 1, 4) if clip.begins_with("attack") and clip.right(1).is_valid_int() else G.rng.randi_range(1, 4)
+			_due = 3.0 / 8.0
+		elif winding and _due >= 0.0 and (_total - u.windup_timer) >= _due * _total:
+			_due = -1.0
+			LolVfx.attach(u, "Yasuo_base_BA_trail_%d" % _i, {"dir": u.facing, "bone": "Buffbone_Glb_Ground_Loc"})
+		_was_winding = winding
 
 	func on_attack_hit(t, info) -> void:
 		var o = owner
 		if t == null or not is_instance_valid(t) or o == null:
 			return
-		var i := G.rng.randi_range(1, 4)
+		if _due >= 0.0:   # the windup ended before the poll saw the event
+			_due = -1.0
+			LolVfx.attach(o, "Yasuo_base_BA_trail_%d" % _i, {"dir": o.facing, "bone": "Buffbone_Glb_Ground_Loc"})
 		var dir := G.flat_dir(o.global_position, t.global_position)
-		LolVfx.attach(o, "Yasuo_base_BA_trail_%d" % i, {"dir": dir, "height": 1.0})
 		var crit: bool = info != null and info.is_crit
-		var nm := ("Yasuo_Base_BA_Crit_hit_%02d" if crit else "Yasuo_base_BA_hit_tar_%02d") % i
-		LolVfx.spawn(o.match_ref, nm, t.global_position + Vector3(0, t.height * 0.5, 0), {"dir": dir})
+		var nm := ("Yasuo_Base_BA_Crit_hit_%02d" if crit else "Yasuo_base_BA_hit_tar_%02d") % _i
+		var meta := LolVfx.spell_meta(o, "CRIT" if crit else "BA")
+		var tp: Vector3 = LolVfx._hit_point(t, String(meta.get("hit_bone", "C_BUFFBONE_GLB_CHEST_LOC")))
+		LolVfx.spawn(o.match_ref, nm, t.global_position, {"dir": dir, "center": maxf(tp.y - t.global_position.y, 0.0)})
 
 
 # ===================================================================== helpers
@@ -145,8 +166,14 @@ class WayOfTheWanderer extends Effect:
 	func full() -> bool:
 		return owner.mana >= owner.stats.max_mana - 0.01
 
+	var _started := false
+
 	func on_tick(u, _dt: float) -> void:
 		var p: Vector3 = u.global_position
+		if not _started:
+			# League: Yasuo spawns with an empty Flow bar (a full one at spawn also played passive_activate at once)
+			_started = true
+			u.mana = 0.0
 		if last_pos != Vector3.INF and not u.dead:
 			var d := G.flat_dist(p, last_pos)
 			if d > 0.0001 and d < 6.0:
@@ -166,6 +193,7 @@ class WayOfTheWanderer extends Effect:
 
 	func on_respawn() -> void:
 		last_pos = Vector3.INF
+		owner.mana = 0.0
 
 	func on_damage_taken(info) -> void:
 		var o = owner

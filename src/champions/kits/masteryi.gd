@@ -43,32 +43,57 @@ func vfx_map() -> Dictionary:
 	}
 
 
-## Basic attack visuals: League's alternating swing trails (Wuju variants while Wuju Style is up) and impacts.
+## Basic attack visuals. League spawns the swing trail from an animation event on the attack clip (frame 5 of
+## Attack1/Attack2 at bone C_Buffbone_Glb_Center_Loc, frame 8 for Crit; Wuju variants while Wuju Style is up) while
+## the hit lands on the cast frame (8 / 7): the trail is started from the windup, the impact from the hit.
 class YiFx extends Effect:
 	var alt := false
+	var _was_winding := false
+	var _total := 0.0
+	var _trail_due := -1.0     ## fraction of the windup at which the trail event fires (-1 = already played)
+	var _trail := ""
+	var _trail_hit := false     ## the crit trail fires after the hit frame: play it from on_attack_hit
 
 	func _init() -> void:
 		id = "yi_lol_fx"
 		hidden = true
+
+	func on_tick(u, dt: float) -> void:
+		var winding: bool = u.windup_timer >= 0.0
+		if winding and not _was_winding:
+			_total = u.windup_timer + dt
+			var crit: bool = u._pending_crit
+			var clip := String(u.anim_player.current_animation).to_lower() if u.anim_player != null else ""
+			var wuju: bool = u.has_buff("yi_wuju")
+			if crit:
+				_trail = "MasterYi_Base_Crit_Wuju_Trail" if wuju else "MasterYi_Base_Crit_Trail"
+				_trail_due = 8.0 / 7.0
+			else:
+				alt = clip.contains("attack2") if clip.contains("attack") else not alt
+				_trail = "MasterYi_Base_BA%d%s_Trail" % [2 if alt else 1, "_Wuju" if wuju else ""]
+				_trail_due = 5.0 / 8.0
+		elif winding and _trail_due >= 0.0 and _trail_due <= 1.0:
+			if (_total - u.windup_timer) >= _trail_due * _total:
+				_trail_due = -1.0
+				LolVfx.attach(u, _trail, {"bone": "C_Buffbone_Glb_Center_Loc", "dir": u.facing})
+		_was_winding = winding
 
 	func on_attack_hit(t, info) -> void:
 		var o = owner
 		if t == null or not is_instance_valid(t) or (info != null and info.cancelled):
 			return
 		if o.passive != null and o.passive.get("striking"):
-			return    # Double Strike's extra hit has its own trail (DoubleStrike._second)
-		var wuju: bool = o.has_buff("yi_wuju")
+			return    # Double Strike's extra hit has its own trail and impact (DoubleStrike._second)
 		var crit: bool = info != null and info.is_crit
 		var dir := G.flat_dir(o.global_position, t.global_position)
-		var trail := ""
-		if crit:
-			trail = "MasterYi_Base_Crit_Wuju_Trail" if wuju else "MasterYi_Base_Crit_Trail"
-		else:
-			alt = not alt
-			trail = "MasterYi_Base_BA%d%s_Trail" % [1 if alt else 2, "_Wuju" if wuju else ""]
-		LolVfx.attach(o, trail, {"dir": dir})
-		var nm := "MasterYi_Base_Crit_tar" if crit else "MasterYi_Base_BA_Tar_%02d" % (1 if alt else 2)
-		LolVfx.spawn(o.match_ref, nm, t.global_position + Vector3(0, t.height * 0.5, 0), {"dir": dir})
+		if _trail_due > 1.0 or (_trail_due >= 0.0 and crit):
+			# the crit trail event sits just after the hit frame (or the windup ended before the poll saw it)
+			LolVfx.attach(o, _trail, {"bone": "C_Buffbone_Glb_Center_Loc", "dir": dir})
+		_trail_due = -1.0
+		var nm := "MasterYi_Base_Crit_tar" if crit else "MasterYi_Base_BA_Tar_%02d" % (2 if alt else 1)
+		var meta := LolVfx.spell_meta(o, "CRIT" if crit else "BA")
+		var tp: Vector3 = LolVfx._hit_point(t, String(meta.get("hit_bone", "C_BUFFBONE_GLB_CHEST_LOC")))
+		LolVfx.spawn(o.match_ref, nm, t.global_position, {"dir": dir, "center": maxf(tp.y - t.global_position.y, 0.0)})
 
 
 # ===================================================================== helpers
@@ -141,11 +166,12 @@ class DoubleStrike extends Effect:
 		if count >= int(val("AttackCount", 4.0)):
 			count = 0
 			var self_ref := self
-			o.match_ref.after(0.14, func(): self_ref._second(target))
+			var tgt_ref := weakref(target)   # (a captured freed Unit makes the timer lambda error out)
+			o.match_ref.after(0.14, func(): self_ref._second(tgt_ref.get_ref()))
 
 	func _second(target) -> void:
 		var o = owner
-		if o.dead or not o.attack_valid(target) or not o.can_attack():
+		if target == null or not is_instance_valid(target) or o.dead or not o.attack_valid(target) or not o.can_attack():
 			return
 		striking = true
 		var crit: bool = G.rng.randf() < o.stats.crit_chance
@@ -154,8 +180,13 @@ class DoubleStrike extends Effect:
 		o.attack_hit(target, crit, 0.5)
 		striking = false
 		var wuju: bool = o.has_buff("yi_wuju")
-		LolVfx.attach(o, "MasterYi_Base_P_%sTrail_%d" % ["Wuju_" if wuju else "", G.rng.randi_range(1, 2)], {"dir": dir})
-		LolVfx.spawn(o.match_ref, "MasterYi_Base_P_tar", tp, {"dir": dir})
+		# League: the "Passive" clip fires P_Trail_1 at frame 6 and P_Trail_2 at frame 9 (both on the center bone)
+		var pre := "MasterYi_Base_P_%sTrail_" % ("Wuju_" if wuju else "")
+		LolVfx.attach(o, pre + "1", {"bone": "C_Buffbone_Glb_Center_Loc", "dir": dir})
+		o.match_ref.after(0.1, func():
+			if is_instance_valid(o) and not o.dead:
+				LolVfx.attach(o, pre + "2", {"bone": "C_Buffbone_Glb_Center_Loc", "dir": o.facing}))
+		LolVfx.spawn(o.match_ref, "MasterYi_Base_P_tar", target.global_position, {"dir": dir, "center": maxf(tp.y - target.global_position.y, 0.0)})
 		o.play_anim("crit", 1.6, 0.03)
 		o.anim_lock = 0.3
 
@@ -218,9 +249,10 @@ class AlphaStrike extends YiAbility:
 		LolVfx.spawn(m, "MasterYi_Base_Q_Cas", o.global_position + Vector3(0, 1.0, 0), {"dir": G.flat_dir(o.global_position, u.global_position)})
 		var st := {"last": null, "pos": o.global_position, "start": o.global_position, "hit": {}, "marks": []}
 		var self_ref := self
+		var u_ref := weakref(u)   # timers must not capture a Unit that can be freed before they fire
 		for i in strikes:
-			m.after(0.04 + i * interval, func(): self_ref._strike(i, u, st))
-		m.after(total, func(): self_ref._finish(u, st))
+			m.after(0.04 + i * interval, func(): self_ref._strike(i, u_ref.get_ref(), st))
+		m.after(total, func(): self_ref._finish(u_ref.get_ref(), st))
 		notify_cast(t)
 
 	func _pick(i: int, primary, st: Dictionary):
@@ -425,20 +457,32 @@ class Meditate extends YiAbility:
 		dr_until = now() + dur + dv("DRLinger", 0.5)
 		o.cancel_windup()
 		o.stop_moving()
-		o.play_anim("spell2", 1.0, 0.1)
-		o.anim_lock = 0.7
+		# League spell2_in ("2013_spell2": Yi turns and lifts off, 0.33 s) then the Spell2 hover loop. The unit
+		# updater would otherwise swap in the generic "Channel" clip (a sword lunge) once anim_lock runs out.
+		o.play_anim("2013_spell2", 1.0, 0.1)
+		o.anim_lock = 0.5
+		var self_anim := self
+		o.match_ref.after(0.33, func():
+			if self_anim.channeling and is_instance_valid(self_anim.owner):
+				self_anim.owner.play_anim("spell2", 1.0, 0.0))
 		start_channel(dur, {"acc": 0.0, "elapsed": 0.0})
 		o.channel_disarm = true
 		# League meditate aura for the channel (W_Cas burst comes from the automatic cast hook)
 		if fx != null and is_instance_valid(fx):
 			fx.stop()
-		fx = LolVfx.attach(o, "MasterYi_Base_W_Buf", {"loop": true, "dir": o.facing})
+		# (not looped: W_Buf's emitters are authored for the 4 s channel; looping would restart "bigray" forever)
+		fx = LolVfx.attach(o, "MasterYi_Base_W_Buf", {"dir": o.facing, "max_life": dur + 0.6})
 		notify_cast(t)
 
 	func channel_tick(dt: float, ch: Dictionary) -> void:
 		var o = owner
 		ch.elapsed += dt
 		ch.acc += dt
+		# hold the hover pose (anim_lock stops locomotion / "Channel" anims) and loop it when the clip ends
+		if ch.elapsed > 0.3:
+			o.anim_lock = maxf(o.anim_lock, 0.15)
+			if o._g_hold:
+				o.play_anim("spell2", 1.0, 0.0)
 		# Meditate pauses Wuju Style and Highlander
 		for bid in ["yi_wuju", "yi_highlander"]:
 			var b = o.find_buff(bid)

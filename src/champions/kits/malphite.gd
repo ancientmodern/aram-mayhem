@@ -2,7 +2,6 @@ extends ChampionKit
 ## Malphite, Shard of the Monolith.
 
 const AMBER := Color(1.0, 0.62, 0.22)
-const STONE := Color(0.52, 0.45, 0.4)
 
 
 func build_kit() -> void:
@@ -81,35 +80,6 @@ class SwingTrails extends Effect:
 		LolVfx.attach(owner, "Malphite_Base_BA_Sweep_01" if n % 2 == 1 else "Malphite_Base_BA_Sweep_02", {"dir": owner.facing})
 
 
-# ===================================================================== shared visuals
-## Granite chunks for the passive shell (League's shield overlay is a material effect the runtime cannot show).
-class Fx:
-	static var _rock_mat: StandardMaterial3D = null
-
-	static func rock_material() -> StandardMaterial3D:
-		if _rock_mat == null:
-			var mat := StandardMaterial3D.new()
-			mat.albedo_color = STONE
-			mat.roughness = 0.95
-			mat.emission_enabled = true
-			mat.emission = Color(0.35, 0.18, 0.05)
-			mat.emission_energy_multiplier = 0.6
-			_rock_mat = mat
-		return _rock_mat
-
-	## Chunky lit rock (prism) mesh.
-	static func rock(size: float) -> MeshInstance3D:
-		var mi := MeshInstance3D.new()
-		var pm := PrismMesh.new()
-		pm.size = Vector3(size, size * 1.3, size * 0.9)
-		pm.left_to_right = G.rng.randf()
-		mi.mesh = pm
-		mi.material_override = rock_material()
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		mi.rotation = Vector3(G.rng.randf() * TAU, G.rng.randf() * TAU, G.rng.randf() * TAU)
-		return mi
-
-
 # ===================================================================== helpers
 ## Bots never spend points after spawning (core gap): level abilities on their behalf.
 class BotLeveler extends Effect:
@@ -142,7 +112,6 @@ class MAbility extends Ability:
 class GraniteShield extends Effect:
 	const SID := "malphite_granite"
 	var last_hit := -100.0
-	var shell: VfxNode = null
 	var was_active := false
 
 	func _init() -> void:
@@ -176,11 +145,9 @@ class GraniteShield extends Effect:
 	func on_respawn() -> void:
 		last_hit = -100.0
 
-	## The shell and its pending break effect must not stay on the corpse (shields are cleared on death).
+	## The pending break effect must not stay on the corpse (shields are cleared on death).
 	func on_death(_killer) -> void:
 		was_active = false
-		if shell != null and is_instance_valid(shell):
-			shell.visible = false
 
 	func on_tick(u, _dt: float) -> void:
 		if u.dead:
@@ -196,27 +163,6 @@ class GraniteShield extends Effect:
 			var brk := LolVfx.attach(u, "Malphite_Base_P_shield_break", {"height": 1.0})
 			u.match_ref.after(1.2, func(): LFx.kill(brk, 0.3))
 		was_active = on
-		_update_shell(u, on)
-
-	## Three granite chunks orbiting Malphite while the shield is up.
-	func _update_shell(u, on: bool) -> void:
-		if shell == null or not is_instance_valid(shell):
-			shell = VfxNode.new()
-			u.add_child(shell)
-			shell.position.y = 1.3
-			for i in 3:
-				var a := TAU * i / 3.0
-				var rk := Fx.rock(0.32)
-				rk.position = Vector3(cos(a), 0.15 * (i - 1), sin(a)) * maxf(1.1, u.radius * 1.5)
-				shell.add_child(rk)
-			var glow := Vfx.sprite(AMBER, 0.6, 1.2)
-			glow.position = Vector3(0, 0, 0)
-			glow.visible = false
-			shell.add_child(glow)
-			var spin := shell.create_tween().set_loops()
-			spin.tween_property(shell, "rotation:y", TAU, 3.0).from(0.0)
-		if shell.visible != on:
-			shell.visible = on
 
 
 # ===================================================================== Q
@@ -567,9 +513,6 @@ class UnstoppableForce extends MAbility:
 		# League: take-off dust and the unstoppable meteor trail for the charge
 		var trail := LolVfx.attach(o, "Malphite_Base_R_cas_trail", {"loop": true, "dir": G.flat_dir(from, dest)})
 		m.after(dur, func(): LFx.stop(trail))
-		# landing zone telegraph (League has no ground indicator for this; kept for readability)
-		var tele := Vfx.ground_circle(m, dest, radius_m(), Color(1.0, 0.5, 0.15, 0.8), dur + 0.1, 0.3)
-		tele.get_child(0).material_override.set_shader_parameter("energy", 2.0)
 		notify_cast(t)
 
 	func _impact() -> void:
