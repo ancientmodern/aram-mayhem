@@ -435,6 +435,8 @@ func spawn_attack_missile(src: Unit, tgt: Unit, crit: bool) -> Missile:
 			nm = LolVfx.champ_fx(src, "BA_mis")
 		if nm != "":
 			vis = LolVfx.make(nm, {"loop": true})
+	if vis == null and not (src is Champion):
+		vis = LolVfx.unit_attack_visual(src, tgt)
 	if vis == null and src is Champion and src.kit != null and src.kit.has_method("attack_missile_visual"):
 		vis = src.kit.attack_missile_visual(crit)
 	mi.visual = vis if vis != null else Vfx.attack_missile(src, crit)
@@ -922,6 +924,7 @@ func _bot_summoner(c: Champion) -> String:
 func _setup_view() -> void:
 	for c in champions:
 		LolVfx.load_set(c.alias)
+	LolVfx.load_set("shared")
 	audio = GameAudio.new()
 	audio.name = "Audio"
 	audio.setup(self)

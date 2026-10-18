@@ -28,8 +28,18 @@ func tick(_dt: float) -> void:
 			return
 
 
+var lol_fx: LolVfx = null
+
+
 func _spawn() -> void:
 	active = true
+	# League's ARAM health pickup effect (floating health icon, glow, light beams)
+	LolVfx.load_set("shared")
+	lol_fx = LolVfx.attach(self, "ARAMHealthPickup_AOE", {"loop": true})
+	if lol_fx != null:
+		if model != null:
+			model.visible = false
+		return
 	if model == null:
 		model = Assets.unit_model("HA_AP_HealthRelic", 0)
 		if model == null:
@@ -50,7 +60,11 @@ func _spawn() -> void:
 
 func _pickup(c) -> void:
 	active = false
-	model.visible = false
+	if lol_fx != null and is_instance_valid(lol_fx):
+		lol_fx.stop()
+		lol_fx = null
+	if model != null:
+		model.visible = false
 	if glow != null:
 		glow.queue_free()
 		glow = null
