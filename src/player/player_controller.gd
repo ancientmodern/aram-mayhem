@@ -102,8 +102,11 @@ func pick_unit(mp: Vector2) -> Unit:
 			var score := d / r
 			if u == champ:
 				score += 0.6
+			# overlapping units: League's right-click favours enemies (an attack) and then champions
 			if u.team != champ.team:
-				score -= 0.2
+				score -= 0.45
+			if u.kind == G.Kind.CHAMPION:
+				score -= 0.15
 			if score < best_d:
 				best_d = score
 				best = u
