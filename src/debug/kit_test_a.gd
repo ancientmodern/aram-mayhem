@@ -18,7 +18,7 @@ var spot := Vector3.ZERO
 ## buff ids that legitimately persist (permanent passives etc.)
 const PERSIST := ["harness_disarm"]
 ## effects that legitimately stay while a state lasts (Annie's stun-ready glow at 4 Pyromania stacks)
-const PERSIST_FX := ["Annie_Base_StunReady"]
+const PERSIST_FX := ["Annie_Base_StunReady", "Leona_Base_Idle_Sword", "Leona_Base_Idle_Shield", "Ahri_Base_Orb", "Ahri_Base_R_Eyes", "Ahri_Base_R_Ready_tar", "Annie_Base_Idle_fire"]
 
 
 class DmgTracker extends Effect:
