@@ -13,7 +13,8 @@ extends Node3D
 
 const PICKUP_RADIUS := 1.5            ## TriggerRadius 150 u
 const MANA_MULT := 0.08               ## ManaRestoreMult
-const AOE_SCALE := 2.48               ## the Redemption indicator/pulse art is ~6.85 m wide (item radius); ours is 17 m
+const AOE_SCALE := 1.45               ## [spatial] the Redemption ring art (quad half-extent 685 u, ring at 0.84-0.88)
+                                     ## sits at ~590 u; x1.45 puts it on HealingRadius 850 (2.48 drew it at ~1460 u)
 const EV_PICKUP := "Play_sfx_Env_Map12_Crepe_healthpickup_cast"
 
 var m = null

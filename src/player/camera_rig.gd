@@ -1,19 +1,24 @@
 class_name CameraRig
 extends Node3D
 ## League camera. Values (League units = cm, / 100 -> meters):
-##  - 40 deg vertical field of view, fixed yaw, 56 deg pitch below horizontal (community-measured League values)
-##  - zoom = camera distance to the focus point; League's max zoom is 2250 units (the well-known client constant
-##    zoom hacks patch) and games start fully zoomed out. Min zoom is an estimate (no data found): 1500 units.
+##  [spatial] calibrated against League's data and real ARAM footage (docs/SPATIAL_AUDIT.md):
+##  - 50 deg vertical field of view: Global.wad Globals/CameraConfig_ARAM and CameraConfig_KIWI (ARAM Mayhem) set
+##    ZoomFov = 50 (CameraConfig_CLASSIC leaves it at the engine default); fixed yaw, 56 deg pitch below horizontal
+##  - zoom = camera distance to the focus point. At max zoom the real ARAM view spans ~1890 units vertically through
+##    the focus (fit to a 900-unit Brand W range ring and an image registration of a turret shot, two videos);
+##    with FOV 50 / pitch 56 that is 2020 units of eye distance (the fit gives pitch 56.0 at FOV 50). The old
+##    40 deg / 2250 setup spanned 1638 units: 15% too close, which also made every range look 15% longer.
+##    Games start fully zoomed out. Min zoom keeps the old 2:3 ratio (no data found).
 ##  - mouse wheel zooms in steps with smoothing (League "ScrollSmoothingEnabled")
 ##  - locked camera is rigidly centred on the champion (no lag); Y toggles lock; holding Space keeps the camera
 ##    snapped on your champion; F1 = own champion, F2-F5 = allies (hold to follow, like League)
 ##  - edge pan / middle-mouse drag when unlocked
 
-const LEAGUE_FOV := 40.0
+const LEAGUE_FOV := 50.0         ## CameraConfig_ARAM / _KIWI ZoomFov
 const LEAGUE_PITCH := 56.0
-const MAX_ZOOM := 22.5           ## 2250 units
-const MIN_ZOOM := 15.0           ## estimate (1500 units)
-const ZOOM_STEP := 1.25          ## ~6 wheel notches from max to min
+const MAX_ZOOM := 20.2           ## 2020 units (view spans ~1890 units through the focus, measured)
+const MIN_ZOOM := 13.5           ## estimate, same 2:3 ratio as before
+const ZOOM_STEP := 1.1           ## ~6 wheel notches from max to min
 
 var cam: Camera3D
 var target: Node3D = null

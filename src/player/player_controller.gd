@@ -422,11 +422,13 @@ func _update_indicator() -> void:
 	if not ab.is_ready() or not ab.can_afford():
 		col = IND_TINT_UNAVAILABLE
 	# range ring
-	var rr := ab.range_m()
-	_ind_range.visible = rr > 0.5
+	# [spatial] League draws the spell range ring at castRange from the caster's centre (castRangeDisplayOverride
+	# when set; + own gameplay radius only for edge-range spells) - it used to add the radius to every ring
+	var rr := ab.indicator_range_m()
+	_ind_range.visible = ab.range_m() > 0.5
 	if _ind_range.visible:
 		_ind_range.global_position = Vector3(o.x, y, o.z)
-		_ind_range.scale = Vector3(rr * 2.0 + champ.radius * 2.0, 1, rr * 2.0 + champ.radius * 2.0)
+		_ind_range.scale = Vector3(rr * 2.0, 1, rr * 2.0)
 		_ind_range.material_override.set_shader_parameter("color", Color(col.r, col.g, col.b, col.a * 0.8))
 	var dir := G.flat_dir(o, mouse_ground)
 	_ind_main.visible = false

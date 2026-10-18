@@ -146,7 +146,8 @@
    "mAlternateName": "MissFortuneRicochetShot",
    "name": "Double Up",
    "tooltip": "Miss Fortune fires a bouncing shot, dealing <physicalDamage>@TotalDamageTooltip@ physical damage</physicalDamage> to an enemy and to another one behind them. <br><br>The second shot can critically strike for <physicalDamage>@TotalDamageCrit@ physical damage</physicalDamage>. It always critically strikes if the first shot kills its target.",
-   "summary": "Miss Fortune fires a bullet at an enemy, damaging them and a target behind them. Both strikes can also apply Love Tap."
+   "summary": "Miss Fortune fires a bullet at an enemy, damaging them and a target behind them. Both strikes can also apply Love Tap.",
+   "castRangeUseBoundingBoxes": true
   },
   "MissFortuneRicochetShotDud": {
    "script": "MissFortuneRicochetShotDud",

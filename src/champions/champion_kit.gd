@@ -59,7 +59,15 @@ func init_ability(a: Ability, key: String, script_name: String = "") -> Ability:
 		a.cooldowns = _ranks(sd.cooldownTime, key == "R")
 	if sd.has("mana"):
 		a.costs = _ranks(sd.mana, key == "R")
-	if sd.has("castRangeDisplayOverride"):
+	# [spatial] League measures unit-targeted spells centre-to-centre unless castRangeUseBoundingBoxes (then edge to
+	# edge, like basic attacks). castRangeDisplayOverride is only the drawn ring for unit-targeted spells (MF Q:
+	# castRange 550 edge range, ring 650); for skillshots / ground spells it is the real reach (missile range).
+	a.range_edge = bool(sd.get("castRangeUseBoundingBoxes", false))
+	if sd.has("castRangeDisplayOverride") and a.target_type == Ability.Target.UNIT and sd.has("castRange") \
+			and _first(sd.castRange) < 20000.0:
+		a.cast_range = _first(sd.castRange)
+		a.display_range = _first(sd.castRangeDisplayOverride)
+	elif sd.has("castRangeDisplayOverride"):
 		a.cast_range = _first(sd.castRangeDisplayOverride)
 	elif sd.has("castRange"):
 		var cr := _first(sd.castRange)

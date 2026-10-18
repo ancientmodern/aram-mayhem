@@ -21,6 +21,8 @@ var is_summoner := false
 var cooldowns: Array = [10.0]   ## per rank (index = level-1)
 var costs: Array = [0.0]
 var cast_range := 600.0         ## League units (0 = self)
+var range_edge := false         ## [spatial] unit-targeted range is edge-to-edge (League castRangeUseBoundingBoxes)
+var display_range := 0.0        ## [spatial] League castRangeDisplayOverride for the range ring (0 = from cast_range)
 var target_type := Target.DIRECTION
 var target_side := Side.ENEMY
 var target_champions_only := false
@@ -93,6 +95,13 @@ func base_cooldown() -> float:
 
 func range_m() -> float:
 	return cast_range * G.U
+
+
+## [spatial] Radius of the range ring League draws for this ability (metres from the caster's centre).
+func indicator_range_m() -> float:
+	if display_range > 0.0:
+		return display_range * G.U
+	return range_m() + (owner.radius if range_edge else 0.0)
 
 
 func ap() -> float:
@@ -254,7 +263,10 @@ func target_position(t: Dictionary) -> Vector3:
 func in_cast_range(t: Dictionary) -> bool:
 	if target_type == Target.UNIT and t.get("unit") != null:
 		var u = t.unit
-		return G.flat_dist(owner.global_position, u.global_position) <= range_m() + owner.radius + u.radius
+		# [spatial] League: unit-targeted spells use centred range unless flagged edge range (was always edge,
+		# i.e. ~130 units too long for every targeted spell)
+		var extra: float = owner.radius + u.radius if range_edge else 0.0
+		return G.flat_dist(owner.global_position, u.global_position) <= range_m() + extra
 	if target_type == Target.POINT and not clamp_point_to_range():
 		return G.flat_dist(owner.global_position, t.pos) <= range_m()
 	return true
