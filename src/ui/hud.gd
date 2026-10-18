@@ -185,7 +185,7 @@ func _warm_up() -> void:
 	var seen := {}
 	for k in HudLayout.data():
 		var t = HudLayout.data()[k].get("t")
-		if t != null and not seen.has(t) and not (k as String).begins_with("Shop:") and not (k as String).begins_with("Scoreboard:"):
+		if t != null and not seen.has(t) and not (k as String).begins_with("Shop:"):  # [ui-fix] scoreboard atlases preloaded too (no first-Tab hitch)
 			seen[t] = true
 			HudLayout.tex(t)
 	for c in match_ref.champions:

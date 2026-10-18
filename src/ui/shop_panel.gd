@@ -60,6 +60,10 @@ var _panel_open := {"cons": false, "boots": false, "inv": false}
 var _panel_pin := {"cons": false, "boots": false, "inv": false}
 var _last_click_t := 0
 var _last_click_id := -1
+var _last_click_pos := Vector2(-9999, -9999)   ## [ui-fix] where the last item click landed (double-click = same spot, not same widget)
+var _click_pos := Vector2.ZERO               ## [ui-fix] position of the click being dispatched
+const DBL_MS := 380
+const DBL_PX := 14.0
 var _drop_open := false               ## "builds into" overflow list
 var _caret_t := 0.0
 var msg := ""
@@ -222,9 +226,22 @@ func sell_item(it) -> void:
 	_sell()
 
 
-## "Item clicked" semantics shared by every item cell: left = select (double-click buys), right = buy.
+## [ui-fix] League double-click: two left clicks within DBL_MS at (nearly) the same screen spot. Matching by position, not by
+## item id, because the first click re-roots the build tree / re-lays-out the panel, so the second click usually lands on a
+## different node (or the root) than the first one. The first-clicked item is the one that gets bought.
+func _is_double_click() -> bool:
+	return _last_click_id >= 0 and Time.get_ticks_msec() - _last_click_t < DBL_MS and _click_pos.distance_to(_last_click_pos) <= DBL_PX
+
+
+func _note_click(id: int) -> void:
+	_last_click_id = id
+	_last_click_t = Time.get_ticks_msec()
+	_last_click_pos = _click_pos
+
+
+## "Item clicked" semantics shared by every item cell (grid, search, recipe tree, builds-into, ...): left = select,
+## double-click buys, right = buy.
 func _item_click(id: int, right: bool, owned = null) -> void:
-	var now := Time.get_ticks_msec()
 	if right:
 		_select(id, owned)
 		if owned != null:
@@ -233,14 +250,12 @@ func _item_click(id: int, right: bool, owned = null) -> void:
 			_buy(id)
 		_last_click_id = -1
 		return
-	if now - _last_click_t < 380 and _last_click_id == id and owned == null:
-		_buy(id)
-		_last_click_id = -1
+	_select(id, owned)
+	ShopSfx.cue("select")
+	if owned == null:
+		_note_click(id)
 	else:
-		_select(id, owned)
-		_last_click_id = id
-		ShopSfx.cue("select")
-	_last_click_t = now
+		_last_click_id = -1
 
 
 # ===================================================================== input
@@ -278,12 +293,24 @@ func _input(event: InputEvent) -> void:
 	var right := mb.button_index == MOUSE_BUTTON_RIGHT
 	if mb.button_index != MOUSE_BUTTON_LEFT and not right:
 		return
+	_click_pos = mp
+	if not right and _is_double_click():
+		# [ui-fix] double-click buys the item that was clicked first, wherever the (re-laid-out) panel now has the cursor
+		var bid := _last_click_id
+		_last_click_id = -1
+		_drop_open = false
+		_select(bid)
+		_buy(bid)
+		return
 	for i in range(_hits.size() - 1, -1, -1):
 		var h: Array = _hits[i]
 		if not (h[0] as Rect2).has_point(mp):
 			continue
+		if h[1] != "item" and h[1] != "rec_item":
+			_last_click_id = -1
 		_hit(h, right)
 		return
+	_last_click_id = -1
 	# click on empty shop space: unfocus search, fold unpinned quick panels
 	search_focus = false
 	for p in PANELS:
@@ -371,16 +398,14 @@ func _hit(h: Array, right: bool) -> void:
 			_drop_open = not _drop_open
 			ShopSfx.cue("expand")
 		"rec_item":
-			var now := Time.get_ticks_msec()
-			if right or (now - _last_click_t < 380 and _last_click_id == h[2]):
+			if right:
 				_select(h[2])
 				_buy(h[2])
 				_last_click_id = -1
 			else:
 				_select(h[2])
-				_last_click_id = h[2]
+				_note_click(h[2])
 				ShopSfx.cue("rec_select")
-			_last_click_t = now
 		"item":
 			_item_click(h[2], right)
 			if _drop_open:
@@ -568,12 +593,12 @@ func _draw_recommended(c) -> void:
 			L.draw(self, CE + "Item_Unpurchaseable", Color(1, 1, 1, 0.55), off)
 		_gold_amount(L.r(CE + "CostText", off), price, 16, C_GOLD_TXT if afford else C_GOLD_POOR)
 		L.text(self, CE + "BriefText", ItemDB.brief(id), f_body, 13, C_DIM, 1, off, 0.0)
+		_hits.append([slot, "rec_item", id])   # [ui-fix] before the component cells: hits are searched last-first, so the small component icons win
 		var comps := ItemDB.components_of(id)
 		var cx := slot.get_center().x - (comps.size() * 40.0 * L.s()) * 0.5
 		for ci in comps.size():
 			var r := Rect2(cx + ci * 40.0 * L.s(), slot.position.y + 395.0 * L.s(), 34.0 * L.s(), 34.0 * L.s())
 			_item_cell_small(r, comps[ci])
-		_hits.append([slot, "rec_item", id])
 		_hover(id, slot)
 	if cards.is_empty():
 		HudLayout.text_in(self, L.r(SH + "ItemShop_RecItems_RecItemSlot0").grow(80), "Nothing left to recommend", f_body, 15, C_DIM, 1, 0.0)
@@ -1076,8 +1101,7 @@ func _tree_node(r: Rect2, id: int, root: bool, consumed: Array, depth: int) -> v
 	var cr := Rect2(r.position.x - 10 * L.s(), r.end.y + 1 * L.s(), r.size.x + 20 * L.s(), 13 * L.s())
 	var label := "Owned" if owned else str(price)
 	HudLayout.text_in(self, cr, label, f_bold, maxi(10, int(12 * L.s())), C_TEAL if owned else (C_GOLD_TXT if c.gold >= price else C_GOLD_POOR), 1, 0.0)
-	if not root:
-		_hits.append([r, "item", id])
+	_hits.append([r, "item", id])   # [ui-fix] the tree root is clickable too (double-click / right-click buys it)
 	_hover(id, r)
 
 
