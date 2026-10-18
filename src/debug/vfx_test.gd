@@ -57,12 +57,14 @@ func _spawn(m, c, n: String, pos: Vector3) -> void:
 		var carrier := Node3D.new()
 		m.fx_root.add_child(carrier)
 		carrier.global_position = pos + Vector3(-4, 0, 0)
+		if low.begins_with("jinx_base_r_mis"):
+			carrier.global_position.y += 0.8   # launched from the rocket launcher (~1.7 m), see LolVfx._track_missile
 		var fx := LolVfx.attach(carrier, n, {"loop": true, "missile": true, "mis": {"start_h": 1.0}})
 		carrier.look_at(carrier.global_position + Vector3.RIGHT, Vector3.UP)
 		var tw := carrier.create_tween()
 		tw.tween_property(carrier, "global_position", pos + Vector3(4, 0, 0), 0.5)
 		tw.tween_callback(func(): fx.detach_and_fade())
-	elif low.contains("_buf") or low.contains("_cas") or low.contains("avatar") or low.begins_with("loc_"):
+	elif low.contains("_buf") or low.contains("_cas") or low.contains("avatar") or low.begins_with("loc_") or low.begins_with("global_ss_"):
 		var opts := {"center": c.height * 0.5}
 		if low.begins_with("loc_") or low.contains("overhead"):
 			opts["bone"] = "C_BUFFBONE_GLB_OVERHEAD_LOC"
@@ -96,6 +98,7 @@ func _run() -> void:
 	LolVfx.load_set(c.alias)
 	LolVfx.load_set("shared")
 	LolVfx.load_set("map12")
+	LolVfx.load_set("summoners")
 	if not sweep.is_empty():
 		names = []
 		for f in sweep:
