@@ -21,6 +21,7 @@ var _grid := {}
 var _timers: Array = []         ## [[time, Callable]]
 var spawner = null
 var relics: Array = []
+var shopkeepers: Array = []   ## [{node, team}] League: clicking your shopkeeper opens the shop
 var player_controller = null
 var camera_rig = null
 var hud = null
@@ -894,6 +895,9 @@ func _build_props() -> void:
 				mdl.global_position = p.pos
 				mdl.rotation.y = p.yaw
 				_play_idle(mdl)
+				if nm != "HA_AP_Poro":
+					# Viking minds the Order fountain, the Hermit the Chaos one
+					shopkeepers.append({"node": mdl, "team": G.Team.ORDER if nm == "HA_AP_Viking" else G.Team.CHAOS})
 	# [env3] hexgates: entry gates in the bases, exits at the outer / inhibitor turrets (src/env/hexgate_net.gd)
 	hexgate_net = HexgateNet.new()
 	hexgate_net.name = "HexgateNet"

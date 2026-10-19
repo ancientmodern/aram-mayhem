@@ -129,11 +129,13 @@ func tick(dt: float) -> void:
 	for sm in summoners:
 		if sm != null:
 			sm.tick(dt)
-	if not dead and match_ref != null:
-		_fountain(dt)
+	if match_ref != null:
+		# League: passive gold keeps flowing while dead
 		if match_ref.time > Rules.PASSIVE_GOLD_START:
 			gold += Rules.PASSIVE_GOLD_PER_SEC * (1.0 + stats.gold_gen) * dt
-		gain_xp(Rules.PASSIVE_XP_PER_SEC * dt)
+		if not dead:
+			_fountain(dt)
+			gain_xp(Rules.PASSIVE_XP_PER_SEC * dt)
 	super.tick(dt)
 
 

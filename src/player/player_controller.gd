@@ -83,6 +83,23 @@ func _is_enemy_target(u: Unit) -> bool:
 	return u != null and u.team != champ.team and u.is_targetable_by(champ.team)
 
 
+## True when the cursor is over the player's own shopkeeper (screen-space, like unit picking).
+func _shopkeeper_at(mp: Vector2) -> bool:
+	var cam := rig.cam
+	for sk in match_ref.shopkeepers:
+		var n: Node3D = sk.node
+		if sk.team != champ.team or not is_instance_valid(n):
+			continue
+		var top := n.global_position + Vector3(0, 1.4, 0)
+		if cam.is_position_behind(top):
+			continue
+		var sp := cam.unproject_position(top)
+		var r := 1600.0 / maxf(cam.global_position.distance_to(top), 1.0)   # ~80 px at default zoom on 1080p
+		if mp.distance_to(sp) < r * get_viewport().get_visible_rect().size.y / 1080.0:
+			return true
+	return false
+
+
 ## Screen-space unit picking (forgiving, like League).
 func pick_unit(mp: Vector2) -> Unit:
 	var best: Unit = null
@@ -213,6 +230,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
+		if mb.pressed and aiming < 0 and not attack_move_armed and _shopkeeper_at(mb.position):
+			# League: clicking your team's shopkeeper (left or right) opens the shop
+			if match_ref.hud != null and not match_ref.hud.shop_panel.visible:
+				match_ref.hud.toggle_shop()
+			get_viewport().set_input_as_handled()
+			return
 		if mb.button_index == MOUSE_BUTTON_RIGHT:
 			_rmb_held = mb.pressed
 			if mb.pressed:
