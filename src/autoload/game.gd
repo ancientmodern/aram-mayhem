@@ -219,6 +219,27 @@ func _exit_tree() -> void:
 	ItemFxExtra._makers.clear()   # Callables bound to item part scripts
 	ItemFxExtra.PARTS.clear()     # Script resources held statically
 	ItemFx._makers.clear()
+	# more resource-holding static caches (textures, fonts, styles, streams, meshes, animation libraries)
+	Assets._sidecar_cache.clear()
+	Assets._extra_libs.clear()
+	Assets._stride_cache.clear()
+	Assets._wh_cache.clear()
+	HudLayout._fonts.clear()
+	HudLayout._tex.clear()
+	HudLayout._style_cache.clear()
+	HudLayout._font_files.clear()
+	Hud._grey_icons.clear()
+	ShopSfx._events.clear()
+	ShopSfx._actions.clear()
+	ItemFx._rl.clear()
+	ItemTip._rows.clear()
+	AnimGraph._cache.clear()
+	AnimEvents._tables.clear()
+	AnimEvents.debug_hook = Callable()
+	MapBuilder._env_cache.clear()
+	GroundDecal._tex = null
+	Unit._solid.clear()
+	Unit._solid_pool.clear()
 	Assets._hidden_mat = null
 	MapBuilder.grass_material = null
 	LolVfx._proc_shader = null
