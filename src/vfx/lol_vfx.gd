@@ -49,7 +49,11 @@ var follow: Node3D = null:
 		follow = v
 		if v != null:
 			_dynamic = true
-var _face_unit = null            ## attached to a Unit: keep facing its direction
+			_has_follow = true
+## [vfx-leak] a freed `follow` compares equal to null, so `follow != null` can't see that the followed node died:
+## without this flag a rocket-trail effect whose missile was freed never ticked again and looped forever.
+var _has_follow := false
+var _face_unit = null           ## attached to a Unit: keep facing its direction
 var follow_offset := Vector3.ZERO
 var _anchor: Node3D = null       ## follows a bone socket; non-ground emitters live under it
 var _socket: Node3D = null
@@ -244,7 +248,26 @@ static func spawn(m, name: String, pos: Vector3, opts: Dictionary = {}) -> LolVf
 	m.fx_root.add_child(n)
 	n.global_position = pos + Vector3(0, float(opts.get("height", 0.0)) + float(n.def.get("_lift", 0.0)), 0)
 	n._apply_dir()
+	n._snap_ground_layer()
 	return n
+
+
+## [vfx-calib] isGroundLayer emitters are terrain decals: they lie on the ground wherever the system origin is
+## (spawn height, the missile-height `_lift`, a kit's "height"). Without this Lux E's Temp_GroundGlow floated
+## 1.26 m up with the lifted zone and every raised spawn carried its ground glows into the air.
+var _ground_static: Array = []
+
+
+func _snap_ground_layer() -> void:
+	if _ground_static.is_empty():
+		return
+	var m = G.match
+	if m == null or m.nav == null:
+		return
+	for nd in _ground_static:
+		if is_instance_valid(nd) and nd.is_inside_tree():
+			var gp: Vector3 = nd.global_position
+			nd.global_position = Vector3(gp.x, m.nav.height_at(gp) + 0.03, gp.z)
 
 
 static func attach(parent: Node3D, name: String, opts: Dictionary = {}) -> LolVfx:
@@ -255,10 +278,13 @@ static func attach(parent: Node3D, name: String, opts: Dictionary = {}) -> LolVf
 		return null
 	n._host = parent
 	if not opts.has("bone") and parent.has_method("socket"):
-		# League attaches crowd-control indicators to the overhead buff bone
+		# [cc-anim] League's crowd-control indicators (LOC_Stun / LOC_Silence / LOC_Taunt) carry their own emit offsets
+		# (stun ring +30 u, silence bubble +80 u up / 25 u aside) measured from the HEAD buff bone: Riot's Leona Q1 /
+		# Garen Q1 previews put the ring ~0.2 m and the bubble ~0.7 m above the dummy's head. (Anchoring them to the
+		# overhead bone as before stacked the offset on top of a bone that already sits 0.4 m above the head.)
 		if name.begins_with("LOC_"):
 			n._opts = opts.duplicate()
-			n._opts["bone"] = "C_BUFFBONE_GLB_OVERHEAD_LOC"
+			n._opts["bone"] = "C_BUFFBONE_GLB_HEAD_LOC"
 	parent.add_child(n)
 	n.position = Vector3(0, float(opts.get("height", 0.0)), 0)
 	if parent is Unit and opts.get("face", true) and not opts.has("dir"):
@@ -652,7 +678,7 @@ static var _log_spawns: bool = "--vfxlog" in OS.get_cmdline_user_args()
 
 ## Recompute whether this instance needs a tick every frame or can sleep until its next timer / free time.
 func _refresh() -> void:
-	_dynamic = _face_unit != null or follow != null or _anchor != null or not _mis.is_empty() \
+	_dynamic = _face_unit != null or _has_follow or _anchor != null or not _mis.is_empty() \
 			or not _ground_nodes.is_empty() or not _rate_fx.is_empty() or not _carriers.is_empty() \
 			or not _ameshes.is_empty() or (_stopped and not _lingers.is_empty()) 			or (not _waxes.is_empty() and _host != null)
 	var w := INF
@@ -755,11 +781,12 @@ func _tick() -> void:
 				global_basis = Basis.looking_at(Vector3(f.x, 0, f.z).normalized(), Vector3.UP) * Basis.from_scale(scale)
 		else:
 			_face_unit = null
-	if follow != null:
+	if _has_follow:
 		if is_instance_valid(follow):
 			global_position = follow.global_position + follow_offset
 		else:
 			follow = null
+			_has_follow = false   # [vfx-leak]
 			stop()
 	if _anchor != null:
 		_update_anchor()
@@ -1050,6 +1077,8 @@ func _build_emitter(e: Dictionary) -> void:
 		p.position.y += float(_opts.get("center", 0.0))
 	if _is_ground(e) and _mis_frame != null:
 		_ground_nodes.append(p)
+	elif _is_ground(e):
+		_ground_static.append(p)
 	_budget += p.amount
 	live_particles += p.amount
 	var delay: float = spec.delay
@@ -1370,6 +1399,7 @@ func _tick_ameshes() -> void:
 		if _stopped:
 			c.a *= clampf(1.0 - (_t - _stop_t) / 0.3, 0.0, 1.0)
 		sh.set_instance_shader_parameter("tint", c)
+		sh.set_instance_shader_parameter("shell_life", Vector2(k, age))   # [vfx-calib] erosion / scroll over the shell's life
 		if (life > 0.0 and age >= life) or (_stopped and _t - _stop_t > 0.3):
 			sh.queue_free()
 			_ameshes.remove_at(i)
@@ -1645,21 +1675,25 @@ static func _ero_tex(e: Dictionary) -> ImageTexture:
 # ----------------------------------------------------------------- materials
 static func _shader(blend: int, distort := false, bias := false, solid := false, rs := 0) -> Shader:
 	# League blendMode (ParticleSystem::BLEND_MODE, meta-wiki VfxEmitterDefinitionData): 0 Add (default; colour
-	# premultiplied by alpha, ONE,ONE), 1 Alpha, 2 Subtract (drawn additive here), 3 None (opaque, writes depth),
-	# 4 AlphaAdd (SrcAlpha,One), 5 PremultipliedAlpha
+	# premultiplied by alpha, ONE,ONE), 1 Alpha, 2 Subtract (Zero,InvSrcColor on the premultiplied colour: a
+	# darken), 3 None (opaque, writes depth), 4 AlphaAdd (SrcAlpha,One), 5 PremultipliedAlpha
+	# [vfx-calib] 2 is drawn as blend_mul with ALBEDO = 1 - colour * alpha (dst * (1 - src) exactly): Lux E's
+	# Core_Glow1 / nova Temp_GroundGlow darken the ground under the field in Riot's E preview; additive made
+	# them a 450-unit white disc
 	# rs [vfx-runtime] render-state bits: RS_NO_DEPTH (miscRenderFlags 0x1 DisableZBuffer), RS_CULL (meshes
 	# without disableBackfaceCull cull their back faces)
 	var mode := "blend_add"
 	match blend:
 		1, 3: mode = "blend_mix"
+		2: mode = "blend_mul"
 		5: mode = "blend_premul_alpha"
 	if distort:
 		mode = "blend_mix"
-	var premul := blend == 0 and not distort and not solid
+	var premul := (blend == 0 or blend == 2) and not distort and not solid
 	var key := mode + ("|d" if distort else "") + ("|b" if bias else "") + ("|s" if solid else "") + ("|p" if premul else "") + "|%d" % rs
 	if _shaders.has(key):
 		return _shaders[key]
-	var hint := "" if mode == "blend_add" else "source_color,"
+	var hint := "" if mode == "blend_add" or mode == "blend_mul" else "source_color,"
 	var cull := (_cull_mode if _cull_mode != "" else "cull_front") if rs & RS_CULL else "cull_disabled"   # vmesh winding: normals face Godot's back side
 	var modes := ("unshaded, %s, depth_draw_always" if solid else "unshaded, %s, depth_draw_never") % cull
 	if rs & RS_NO_DEPTH:
@@ -1670,6 +1704,9 @@ static func _shader(blend: int, distort := false, bias := false, solid := false,
 " if solid else "")
 	if premul:
 		defs += "#define PREMUL_ADD
+"
+	if mode == "blend_mul":
+		defs += "#define SUBTRACT
 "
 	if hint == "":
 		defs += "#define RAW_TEX
@@ -1699,7 +1736,7 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 		return em
 	var key := "mat|%s|%s" % [amesh, JSON.stringify([e.get("tex"), e.get("blend"), _orient(e), e.get("texdiv"), e.get("frames"),
 			e.get("alpha_ref"), e.get("uvscale"), e.get("uvrate"), e.get("uvint"), e.get("tex2"), e.get("uv2scale"), e.get("uv2rate"),
-			e.get("uv2int"), e.get("ero_tex"), e.get("ero_curve"), e.get("ero_ch"), e.get("soft"), e.get("pass"), e.get("plife"),
+			e.get("uv2int"), e.get("ero_tex"), e.get("ero_curve"), e.get("ero_ch"), e.get("ero_feather"), e.get("ero_slice"), e.get("ero_feather_out"), e.get("soft"), e.get("pass"), e.get("plife"),
 			e.get("uvrot"), e.get("uvrotrate"), e.get("uvclamp"), e.get("uv2rot"), e.get("uv2off"), e.get("uv2clamp"), e.get("flip"),
 			e.get("fresnel"), e.get("falloff"), e.get("dbias"), e.get("distort"), e.get("ground"), e.get("soft_in"), e.get("uvmode"), e.get("palette"), e.get("uvoff"),
 			e.get("misc"), e.get("addr"), e.get("disable_cull"), e.get("prim"), e.get("emuv"), e.get("soft_begin"), e.get("bscale") if _orient(e) == 5 else null])]
@@ -1806,31 +1843,38 @@ static func _material(e: Dictionary, amesh := false) -> ShaderMaterial:
 		var ch: Array = e.get("ero_ch", [1, 0, 0, 0])
 		mat.set_shader_parameter("ero_channel", Vector4(float(ch[0]), float(ch[1]), float(ch[2]), float(ch[3])))
 		mat.set_shader_parameter("ero_feather", float(e.get("ero_feather", 0.1)))
+		mat.set_shader_parameter("ero_slice", float(e.get("ero_slice", 0.0)))
+		mat.set_shader_parameter("ero_feather_out", float(e.get("ero_feather_out", 0.0)))
+		mat.set_shader_parameter("ero_t_drive", _arg_list("--erot=") == ["drive"])
 	if e.get("soft", false) and o != 2 and not amesh:
 		mat.set_shader_parameter("soft_dist", clampf(float(e.get("soft_in", 0.35)), 0.1, 1.0))
 	var fr = e.get("fresnel")
 	if fr is Dictionary and (o == 3 or amesh):
 		var fc := _col(fr.get("color", [0, 0, 0, 0]))
-		if fc.r + fc.g + fc.b > 0.001 or (amesh and blend == 1):
+		if fc.r + fc.g + fc.b > 0.001:
 			mat.set_shader_parameter("fresnel_color", fc)
-			# alpha-blended attached-mesh shells are rim lights, not opaque silhouettes (Annie stun, Ahri Q/W)
-			var rim_a: bool = amesh and blend == 1
-			mat.set_shader_parameter("rim_alpha", rim_a)
-			if rim_a:
-				mat.set_shader_parameter("fresnel_pow", clampf(1.0 / maxf(float(fr.get("f", 0.2)), 0.05) * 0.5, 0.8, 8.0))
-			else:
-				# mesh_ps [exact]: F = 1 - pow(saturate(N.V), fresnel) with the emitter's raw `fresnel`
-				mat.set_shader_parameter("fresnel_pow", maxf(float(fr.get("f", 1.0)), 0.001))
+			# mesh_ps [exact]: F = 1 - pow(saturate(N.V), fresnel) with the emitter's raw `fresnel`
+			# [vfx-calib] also for alpha-blended shells: the old rim-only alpha is gone. Riot's Annie P preview
+			# shows the stunned target's whole body painted dark (Annie_Base_P_Stun Avatar, blend 1, alpha 1),
+			# with no broad orange glow (fresnel 0.02 -> F ~ 0 except at the silhouette)
+			mat.set_shader_parameter("fresnel_pow", maxf(float(fr.get("f", 1.0)), 0.001))
 	var ft := _tex(e.get("falloff"))
 	if ft != null and (o == 3 or amesh):
 		mat.set_shader_parameter("falloff_tex", ft)
 		mat.set_shader_parameter("has_falloff", true)
 	if amesh:
 		mat.set_shader_parameter("normal_push", 0.012)
-		if not (blend == 1 or blend == 3 or blend == 5):
-			mat.set_shader_parameter("tex_mask", true)
+		# [vfx-calib] no channel remap for additive shells: League's mesh_ps uses texture rgb * colour and texture
+		# alpha as authored (Leona_Base_W_avatarmask keeps its mask in alpha over white rgb; the old red-channel
+		# remap forced alpha to 1 and washed the whole champion, Riot's W preview shows her untinted)
 	mat.set_shader_parameter("depth_bias", bias)
 	mat.render_priority = _priority(e)
+	if is_dist:
+		# [vfx-calib] Godot's hint_screen_texture is the opaque-pass copy, so a distortion quad drawn after other
+		# effects pastes the bare scene over them (Lux E's field distortion erased its own ground glow: Riot's E
+		# preview shows the field +30..75/255 brighter inside, ours +3..6). Drawn first among the transparents
+		# it only bends the opaque scene, and every glow / decal still lands on top
+		mat.render_priority = RenderingServer.MATERIAL_RENDER_PRIORITY_MIN
 	_mats[key] = mat
 	e[ek] = mat
 	return mat

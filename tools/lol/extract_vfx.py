@@ -734,6 +734,8 @@ def emitter(w, e, ctx):
         o["ero_ch"] = ch2 if isinstance(ch2, list) and len(ch2) == 4 else [1, 0, 0, 0]
         o["ero_feather"] = _f(er.get("erosionFeatherIn"), 0.1) or 0.1
         o["ero_slice"] = _f(er.get("erosionSliceWidth"), 0.0)
+        # [vfx-calib] quad_ps / mesh_ps band: a *= sat((t-e+slice)/featherIn) - sat((t-e)/featherOut)
+        o["ero_feather_out"] = _f(er.get("erosionFeatherOut"), 0.0)
     # ---- soft particles (depth fade), League units
     sp = e.get("softParticleParams")
     if isinstance(sp, dict):
