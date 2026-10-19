@@ -16,6 +16,8 @@ const HIDE_PER_SEC := 2.2        ## fade.ps PARAMETERS.y: the fog creeps back ov
 var m = null
 var _vps: Array[SubViewport] = []
 var _mats: Array[ShaderMaterial] = []
+var _out_vp: SubViewport = null      ## stable copy of the freshest map: the global texture never changes identity
+var _out_rect: TextureRect = null
 var _src := PackedVector4Array()
 var _cur := 0                    ## viewport that renders on the next update
 var _acc := 0.0
@@ -56,6 +58,20 @@ func setup(p_match) -> void:
 		_mats.append(sm)
 	_mats[0].set_shader_parameter("prev", _vps[1].get_texture())
 	_mats[1].set_shader_parameter("prev", _vps[0].get_texture())
+	# Swapping the global sampler between the two ping-pong textures re-validated every material that samples it
+	# (map, characters, particles) 20 times a second and cost ~30% of the frame rate. A third viewport copies the
+	# freshest map; the global points at its texture once and never changes.
+	_out_vp = SubViewport.new()
+	_out_vp.size = Vector2i(RES, RES)
+	_out_vp.disable_3d = true
+	_out_vp.use_hdr_2d = true
+	_out_vp.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	_out_rect = TextureRect.new()
+	_out_rect.size = Vector2(RES, RES)
+	_out_rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_out_vp.add_child(_out_rect)
+	add_child(_out_vp)
+	RenderingServer.global_shader_parameter_set("fow_vis", _out_vp.get_texture())
 
 
 static func _nav_texture(nav: NavGrid) -> ImageTexture:
@@ -93,8 +109,9 @@ func _process(delta: float) -> void:
 	mat.set_shader_parameter("reset", 1.0 if _ticks < 2 else 0.0)
 	_vps[_cur].render_target_update_mode = SubViewport.UPDATE_ONCE
 	if _ticks > 0:
-		# the other viewport finished last update: it is the freshest map
-		RenderingServer.global_shader_parameter_set("fow_vis", _vps[1 - _cur].get_texture())
+		# the other viewport finished last update: it is the freshest map; copy it into the stable output
+		_out_rect.texture = _vps[1 - _cur].get_texture()
+		_out_vp.render_target_update_mode = SubViewport.UPDATE_ONCE
 	if _ticks == 1 and not _on:
 		_on = true
 		RenderingServer.global_shader_parameter_set("fow_on", 1.0)
