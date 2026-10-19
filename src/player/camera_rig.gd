@@ -59,6 +59,16 @@ func snap_to(p: Vector3) -> void:
 	_apply(0.0)
 
 
+## [path] League: when your champion respawns the camera centres on it at once, free camera or not, and any ally you
+## were watching from the death screen is dropped.
+func on_player_respawn(p: Vector3) -> void:
+	spectate = null
+	_follow_override = null
+	_mmb_drag = false
+	_relock_t = 1.0
+	snap_to(p)
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton

@@ -186,6 +186,11 @@ func respawn() -> void:
 		match_ref.audio.on_respawn(self)
 	hp = stats.max_hp
 	mana = stats.max_mana
+	# [path] the player's camera jumps back to the champion (free camera too) and the death-screen spectate ends
+	if match_ref != null and match_ref.camera_rig != null and match_ref.camera_rig.target == self:
+		match_ref.camera_rig.on_player_respawn(global_position)
+		if match_ref.hud != null and match_ref.hud.has_method("_set_spectate"):
+			match_ref.hud._set_spectate(null)
 
 
 # ===================================================================== xp / levels

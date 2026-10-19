@@ -19,6 +19,7 @@ var floor_origin := Vector2.ZERO
 var floor_inv := Vector2.ONE    ## 1 / node spacing (x, z)
 var floor_w := 0
 var floor_hh := 0
+var opened_cells := PackedInt32Array()   ## [path] cells of free-standing League navgrid slivers we open (see _open_islands)
 
 
 func load_from(dir: String) -> bool:
@@ -55,8 +56,56 @@ func load_from(dir: String) -> bool:
 					heights[j * w + i] = height_at(Vector3(origin.x + (i + 0.5) * cell, 0.0, origin.y + (j + 0.5) * cell))
 		else:
 			push_error("floor_height.bin size mismatch")
+	_open_islands()
 	_build_astar()
 	return true
+
+
+## [path] League's Map12 navgrid has one free-standing unwalkable sliver (16 cells, flag 66, 4.5 m x 1 m) in the middle
+## of the lane at (66.5..69.5, -61.2..-58.2), inside a patch of grass decoration with no collision mesh, prop or wall
+## anywhere near it (nothing in the floor or the props marks it). In our game it was an invisible obstacle that made
+## champions detour around the middle brush-looking patch. Every unwalkable connected component (8-neighbourhood)
+## that is small (< ISLAND_MAX cells) and does not touch the grid border is such an island: open it.
+const ISLAND_MAX := 64
+
+
+func _open_islands() -> void:
+	var seen := PackedByteArray()
+	seen.resize(w * h)
+	opened_cells = PackedInt32Array()
+	for k0 in w * h:
+		if walk[k0] == 1 or seen[k0] == 1:
+			continue
+		var comp := PackedInt32Array()
+		var stack := PackedInt32Array([k0])
+		seen[k0] = 1
+		var border := false
+		var big := false
+		while not stack.is_empty():
+			var k: int = stack[stack.size() - 1]
+			stack.resize(stack.size() - 1)
+			if not big:
+				comp.append(k)
+				if comp.size() >= ISLAND_MAX:
+					big = true
+			var x := k % w
+			var z := k / w
+			if x == 0 or z == 0 or x == w - 1 or z == h - 1:
+				border = true
+			for dz in range(-1, 2):
+				for dx in range(-1, 2):
+					var nx := x + dx
+					var nz := z + dz
+					if nx < 0 or nz < 0 or nx >= w or nz >= h:
+						continue
+					var nk := nz * w + nx
+					if walk[nk] == 0 and seen[nk] == 0:
+						seen[nk] = 1
+						stack.append(nk)
+		if not big and not border:
+			for k in comp:
+				walk[k] = 1
+			opened_cells.append_array(comp)
 
 
 ## Procedural fallback: walkable corridor around a polyline (world points).
@@ -205,6 +254,30 @@ func height_at(p: Vector3) -> float:
 	return lerpf(lerpf(a, b, tx), lerpf(c, d, tx), tz)
 
 
+## [path] Where a click on terrain you cannot stand on sends the unit: among the walkable cells within 1.5 m of the
+## closest one to the click, the one nearest to the unit. The plain nearest cell can sit on the far side of a wall or
+## a structure's disc and made the champion walk all the way around to it.
+func reach_point(click: Vector3, from: Vector3) -> Vector3:
+	var p0 := nearest_walkable(click)
+	var d0 := G.flat_dist(p0, click)
+	var rc := int(ceil((d0 + 1.5) / cell))
+	var c := to_cell(click)
+	var best := p0
+	var bd := INF
+	for j in range(c.y - rc, c.y + rc + 1):
+		for i in range(c.x - rc, c.x + rc + 1):
+			if i < 0 or j < 0 or i >= w or j >= h or walk[j * w + i] == 0:
+				continue
+			var q := cell_center(Vector2i(i, j))
+			if G.flat_dist(q, click) > d0 + 1.5:
+				continue
+			var d := G.flat_dist(q, from)
+			if d < bd:
+				bd = d
+				best = q
+	return best
+
+
 func nearest_walkable(p: Vector3, max_r: int = 30) -> Vector3:
 	if not p.is_finite():
 		return Vector3.ZERO
@@ -271,7 +344,7 @@ func find_path(from: Vector3, to: Vector3) -> PackedVector3Array:
 		return out
 	var goal := to
 	if not is_walkable(goal):
-		goal = nearest_walkable(goal)
+		goal = reach_point(to, from)
 	var start := from
 	if not is_walkable(start):
 		start = nearest_walkable(start)

@@ -38,7 +38,7 @@ func _init() -> void:
 	path_radius = 1.2
 	mass = 0.0
 	height = 6.2
-	selection_radius = 1.8
+	selection_radius = 1.3   # [path] League turret selectionRadius 130 u (was 1.8: a click in the brush beside the outer turret attacked it)
 	stats.uses_mana = false
 	windup_pct = 0.139             # [numbers] mAttackDelayCastOffsetPercent -0.161 -> 0.3 - 0.161 (was 0.15)
 
