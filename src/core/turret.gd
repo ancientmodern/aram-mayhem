@@ -14,6 +14,21 @@ var backdoor_until := -1.0
 var aggro_line_target: Unit = null
 var base_ad := 185.0
 var ad_per_min := 7.0
+## [numbers] League Howling Abyss turret scaling = the "Tower Power-Up" item (Global Items/1522) + HA_* CharacterRecords:
+## attack damage +9/min (outer, until 12:00) or +12/min (inhibitor / nexus turret, until 15:00) on top of 185 / 205 / 195,
+## armor and magic resist +3/min until 8:10 (StatAddEndTime 490: +21, published 60-81 / 63-84 / 60-81), and the outer turret's
+## resists fall to 40 at 12:00 (BonusStatsFalloffTime 720). The wiki's published ranges (185-293, 205-385, 195-375) match.
+const AD_PER_MIN := [9.0, 12.0, 12.0, 0.0]
+const AD_RAMP_END := [720.0, 900.0, 900.0, 0.0]
+const RESIST_GAIN := 21.0
+const RESIST_START := 60.0
+const RESIST_END := 490.0
+const OUTER_DECAY_TIME := 720.0
+const OUTER_DECAY_RESIST := 40.0
+const FORTIFY_REDUCTION := 0.35            ## Fortification (Items/1521): blocks 35% of damage for 60 s once the outer turret falls
+const FORTIFY_TIME := 60.0
+var base_resist := 60.0
+var _regen_t := 0.0
 
 
 func _init() -> void:
@@ -25,28 +40,33 @@ func _init() -> void:
 	height = 6.2
 	selection_radius = 1.8
 	stats.uses_mana = false
-	windup_pct = 0.15
+	windup_pct = 0.139             # [numbers] mAttackDelayCastOffsetPercent -0.161 -> 0.3 - 0.161 (was 0.15)
 
 
 func setup(p_team: int, p_tier: int) -> void:
 	team = p_team
 	tier = p_tier
 	display_name = ["Outer Turret", "Inhibitor Turret", "Nexus Turret", "Fountain Turret"][p_tier]
-	var hp_by_tier := [2550.0, 5150.0, 3000.0, 99999.0]
-	var armor_by_tier := [60.0, 63.0, 60.0, 500.0]
+	# [numbers] HA_Outer 1300 / HA_Inhibitor 3900 / HA_Nexus 1800 base HP + 250 per enemy champion (5v5: +1250); armor and
+	# magic resist 60 / 63 / 60 (grown per minute in think()); base AD 185 / 205 / 195; attack speed 0.833, range 750.
+	var hp_by_tier := [1300.0 + 5.0 * Rules.TURRET_HP_PER_ENEMY_CHAMP, 3900.0 + 5.0 * Rules.TURRET_HP_PER_ENEMY_CHAMP,
+			1800.0 + 5.0 * Rules.TURRET_HP_PER_ENEMY_CHAMP, 99999.0]
+	var armor_by_tier := [60.0, 63.0, 60.0, 0.0]
+	base_resist = armor_by_tier[p_tier]
 	base_ad = [185.0, 205.0, 195.0, 999.0][p_tier]
-	ad_per_min = [6.0, 9.0, 9.0, 0.0][p_tier]
+	ad_per_min = AD_PER_MIN[p_tier]
 	stats.set_base({
 		"base_hp": hp_by_tier[p_tier], "hp_per_level": 0.0, "base_hp_regen": 0.0, "hp_regen_per_level": 0.0,
 		"base_ad": base_ad, "ad_per_level": 0.0, "base_armor": armor_by_tier[p_tier], "armor_per_level": 0.0,
 		"base_mr": armor_by_tier[p_tier], "mr_per_level": 0.0, "base_ms": 0.0,
 		"attack_range": 750.0 if p_tier != Tier.FOUNTAIN else 1100.0,   # [spatial] League HA shrine attackRange 1100
-		"attack_speed": 0.833 if p_tier != Tier.FOUNTAIN else 3.0, "attack_speed_ratio": 0.833, "attack_speed_per_level": 0.0,
+		"attack_speed": 0.833 if p_tier != Tier.FOUNTAIN else 2.5, "attack_speed_ratio": 0.833 if p_tier != Tier.FOUNTAIN else 2.5,
+		"attack_speed_per_level": 0.0,
 		"mana_base": 0.0, "mana_per_level": 0.0, "mana_regen": 0.0, "mana_regen_per_level": 0.0,
 	})
 	recompute_stats()
 	hp = stats.max_hp
-	attack_missile_speed = 1300.0 if p_tier != Tier.FOUNTAIN else 3000.0
+	attack_missile_speed = 1200.0 if p_tier != Tier.FOUNTAIN else 3000.0   # [numbers] TurretBasicAttack missileSpeed 1200 (was 1300)
 	var skin := 28 if team == G.Team.ORDER else (31 if p_tier == Tier.FOUNTAIN else 29)
 	var m := Assets.unit_model("Turret", skin)
 	if m == null:
@@ -87,11 +107,21 @@ func auto_attacks_when_idle() -> bool:
 func think(dt: float) -> void:
 	if match_ref == null:
 		return
-	# damage scales with game minute
-	var minutes: float = match_ref.time / 60.0
-	stats.base["base_ad"] = base_ad + ad_per_min * clampf(minutes, 0.0, 15.0)
+	# damage and resists scale with game time ([numbers] see AD_PER_MIN above)
+	var gt: float = match_ref.time
+	stats.base["base_ad"] = base_ad + AD_PER_MIN[tier] * minf(gt, AD_RAMP_END[tier]) / 60.0
+	if tier != Tier.FOUNTAIN:
+		var res := base_resist + RESIST_GAIN * clampf((gt - RESIST_START) / (RESIST_END - RESIST_START), 0.0, 1.0)
+		if tier == Tier.OUTER and gt >= OUTER_DECAY_TIME:
+			res = OUTER_DECAY_RESIST
+		stats.base["base_armor"] = res
+		stats.base["base_mr"] = res
 	if match_ref.time - last_champ_shot > 5.0:
 		ramp = 0
+	_regen_t -= dt
+	if _regen_t <= 0.0:
+		_regen_t = 1.0
+		_structure_regen()
 	_retarget -= dt
 	if attack_valid(attack_target) and in_attack_range(attack_target) and _retarget > 0.0:
 		return
@@ -152,9 +182,10 @@ func attack_hit(t: Unit, crit: bool, mult: float = 1.0) -> DamageInfo:
 			Minion.Type.MELEE: dmg = t.stats.max_hp * 0.45
 			Minion.Type.CASTER: dmg = t.stats.max_hp * 0.7
 			Minion.Type.SIEGE: dmg = t.stats.max_hp * 0.14
-			Minion.Type.SUPER: dmg = t.stats.max_hp * 0.07
-	var info := Combat.deal(self, t, dmg, G.DmgType.PHYSICAL if tier != Tier.FOUNTAIN else G.DmgType.TRUE,
-			{"is_attack": true, "no_vamp": true})
+			Minion.Type.SUPER: dmg = t.stats.max_hp * 0.05   # [numbers] wiki Turret (V6.22): melee 45%, caster 70%, siege 14%, super 5% of max HP (was 7%)
+	# [numbers] the per-shot percentages are of max health and ignore armor (a super minion with 60 armor still dies in 20 shots)
+	var dtype: int = G.DmgType.TRUE if (tier == Tier.FOUNTAIN or t.kind == G.Kind.MINION) else G.DmgType.PHYSICAL
+	var info := Combat.deal(self, t, dmg, dtype, {"is_attack": true, "no_vamp": true})
 	return info
 
 
@@ -162,23 +193,37 @@ func on_damaged(info: DamageInfo) -> void:
 	super.on_damaged(info)
 
 
-## Called by Combat via effects: reinforced armor (-80% without enemy minions nearby) & backdoor.
-func damage_taken_multiplier(src) -> float:
-	var mult := 1.0
-	if match_ref == null:
-		return mult
-	var minions_near := false
-	for u in match_ref.units_in_radius(global_position, attack_range_m() + 2.0, G.enemy_team(team)):
-		if u.kind == G.Kind.MINION and not u.dead:
-			minions_near = true
+## Called by Combat: Howling Abyss Fortification on the inhibitor turret (35% less damage for 60 s once the outer turret has
+## fallen). [numbers] HA turrets have no "Reinforced Armor" (that item says lane minions / Rift Herald, Summoner's Rift only)
+## and no generic melee weakness: the Howling Abyss aura gives melee AP champions +20% vs structures instead (Combat).
+func damage_taken_multiplier(_src) -> float:
+	if match_ref != null and match_ref.time < backdoor_until:
+		return 1.0 - FORTIFY_REDUCTION
+	return 1.0
+
+
+## [numbers] wiki Turret: inhibitor turrets regenerate 3 HP/s and nexus turrets 6 HP/s, but only up to the next health
+## threshold (30/75/100% resp. 40/70/100% of max health) above their current health.
+func _structure_regen() -> void:
+	if dead or hp >= stats.max_hp:
+		return
+	var rate := 0.0
+	var steps: Array = []
+	if tier == Tier.INHIBITOR:
+		rate = 3.0
+		steps = [0.3, 0.75, 1.0]
+	elif tier == Tier.NEXUS:
+		rate = 6.0
+		steps = [0.4, 0.7, 1.0]
+	if rate <= 0.0:
+		return
+	var ratio := hp / stats.max_hp
+	var cap := 1.0
+	for st in steps:
+		if ratio < st:
+			cap = st
 			break
-	if not minions_near:
-		mult *= 0.2
-	if match_ref.time < backdoor_until:
-		mult *= 0.6
-	if src != null and src.kind == G.Kind.CHAMPION and src.attack_missile_speed <= 0.0:
-		mult *= 1.2
-	return mult
+	hp = minf(hp + rate, cap * stats.max_hp)
 
 
 func on_died(_killer) -> void:

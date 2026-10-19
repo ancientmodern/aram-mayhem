@@ -28,10 +28,12 @@ func setup(p_team: int, inhibitor: bool) -> void:
 	height = 3.0 if inhibitor else 5.0
 	selection_radius = radius + 0.5
 	stats.set_base({
-		"base_hp": 4000.0 if inhibitor else 3000.0, "hp_per_level": 0.0,
-		"base_hp_regen": 15.0 if inhibitor else 10.0, "hp_regen_per_level": 0.0,
+		# [numbers] League Inhibitor / Nexus CharacterRecords + wiki: inhibitor 4000 HP, 15 regen/s; nexus 5500 HP (Mayhem/Kiwi
+		# -2500), 20 regen/s; both 20 armor and 0 magic resist (was nexus 3000 HP / 10 regen and 20 MR)
+		"base_hp": 4000.0 if inhibitor else (3000.0 if Rules.MAYHEM_MODE else 5500.0), "hp_per_level": 0.0,
+		"base_hp_regen": 15.0 if inhibitor else 20.0, "hp_regen_per_level": 0.0,
 		"base_ad": 0.0, "ad_per_level": 0.0, "base_armor": 20.0, "armor_per_level": 0.0,
-		"base_mr": 20.0, "mr_per_level": 0.0, "base_ms": 0.0, "attack_range": 0.0,
+		"base_mr": 0.0, "mr_per_level": 0.0, "base_ms": 0.0, "attack_range": 0.0,
 		"attack_speed": 0.1, "attack_speed_ratio": 0.1, "attack_speed_per_level": 0.0,
 		"mana_base": 0.0, "mana_per_level": 0.0, "mana_regen": 0.0, "mana_regen_per_level": 0.0,
 	})

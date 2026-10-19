@@ -332,7 +332,9 @@ func _run() -> void:
 	var raw := 70.0 + 0.06 * mh
 	want = raw * 100.0 / (100.0 + d0.stats.armor)
 	_check("heartsteel proc dmg", _near(tracker.by_tag.get("heartsteel", 0.0), want), "got %.1f want %.1f" % [tracker.by_tag.get("heartsteel", 0.0), want])
-	_check("heartsteel max hp gain 5%%", _near(hs.gained, raw * 0.05), "gained %.2f want %.2f" % [hs.gained, raw * 0.05])
+	# [numbers] classic ARAM lowers Heartsteel's permanent health to 5% of damage (Mayhem / Kiwi keeps 10%)
+	var hs_ratio: float = float(ItemDB.data(3084, "DamageToMaxHealthRatio", 0.1))
+	_check("heartsteel max hp gain %d%%" % int(round(hs_ratio * 100.0)), _near(hs_ratio, 0.05, 0.0001) and _near(hs.gained, raw * hs_ratio), "gained %.2f want %.2f" % [hs.gained, raw * hs_ratio])
 	tracker.reset()
 	c.attack_hit(d0, false)
 	_check("heartsteel per-target cd", tracker.by_tag.get("heartsteel", 0.0) == 0.0)

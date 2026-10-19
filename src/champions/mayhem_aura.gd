@@ -41,16 +41,21 @@ func get_stat_mods() -> Dictionary:
 	var lvl: int = owner.level if owner != null else 1
 	# classic ARAM: only the global +70 summoner haste; the HP/resist/mana bonuses are Mayhem-only
 	var d := {"summoner_haste": Rules.SUMMONER_HASTE}
+	# [numbers] wiki ARAM, Howling Abyss aura: +70 summoner spell haste, +0.1% max mana per second, melee champions +15 bonus
+	# magic resist (the HP / armor / mana-regen% bonuses below are Mayhem-only)
+	if owner != null and owner.stats.uses_mana:
+		d["mana_regen"] = owner.stats.max_mana * 0.001
+	if melee:
+		d["mr"] = 15.0
 	if Rules.MAYHEM_MODE:
 		d["hp"] = Rules.mayhem_hp_bonus(lvl, melee)
 		d["mana_regen%"] = 0.1
-	if melee and Rules.MAYHEM_MODE:
-		d["armor"] = 15.0
-		d["mr"] = 15.0
-	if bal.has("total_as") and owner != null:
-		# total attack speed x1.025, expressed as bonus AS against the base (the stat model has no total-AS mult)
-		var base: Dictionary = owner.stats.base
-		d["as"] = (float(bal.total_as) - 1.0) * float(base.get("attack_speed", 0.625)) / maxf(float(base.get("attack_speed_ratio", 0.625)), 0.01)
+		if melee:
+			d["armor"] = 15.0
+	if bal.has("total_as"):
+		# [numbers] League ARAM "total attack speed +x%": a multiplier on the whole attack speed (Stats "as_total%"); it used
+		# to be folded into bonus AS, which under-counted it once the champion had attack speed items
+		d["as_total%"] = float(bal.total_as) - 1.0
 	return d
 
 

@@ -15,8 +15,9 @@ func build_kit() -> void:
 	c.abilities[1] = init_ability(Incinerate.new(), "W")
 	c.abilities[2] = init_ability(MoltenShield.new(), "E")
 	c.abilities[3] = init_ability(SummonTibbers.new(), "R")
-	# AnnieE has no cooldown in the extracted data (live: 14/13/12/11/10)
-	c.abilities[2].cooldowns = [14.0, 13.0, 12.0, 11.0, 10.0]
+	# AnnieE has no cooldown in the extracted data. [numbers] League (wiki Annie patch history, V26.04 -> live 26.20):
+	# Molten Shield's cooldown is 10 s at every rank (it was 12/11.5/11/10.5/10 before; 14..10 is the pre-V25 value)
+	c.abilities[2].cooldowns = [10.0, 10.0, 10.0, 10.0, 10.0]
 	c.add_effect(TibbersPen.new(c.abilities[3]))
 	# [anim-events] the hand flame (Annie_Base_Idle_fire on the Idle1 clip) and its flare on every attack
 	# (Annie_Base_Idle_cas on Attack1/2/Crit) are clip particle events now
@@ -212,15 +213,25 @@ class Disintegrate extends KAbility:
 		var paid := cost()
 		var m = o.match_ref
 		var self_ref := self
+		# [numbers] League (wiki Disintegrate, V25.S1.1): a kill refunds the mana cost and 50% of the cooldown, and so
+		# does the target dying while the missile is still in flight (dead on arrival)
+		var st := {"hit": false}
+		var refund := func():
+			if is_instance_valid(o) and not o.dead:
+				o.mana = minf(o.stats.max_mana, o.mana + paid)
+				self_ref.cd = maxf(0.0, self_ref.cd - self_ref.cd_total * 0.5)
 		var on_hit := func(_mm, tgt):
+			st.hit = true
 			var info = self_ref.hit(tgt, dmg, G.DmgType.MAGIC, {"tag": "q"})
 			if stun > 0.0:
 				K.stun(tgt, stun, o)
 			AnnieUtil.q_impact(o, tgt, stun > 0.0)
-			if info != null and info.killed and is_instance_valid(o) and not o.dead:
-				o.mana = minf(o.stats.max_mana, o.mana + paid)
-				self_ref.cd = maxf(0.0, self_ref.cd - self_ref.cd_total * 0.5)
-		K.homing_missile(self, K.cast_pos(o, 1.2), u, 1400.0, on_hit, {"lol": "Annie_Base_Q_mis"})
+			if info != null and info.killed:
+				refund.call()
+		var on_end := func(_mm, _pos):
+			if not st.hit and (not is_instance_valid(u) or u.dead):
+				refund.call()
+		K.homing_missile(self, K.cast_pos(o, 1.2), u, 1400.0, on_hit, {"lol": "Annie_Base_Q_mis", "on_end": on_end})
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
@@ -281,7 +292,8 @@ class Disintegrate extends KAbility:
 
 # ===================================================================== W
 class Incinerate extends KAbility:
-	const ANGLE := 50.0
+	# [numbers] AnnieW castConeAngle 24.76 is the half angle: the cone is 49.52 degrees wide (wiki Incinerate)
+	const ANGLE := 49.52
 
 	func _init() -> void:
 		target_type = Target.DIRECTION
@@ -605,9 +617,7 @@ class SummonTibbers extends KAbility:
 		var b := EnrageBuff.new()
 		b.duration = dur
 		b.remaining = dur
-		b.as_bonus = 2.75
 		b.ms_bonus = dv("MovespeedBurst", 1.0)
-		b.decay_rate = absf(dv("TibbersAttackSpeedDecay", -0.1))
 		# League frenzy: speed streaks / scorched ground + burning fists
 		var fx := Node3D.new()
 		tb.add_child(fx)
@@ -697,9 +707,11 @@ class TibbersPen extends Effect:
 
 
 class EnrageBuff extends Buff:
-	var as_bonus := 2.75
+	## [numbers] League (wiki Summon: Tibbers, Enrage): Tibbers' attack speed is 1.736 for the first of his next 5
+	## attacks, 1.536 / 1.307 / 1.043 / 0.739 for the following ones (decreasing per attack consumed), then his normal
+	## 0.625; the +100% move speed burst decays over the 3 s duration. (Was 0.625 x (1 + 2.75) fading with time.)
+	const AS_BY_ATTACK := [1.736, 1.536, 1.307, 1.043, 0.739]
 	var ms_bonus := 1.0
-	var decay_rate := 0.1
 	var attacks := 0
 
 	func _init() -> void:
@@ -708,10 +720,16 @@ class EnrageBuff extends Buff:
 
 	func get_stat_mods() -> Dictionary:
 		var k := clampf(remaining / maxf(duration, 0.01), 0.0, 1.0)
-		return {"as": maxf(0.0, as_bonus * k - decay_rate * attacks), "ms%": ms_bonus * k}
+		var as_b := 0.0
+		if attacks < AS_BY_ATTACK.size() and owner != null:
+			var base: Dictionary = owner.stats.base
+			as_b = maxf(0.0, (float(AS_BY_ATTACK[attacks]) - float(base.attack_speed)) / maxf(float(base.attack_speed_ratio), 0.01))
+		return {"as": as_b, "ms%": ms_bonus * k}
 
 	func on_attack_launch(_t) -> void:
 		attacks += 1
+		if owner != null:
+			owner.stats.mark_dirty()
 
 
 ## Tibbers' basic attacks deal magic damage scaling with Annie's AP.

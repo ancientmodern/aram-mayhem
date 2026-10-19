@@ -147,11 +147,16 @@ class WayOfTheWanderer extends Effect:
 
 	func units_per_flow() -> float:
 		var lv: int = owner.level
-		return 59.0 if lv < 7 else (52.0 if lv < 13 else 46.0)
+		# [numbers] wiki Way of the Wanderer: one Flow stack per 59 / 52.5 / 46 units travelled (levels 1-6 / 7-12 / 13-18)
+		return 59.0 if lv < 7 else (52.5 if lv < 13 else 46.0)
 
+	## [numbers] yasuo.bin YasuoPassive ShieldValue = ByCharLevelInterpolation 125 -> 600 with mScaleByStatProgressionMultiplier:
+	## the lerp parameter is League's stat-growth factor (n * (0.7025 + 0.0175 * n), n = level - 1) / 17, not a linear
+	## (level - 1) / 17 (wiki: 125 at level 1, 600 at level 18, 674.46 at level 20; level 9 = ~313, was ~349).
 	func shield_value() -> float:
-		var lv: float = owner.level
-		return lerpf(125.0, 600.0, (lv - 1.0) / 17.0)
+		var n: float = float(owner.level) - 1.0
+		var g: float = n * (0.7025 + 0.0175 * n)
+		return lerpf(125.0, 600.0, g / 17.0)
 
 	func full() -> bool:
 		return owner.mana >= owner.stats.max_mana - 0.01
@@ -206,15 +211,22 @@ class WayOfTheWanderer extends Effect:
 		if o == null:
 			return {}
 		var other := 0.0
+		var other_cd := 0.0
 		for e in o.effects.duplicate():
 			if e != self and not e.removed:
-				other += float(e.get_stat_mods().get("crit", 0.0))
+				var sm: Dictionary = e.get_stat_mods()
+				other += float(sm.get("crit", 0.0))
+				other_cd += float(sm.get("crit_dmg", 0.0))
 		var mult := val("CritChanceMultiplier", 1.0)
-		var d := {"crit": other * mult, "crit_dmg": -Rules.CRIT_DAMAGE * (1.0 - val("CritDamageMod", 0.9))}
+		# [numbers] crit damage = CritDamageMod (95%) of the normal total, so bonus crit damage from items scales too
+		# (wiki: 190% base, +28.5% per Infinity Edge) - it used to subtract only 5% of the base 200%.
+		var d := {"crit": other * mult, "crit_dmg": -(Rules.CRIT_DAMAGE + other_cd) * (1.0 - val("CritDamageMod", 0.9))}
 		var total := other * (1.0 + mult)
 		if total > 1.0:
-			# the Mayhem core already converts 0.45 AD per 1% overflow; Yasuo gets 0.5
-			d["ad"] = (total - 1.0) * 100.0 * maxf(0.0, val("YasuoCritToAD", 50.0) / 100.0 - 0.45)
+			# [numbers] Yasuo gets 0.5 AD (YasuoCritToAD) per 1% crit above 100%. Stats only converts overflow crit (0.45 AD per 1%)
+			# in Mayhem mode (classic ARAM wastes it), so top up only the missing part: 0.05 in Mayhem, the full 0.5 in classic.
+			var core_conv: float = 0.45 if Rules.MAYHEM_MODE else 0.0
+			d["ad"] = (total - 1.0) * 100.0 * maxf(0.0, val("YasuoCritToAD", 50.0) / 100.0 - core_conv)
 		return d
 
 
@@ -326,7 +338,7 @@ class SteelTempest extends YAbility:
 		for u in hits:
 			hit(u, dc[0], G.DmgType.PHYSICAL, {"is_aoe": true, "tag": "yasuo_q", "is_crit": dc[1]})
 			if q3:
-				K.knockup(u, dv("KnockUpDurationTOOLTIPONLY", 1.0), o)
+				K.knockup(u, 0.9, o)   # [numbers] wiki Steel Tempest: the whirlwind knocks up for 0.9 s (the data field KnockUpDurationTOOLTIPONLY = 1.0 is tooltip-only)
 			if u.kind == G.Kind.CHAMPION:
 				champs += 1
 			hit_fx(m, u, "Yasuo_Base_Q_wind_hit_tar" if q3 else "Yasuo_Base_Q_hit_tar", p)
@@ -378,7 +390,7 @@ class SteelTempest extends YAbility:
 			"width": 90.0, "pierce": true, "height": 0.0, "lol": "Yasuo_Base_Q_wind_mis",
 			"on_hit": func(_m, u):
 				self_ref.hit(u, dc[0], G.DmgType.PHYSICAL, {"tag": "yasuo_q", "is_crit": dc[1]})
-				K.knockup(u, self_ref.dv("KnockUpDurationTOOLTIPONLY", 1.0), o)
+				K.knockup(u, 0.9, o)   # [numbers] 0.9 s knock-up (wiki Steel Tempest), see do_eq
 				YAbility.hit_fx(m, u, "Yasuo_Base_Q_wind_hit_tar", u.global_position - dir)
 				if u.kind == G.Kind.CHAMPION:
 					champs.n += 1

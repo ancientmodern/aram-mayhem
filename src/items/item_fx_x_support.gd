@@ -562,7 +562,7 @@ class WhisperingCirclet extends HealTrigger:
 			refresh_stats()
 
 	func _grant(champ: bool) -> void:
-		var cap := dv("MaxMana", 360.0) - base_mana
+		var cap := dv("MaxMana", 360.0)       # [numbers] 360 BONUS mana from Manaflow (wiki), not 360 max mana in total
 		if ammo < 1.0 or gained >= cap:
 			return
 		ammo -= 1.0
@@ -570,6 +570,8 @@ class WhisperingCirclet extends HealTrigger:
 		gained += g
 		owner.mana += g
 		refresh_stats()
+		if gained >= cap - 0.001:             # "Transforms into Diadem of Songs at 360 max Mana"
+			ItemFxUpgrades.upgrade(self, 2530)
 
 	func on_ability_cast(ab, _t) -> void:
 		if ab.is_summoner:

@@ -65,10 +65,12 @@ func _pickup(c) -> void:
 		LolVfx.spawn(m, "HowlingAbyss_HealthPickup_Redemption_Heal_AOE", pos, {"scale": AOE_SCALE, "max_life": 3.0})
 		var r: float = Rules.RELIC_BEAM_RADIUS * G.U
 		for a in m.champions:
-			if a.dead or a.team != team:
+			# [numbers] wiki Health Relic: the beam restores 16% of missing health AND mana to every champion in the area,
+			# enemies included (it used to heal allies only and give 8% mana)
+			if a.dead:
 				continue
 			if G.flat_dist(a.global_position, pos) <= r:
-				_heal(a, Rules.RELIC_BEAM_HEAL, MANA_MULT)
+				_heal(a, Rules.RELIC_BEAM_HEAL, MANA_MULT * 2.0)
 				LolVfx.attach(a, "HA_Health_Hit", {})
 		respawn_at = m.time + Rules.RELIC_RESPAWN)
 

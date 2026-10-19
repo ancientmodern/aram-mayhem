@@ -37,7 +37,29 @@ HASHDIR = os.path.join(ROOT, "tools", "extracted", "cdhash")
 OUT = os.path.join(ROOT, "data", "items", "items.json")
 ITEMS_BIN_HASH = 0x1D720F4F42640C18   # Global.wad: the combined ItemData bin
 CHAMPS_BIN_HASH = 0xB3CC3B6AC3EA0472  # Global.wad: "Characters/<Champ>" Champion records (item recommendation override links)
-MODE_KEYS = ("ARAM", "Kiwi")          # DataValuesModeOverride keys applied in order (Mayhem = Kiwi, built on ARAM)
+# [numbers] The game runs classic ARAM (Rules.MAYHEM_MODE = false), so only the "ARAM" DataValuesModeOverride block applies
+# (Heartsteel 5%, Liandry's 1.8%, 75 s cooldown items, as on the wiki's ARAM page). The engine looks up the
+# override by the mode's own key and does NOT inherit the ARAM block in Kiwi / Mayhem (Heartsteel 10%, Liandry's 2%,
+# 60 s cooldowns): use ("Kiwi",) if Mayhem is ever switched on.
+MODE_KEYS = ("ARAM",)
+# [numbers] mode overrides that add a NEW data value name while the tooltip calculation still reads the old one: copy new -> old
+UPGRADE_IDS = (3040, 3042, 3121, 2530)
+DATA_ALIASES = {6692: [("MeleeBonusADShieldRatio", "MeleeShieldADRatio")]}      # Eclipse: shield 50% bonus AD in ARAM / Mayhem
+# [numbers] tooltip strings League builds from runtime values / script calculations that the resolver cannot evaluate
+TEXT_FIXES = {
+    2526: [("Gain 0.5% bonus Mana% Heal and Shield Power", "Gain 0.5% Heal and Shield Power per 100 bonus Mana")],
+    2530: [("Gain 0.5% bonus Mana% Heal and Shield Power", "Gain 0.5% Heal and Shield Power per 100 bonus Mana")],
+    3004: [("2% max Mana bonus Attack Damage", "bonus Attack Damage equal to 2% of your maximum Mana")],
+    3042: [("2% max Mana bonus Attack Damage", "bonus Attack Damage equal to 2% of your maximum Mana")],
+    3040: [("2% bonus Mana Ability Power", "Ability Power equal to 2% of your bonus Mana")],
+    3119: [("15% bonus Mana Health", "Health equal to 15% of your bonus Mana")],
+    3121: [("15% bonus Mana Health", "Health equal to 15% of your bonus Mana")],
+    3083: [(" Health per second", " per second"), (" (<healing>?</healing>)", "")],
+    126697: [("Champion Vanquished: ?", "Champion Vanquished: 0")],
+    3508: [("125% base AD + 5000% Crit Damage", "125% base AD + 0 - 50 (based on Critical Strike Chance)")],   # calc stat 8 = crit chance x 50
+    6696: [("10 (+ 25% Lethality)%", "10% (+ 0.25% per Lethality)")],
+    3032: [("<attention>?%</attention>", "<attention>0%</attention>")],
+}
 
 # League stat field (ItemData) -> engine stat key (see src/core/stats.gd)
 STAT_FIELDS = {
@@ -54,7 +76,8 @@ STAT_FIELDS = {
 CLASS_BITS = {1: "fighter", 2: "marksman", 4: "assassin", 8: "tank", 16: "mage", 32: "support"}
 # calc stat enum (StatByCoefficientCalculationPart.mStat) -> tooltip label
 CALC_STATS = {0: "AP", 1: "Armor", 2: "AD", 3: "Attack Speed", 5: "Magic Resist", 6: "Move Speed", 7: "Crit Chance",
-              8: "Crit Damage", 11: "Max Health", 12: "Health", 13: "Missing Health", 15: "Life Steal", 18: "Lethality"}
+              8: "Crit Damage", 11: "Max Health", 12: "Health", 13: "Missing Health", 15: "Life Steal", 18: "Lethality",
+              29: "Lethality"}   # [numbers] 29 = Lethality (Umbral Glaive / Axiom Arc / Serylda's scalings)
 
 
 # --------------------------------------------------------------------------- names / strings
@@ -84,9 +107,18 @@ def link_id(s):
 
 # --------------------------------------------------------------------------- tooltip text
 class Resolver:
-    def __init__(self, st, item, data, calcs):
+    def __init__(self, st, item, data, calcs, str_calcs=None):
         self.st, self.item, self.data, self.calcs = st, item, data, calcs
         self.range_mode = 1   # 1 melee, 2 ranged (ChampRange conditional)
+        # [numbers] League hashes most calculation / data value names: look them up by fnv1a too, case-insensitively
+        self.hdata = {"%08x" % fnv1a(k): v for k, v in data.items()}
+        self.lcalcs = {k.lower(): v for k, v in calcs.items()}
+        self.str_calcs = {}
+        for k, v in (str_calcs or {}).items():
+            k = k.split(":", 1)[-1]
+            self.str_calcs[k.lower()] = v
+            self.str_calcs["%08x" % fnv1a(k)] = v
+        self._rmul = 1.0      # ranged multiplier of the calculation being evaluated (range_mode 2 only)
 
     # ---- numbers
     @staticmethod
@@ -102,6 +134,10 @@ class Resolver:
         for key in (name, "m" + name, name[0].lower() + name[1:], "m" + name[0].upper() + name[1:]):
             if key in it and isinstance(it[key], (int, float)):
                 return float(it[key])
+        low = {k.lower(): k for k in it if isinstance(it[k], (int, float))}   # [numbers] PercentOmnivampMod vs PercentOmniVampMod
+        for key in (name.lower(), "m" + name.lower()):
+            if key in low:
+                return float(it[low[key]])
         return None
 
     def calc_eval(self, name, depth=0):
@@ -111,6 +147,8 @@ class Resolver:
         c = self.calcs.get(name)
         if c is None:
             c = self.calcs.get("hash:" + name)
+        if c is None:
+            c = self.calcs.get("%08x" % fnv1a(name)) or self.lcalcs.get(name.lower())
         if c is None:
             return None, [], False
         return self.calc_obj(c, depth)
@@ -134,6 +172,13 @@ class Resolver:
             return k, sc, p
         const, scal = 0.0, []
         has_const = False
+        # [numbers] mRangedMultiplier (calculation class e9a3c91d): ranged champions get base x multiplier
+        prev_rmul = self._rmul
+        rm = c.get("mRangedMultiplier")
+        if rm and self.range_mode == 2:
+            rv = rm.get("mNumber") if rm.get("mNumber") is not None else self.dv(rm.get("mDataValue"))
+            if rv is not None:
+                self._rmul = prev_rmul * float(rv)
         for part in c.get("mFormulaParts") or []:
             pc = part.get("__class", "")
             if pc == "NumberCalculationPart":
@@ -150,11 +195,19 @@ class Resolver:
                 v = self.dv(part.get("mDataValue"))
                 if v is not None:
                     scal.append(self.scale_str(v, part))
+            elif pc == "StatBySubPartCalculationPart":          # [numbers] e.g. Runaan's bolt: AD x 0.6
+                sp = part.get("mSubpart") or {}
+                v = sp.get("mNumber") if sp.get("mNumber") is not None else self.dv(sp.get("mDataValue"))
+                if v is not None:
+                    scal.append(self.scale_str(float(v), part))
+            elif pc == "AbilityResourceByCoefficientCalculationPart":   # [numbers] Mana scaling (Awe, Harmony, Mana Made Real)
+                co = float(part.get("mCoefficient", 0)) * self._rmul
+                scal.append("%s%% %s" % (self.fmt(co, True), "bonus Mana" if int(part.get("mStatFormula", 0)) == 2 else "max Mana"))
             elif pc == "ByCharLevelInterpolationCalculationPart":
-                a, b = float(part.get("mStartValue", 0)), float(part.get("mEndValue", 0))
+                a, b = float(part.get("mStartValue", 0)) * self._rmul, float(part.get("mEndValue", 0)) * self._rmul
                 scal.append("%s - %s (based on level)" % (self.fmt(a), self.fmt(b)))
             elif pc == "ByCharLevelBreakpointsCalculationPart":
-                scal.append("%s (based on level)" % self.fmt(float(part.get("mLevel1Value", 0))))
+                scal.append("%s (based on level)" % self.fmt(float(part.get("mLevel1Value", 0)) * self._rmul))
             elif pc == "SumOfSubPartsCalculationPart":
                 for sp in part.get("mSubparts") or []:
                     if sp.get("__class") == "NumberCalculationPart":
@@ -184,6 +237,9 @@ class Resolver:
         if mult and mult.get("__class") == "NumberCalculationPart":
             m = float(mult.get("mNumber", 1))
             const *= m
+        if self._rmul != prev_rmul:       # constants of this calculation (the scaling strings were scaled in scale_str)
+            const *= self._rmul / prev_rmul
+        self._rmul = prev_rmul
         return (const if has_const else None), scal, pct
 
     def calc_ref(self, ref, depth):
@@ -196,9 +252,12 @@ class Resolver:
         return s
 
     def scale_str(self, coef, part):
+        coef = coef * self._rmul
         stat = CALC_STATS.get(int(part.get("mStat", 0)), "stat")
         form = int(part.get("mStatFormula", 0))
         label = ("bonus " if form == 2 else ("base " if form == 1 else "")) + stat
+        if int(part.get("mStat", 0)) == 12 and form == 0:
+            label = "max Health"        # [numbers] stat 12 without a formula is MAX health (Titanic / Hullbreaker / Warmog's / Heartsteel)
         if stat in ("AP", "AD", "Armor", "Magic Resist", "Max Health", "Health", "Missing Health", "Attack Speed", "Move Speed"):
             return "%s%% %s" % (self.fmt(coef, True), label if stat != "AP" else "AP")
         return "%s%% %s" % (self.fmt(coef, True), label)
@@ -220,6 +279,8 @@ class Resolver:
         if isinstance(ref, str):
             ref = ref.split(":", 1)[-1]
         v = self.data.get(ref)
+        if v is None and isinstance(ref, str):
+            v = self.hdata.get(ref.lower())          # [numbers] data value referenced by its fnv1a hash
         if isinstance(v, (int, float)):
             return float(v)
         return None
@@ -235,6 +296,13 @@ class Resolver:
             return str(self.range_mode)
         if expr == "ItemActiveness":
             return ""
+        sc = self.str_calcs.get(expr.lower()) or self.str_calcs.get("%08x" % fnv1a(expr))
+        if sc is not None and mul is None:               # [numbers] StringCalculations: MeleeResult / RangedResult split
+            res = sc.get("RangedResult" if self.range_mode == 2 else "MeleeResult") or sc.get("DefaultResult")
+            if res:
+                out = self.resolve(res)
+                if "?" not in out:
+                    return out
         v = None
         if expr in self.data and isinstance(self.data[expr], (int, float)):
             v = float(self.data[expr])
@@ -338,7 +406,9 @@ def main():
                 add_parts(c)
     for i in store:
         add_parts(i)
-    wanted = sorted(set(store) | parts)
+    # [numbers] Manaflow items transform at 360 bonus mana: Archangel's -> Seraph's Embrace, Manamune -> Muramana,
+    # Winter's Approach -> Fimbulwinter, Whispering Circlet -> Diadem of Songs (not sold in the shop, no recipe)
+    wanted = sorted(set(store) | parts | set(UPGRADE_IDS))
 
     items = {}
     catalogue_extra = {}
@@ -358,6 +428,9 @@ def main():
         for mk in MODE_KEYS:
             for dv in (ovr.get("hash:" + mk) or {}).get("DataValues") or []:
                 data[dv["mName"]] = dv.get("mValue", 0.0)
+        for dst, src in DATA_ALIASES.get(iid, []):
+            if src in data:
+                data[dst] = data[src]
         calcs = v.get("mItemCalculations") or {}
         calcs = {k.split(":", 1)[-1]: c for k, c in calcs.items()}
         stats, raw_stats = {}, {}
@@ -391,13 +464,15 @@ def main():
         shop_tip = st.get(client.get("mShopTooltip", "")) or st.get(client.get("mDescription", "")) or ""
         texts = []
         for rm in (1, 2):
-            r = Resolver(st, v, data, calcs)
+            r = Resolver(st, v, data, calcs, v.get("StringCalculations"))
             r.range_mode = rm
             main_t = re.search(r"<mainText>(.*)</mainText>", shop_tip, flags=re.S)
             secs = split_sections(main_t.group(1)) if main_t else []
             texts.append([r.resolve(s).strip() for s in secs])
+        for fix_old, fix_new in TEXT_FIXES.get(iid, []):
+            texts = [[sec.replace(fix_old, fix_new) for sec in t] for t in texts]
         text = texts[0]
-        rr = Resolver(st, v, data, calcs)
+        rr = Resolver(st, v, data, calcs, v.get("StringCalculations"))
         calc_txt = {}
         for cn in calcs:
             t = rr.calc_text(cn)

@@ -177,11 +177,17 @@ func add_buff(b: Buff, src = null) -> Buff:
 	if b.cc != 0:
 		if has_cc_immunity() and (b.cc & Buff.HARD_CC) != 0:
 			return null
-		if (b.cc & Buff.TENACITY_AFFECTED) != 0 and stats.tenacity > 0.0:
-			b.duration *= 1.0 - stats.tenacity
+		# [numbers] League: tenacity shortens crowd control by its percentage (negative tenacity lengthens it), never below
+		# 0.3 s (wiki Tenacity); airborne, suppression, stasis, nearsight and drowsy ignore it.
+		if (b.cc & Buff.TENACITY_AFFECTED) != 0 and stats.tenacity != 0.0:
+			b.duration = maxf(b.duration * (1.0 - stats.tenacity), minf(b.duration, 0.3))
 			b.remaining = b.duration
 	if b.slow_amount > 0.0 and has_cc_immunity():
 		return null
+	if b.cc == 0 and b.slow_amount > 0.0 and stats.tenacity != 0.0 and not b.permanent:
+		# [numbers] League: tenacity also shortens slows (Mercury's Treads: "stuns, slows, taunts, fears ...")
+		b.duration = maxf(b.duration * (1.0 - stats.tenacity), minf(b.duration, 0.3))
+		b.remaining = b.duration
 	if b.stack_mode != Buff.Stack.INDEPENDENT:
 		var existing := find_buff(b.id, b.source if b.stack_mode == Buff.Stack.ADD_STACK and false else null)
 		if existing != null:
@@ -248,6 +254,11 @@ func _update_cc() -> void:
 func _on_cc_received(_b: Buff) -> void:
 	if (cc & (Buff.CC.STUN | Buff.CC.AIRBORNE | Buff.CC.SUPPRESS | Buff.CC.SLEEP | Buff.CC.CHARM | Buff.CC.FEAR | Buff.CC.TAUNT)) != 0:
 		cancel_windup()
+		# [cc-anim] League: these CCs drop the walk order (a stunned / knocked-up unit stands where it lands, like a
+		# knock-back already did); a root keeps it and resumes when the root ends
+		stop_moving()
+		if cmd == Cmd.MOVE:
+			cmd = Cmd.IDLE
 		if not casting.is_empty() and casting.ability != null and not casting.ability.uninterruptible:
 			casting = {}
 		if not channel.is_empty():
@@ -262,6 +273,11 @@ func has_cc_immunity() -> bool:
 
 func can_move() -> bool:
 	return not dead and (cc & Buff.BLOCK_MOVE) == 0 and dash.is_empty() and (cc & Buff.FORCED_MOVE) == 0
+
+
+## [cc-anim] League: stunned / airborne / suppressed / sleeping / stasis units cannot turn (roots, disarms, silences can).
+func can_turn() -> bool:
+	return (cc & (Buff.CC.STUN | Buff.CC.AIRBORNE | Buff.CC.SUPPRESS | Buff.CC.SLEEP | Buff.CC.STASIS)) == 0
 
 
 func can_attack() -> bool:
@@ -475,7 +491,7 @@ func _tick_buffs(dt: float) -> void:
 
 func _regen(dt: float) -> void:
 	if hp < stats.max_hp:
-		hp = minf(stats.max_hp, hp + stats.hp_regen * dt)
+		hp = minf(stats.max_hp, hp + stats.hp_regen * dt * (1.0 - grievous_wounds()))   # [numbers] Grievous Wounds cuts health regeneration too
 	if stats.uses_mana and mana < stats.max_mana:
 		mana = minf(stats.max_mana, mana + stats.mana_regen * dt)
 
@@ -693,9 +709,19 @@ func attack_hit(t: Unit, crit: bool, mult: float = 1.0) -> DamageInfo:
 	if t == null or not is_instance_valid(t) or t.dead:
 		return null
 	var dmg := stats.ad * mult
+	var dtype := G.DmgType.PHYSICAL
+	# [numbers] League (wiki Turret / Basic attack / Critical strike): a champion's basic attack against a structure deals
+	# base AD + bonus AD + 60% AP, the whole hit being physical if bonus AD >= 60% AP and magic otherwise, and it cannot
+	# critically strike structures.
+	if kind == G.Kind.CHAMPION and (t.kind == G.Kind.TURRET or t.kind == G.Kind.INHIBITOR or t.kind == G.Kind.NEXUS):
+		crit = false
+		var ap_part := stats.ap * Rules.STRUCT_AP_RATIO
+		dmg = (stats.ad + ap_part) * mult
+		if ap_part > stats.bonus_ad:
+			dtype = G.DmgType.MAGIC
 	if crit:
 		dmg *= stats.crit_damage
-	var info := Combat.deal(self, t, dmg, G.DmgType.PHYSICAL, {"is_attack": true, "is_crit": crit})
+	var info := Combat.deal(self, t, dmg, dtype, {"is_attack": true, "is_crit": crit})
 	if match_ref != null and match_ref.audio != null:
 		match_ref.audio.attack_hit(self, t, crit)
 	LolVfx.on_attack_hit(self, t, crit)
@@ -789,6 +815,9 @@ func _update_movement(dt: float) -> void:
 		_forced_move(dt)
 		return
 	if (cc & Buff.BLOCK_MOVE) != 0 or not casting.is_empty() and not casting.ability.can_move_while_casting:
+		# [cc-anim] League: a rooted unit (only) still turns toward where it is told to go
+		if (cc & Buff.BLOCK_MOVE) == Buff.CC.ROOT and moving and path_i < path.size() and casting.is_empty():
+			face_toward(path[path_i], dt)
 		return
 	if not channel.is_empty() and not channel.ability.can_move_while_channeling:
 		return
@@ -835,20 +864,27 @@ func _forced_move(dt: float) -> void:
 			break
 	if b == null:
 		return
+	# [cc-anim] League: charm / flee / taunt end the moment their source dies
+	var ft = b.forced_target
+	if ft != null and (not is_instance_valid(ft) or ft.dead):
+		remove_buff(b)
+		return
 	var dest := b.forced_dest
-	if b.forced_target != null and is_instance_valid(b.forced_target):
-		dest = b.forced_target.global_position
+	if ft != null:
+		dest = ft.global_position
 	var dir := G.flat_dir(global_position, dest)
 	if (b.cc & Buff.CC.FEAR) != 0:
 		dir = -dir
-	if (b.cc & Buff.CC.TAUNT) != 0 and b.forced_target != null and is_instance_valid(b.forced_target):
-		if in_attack_range(b.forced_target):
+	if (b.cc & Buff.CC.TAUNT) != 0 and ft != null:
+		if in_attack_range(ft):
+			moving = false   # [cc-anim] standing and swinging at the taunter: no run clip
 			if attack_timer <= 0.0 and windup_timer < 0.0:
-				_start_attack(b.forced_target)
+				_start_attack(ft)
 			return
 	var speed := stats.move_speed * G.U
 	var np := global_position + dir * speed * dt
 	if match_ref != null and match_ref.nav != null and not match_ref.nav.is_walkable(np):
+		moving = false   # [cc-anim] pinned against a wall while fleeing: idle, not a run on the spot
 		return
 	face_toward(np, dt)
 	set_ground_pos(np)
@@ -878,8 +914,8 @@ func start_dash(to: Vector3, opts: Dictionary = {}) -> void:
 	dash = {"from": from, "to": dest, "t": 0.0, "duration": duration, "height": opts.get("height", 0.0),
 		"on_arrive": opts.get("on_arrive", Callable()), "on_tick": opts.get("on_tick", Callable()),
 		"forced": opts.get("forced", false), "can_cast": opts.get("can_cast", false)}
-	if dist > 0.01:
-		face_toward(dest, 100.0)
+	if dist > 0.01 and not opts.get("forced", false):
+		face_toward(dest, 100.0)   # [cc-anim] (a knocked-back / pulled unit keeps its facing)
 	if opts.has("anim"):
 		play_anim(opts.anim, 1.0, 0.05, duration)
 	if not opts.get("forced", false):
@@ -967,6 +1003,8 @@ func face_toward(p: Vector3, dt: float) -> void:
 	if d.length_squared() < 0.0001:
 		return
 	d = d.normalized()
+	if dt < 50.0 and cc != 0 and not can_turn():
+		return
 	if dt >= 50.0:
 		facing = d
 	else:
@@ -1103,6 +1141,11 @@ static func _collide(a: Unit, b: Unit, nav) -> void:
 	var dz := bp.z - ap.z
 	if dx * dx + dz * dz >= rr * rr or (a.mass <= 0.0 and b.mass <= 0.0):
 		return
+	# [bugfix] League spawns lane minions at the barracks = their own inhibitor and the nav grid (pathfindingCollisionRadius
+	# 213.75 for the inhibitor, already blocked as a disc) is what routes them out. The soft push here (radius 2.2 + minion)
+	# is larger than that disc and pinned the whole wave against its own inhibitor / nexus.
+	if (a.kind == G.Kind.MINION and b.team == a.team and (b.kind == G.Kind.INHIBITOR or b.kind == G.Kind.NEXUS)) 			or (b.kind == G.Kind.MINION and a.team == b.team and (a.kind == G.Kind.INHIBITOR or a.kind == G.Kind.NEXUS)):
+		return
 	resolve_pair(a, b, nav)
 
 
@@ -1184,6 +1227,7 @@ func die(killer, info = null) -> void:
 		if not b.permanent:
 			remove_buff(b)
 	Prof.slow("death.buffs", pd, display_name)
+	_kill_attached_fx()   # [vfx-leak]
 	pd = Prof.t0()
 	for e in effects.duplicate():
 		e.on_death(killer)
@@ -1208,6 +1252,17 @@ func die(killer, info = null) -> void:
 
 func on_died(_killer) -> void:
 	pass
+
+
+## [vfx-leak] League removes every buff / ability particle attached to a unit when it dies. Kits keep their own
+## references and timers for those effects (a Sona zone, Darius's R-ready glow, a Malphite speed trail ...), but a dead
+## unit's timers may not run for seconds and a corpse keeps the node, so a looping effect would hang on the body.
+## Looping effects owned by animation events (death-clip particles, skin idle particles) are exempt: AnimEvents
+## ends those at their end frame / clip exit.
+func _kill_attached_fx() -> void:
+	for c in get_children():
+		if c is LolVfx and c._loop and not c._stopped and not c.has_meta("anim_ev"):
+			K.kill_fx(c, 0.15)
 
 
 # ===================================================================== visuals
@@ -1802,7 +1857,15 @@ func _update_visual(dt: float) -> void:
 			_weapon_hold.active = wh_on
 	if model != null:
 		# only touch the transform when it changes (a set re-propagates through every mesh / bone socket)
-		var my := airborne_height + _airborne_offset()
+		# [cc-anim] a knock-up lift is published through airborne_height so health bars / overlays rise with the unit
+		var off := _airborne_offset()
+		if off > 0.0:
+			airborne_height = off
+			_knock_lifted = true
+		elif _knock_lifted and dash.is_empty():
+			_knock_lifted = false
+			airborne_height = 0.0
+		var my := airborne_height
 		if my != _model_y:
 			_model_y = my
 			model.position.y = my
@@ -1835,20 +1898,23 @@ func _update_visual(dt: float) -> void:
 				return
 	_attack_anim = false
 	var want := "idle"
-	if not dash.is_empty():
-		return
-	if (cc & (Buff.CC.STUN | Buff.CC.SUPPRESS | Buff.CC.SLEEP)) != 0 and has_anim("stunned"):
-		want = "stunned"
-	elif (cc & Buff.CC.AIRBORNE) != 0 and has_anim("knockup"):
-		want = "knockup"
-	elif moving or (cc & Buff.FORCED_MOVE) != 0:
-		want = "run"
+	var airborne := (cc & Buff.CC.AIRBORNE) != 0
+	if not dash.is_empty() and not (airborne and dash.get("forced", false)):
+		return   # [cc-anim] (a knock-back / pull is a forced dash: the unit plays its airborne clip while it flies)
+	# [cc-anim] League plays a CC clip only where the champion's AnimationGraphData has one (Ahri: stunned + knockup,
+	# Jinx / Master Yi / minions: stunned); everything else keeps its idle. A unit that cannot move never plays run.
+	if airborne:
+		want = "knockup" if has_anim("knockup") else ("stunned" if has_anim("stunned") else "idle")
+	elif (cc & (Buff.CC.STUN | Buff.CC.SUPPRESS | Buff.CC.SLEEP)) != 0:
+		want = "stunned" if has_anim("stunned") else "idle"
+	elif moving and (cc & Buff.BLOCK_MOVE) == 0:
+		want = "run"   # (charm / fear / taunt walks set `moving` only on the frames they actually step)
 	elif not channel.is_empty() and has_anim("channel"):
 		want = "channel"
 	# [motion3] League idles on a looping Idle1 and now and then plays a one-shot fidget (Idle2/3/4), then returns
 	if cur_anim == "idle_var" and want == "idle" and not _g_hold:
 		return
-	if want == "idle" and cur_anim == "idle" and _g_top != "" and not dead:
+	if want == "idle" and cur_anim == "idle" and _g_top != "" and not dead and (cc & Buff.IMMOBILIZE) == 0:
 		_idle_t += dt
 		if _idle_t >= _idle_next:
 			_idle_t = 0.0
@@ -1936,6 +2002,7 @@ func _ev_tick(dt: float) -> void:
 ## hidden by fog of war) skip the mixer + skeleton update entirely, so they cost no pose evaluation
 ## and no GPU skinning. The skipped time is applied in one step when the unit becomes visible again.
 var _model_y := INF
+var _knock_lifted := false
 var _manual_ap: AnimationPlayer = null
 var _anim_acc := 0.0
 var _on_screen := true

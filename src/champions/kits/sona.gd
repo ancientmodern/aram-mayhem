@@ -39,6 +39,10 @@ func build_kit() -> void:
 	K.aram_cooldowns(c.abilities[0], [10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0])
 	K.aram_cooldowns(c.abilities[1], [13.0, 13.0, 13.0, 13.0, 13.0, 13.0, 13.0])
 	# ARAM Aria values (SonaW DataValuesModeOverride.ARAM): shield 65-105 base, heal ratio 20% AP.
+	# [numbers] Left bin-exact on purpose: the wiki ARAM page additionally lists a base heal of 45 / 56.25 / 67.5 / 78.75 / 90 and a
+	# 20% AP shield ratio, but the installed 16.20 sona.bin (and CommunityDragon "latest") ARAM override only carries BaseShield +
+	# HealRatio (BaseHeal stays 30/45/60/75/90, ShieldRatio stays 25%). To follow the wiki instead add
+	# "BaseHeal": [33.75, 45.0, 56.25, 67.5, 78.75, 90.0, 101.25] and "ShieldRatio": 0.2 to the dictionary below.
 	K.aram_data(c.abilities[1], {"BaseShield": [55.0, 65.0, 75.0, 85.0, 95.0, 105.0, 115.0], "HealRatio": 0.2})
 	c.abilities[2].cast_range = 400.0
 	c.abilities[3].cast_time = 0.25

@@ -173,8 +173,13 @@ class GetExcited extends Effect:
 		LolVfx.attach(o, "Jinx_Base_Passive_Buff_OnKill", {"height": 1.0})
 		var b: Buff = o.find_buff("jinx_excited_as")
 		if b == null:
-			K.buff(o, "jinx_excited_as", duration, {}, o, {"name": "Get Excited!", "icon": icon,
-				"per_stack": {"as": as_buff}, "max_stacks": 5, "stack_mode": Buff.Stack.ADD_STACK})
+			# [numbers] total-attack-speed multiplier (see ExcitedBuff)
+			var nb := ExcitedBuff.new()
+			nb.per = as_buff
+			nb.duration = duration
+			nb.remaining = duration
+			nb.icon = icon
+			o.add_buff(nb, o)
 		else:
 			if champ:
 				b.stacks = mini(5, b.stacks + 1)
@@ -192,6 +197,22 @@ class GetExcited extends Effect:
 				var qq = wq.get_ref()
 				if wo.get_ref() != null and qq != null:
 					qq.refresh_anims())
+
+
+## [numbers] League wiki (Attack speed > "Total attack speed multipliers"): Get Excited!'s +25% attack speed per stack
+## (max 5 stacks = +125%) multiplies Jinx's TOTAL attack speed: Stats "as_total%" (base + ratio * bonus) * (1 + x), and the
+## buff raises her attack speed cap to 90 while it lasts.
+class ExcitedBuff extends Buff:
+	var per := 0.25
+
+	func _init() -> void:
+		super("jinx_excited_as", 6.0)
+		display_name = "Get Excited!"
+		max_stacks = 5
+		stack_mode = Stack.ADD_STACK
+
+	func get_stat_mods() -> Dictionary:
+		return {"as_total%": per * float(stacks), "as_cap": 90.0 - Rules.AS_CAP}
 
 
 # ===================================================================== Q
@@ -265,17 +286,24 @@ class Switcheroo extends KitAbility:
 
 	func add_rev() -> void:
 		var o = owner
-		var per := dv("MinigunAttackSpeedMax", 30.0) / 100.0 / maxf(1.0, dv("MinigunAttackSpeedStacks", 3.0))
+		# [numbers] League wiki (Pow-Pow, Rev'd up!): the first stack is worth half of the maximum (15 / 27.5 / 40 / 52.5 / 65%),
+		# every later stack is 50% effective (7.5 / 13.75 / 20 / 26.25 / 32.5%) -> 30 / 55 / 80 / 105 / 130% at 3 stacks.
+		# (Was max / 3 for every stack: 10 / 20 / 30% at rank 1.)
+		var mx := dv("MinigunAttackSpeedMax", 30.0) / 100.0
+		var first := mx * 0.5
+		var later := (mx - first) / maxf(1.0, dv("MinigunAttackSpeedStacks", 3.0) - 1.0)
 		var b = o.find_buff("jinx_revd")
 		if b == null:
 			var nb := RevdUp.new()
-			nb.per = per
+			nb.first = first
+			nb.later = later
 			nb.duration = dv("MinigunAttackSpeedDuration", 2.5)
 			nb.remaining = nb.duration
 			nb.icon = icon
 			o.add_buff(nb, o)
 		else:
-			b.per = per
+			b.first = first
+			b.later = later
 			b.stacks = mini(b.max_stacks, b.stacks + 1)
 			b.remaining = b.duration
 		o.stats.mark_dirty()
@@ -343,7 +371,8 @@ class Switcheroo extends KitAbility:
 
 
 class RevdUp extends Buff:
-	var per := 0.1
+	var first := 0.15   ## bonus AS of the first stack
+	var later := 0.075  ## bonus AS of each further stack (50% effective)
 
 	func _init() -> void:
 		super("jinx_revd", 2.5)
@@ -352,7 +381,9 @@ class RevdUp extends Buff:
 		stack_mode = Stack.ADD_STACK
 
 	func get_stat_mods() -> Dictionary:
-		return {"as": per * stacks}
+		if stacks <= 0:
+			return {}
+		return {"as": first + later * float(stacks - 1)}
 
 	## Stacks fall off one at a time.
 	func tick(unit, dt: float) -> bool:
@@ -485,7 +516,8 @@ class Zap extends KitAbility:
 		var dmg := damage()
 		var slow := dv("SlowPercent", 40.0) / 100.0
 		var slow_t := dv("SlowDuration", 2.0)
-		var range_u := cast_range
+		# [numbers] JinxWMissile castRange 1500 (wiki "Range 1500"); the cast ring (castRangeDisplayOverride) is 1450
+		var range_u := maxf(cast_range, 1500.0)
 		var self_ref := self
 		# League visuals: W_Mis (missile), W_Tar (auto, on damage), W_Slow (on the slowed unit while slowed)
 		K.line_missile(self, from, dir, 3300.0, range_u, {
@@ -749,9 +781,13 @@ class FlameChompers extends KitAbility:
 
 # ===================================================================== R
 class DeathRocket extends KitAbility:
-	const V0 := 17.0
-	const ACCEL := 8.0
-	const VMAX := 25.0
+	# [numbers] League (wiki Jinx R; JinxR mMissileSpec speed 1700 + luaOnMissileUpdateDistanceInterval 1350): the rocket
+	# flies at 1700 for the first 1350 units, then at 2200; its damage grows 10% -> 100% with the DISTANCE travelled
+	# (max at 1500 units, ~0.85 s), not with time. (Was a 1700 -> 2500 acceleration with a 1 s time ramp.)
+	const V0 := 17.0              ## m/s
+	const V1 := 22.0              ## m/s after SPEED_UP_AT
+	const SPEED_UP_AT := 13.5     ## m
+	const FULL_DAMAGE_AT := 15.0  ## m
 
 	func _init() -> void:
 		target_type = Target.DIRECTION
@@ -764,16 +800,15 @@ class DeathRocket extends KitAbility:
 	func max_damage() -> float:
 		return dv("MaxDamage") + 1.2 * bonus_ad()
 
-	## Damage vs a unit after `age` seconds of rocket flight (10% -> 100% over the first second).
-	func damage_vs(u: Unit, age: float) -> float:
-		var k := clampf(age, 0.1, 1.0)
+	## Damage vs a unit after the rocket has flown `dist_m` metres (10% -> 100% of the max damage over the first 1500 units).
+	func damage_vs(u: Unit, dist_m: float) -> float:
+		var k := 0.1 + 0.9 * clampf(dist_m / FULL_DAMAGE_AT, 0.0, 1.0)
 		return max_damage() * k + dv("PercentDamage", 25.0) / 100.0 * maxf(0.0, u.stats.max_hp - u.hp)
 
 	static func travel_time(d: float) -> float:
-		var d_acc := (VMAX * VMAX - V0 * V0) / (2.0 * ACCEL)
-		if d <= d_acc:
-			return (-V0 + sqrt(V0 * V0 + 2.0 * ACCEL * d)) / ACCEL
-		return (VMAX - V0) / ACCEL + (d - d_acc) / VMAX
+		if d <= SPEED_UP_AT:
+			return d / V0
+		return SPEED_UP_AT / V0 + (d - SPEED_UP_AT) / V1
 
 	func execute(t: Dictionary) -> void:
 		var o = owner
@@ -785,8 +820,10 @@ class DeathRocket extends KitAbility:
 		K.attach_fx(o, {"lol": "Jinx_Base_R_Cas", "bone": "Cstm_Buffbone_Rocket_Launcher", "dir": dir}, false)
 		var mi := K.line_missile(self, from, dir, V0 * 100.0, 25000.0, {
 			"width": 140.0, "minions": false, "lol": "Jinx_Base_R_Mis", "height": 1.3,
-			"accel": ACCEL * 100.0, "max_speed": VMAX * 100.0,
-			"on_hit": func(mm, u): self_ref._explode(u.global_position, u, mm.age),
+			"on_move": func(mm, _dt):
+				if mm.traveled >= SPEED_UP_AT:
+					mm.speed = V1,
+			"on_hit": func(mm, u): self_ref._explode(u.global_position, u, mm.traveled),
 		})
 		mi.lifetime = 12.0
 		mi.blockable = true
@@ -798,18 +835,18 @@ class DeathRocket extends KitAbility:
 			m.camera_rig.shake(0.2)
 		notify_cast(t)
 
-	func _explode(pos: Vector3, primary: Unit, age: float) -> void:
+	func _explode(pos: Vector3, primary: Unit, dist_m: float) -> void:
 		var o = owner
 		if not is_instance_valid(o):
 			return
 		var m = o.match_ref
 		var aoe_mult := dv("AoEDamageMult", 0.8)
 		if is_instance_valid(primary) and not primary.dead:
-			hit(primary, damage_vs(primary, age), G.DmgType.PHYSICAL, {"tag": "r"})
+			hit(primary, damage_vs(primary, dist_m), G.DmgType.PHYSICAL, {"tag": "r"})
 		for u in m.enemies_in_radius(o.team, pos, dv("AoERadius", 400.0) * G.U):
 			if u == primary:
 				continue
-			hit(u, damage_vs(u, age) * aoe_mult, G.DmgType.PHYSICAL, {"tag": "r", "is_aoe": true})
+			hit(u, damage_vs(u, dist_m) * aoe_mult, G.DmgType.PHYSICAL, {"tag": "r", "is_aoe": true})
 		var gp := ground(pos)
 		LolVfx.spawn(m, "Jinx_Base_R_Tar", gp, {"dir": G.flat_dir(o.global_position, gp), "height": 0.05})
 		if m.camera_rig != null:
@@ -832,7 +869,7 @@ class DeathRocket extends KitAbility:
 			var tt := cast_time + travel_time(d)
 			var v: Vector3 = e.velocity if (e.cc & Buff.BLOCK_MOVE) == 0 else Vector3.ZERO
 			var aim: Vector3 = e.global_position + v * minf(tt, 2.5) * 0.75
-			var dmg := damage_vs(e, travel_time(G.flat_dist(from, aim))) * Combat.resist_multiplier(e.stats.armor, o, true)
+			var dmg := damage_vs(e, G.flat_dist(from, aim)) * Combat.resist_multiplier(e.stats.armor, o, true)
 			var ehp: float = e.hp + e.total_shield()
 			if _blocked(from, aim, e):
 				continue

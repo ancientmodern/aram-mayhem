@@ -186,12 +186,15 @@ class SeismicShard extends MAbility:
 		var m = o.match_ref
 		if tgt == null or not is_instance_valid(tgt) or tgt.dead:
 			return
+		var ms_before: float = tgt.stats.move_speed
 		hit(tgt, dmg, G.DmgType.MAGIC, {"tag": "malph_q"})
 		var pct := dv("SpeedSteal", 20.0) / 100.0
 		var dur := dv("SlowDuration", 3.0)
 		K.slow(tgt, pct, dur, o, false, "malph_q_slow")
 		if not o.dead:
-			K.haste(o, pct, dur, o, false, "malph_q_ms")
+			# [numbers] wiki Seismic Shard: Malphite gains movement speed equal to the raw movement speed the target lost to the
+			# slow (a flat amount = target move speed x slow %), not the same % of his own move speed.
+			K.buff(o, "malph_q_ms", dur, {"ms": ms_before * pct}, o, {"name": "Seismic Shard"})
 			# League: stolen speed flies back to Malphite, then his speed buff swirl (Q_tar via mapping)
 			_return_shard(tgt.global_position + Vector3(0, tgt.height * 0.5, 0))
 			var sb := LolVfx.attach(o, "Malphite_Base_Q_Speed_Buff", {"loop": true})

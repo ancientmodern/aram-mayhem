@@ -176,7 +176,7 @@ class Hemorrhage extends Effect:
 	func trigger_might() -> void:
 		var fresh := not in_might()
 		K.buff(owner, "darius_might", val("BleedDuration", 5.0), {"ad": might_ad(), "size": 0.08}, owner,
-				{"name": "Noxian Might", "icon": icon})
+				{"name": "Noxian Might", "icon": icon, "kill_fx": true})   # [vfx-leak] FxBuff: its effects die with the buff
 		var mb = owner.find_buff("darius_might")
 		if not fresh or mb == null:
 			return
@@ -187,11 +187,10 @@ class Hemorrhage extends Effect:
 		var axe := K.attach_fx(owner, {"lol": "Darius_Base_P_axe_tip", "bone": "BuffBone_Glb_Weapon_1"})
 		var shl := K.attach_fx(owner, {"lol": "Darius_Base_P_enraged_shoulder_L", "bone": "L_Shoulder"})
 		var shr := K.attach_fx(owner, {"lol": "Darius_Base_P_enraged_shoulder_R", "bone": "R_Shoulder"})
-		mb.on_expire = func(_b):
-			LFx.stop(aura)
-			LFx.stop(axe)
-			LFx.stop(shl)
-			LFx.stop(shr)
+		if "extra_fx" in mb:
+			for n in [aura, axe, shl, shr]:
+				if n != null:
+					mb.extra_fx.append(n)
 		if m.camera_rig != null and owner == G.player:
 			m.camera_rig.shake(0.2)
 
@@ -424,11 +423,24 @@ class CripplingStrike extends DAbility:
 
 class WAttackHook extends Effect:
 	var w
+	var _was_emp := false
 
 	func _init(p_w) -> void:
 		w = p_w
 		id = "darius_w_hook"
 		hidden = true
+
+	## [numbers] League (wiki Crippling Strike): the empowered attack has 25 bonus attack range.
+	func get_stat_mods() -> Dictionary:
+		if w != null and w.is_empowered():
+			return {"range": 25.0}
+		return {}
+
+	func on_tick(u, _dt: float) -> void:
+		var emp: bool = w.is_empowered()
+		if emp != _was_emp:
+			_was_emp = emp
+			u.stats.mark_dirty()   # [numbers] re-evaluate the +25 range when the empowered window opens / closes
 
 	func on_pre_damage_dealt(info) -> void:
 		if info.is_attack and info.target != null and w.is_empowered() and info.tag != "darius_w":

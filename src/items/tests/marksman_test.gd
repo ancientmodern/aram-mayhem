@@ -433,7 +433,7 @@ func _t_shields(melee: bool) -> void:
 	Combat.deal(d, c, dmg, G.DmgType.TRUE, {})
 	_check("shieldbow lifeline absorbs the triggering hit", _near(c.hp, c.stats.max_hp * 0.4, 0.5) and c.shields.size() > 0 and _near(c.shields[0].max, amt, 0.5), "hp=%.0f shield=%.0f max=%.0f exp=%.0f" % [c.hp, c.total_shield(), c.shields[0].max if c.shields.size() > 0 else -1.0, amt])
 	var it = _it(6673)
-	_check("shieldbow cd 60", _near(it._cd, 60.0, 0.5), str(it._cd))
+	_check("shieldbow cd 75", _near(it._cd, 75.0, 0.5), str(it._cd))   # [numbers] classic ARAM 75 s (Mayhem 60 s)
 	_check("shieldbow 3s shield", c.shields.size() > 0 and _near(c.shields[0].duration, 3.0, 0.01))
 	c.shields.clear()
 	Combat.deal(d, c, dmg, G.DmgType.TRUE, {})
@@ -455,6 +455,9 @@ func _t_shields(melee: bool) -> void:
 	_check("bloodthirster no shield while healing is not excess", c.total_shield() < 1.0, "%.1f" % c.total_shield())
 	# serpent's fang
 	_equip([6695])
+	d.shields.clear()
+	var k_sh: float = float(Combat.shield(d, d, 100.0, 0.5).amount) / 100.0   # [numbers] the dummy's own shield modifiers (Mayhem aura ...)
+	d.shields.clear()
 	d.add_shield(200.0, 5.0, d)
 	var fi := Combat.deal(c, d, 10.0, G.DmgType.PHYSICAL, {})
 	var w := float(ItemDB.data(6695, "ShieldShred" if melee else "ShieldShredRange", 50.0)) / 100.0
@@ -462,7 +465,7 @@ func _t_shields(melee: bool) -> void:
 	var tot0: float = d.total_shield()
 	Combat.shield(d, d, 100.0, 3.0)
 	var ww := float(ItemDB.data(6695, "ShieldWounds" if melee else "ShieldWoundsRange", 50.0)) / 100.0
-	_check("serpent's fang reduces new shields by %.0f%%" % (ww * 100.0), _near(d.total_shield() - tot0, 100.0 * (1.0 - ww), 0.5), "%s" % (d.total_shield() - tot0))
+	_check("serpent's fang reduces new shields by %.0f%%" % (ww * 100.0), _near(d.total_shield() - tot0, 100.0 * k_sh * (1.0 - ww), 0.5), "%s" % (d.total_shield() - tot0))
 
 
 func _t_runaans() -> void:
@@ -473,6 +476,6 @@ func _t_runaans() -> void:
 	await _frames(90)
 	n_bolts = tr.cnt("runaans")
 	var expect := 1 if float(c.stats.base.attack_range) < 300.0 else 2
-	_check("runaan's bolts (%d per attack, 40%% AD)" % expect, n_bolts >= expect * 4, "bolts=%d" % n_bolts)
+	_check("runaan's bolts (%d per attack, 60%% AD)" % expect, n_bolts >= expect * 4, "bolts=%d" % n_bolts)
 	if n_bolts > 0:
-		_check("runaan's bolt 40% ad", _near(tr.amt("runaans") / c.stats.ad, 0.4, 0.01) or _near(tr.amt("runaans") / (c.stats.ad * c.stats.crit_damage), 0.4, 0.01), "%.3f" % (tr.amt("runaans") / c.stats.ad))
+		_check("runaan's bolt 60% ad", _near(tr.amt("runaans") / c.stats.ad, 0.6, 0.01) or _near(tr.amt("runaans") / (c.stats.ad * c.stats.crit_damage), 0.6, 0.01), "%.3f" % (tr.amt("runaans") / c.stats.ad))

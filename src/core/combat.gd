@@ -2,7 +2,7 @@ class_name Combat
 extends RefCounted
 ## Damage, healing and shielding pipeline shared by every unit.
 
-const ASSIST_WINDOW := 10.0
+const ASSIST_WINDOW := 20.0   # [numbers] kill-bounty config AssistDurationOverride 20 s (map12.bin ARAM + Kiwi); was 10
 
 
 ## Deal damage. opts keys map onto DamageInfo fields (is_attack, is_spell, is_aoe,
@@ -78,6 +78,8 @@ static func _apply(info: DamageInfo) -> DamageInfo:
 	if source != null:
 		raw *= 1.0 + source.stats.dmg_amp
 	raw *= 1.0 - target.stats.dmg_reduction
+	if source != null:
+		raw *= _aram_damage_ratio(source, target, info)
 	if target.has_method("damage_taken_multiplier"):
 		raw *= target.damage_taken_multiplier(source)
 	if source != null and source.kind == G.Kind.CHAMPION and target.kind == G.Kind.CHAMPION:
@@ -88,9 +90,9 @@ static func _apply(info: DamageInfo) -> DamageInfo:
 			raw *= Rules.long_range_mult(du)
 	var post := raw
 	if info.type == G.DmgType.PHYSICAL:
-		post = raw * resist_multiplier(target.stats.armor, source, true)
+		post = raw * resist_multiplier(target.stats.armor, source, true, target)
 	elif info.type == G.DmgType.MAGIC:
-		post = raw * resist_multiplier(target.stats.mr, source, false)
+		post = raw * resist_multiplier(target.stats.mr, source, false, target)
 	post = maxf(post, 0.0)
 	info.mitigated = post
 	# shields
@@ -110,13 +112,7 @@ static func _apply(info: DamageInfo) -> DamageInfo:
 			source.champion_damage_total += post
 	# vamp
 	if source != null and not info.no_vamp and not info.is_reflect and post > 0.0 and not source.dead:
-		var vamp: float = source.stats.omnivamp
-		if info.is_attack:
-			vamp += source.stats.lifesteal
-		if info.is_spell:
-			vamp += source.stats.spell_vamp
-		if info.is_pet:
-			vamp *= 0.33
+		var vamp := vamp_fraction(source, target, info)
 		if vamp > 0.0 and target.kind != G.Kind.TURRET and target.kind != G.Kind.INHIBITOR and target.kind != G.Kind.NEXUS:
 			heal(source, source, post * vamp, {"is_vamp": true, "show": false})
 	if target.match_ref != null and info.show_number:
@@ -145,12 +141,18 @@ static func _apply(info: DamageInfo) -> DamageInfo:
 
 
 ## Damage multiplier for a given armor/MR value with the source's penetration.
-static func resist_multiplier(resist: float, source, physical: bool) -> float:
+## [numbers] League order: (armor reduction is already in `resist`), percent penetration, then flat (lethality), both
+## ignored when the resist is <= 0; turrets have 30% armor penetration (wiki Turret, Ohmwrecker); penetration has no
+## effect on an inhibitor's armor (wiki Inhibitor).
+static func resist_multiplier(resist: float, source, physical: bool, target = null) -> float:
 	var r := resist
-	if source != null:
+	if source != null and not (target != null and target.kind == G.Kind.INHIBITOR):
 		if physical:
 			if r > 0.0:
-				r = r * (1.0 - source.stats.armor_pen_pct)
+				var pct: float = source.stats.armor_pen_pct
+				if source.kind == G.Kind.TURRET:
+					pct = 1.0 - (1.0 - pct) * (1.0 - Rules.TURRET_ARMOR_PEN)
+				r = r * (1.0 - pct)
 				r = maxf(0.0, r - source.lethality_flat())
 		else:
 			if r > 0.0:
@@ -159,6 +161,61 @@ static func resist_multiplier(resist: float, source, physical: bool) -> float:
 	if r >= 0.0:
 		return 100.0 / (100.0 + r)
 	return 2.0 - 100.0 / (100.0 - r)
+
+
+## [numbers] League ARAM (Map12 GameModeConstants dr_* ratios + wiki ARAM): lane minions deal 50% to champions and to
+## structures, champion damage to structures grows +0% -> +25% from 18:00 to 30:00 (melee champions with more AP than AD
+## get at least +20%), area damage deals 75% to minions.
+static func _aram_damage_ratio(source, target, info) -> float:
+	var m := 1.0
+	var tk: int = target.kind
+	var is_struct := tk == G.Kind.TURRET or tk == G.Kind.INHIBITOR or tk == G.Kind.NEXUS
+	match source.kind:
+		G.Kind.MINION:
+			if tk == G.Kind.CHAMPION:
+				m *= Rules.UNIT_TO_HERO_DR
+			elif is_struct:
+				m *= Rules.UNIT_TO_BUILDING_DR
+		G.Kind.CHAMPION:
+			if is_struct:
+				var t: float = source.match_ref.time if source.match_ref != null else 0.0
+				var b := Rules.structure_bonus(t)
+				# Howling Abyss aura: melee champions with more AP than AD deal +20% to structures (until the time bonus passes it)
+				if source.stats.attack_range < 300.0 and source.stats.ap > source.stats.ad:
+					b = maxf(b, Rules.MELEE_AP_STRUCT_BONUS)
+				m *= 1.0 + b
+			elif tk == G.Kind.MINION:
+				if info.is_aoe:
+					m *= Rules.AOE_VS_MINION
+				# wiki ARAM: melee champions deal +20% to siege and super minions
+				var mt: int = target.minion_type
+				if source.stats.attack_range < 300.0 and (mt == Minion.Type.SIEGE or mt == Minion.Type.SUPER):
+					m *= 1.2
+	return m
+
+
+## [numbers] Fraction of post-mitigation damage returned as healing (League Map12 GameModeConstants): omnivamp and spell
+## vamp are x0.333 for AoE / pet / DoT damage and against minions or monsters; life steal is x0.33 for AoE / pet damage;
+## the Howling Abyss aura cuts life steal and omnivamp healing against minions by 40% (wiki ARAM).
+static func vamp_fraction(source, target, info) -> float:
+	var vs_minion: bool = target.kind == G.Kind.MINION
+	var third := 0.333
+	var omni: float = source.stats.omnivamp
+	if omni > 0.0 and (info.is_aoe or info.is_pet or info.is_dot or vs_minion):
+		omni *= third
+	var sv := 0.0
+	if info.is_spell:
+		sv = source.stats.spell_vamp
+		if sv > 0.0 and (info.is_aoe or info.is_pet or info.is_dot or vs_minion):
+			sv *= third
+	var ls := 0.0
+	if info.is_attack:
+		ls = source.stats.lifesteal
+		if ls > 0.0 and (info.is_aoe or info.is_pet):
+			ls *= 0.33
+		if ls > 0.0 and vs_minion:
+			ls *= 0.6
+	return omni + sv + ls
 
 
 ## Heal target. Applies heal power of the source and grievous wounds on the target.

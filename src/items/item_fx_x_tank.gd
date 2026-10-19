@@ -661,6 +661,8 @@ class TkWintersApproach extends TankItem:
 		var per := d("ManaPerCharge", 4.5) * (2.0 if t.kind == G.Kind.CHAMPION else 1.0)
 		gained = minf(d("MaxMana", 360.0), gained + per)
 		refresh_stats()
+		if gained >= d("MaxMana", 360.0) - 0.001:       # [numbers] "Transforms into Fimbulwinter at 360 max Mana"
+			ItemFxUpgrades.upgrade(self, 3121)
 
 	func on_attack_hit(t, info) -> void:
 		if info != null and info.is_attack and info.on_hit_mult >= 0.999:

@@ -18,6 +18,7 @@ const PART_PATHS := [
 	"res://src/items/item_fx_x_mage.gd",
 	"res://src/items/item_fx_x_tank.gd",
 	"res://src/items/item_fx_x_support.gd",
+	"res://src/items/item_fx_x_upgrades.gd",   # [numbers] Seraph's Embrace / Muramana / Fimbulwinter / Diadem of Songs
 ]
 static var PARTS: Array = []
 

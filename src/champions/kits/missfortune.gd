@@ -135,7 +135,9 @@ class LoveTap extends Effect:
 		if u.kind == G.Kind.CHAMPION:
 			var w = owner.abilities[1]
 			if w != null and w.level > 0:
-				w.reduce_cooldown(w.dv("LoveTapBaseRefund", 2.0))
+				# [numbers] League LoveTapRefund = LoveTapBaseRefund (2 s) x CooldownMultiplierCalculationPart, i.e. 2 s of *base*
+				# cooldown: ability haste shrinks the refund (missfortune.bin MissFortuneViciousStrikes).
+				w.reduce_cooldown(owner.stats.cooldown(w.dv("LoveTapBaseRefund", 2.0)))
 		return bonus_vs(u)
 
 	func on_pre_damage_dealt(info) -> void:

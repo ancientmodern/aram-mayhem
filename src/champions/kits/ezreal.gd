@@ -219,7 +219,7 @@ class EssenceFlux extends KitAbility:
 	func _init() -> void:
 		target_type = Target.DIRECTION
 		indicator = Ind.LINE
-		ind_width = 120.0
+		ind_width = 160.0   # [numbers] hitbox 2 x 80 (was 120)
 		cast_time = 0.25
 		anim = "spell2"
 		anim_lock = 0.35
@@ -235,8 +235,9 @@ class EssenceFlux extends KitAbility:
 		var o = owner
 		var from: Vector3 = K.cast_pos(o, 1.15)
 		var self_ref := self
+		# [numbers] EzrealW mMissileSpec mMissileWidth is 80 (radius; wiki "Width 160"), not the 60 of mLineWidth
 		var mi := K.line_missile(self, from, t.dir, 1700.0, 1200.0, {
-			"width": 60.0, "minions": false, "lol": "Ezreal_Base_W_mis", "height": 1.15,
+			"width": 80.0, "minions": false, "lol": "Ezreal_Base_W_mis", "height": 1.15,
 			"on_hit": func(_mi, u): self_ref._stick(u),
 		})
 		mi.hit_structures = true

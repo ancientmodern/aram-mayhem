@@ -19,7 +19,7 @@ const BLOCK_CAST := CC.STUN | CC.SILENCE | CC.AIRBORNE | CC.SUPPRESS | CC.SLEEP 
 		| CC.CHARM | CC.FEAR | CC.TAUNT | CC.POLYMORPH
 const FORCED_MOVE := CC.CHARM | CC.FEAR | CC.TAUNT
 const TENACITY_AFFECTED := CC.STUN | CC.ROOT | CC.SILENCE | CC.DISARM | CC.CHARM | CC.FEAR \
-		| CC.TAUNT | CC.SLEEP | CC.BLIND | CC.POLYMORPH | CC.GROUNDED | CC.NEARSIGHT
+		| CC.TAUNT | CC.SLEEP | CC.BLIND | CC.POLYMORPH | CC.GROUNDED   # [numbers] wiki Tenacity: nearsight is not affected
 
 enum Stack { REFRESH, ADD_STACK, INDEPENDENT, KEEP_LONGEST }
 
@@ -97,8 +97,10 @@ func on_removed(_unit) -> void:
 	if on_expire.is_valid():
 		on_expire.call(self)
 	if vfx != null and is_instance_valid(vfx):
+		# [vfx-leak] League kills a buff's particles together with the buff; stop() alone lets the particles already
+		# emitted live out their (up to 2.5 s) lifetime on the unit after the buff is gone
 		if vfx.has_method("stop"):
-			vfx.stop()
+			K.kill_fx(vfx, 0.1)
 		else:
 			vfx.queue_free()
 		vfx = null

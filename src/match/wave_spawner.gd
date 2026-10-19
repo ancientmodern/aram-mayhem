@@ -53,7 +53,9 @@ func _spawn_wave() -> void:
 	for team in 2:
 		var order: Array = []
 		var enemy_inhib = inhibitors[1 - team]
-		if enemy_inhib != null and is_instance_valid(enemy_inhib) and enemy_inhib.dead:
+		# [numbers] wiki Inhibitor (HA): one super minion per wave while the inhibitor is down, but not for the last two waves
+		# before it respawns
+		if enemy_inhib != null and is_instance_valid(enemy_inhib) and enemy_inhib.dead 				and enemy_inhib.respawn_at - t > Rules.SUPER_STOP_WAVES_BEFORE_RESPAWN * wave_interval(t):
 			order.append(Minion.Type.SUPER)
 		order += [Minion.Type.MELEE, Minion.Type.MELEE, Minion.Type.MELEE]
 		if siege:
@@ -68,8 +70,8 @@ func _spawn_minion(team: int, type: int) -> void:
 	var t: float = m.time
 	var upgrades := int(maxf(0.0, t - Rules.FIRST_WAVE_TIME) / Rules.MINION_UPGRADE_INTERVAL)
 	var ms := 325.0
-	if t > Rules.MINION_MS_START:
-		ms += mini(12, int((t - Rules.MINION_MS_START) / 60.0) + 1) * 10.0
+	if t >= Rules.MINION_MS_START:
+		ms += mini(Rules.MINION_MS_STEPS, int((t - Rules.MINION_MS_START) / Rules.MINION_MS_INTERVAL) + 1) * Rules.MINION_MS_STEP   # [numbers]
 	var mn := Minion.new()
 	mn.setup(team, type, upgrades, lanes[team], ms)
 	var jitter := Vector3(G.rng.randf_range(-0.6, 0.6), 0, G.rng.randf_range(-0.6, 0.6))

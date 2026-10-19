@@ -276,7 +276,7 @@ func _t_manaflow() -> void:
 	c.attack_hit(dummies[0], false)
 	await _sim(0.3)
 	_check("manamune attack charge", _near(c.stats.max_mana - m0, 9.0, 0.1), "d=%.2f" % (c.stats.max_mana - m0))
-	_check("manamune awe ad", _near(c.stats.m("ad"), 35.0 + 0.025 * (500.0 + 9.0), 0.05), "ad=%.2f" % c.stats.m("ad"))
+	_check("manamune awe ad", _near(c.stats.m("ad"), 35.0 + 0.02 * c.stats.max_mana, 0.05), "ad=%.2f" % c.stats.m("ad"))
 	_hit(dummies[0])
 	await _sim(0.2)
 	_check("manamune ability charge", _near(c.stats.max_mana - m0, 18.0, 0.1), "d=%.2f" % (c.stats.max_mana - m0))
@@ -331,7 +331,7 @@ func _t_burns() -> void:
 	_hit(dummies[0])
 	await _sim(3.6)
 	var d0: Champion = dummies[0]
-	var want_l: float = 0.054 * d0.stats.max_hp
+	var want_l: float = 0.054 * d0.stats.max_hp   # [numbers] classic ARAM: 1.8% max Health per second for 3 s (Mayhem / Kiwi: 2%)
 	_check("liandry torment", _near(spy.raw.get("burn", 0.0), want_l, 0.1) and spy.cnt.get("burn", 0) == 6,
 			"raw=%.2f want=%.2f n=%d" % [spy.raw.get("burn", 0.0), want_l, spy.cnt.get("burn", 0)])
 
@@ -519,7 +519,7 @@ func _t_actives() -> void:
 	it.on_ability_cast(ab, {})
 	_check("actualizer inactive", _near(c.mana, mana_before, 0.001))
 	it.activate(c.global_position, null)
-	var amp: float = 0.01 * (15.0 + 0.005 * c.stats.max_mana)
+	var amp: float = 0.01 * (15.0 + 0.005 * c.stats.m("mana"))   # [numbers] 15% + 0.5% per 100 BONUS mana (wiki / bin ManaCalc mStatFormula 2)
 	c.mana = c.stats.max_mana
 	mana_before = c.mana
 	it.on_ability_cast(ab, {})
@@ -599,9 +599,11 @@ func _t_debuffs() -> void:
 	_hit(d0, 10.0, G.DmgType.MAGIC, 0)
 	await _sim(0.4)
 	var base_mr: float = d0.stats.base_mr
-	_check("bloodletter stacks", _near(d0.stats.mr, base_mr * (1.0 - 0.15), 0.05), "mr=%.2f base=%.2f" % [d0.stats.mr, base_mr])
+	# [numbers] -7.5% MR per stack on (base + bonus) MR: the dummy may carry flat MR from elsewhere
+	var tot_mr: float = base_mr + d0.stats.m("mr")
+	_check("bloodletter stacks", _near(d0.stats.mr, tot_mr * (1.0 - 0.15), 0.05), "mr=%.2f base=%.2f flat=%.2f" % [d0.stats.mr, base_mr, d0.stats.m("mr")])
 	await _sim(6.5)
-	_check("bloodletter expires", _near(d0.stats.mr, base_mr, 0.05))
+	_check("bloodletter expires", _near(d0.stats.mr, tot_mr, 0.05))
 
 	await _equip([4628])
 	d0 = dummies[0]

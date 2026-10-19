@@ -115,8 +115,10 @@ class Sunlight extends Effect:
 		id = "leona_passive"
 		display_name = "Sunlight"
 
+	## [numbers] League LeonaSunlightPassive TotalDamage (ByCharLevelFormula, leona.bin): 25 + 7 per level -> 32 at L1,
+	## 151 at L18 (wiki "32 - 151"); was 24 + 8 per level (168 at L18).
 	func damage() -> float:
-		return 24.0 + 8.0 * owner.level
+		return 25.0 + 7.0 * owner.level
 
 	func apply_mark(target) -> void:
 		if target == null or not is_instance_valid(target) or target.dead or target.team == owner.team:
@@ -170,7 +172,7 @@ class SunlightMark extends K.FxBuff:
 		if src.kind != G.Kind.CHAMPION or src.team != leona.team:
 			return
 		removed = true
-		var dmg: float = leona.passive.damage() if leona.passive != null and leona.passive.has_method("damage") else 24.0 + 8.0 * leona.level
+		var dmg: float = leona.passive.damage() if leona.passive != null and leona.passive.has_method("damage") else 25.0 + 7.0 * leona.level
 		Combat.deal(leona, owner, dmg, G.DmgType.MAGIC, {"is_proc": true, "tag": "sunlight"})
 		var m = owner.match_ref
 		if m != null:
@@ -243,10 +245,18 @@ class QAttackHook extends Effect:
 	var q = null
 	var played := false
 
+	var _was_emp := false
+
 	func _init(p_q) -> void:
 		q = p_q
 		id = "leona_q_hook"
 		hidden = true
+
+	## [numbers] League (wiki Shield of Daybreak): the empowered attack has 50 bonus attack range.
+	func get_stat_mods() -> Dictionary:
+		if q != null and q.is_empowered():
+			return {"range": 50.0}
+		return {}
 
 	## Effects don't tick while dead: drop the empowered shield (and its looping glow) on death.
 	func on_death(_killer) -> void:
@@ -256,6 +266,10 @@ class QAttackHook extends Effect:
 	func on_tick(u, _dt: float) -> void:
 		if q.fx != null and not q.is_empowered():
 			q._clear_fx()
+		var emp: bool = q.is_empowered()
+		if emp != _was_emp:
+			_was_emp = emp
+			u.stats.mark_dirty()   # [numbers] re-evaluate the +50 range when the empowered window opens / closes
 		if u.windup_timer < 0.0:
 			played = false
 			return

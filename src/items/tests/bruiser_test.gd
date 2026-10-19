@@ -289,9 +289,9 @@ func _t_hydras() -> void:
 		_atk(d)
 	_check("hullbreaker no proc on first 4 attacks", tr.cnt("skipper") == 0)
 	_atk(d)
-	var ad_r: float = _data(3181, "SkipperADRatio" if melee else "RangedSkipperADRatio", 1.2)
-	var hp_r: float = 0.05 * (1.0 if melee else ad_r / 1.2)
-	var exp_s: float = ad_r * c.stats.base_ad + hp_r * ItemFx.bonus_hp(c)
+	# [numbers] bin calc MaxStackDamage: (120% base AD + 5% MAX Health) x 0.7 for ranged (wiki: 84% base AD + 3.5% max Health)
+	var ad_r: float = _data(3181, "SkipperADRatio", 1.2)
+	var exp_s: float = (ad_r * c.stats.base_ad + 0.05 * c.stats.max_hp) * (1.0 if melee else 0.7)
 	_check("hullbreaker 5th attack skipper dmg", tr.cnt("skipper") == 1 and _near(tr.amt("skipper"), exp_s, 0.2), "%s vs %s" % [tr.amt("skipper"), exp_s])
 
 
@@ -410,7 +410,7 @@ func _t_fighters() -> void:
 	var maw_sh: float = (200.0 if melee else 150.0) + 1.5 * c.stats.bonus_ad
 	_check("maw shield 200 (+150%% bonus AD)", _near(c.total_shield() + mi.absorbed, maw_sh, 0.5), "%.1f + %.1f vs %.1f hp %.0f/%.0f" % [c.total_shield(), mi.absorbed, maw_sh, c.hp, mhp0])
 	_check("maw omnivamp 10%%", c.find_buff("maw_vamp") != null and _near(float(c.find_buff("maw_vamp").stats.get("omnivamp", 0.0)), 0.1, 0.001))
-	_check("maw cd 60", _near(_it(3156).cd, 60.0, 1.0), str(_it(3156).cd))
+	_check("maw cd 75", _near(_it(3156).cd, 75.0, 1.0), str(_it(3156).cd))   # [numbers] classic ARAM 75 s (Mayhem 60 s)
 	c.shields.clear()
 	await _equip([3155])
 	c.hp = c.stats.max_hp * 0.4

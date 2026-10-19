@@ -344,7 +344,9 @@ class Hurricane extends MkBase:
 		var o = owner
 		# bin calc ChampRange: 1 additional target for melee champions, 2 for ranged
 		var max_n := 1 if is_melee() else 2
-		var pct := lerpf(d("BoltMinPercent", 40.0), d("BoltMaxPercent", 40.0), o.stats.crit_chance) / 100.0
+		# [numbers] bin calc BoltDamage = 60% AD (wiki V26.20: 65% -> 60% AD; bolts crit only when the main attack does);
+		# the data values BoltMin/MaxPercent (40) are stale and not used by the tooltip
+		var pct := 0.6
 		var rng: float = o.attack_range_m() + d("ExtraRangeOnBoltCheck", 65.0) * G.U + o.radius
 		var cand: Array = []
 		for e in o.match_ref.enemies_in_radius(o.team, o.global_position, rng + 0.5):

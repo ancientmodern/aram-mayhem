@@ -107,9 +107,12 @@ class Perseverance extends Effect:
 		since_damage += dt
 		var regen: bool = since_damage >= 8.0 and u.hp < u.stats.max_hp
 		if regen:
-			# 1.5% -> 10.1% max health every 5 seconds by level
-			var pct: float = lerpf(0.015, 0.101, (u.level - 1) / 17.0)
-			u.hp = minf(u.stats.max_hp, u.hp + u.stats.max_hp * pct / 5.0 * dt)
+			# [numbers] League GarenPassive RegenCalc (ByCharLevelBreakpoints, garen.bin): % of max health every 5 s =
+			# 1.5 at L1, +0.2 per level up to L6, +0.8 per level from L7, +0.4 per level from L14 -> 1.5 .. 10.1
+			# (was a straight 1.5 -> 10.1 lerp: 4.2% at L6 instead of 2.5%, 5.8% at L9 instead of 4.9%). It is
+			# regeneration, so Grievous Wounds reduces it (heal power does not scale it).
+			var pct: float = K.level_breakpoints(u.level, 1.5, 0.2, [[7, 0.8], [14, 0.4]]) / 100.0
+			u.hp = minf(u.stats.max_hp, u.hp + u.stats.max_hp * pct / 5.0 * dt * (1.0 - u.grievous_wounds()))
 		# League regen glow while Perseverance heals
 		var show: bool = regen and not u.dead
 		if show and (heal_fx == null or not is_instance_valid(heal_fx)):
@@ -231,7 +234,7 @@ class Courage extends Ability:
 		var shield := dv("BaseShield") + dv("ShieldHealthRatio", 0.18) * maxf(0.0, bonus_hp)
 		# same as K.shield without the procedural bubble (League W_Cas / W_Buff cover it)
 		Combat.shield(o, o, shield, dv("UpfrontDuration", 0.75), {"id": ""})
-		K.buff(o, "garen_w_ten", dv("UpfrontDuration", 0.75), {"tenacity": dv("UpfrontTenacity", 0.6)}, o, {"name": "Courage"})
+		K.buff(o, "garen_w_ten", dv("UpfrontDuration", 0.75), {"tenacity_c": dv("UpfrontTenacity", 0.6)}, o, {"name": "Courage"})
 		var b := K.buff(o, "garen_w_dr", dv("DRDuration", 4.0), {"dmg_reduction": dv("DRPercent", 0.3)}, o, {"name": "Courage", "icon": icon})
 		LFx.stop(buff_fx)
 		buff_fx = LolVfx.attach(o, "Garen_Base_W_Buff", {"loop": true})

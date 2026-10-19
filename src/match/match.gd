@@ -33,6 +33,7 @@ var kills := [0, 0]
 var first_blood := false
 var multikill := {}             ## champion -> [count, last_time]
 var killing_spree := {}         ## champion -> streak
+var bounty_extra := {}           ## [numbers] champion -> accrued kill bounty above the base (League bounty system)
 var fountain := [Vector3.ZERO, Vector3.ZERO]
 var spawn_points := [Vector3.ZERO, Vector3.ZERO]
 var lane_path: Array = []       ## order -> chaos lane waypoints (world)
@@ -485,22 +486,22 @@ func xp_share_champions(pos: Vector3, team: int, r: float = 16.0) -> Array:
 	return champions.filter(func(c): return c.team == team and not c.dead and G.flat_dist(c.global_position, pos) <= r)
 
 
+## [numbers] League ARAM: lane-minion XP goes to every enemy champion within BarracksConfig ExpRadius (1400 u), each
+## getting base x mPlayerMinionSplitXp[n-1] (0.92 / 0.6 / 0.4 / 0.3 / 0.24 for 1..5 champions); the last hitter gets the
+## gold, and the Howling Abyss aura pays 6 gold to the other enemy champions within goldRadius (1250 u).
 func _reward_minion(u: Unit, killer_champ) -> void:
 	var team := G.enemy_team(u.team)
-	var nearby := xp_share_champions(u.global_position, team)
+	var nearby := xp_share_champions(u.global_position, team, Rules.MINION_XP_RANGE)
 	if not nearby.is_empty():
-		var xp: float = u.xp_value
-		# League: shared XP bonus when more champions are near
-		var share := xp * (1.0 + 0.0 * (nearby.size() - 1)) / nearby.size()
-		share *= [1.0, 1.0, 1.3, 1.35, 1.4, 1.45][mini(nearby.size(), 5)]
+		var share := Rules.minion_xp_share(u.xp_value, nearby.size())
 		for c in nearby:
 			c.gain_xp(share)
 	if killer_champ != null and killer_champ.team == team:
 		killer_champ.cs += 1
 		killer_champ.add_gold(u.gold_value, u)
-	elif not nearby.is_empty():
-		# ARAM shares gold of minions not last-hit by champions? (no) -> nothing
-		pass
+	for c in champions:
+		if c.team == team and not c.dead and c != killer_champ and G.flat_dist(c.global_position, u.global_position) <= Rules.MINION_GOLD_RANGE:
+			c.add_gold(Rules.MINION_NEARBY_GOLD, u)
 
 
 func _on_champion_killed(victim: Unit, killer, killer_champ) -> void:
@@ -512,12 +513,15 @@ func _on_champion_killed(victim: Unit, killer, killer_champ) -> void:
 			assisters.append(ac)
 	victim.deaths += 1
 	kills[team] += 1
-	var streak_bonus := 0
 	var victim_streak: int = killing_spree.get(victim, 0)
 	killing_spree[victim] = 0
-	var bounty: float = 300.0
-	if victim_streak >= 2:
-		bounty += mini(victim_streak - 1, 5) * 100.0
+	# [numbers] League ARAM kill bounty (map12.bin kill-bounty config): flat base 200 + accrued bounty (1 per 2 gold earned
+	# from kills / assists, up to +600), x0.5 -> x1.0 early-game ramp (1:30 -> 3:30), +90 first blood; assisters share
+	# half the bounty plus a 90 gold pool; the victim loses 1 accrued bounty per 4 gold paid out. Was a flat 300 + 100 per
+	# streak kill.
+	var accrued: float = clampf(bounty_extra.get(victim, 0.0), 0.0, Rules.BOUNTY_MAX_BONUS)
+	var bounty: float = (Rules.KILL_GOLD + accrued) * Rules.early_bounty_scale(time)
+	var paid := 0.0
 	var announce_text := ""
 	var announce_sub := ""
 	if killer_champ != null:
@@ -533,7 +537,7 @@ func _on_champion_killed(victim: Unit, killer, killer_champ) -> void:
 		multikill[killer_champ] = mk
 		if not first_blood:
 			first_blood = true
-			bounty += 100.0
+			bounty += Rules.FIRST_BLOOD_GOLD
 			announce_text = "First Blood!"
 		match mk[0]:
 			2: announce_text = "Double Kill!"
@@ -558,24 +562,34 @@ func _on_champion_killed(victim: Unit, killer, killer_champ) -> void:
 		if G.debug_sites: G.crumb("kill_gold")
 		var pg := Prof.t0()
 		killer_champ.add_gold(bounty, victim)
+		bounty_extra[killer_champ] = minf(Rules.BOUNTY_MAX_BONUS, bounty_extra.get(killer_champ, 0.0) + bounty * Rules.BOUNTY_ACCRUAL)
+		paid += bounty
 		Prof.slow("death.gold", pg, killer_champ.display_name)
-		pg = Prof.t0()
-		if G.debug_sites: G.crumb("kill_xp")
-		killer_champ.gain_xp(victim.xp_bounty())
-		Prof.slow("death.xp", pg, killer_champ.display_name)
 		pg = Prof.t0()
 		for e in killer_champ.effects.duplicate():
 			if G.debug_sites: G.crumb("takedown " + str(e.id))
 			e.on_takedown(victim)
 		Prof.slow("death.takedown", pg, killer_champ.display_name)
 	var pas := Prof.t0()
+	var assist_gold := 0.0
+	if not assisters.is_empty():
+		assist_gold = (bounty * 0.5 + Rules.ASSIST_GOLD_POOL * Rules.early_bounty_scale(time)) / assisters.size()
 	for a in assisters:
 		a.assists += 1
-		a.add_gold(bounty * 0.5 / maxf(1.0, assisters.size()) + 50.0, victim)
-		a.gain_xp(victim.xp_bounty() * 0.5)
+		a.add_gold(assist_gold, victim)
+		bounty_extra[a] = minf(Rules.BOUNTY_MAX_BONUS, bounty_extra.get(a, 0.0) + assist_gold * Rules.BOUNTY_ACCRUAL)
+		paid += assist_gold
 		for e in a.effects.duplicate():
 			e.on_takedown(victim)
 	Prof.slow("death.assists", pas, "%d" % assisters.size())
+	bounty_extra[victim] = maxf(0.0, bounty_extra.get(victim, 0.0) - paid * Rules.BOUNTY_DEPRECIATION)
+	# [numbers] champion-kill XP: solo kill = full kill XP, shared kill = victim-level share multiplier split between the
+	# killer and the assisters; +16% per level the victim is above the participant (min 40%); all within 1600 u
+	var participants := assisters.duplicate()
+	if killer_champ != null and not (killer_champ in participants):
+		participants.append(killer_champ)
+	for pc in participants:
+		pc.gain_xp(Rules.champion_kill_xp(victim.level, pc.level, participants.size()))
 	var entry := {"killer": killer_champ if killer_champ != null else killer, "victim": victim,
 			"assists": assisters, "time": time, "team": team}
 	events.append(entry)
@@ -632,13 +646,19 @@ func _on_structure_destroyed(s: Unit, killer_champ) -> void:
 	var gold := 0.0
 	match s.kind:
 		G.Kind.TURRET:
-			gold = 150.0
+			gold = Rules.TURRET_GLOBAL_GOLD
 			G.announce("Turret destroyed" if s.team != (G.player.team if G.player else 0) else "Your turret has been destroyed", "", G.COLOR_ALLY if team == G.player.team else G.COLOR_ENEMY)
 		G.Kind.INHIBITOR:
-			gold = 50.0
 			G.announce("Inhibitor destroyed" if s.team != G.player.team else "Your inhibitor has been destroyed", "", G.COLOR_ALLY if team == G.player.team else G.COLOR_ENEMY)
+	# [numbers] HA_* turret records: globalGoldGivenOnDeath 150 and globalExpGivenOnDeath 30 / 70 / 120 (outer / inhibitor /
+	# nexus turret) to the whole team; wiki Inhibitor: 50 gold to the champion with the last hit only.
 	for c in champions_of(team, false):
-		c.add_gold(gold, s)
+		if gold > 0.0:
+			c.add_gold(gold, s)
+		if s.kind == G.Kind.TURRET:
+			c.gain_xp(Rules.TURRET_GLOBAL_XP[clampi(int(s.tier), 0, 3)])
+	if s.kind == G.Kind.INHIBITOR and killer_champ != null and killer_champ.team == team:
+		killer_champ.add_gold(Rules.INHIBITOR_LAST_HIT_GOLD, s)
 	G.structure_destroyed.emit(s, killer_champ)
 	var ours: bool = G.player != null and s.team == G.player.team
 	match s.kind:
@@ -843,7 +863,7 @@ func on_structure_fell(s: Unit) -> void:
 	if s == outer_turrets[0] or s == outer_turrets[1]:
 		var team: int = s.team
 		if inhib_turrets[team] != null:
-			inhib_turrets[team].backdoor_until = time + 70.0
+			inhib_turrets[team].backdoor_until = time + Turret.FORTIFY_TIME   # [numbers] 60 s / 35% (was Mayhem's 70 s / 40%)
 	_update_hexgates()
 
 

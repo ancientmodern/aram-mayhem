@@ -471,6 +471,15 @@ class Meditate extends YiAbility:
 			var b = o.find_buff(bid)
 			if b != null:
 				b.remaining += dt
+		# [numbers] League Meditate cost: 40 mana + PercentManaCostPerSecond (6%) of max mana per second channelled (client text
+		# "@BaseManaCost@ Mana (+6% Max Mana per second)"; masteryi_game.json Meditate data); the channel ends when mana runs out.
+		if o.stats.uses_mana:
+			var drain: float = dv("PercentManaCostPerSecond", 0.06) * o.stats.max_mana * dt
+			if o.mana < drain:
+				o.mana = 0.0
+				o.interrupt_channel(true)
+				return
+			o.mana -= drain
 		var interval := dv("TickFrequency", 0.5)
 		var ticks := dv("HealDuration", 4.0) / interval
 		while ch.acc >= interval:

@@ -7,7 +7,7 @@ extends RefCounted
 ## Modifier keys (flat unless noted):
 ##  hp hp% hp_regen hp_regen% mana mana_regen mana_regen% ad ad% bonus_ad% ap ap%
 ##  armor armor% mr mr% as crit crit_dmg ms ms% range ah ult_ah basic_ah summoner_haste
-##  lifesteal omnivamp spell_vamp armor_pen% lethality magic_pen magic_pen% tenacity slow_resist
+##  lifesteal omnivamp spell_vamp armor_pen% lethality magic_pen magic_pen% tenacity tenacity_b tenacity_c slow_resist
 ##  heal_power size dmg_amp dmg_reduction as_cap adaptive base_ad% gold_gen
 
 var unit = null
@@ -94,12 +94,24 @@ func m(key: String, default: float = 0.0) -> float:
 
 func recompute(sources: Array) -> void:
 	mods.clear()
+	# [numbers] League tenacity stacking (wiki Tenacity): sources inside a group multiply (1 - (1-a)(1-b)...), the groups
+	# add up, capped at 100%. A = items / runes / shards ("tenacity"), B = Cleanse / Milio / mode adjustments
+	# ("tenacity_b"), C = Garen's Courage and debuffs ("tenacity_c"). Was a plain sum capped at 90%.
+	var ten_a := 1.0
+	var ten_b := 1.0
+	var ten_c := 1.0
 	for s in sources:
 		if s == null:
 			continue
 		var d: Dictionary = s.get_stat_mods()
 		for k in d:
 			mods[k] = mods.get(k, 0.0) + d[k]
+		if d.has("tenacity"):
+			ten_a *= 1.0 - clampf(d["tenacity"], -1.0, 1.0)
+		if d.has("tenacity_b"):
+			ten_b *= 1.0 - clampf(d["tenacity_b"], -1.0, 1.0)
+		if d.has("tenacity_c"):
+			ten_c *= 1.0 - clampf(d["tenacity_c"], -1.0, 1.0)
 	var L := level
 	# health / mana
 	var hp_base: float = base.base_hp + growth(base.hp_per_level, L)
@@ -117,7 +129,7 @@ func recompute(sources: Array) -> void:
 	var raw_bonus_ad := m("ad")
 	var raw_ap := m("ap")
 	var raw_crit := m("crit")
-	if raw_crit > 1.0:
+	if raw_crit > 1.0 and Rules.MAYHEM_MODE:   # [numbers] classic ARAM wastes crit above 100% (this conversion is Mayhem-only)
 		# Mayhem: each 1% crit above 100% -> 0.45 bonus AD or 0.75 AP (adaptive)
 		var over := (raw_crit - 1.0) * 100.0
 		if raw_bonus_ad >= raw_ap:
@@ -146,7 +158,8 @@ func recompute(sources: Array) -> void:
 	# attack speed: base + ratio * bonus%
 	bonus_as = growth(base.attack_speed_per_level, L) / 100.0 + m("as")
 	as_cap = Rules.AS_CAP + m("as_cap")
-	attack_speed = clampf(base.attack_speed + base.attack_speed_ratio * bonus_as, 0.2, as_cap)
+	# [numbers] "as_total%" = a multiplier on total attack speed (League ARAM balance "total attack speed +2.5%")
+	attack_speed = clampf((base.attack_speed + base.attack_speed_ratio * bonus_as) * (1.0 + m("as_total%")), 0.2, as_cap)
 	crit_chance = clampf(raw_crit, 0.0, 1.0)
 	crit_damage = Rules.CRIT_DAMAGE + m("crit_dmg")
 	attack_range = base.attack_range + m("range")
@@ -161,7 +174,7 @@ func recompute(sources: Array) -> void:
 	lethality = m("lethality")
 	magic_pen = m("magic_pen")
 	magic_pen_pct = clampf(m("magic_pen%"), 0.0, 1.0)
-	tenacity = clampf(m("tenacity"), 0.0, 0.9)
+	tenacity = clampf((1.0 - ten_a) + (1.0 - ten_b) + (1.0 - ten_c), -1.0, 1.0)
 	slow_resist = clampf(m("slow_resist"), 0.0, 1.0)
 	heal_power = m("heal_power")
 	size = maxf(0.25, 1.0 + m("size"))
@@ -191,7 +204,7 @@ func _compute_ms() -> void:
 ## Cooldown after ability haste.
 func cooldown(base_cd: float, is_ult: bool = false, is_basic: bool = true) -> float:
 	var ah := ability_haste + (ult_haste if is_ult else (basic_haste if is_basic else 0.0))
-	return base_cd * 100.0 / (100.0 + maxf(ah, -50.0))
+	return base_cd * 100.0 / (100.0 + clampf(ah, -50.0, 500.0))   # [numbers] League AbilityHasteMax 500 (GameplayConfig)
 
 
 func attack_period() -> float:

@@ -1,8 +1,8 @@
 class_name Summoners
 extends RefCounted
-## Summoner spells available on the Howling Abyss (no Exhaust in Mayhem).
+## Summoner spells available on the Howling Abyss. [numbers] classic ARAM has Exhaust (Mayhem disables it).
 
-const ALL := ["Flash", "Mark", "Ghost", "Heal", "Barrier", "Cleanse", "Ignite", "Clarity"]
+const ALL := ["Flash", "Mark", "Ghost", "Heal", "Barrier", "Cleanse", "Ignite", "Clarity", "Exhaust"]
 
 
 static func make(name: String, c) -> Ability:
@@ -16,6 +16,7 @@ static func make(name: String, c) -> Ability:
 		"Cleanse": a = CleanseSpell.new(c)
 		"Ignite": a = IgniteSpell.new(c)
 		"Clarity": a = ClaritySpell.new(c)
+		"Exhaust": a = ExhaustSpell.new(c)
 		_: a = FlashSpell.new(c)
 	a.is_summoner = true
 	a.level = 1
@@ -98,7 +99,7 @@ class MarkSpell extends Ability:
 		cast_range = 1600.0
 		target_type = Target.DIRECTION
 		indicator = Ind.LINE
-		ind_width = 120.0
+		ind_width = 100.0   # [numbers] SummonerSnowball mMissileWidth 50 (radius) -> 100 wide (was 120)
 		cast_time = 0.0
 
 	func is_dash() -> bool:
@@ -134,10 +135,15 @@ class MarkSpell extends Ability:
 			# the dash can be cut short (knockback / stun clears it without on_arrive): never leave the trail looping
 			var dfx_ref := weakref(dash_fx) if dash_fx != null else null
 			if dfx_ref != null:
-				m.after(G.flat_dist(owner.global_position, tgt.global_position) / 18.0 + 0.3, func():
+				m.after(G.flat_dist(owner.global_position, tgt.global_position) / 25.0 + 0.3, func():
 					K.kill_fx(dfx_ref.get_ref(), 0.3))
 			LolVfx.spawn(m, "Summoner_Snowball_Dash_Cast", owner.global_position)
-			owner.start_dash(tgt.global_position, {"speed": 18.0, "on_arrive": func(_u):
+			# [numbers] wiki Mark: Dash speed 2500 (was 1800), it deals the same true damage on arrival and a successful
+			# Dash cuts Mark's remaining cooldown by 25% (SummonerSnowball CDRefundPerc)
+			owner.start_dash(tgt.global_position, {"speed": 25.0, "on_arrive": func(_u):
+				if is_instance_valid(tgt) and not tgt.dead:
+					hit(tgt, damage(), G.DmgType.TRUE, {"is_spell": false, "is_proc": true, "tag": "snowball"})
+				cd *= 0.75
 				for e in owner.effects.duplicate():
 					if e.has_method("on_snowball_dash_arrive"):
 						e.on_snowball_dash_arrive(tgt)
@@ -149,7 +155,7 @@ class MarkSpell extends Ability:
 			return
 		var mi := Missile.new()
 		var from: Vector3 = owner.global_position + Vector3(0, 1.0, 0)
-		mi.setup_linear(owner, from, t.dir, 13.0, range_m(), 0.6)
+		mi.setup_linear(owner, from, t.dir, 12.0, range_m(), 0.5)   # [numbers] SummonerSnowball missile speed 1200, width 50 (was 13 / 0.6)
 		mi.hits_minions = true
 		var ally_view: bool = G.player == null or owner.team == G.player.team
 		var lv := LolVfx.make("Summoner_Snowball_Mis" if ally_view else "Summoner_Snowball_Mis_Enemy", {"loop": true})
@@ -221,15 +227,16 @@ class HealSpell extends Ability:
 	func _init(p_owner) -> void:
 		super._init(p_owner)
 		display_name = "Heal"
-		description = "Restore 90-345 Health and grant 30% Movement Speed to you and an ally."
+		description = "Restore 80-318 Health and grant 30% Movement Speed to you and an ally."
 		cooldowns = [240.0]
 		target_type = Target.NONE
 		indicator = Ind.NONE
-		cast_range = 850.0
+		cast_range = 900.0   # [numbers] SummonerHeal AllyRange 900 (was 850)
 		cast_time = 0.0
 
 	func execute(t: Dictionary) -> void:
-		var amt: float = 90.0 + 15.0 * (owner.level - 1)
+		# [numbers] SummonerHeal TotalHeal: 80 -> 318 interpolated by champion level 1 -> 18 (was 90 + 15 per level = 345)
+		var amt: float = lerpf(80.0, 318.0, clampf((owner.level - 1) / 17.0, 0.0, 1.0))
 		var targets := [owner]
 		var best = null
 		var best_r := 2.0
@@ -240,9 +247,13 @@ class HealSpell extends Ability:
 		if best != null:
 			targets.append(best)
 		for u in targets:
-			Combat.heal(owner, u, amt)
-			# League Heal: 30% move speed for 2 s
-			var b := Buff.new("heal_ms", 2.0)
+			# [numbers] SummonerHeal StackingHealDebuff 0.5 for 30 s: a unit healed by Heal in the last 30 s is healed 50% less
+			var now: float = owner.match_ref.time
+			var cut: float = 0.5 if u.get_meta("summoner_heal_until", -1.0) > now else 1.0
+			u.set_meta("summoner_heal_until", now + 30.0)
+			Combat.heal(owner, u, amt * cut)
+			# League Heal: 30% move speed for 1 s (SummonerHeal MoveSpeedDuration 1.0; was 2 s)
+			var b := Buff.new("heal_ms", 1.0)
 			b.stats = {"ms%": 0.3}
 			b.display_name = "Heal"
 			u.add_buff(b, owner)
@@ -257,7 +268,7 @@ class BarrierSpell extends Ability:
 	func _init(p_owner) -> void:
 		super._init(p_owner)
 		display_name = "Barrier"
-		description = "Gain a 105-411 Shield for 2.5 seconds."
+		description = "Gain a 100-460 Shield for 2.5 seconds."
 		cooldowns = [180.0]
 		target_type = Target.NONE
 		indicator = Ind.NONE
@@ -265,7 +276,8 @@ class BarrierSpell extends Ability:
 		cast_time = 0.0
 
 	func execute(t: Dictionary) -> void:
-		var amt: float = 105.0 + 18.0 * (owner.level - 1)
+		# [numbers] SummonerBarrier ShieldStrength: 100 -> 460 interpolated by champion level 1 -> 18 (was 105 + 18 per level = 411)
+		var amt: float = lerpf(100.0, 460.0, clampf((owner.level - 1) / 17.0, 0.0, 1.0))
 		var sh: Dictionary = Combat.shield(owner, owner, amt, 2.5)
 		# the bubble disappears when the barrier breaks (it used to stay the full 2.5 s)
 		K.track_shield_fx(owner, sh, K.attach_fx(owner, "Global_SS_Barrier"))
@@ -279,7 +291,7 @@ class CleanseSpell extends Ability:
 	func _init(p_owner) -> void:
 		super._init(p_owner)
 		display_name = "Cleanse"
-		description = "Remove all disables and summoner debuffs and gain 65% Tenacity for 3 seconds."
+		description = "Remove all disables and summoner debuffs and gain 75% Tenacity for 3 seconds."
 		cooldowns = [240.0]
 		target_type = Target.NONE
 		indicator = Ind.NONE
@@ -294,7 +306,7 @@ class CleanseSpell extends Ability:
 			if gb.id == "grievous" and gb.has_meta("ignite"):
 				owner.remove_buff(gb)
 		var b := Buff.new("cleanse", 3.0)
-		b.stats = {"tenacity": 0.65}
+		b.stats = {"tenacity_b": 0.75}   # [numbers] SummonerBoost TenacityValue 0.75 (was 0.65); tenacity group B (wiki Tenacity)
 		owner.add_buff(b, owner)
 		K.attach_fx(owner, "Jade_Summoner_Cleanse", false)
 		notify_cast(t)
@@ -307,7 +319,7 @@ class IgniteSpell extends Ability:
 	func _init(p_owner) -> void:
 		super._init(p_owner)
 		display_name = "Ignite"
-		description = "Ignites target enemy champion, dealing 70-410 true damage over 5 seconds and applying Grievous Wounds."
+		description = "Ignites target enemy champion, dealing 70-475 true damage over 5 seconds and applying Grievous Wounds."
 		cooldowns = [180.0]
 		target_type = Target.UNIT
 		target_side = Side.ENEMY
@@ -318,7 +330,10 @@ class IgniteSpell extends Ability:
 
 	func execute(t: Dictionary) -> void:
 		var u = t.unit
-		var total: float = 70.0 + 20.0 * (owner.level - 1)
+		# [numbers] SummonerDot TooltipTrueDamageCalculation: 70 at level 1, +20 per level up to level 5, +25 per level from
+		# level 6 (175 at 6 ... 475 at 18; was 70 + 20 per level = 410)
+		var lv: int = owner.level
+		var total: float = 70.0 + 20.0 * (mini(lv, 5) - 1) + 25.0 * maxi(lv - 5, 0)
 		if u == null or not is_instance_valid(u) or u.dead:
 			return
 		var src = owner
@@ -344,6 +359,44 @@ class IgniteSpell extends Ability:
 
 	func ai_consider(ctx) -> Dictionary:
 		return ctx.ignite_decision(self)
+
+
+## [numbers] SummonerExhaust: range 650, 3 s, 40% slow and the target deals 35% less damage (not true damage); 290 s on the
+## Howling Abyss (wiki Exhaust; the data cooldown is the Summoner's Rift 240). Cleanse removes it.
+class ExhaustDebuff extends Buff:
+	func _init() -> void:
+		super._init("exhaust", 3.0)
+		display_name = "Exhaust"
+		is_debuff = true
+		slow_amount = 0.4
+
+	func on_pre_damage_dealt(info) -> void:
+		if info.type != G.DmgType.TRUE:
+			info.mult *= 0.65
+
+
+class ExhaustSpell extends Ability:
+	func _init(p_owner) -> void:
+		super._init(p_owner)
+		display_name = "Exhaust"
+		description = "Exhausts target enemy champion, slowing them by 40% and reducing the damage they deal by 35% for 3 seconds."
+		cooldowns = [290.0]
+		target_type = Target.UNIT
+		target_side = Side.ENEMY
+		target_champions_only = true
+		indicator = Ind.NONE
+		cast_range = 650.0
+		cast_time = 0.0
+
+	func execute(t: Dictionary) -> void:
+		var u = t.unit
+		if u == null or not is_instance_valid(u) or u.dead:
+			return
+		u.add_buff(ExhaustDebuff.new(), owner)
+		notify_cast(t)
+
+	func ai_consider(_ctx) -> Dictionary:
+		return {}
 
 
 class ClaritySpell extends Ability:

@@ -4,15 +4,21 @@ extends Unit
 
 enum Type { MELEE, CASTER, SIEGE, SUPER }
 
+## [numbers] League Map12 data (HA_<Team>Minion* CharacterRecords + the HA BarracksConfig MinionUpgradeStats): base stats,
+## per-upgrade growth (every 49.99 s; the first 6 upgrades use hp_up, later ones hp_late), gold growth per upgrade (the
+## BarracksConfig variant with MS +25 every 300 s from 600 s, i.e. 325 -> 425 like the wiki's ARAM minion page).
+## Melee 455 HP / 12 AD / 64 XP / 20 gold, caster 290 / 23 / 32 / 17, siege 805 / 40 / 94 / 44, super 1500 HP (10 regen) / 306 AD /
+## 60 armor / 10 MR / 100 XP / 45 gold. windup = mAttackCastTime / mAttackTotalTime.
+const UPGRADES_BEFORE_LATE := 6
 const STATS := {
-	Type.MELEE: {"hp": 455.0, "ad": 12.0, "as": 1.25, "range": 110.0, "armor": 0.0, "mr": 0.0, "xp": 64.0, "gold": 21.0,
-		"radius": 0.48, "missile": 0.0, "hp_up": 27.0, "ad_up": 1.0, "armor_up": 0.0, "windup": 0.4},
+	Type.MELEE: {"hp": 455.0, "ad": 12.0, "as": 1.25, "range": 110.0, "armor": 0.0, "mr": 0.0, "xp": 64.0, "gold": 20.0,
+		"radius": 0.48, "missile": 0.0, "hp_up": 19.8, "hp_late": 6.75, "ad_up": 1.0, "armor_up": 0.0, "gold_up": 0.125, "regen": 0.0, "windup": 0.491},
 	Type.CASTER: {"hp": 290.0, "ad": 23.0, "as": 0.667, "range": 550.0, "armor": 0.0, "mr": 0.0, "xp": 32.0, "gold": 17.0,
-		"radius": 0.48, "missile": 650.0, "hp_up": 9.0, "ad_up": 2.0, "armor_up": 0.6, "windup": 0.35},
-	Type.SIEGE: {"hp": 805.0, "ad": 40.0, "as": 1.0, "range": 300.0, "armor": 0.0, "mr": 0.0, "xp": 94.0, "gold": 52.0,
-		"radius": 0.65, "missile": 1200.0, "hp_up": 34.0, "ad_up": 1.5, "armor_up": 3.0, "windup": 0.3},
-	Type.SUPER: {"hp": 1600.0, "ad": 230.0, "as": 0.694, "range": 170.0, "armor": 60.0, "mr": 10.0, "xp": 100.0, "gold": 45.0,
-		"radius": 0.65, "missile": 0.0, "hp_up": 150.0, "ad_up": 5.0, "armor_up": 0.0, "windup": 0.3},
+		"radius": 0.48, "missile": 650.0, "hp_up": 6.6, "hp_late": 2.25, "ad_up": 2.0, "armor_up": 0.0, "gold_up": 0.0, "regen": 0.0, "windup": 0.313},
+	Type.SIEGE: {"hp": 805.0, "ad": 40.0, "as": 1.0, "range": 300.0, "armor": 0.0, "mr": 0.0, "xp": 94.0, "gold": 44.0,
+		"radius": 0.65, "missile": 1200.0, "hp_up": 25.3, "hp_late": 25.0, "ad_up": 1.5, "armor_up": 0.0, "gold_up": 0.35, "regen": 0.0, "windup": 0.3},
+	Type.SUPER: {"hp": 1500.0, "ad": 306.0, "as": 0.694, "range": 170.0, "armor": 60.0, "mr": 10.0, "xp": 100.0, "gold": 45.0,
+		"radius": 0.65, "missile": 0.0, "hp_up": 100.0, "hp_late": 100.0, "ad_up": 5.0, "armor_up": 0.0, "gold_up": 0.35, "regen": 10.0, "windup": 0.347},
 }
 const MODEL_NAMES := {Type.MELEE: "MinionMelee", Type.CASTER: "MinionRanged", Type.SIEGE: "MinionSiege", Type.SUPER: "MinionSuper"}
 
@@ -49,10 +55,12 @@ func setup(p_team: int, t: int, upgrades: int, lane_points: Array, ms: float) ->
 	windup_pct = d.windup
 	attack_missile_speed = d.missile
 	xp_value = d.xp
-	gold_value = d.gold + (upgrades * 0.5 if t != Type.SUPER else 0.0)
+	gold_value = d.gold + d.gold_up * upgrades
+	var n_early := mini(upgrades, UPGRADES_BEFORE_LATE)
+	var n_late := maxi(upgrades - UPGRADES_BEFORE_LATE, 0)
 	lane = lane_points
 	stats.set_base({
-		"base_hp": d.hp + d.hp_up * upgrades, "hp_per_level": 0.0, "base_hp_regen": 0.0, "hp_regen_per_level": 0.0,
+		"base_hp": d.hp + d.hp_up * n_early + d.hp_late * n_late, "hp_per_level": 0.0, "base_hp_regen": d.regen, "hp_regen_per_level": 0.0,
 		"base_ad": d.ad + d.ad_up * upgrades, "ad_per_level": 0.0,
 		"base_armor": d.armor + d.armor_up * upgrades, "armor_per_level": 0.0,
 		"base_mr": d.mr, "mr_per_level": 0.0, "base_ms": ms, "attack_range": d.range,

@@ -97,11 +97,12 @@ class PhenomenalEvil extends Effect:
 	func get_stat_mods() -> Dictionary:
 		return {"ap": stacks}   # 1 AP per stack (Veigar does not grow or glow in League)
 
-	## Dark Matter cooldown multiplier: -10% per 50 stacks (capped at -50%).
+	## Dark Matter cooldown multiplier: -10% per 50 stacks. [numbers] No 50% cap: the game data / tooltip give no cap and the
+	## wiki lists the cooldown as "8 - 0 (based on Phenomenal Evil stacks)", so the reduction only stops at -100%.
 	func w_cd_mult() -> float:
 		var per: float = float(data.get("PStacksPerDarkMatterCDR", 50.0))
 		var inc: float = float(data.get("DarkMatterCDRIncrement", 0.1))
-		return 1.0 - minf(0.5, floor(stacks / per) * inc)
+		return 1.0 - minf(1.0, floor(stacks / per) * inc)
 
 	## League shows a stack gain only through Veigar_Base_Q_powerup (the AP counter on the passive icon changes);
 	## there are no floating texts, souls or tier auras.

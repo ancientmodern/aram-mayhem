@@ -106,10 +106,10 @@ class Base extends Item:
 
 # ===================================================================== Tear / Archangel / Manamune
 ## Manaflow: landing abilities (Manamune also attacks) grants max Mana (doubled vs champions), 8s charges. Archangel's Awe
-## turns bonus Mana into AP; Manamune's Awe into AD (its ratio is not in the item data: League script constant 2.5%).
-## The Seraph's Embrace / Muramana upgrade is not in the ARAM item data (these items stay at the stacked state).
+## turns bonus Mana into AP (1%); Manamune's Awe turns max Mana into AD (2%: bin calc BonusADFromMana, not a data value).
+## [numbers] At 360 bonus mana Archangel's / Manamune transform into Seraph's Embrace / Muramana (item_fx_x_upgrades.gd).
 class ManaFlow extends Base:
-	const AWE_AD_RATIO := 0.025
+	const AWE_AD_RATIO := 0.02   # [numbers] bin calc BonusADFromMana = 2% of MAX Mana (wiki: 2% maximum mana, was 2.5% before V14.19)
 	var gained := 0.0
 	var charges := 0
 	var charge_t := 0.0
@@ -135,7 +135,8 @@ class ManaFlow extends Base:
 				charge_t = dv("ManaChargeAmmoCD", 8.0) if charges < max_c else 0.0
 		if item_id == 3003 or item_id == 3004:
 			var ratio: float = dv("APFromMana", 0.01) if item_id == 3003 else AWE_AD_RATIO
-			var want: float = u.stats.m("mana") * ratio     # bonus Mana = every flat Mana modifier
+			# Archangel's Awe: 1% of BONUS Mana (every flat Mana modifier); Manamune's Awe: 2% of max Mana (base + bonus) [numbers]
+			var want: float = (u.stats.m("mana") if item_id == 3003 else u.stats.max_mana) * ratio
 			if absf(want - awe) > 0.05:
 				awe = want
 				refresh_stats()
@@ -149,6 +150,9 @@ class ManaFlow extends Base:
 			charge_t = dv("ManaChargeAmmoCD", 8.0)
 		gained = minf(cap, gained + dv("ManaPerCharge", 4.5) * (2.0 if champ else 1.0))
 		refresh_stats()
+		# [numbers] "Transforms into Seraph's Embrace / Muramana at 360 max Mana" (Tear of the Goddess has no upgrade)
+		if gained >= cap - 0.001 and (item_id == 3003 or item_id == 3004):
+			ItemFxUpgrades.upgrade(self, 3040 if item_id == 3003 else 3042)
 
 	func on_damage_dealt(info) -> void:
 		if not info.is_spell or info.is_attack or info.is_dot or info.is_proc:
@@ -372,7 +376,7 @@ class Torment extends CombatAmp:
 		var tick := dv("TickFrequency", 0.5)
 		var self_ref := self
 		apply_burn(t, "burn_%d_%d" % [item_id, owner.get_instance_id()], dv("BurnDuration", 3.0), tick, func(tt):
-			var dps: float = self_ref.dv("BurnPercentHealthDamage", 0.018) * tt.stats.max_hp
+			var dps: float = self_ref.dv("BurnPercentHealthDamage", 0.02) * tt.stats.max_hp
 			if tt.kind != G.Kind.CHAMPION:
 				dps = minf(dps, self_ref.dv("MonsterDamageCap", 40.0))
 			return dps * tick)
@@ -630,7 +634,7 @@ class ManaMadeReal extends Base:
 
 	func _amp() -> float:
 		# 15% + 0.5% of max Mana per 100... (ManaCalc: (15 + 0.005 * max Mana) / 100)
-		return 0.01 * (15.0 + 0.005 * owner.stats.max_mana)
+		return 0.01 * (15.0 + 0.005 * owner.stats.m("mana"))   # [numbers] bin ManaCalc: AbilityResource coefficient, mStatFormula 2 = BONUS mana
 
 	func use_active(_p: Vector3, _h) -> bool:
 		left = dv("Duration", 8.0)

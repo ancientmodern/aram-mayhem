@@ -556,7 +556,9 @@ class Youmuu extends Item:
 
 	func use_active(_p: Vector3, _h) -> bool:
 		var pct: float = ItemFxBruiser.dv(item_id, "MeleeItemCalcValueB" if is_melee() else "RangedItemCalcValueB", 45.0 if is_melee() else 30.0) / 100.0
-		K.buff(owner, "youmuu", ItemFxBruiser.dv(item_id, "DurationNDV", 6.0), {"ms%": pct}, owner, {"name": "Wraith Step", "cc": Buff.CC.GHOSTED})
+		# [numbers] bin calc Duration = 6 s with a ranged multiplier of 0.667 (4 s for ranged champions)
+		var dur: float = ItemFxBruiser.dv(item_id, "DurationNDV", 6.0) * (1.0 if is_melee() else 0.667)
+		K.buff(owner, "youmuu", dur, {"ms%": pct}, owner, {"name": "Wraith Step", "cc": Buff.CC.GHOSTED})
 		Vfx.rising(owner, Color(0.6, 0.3, 0.9), 1.0, 30)
 		return true
 
@@ -861,8 +863,9 @@ class Hullbreaker extends Item:
 	func _boarding_party(u) -> void:
 		if u.dead or u.match_ref == null:
 			return
-		# armor / magic resist for allied siege and super minions within 1050 units (melee 70-130, ranged 35-65 by level; wiki)
-		var res := lvl_lerp(70.0, 130.0) if is_melee() else lvl_lerp(35.0, 65.0)
+		# armor / magic resist for allied siege and super minions within 1050 units: bin calc BonusMinionResists =
+		# ByCharLevelBreakpoints (70 at level 1, +6 per level from level 9; 130 at level 18), ranged x0.5 [numbers]
+		var res := K.level_breakpoints(u.level, 70.0, 0.0, [[9, 6.0]]) * (1.0 if is_melee() else 0.5)
 		for m in u.match_ref.units_in_radius(u.global_position, 11.0, u.team):
 			if m.kind == G.Kind.MINION and not m.dead and (m.minion_type == Minion.Type.SIEGE or m.minion_type == Minion.Type.SUPER):
 				ItemFxBruiser.timed_buff(m, "boarding_party", 1.0, {"armor": res, "mr": res}, "Boarding Party")
@@ -876,11 +879,13 @@ class Hullbreaker extends Item:
 			var melee := is_melee()
 			var ad_key := "SkipperADRatioVSStructures" if strike else "SkipperADRatio"
 			var hp_key := "MaxStackDamageVSStructuresHPRatio" if strike else "MaxStackDamageHPRatio"
-			var ad_ratio: float = ItemFxBruiser.dv(item_id, ad_key if melee else "Ranged" + ad_key, 1.2)
+			# [numbers] bin calcs MaxStackDamage / MaxStackDamageVSStructures: (base AD ratio x base AD + HP ratio x MAX Health)
+			# x 0.7 for ranged (wiki: ranged 84% base AD + 3.5% max Health; structures 210% + 7%). The data values
+			# "RangedSkipperADRatio*" (0.7 / 2.0) are not the ratios of the damage formula.
+			var ad_ratio: float = ItemFxBruiser.dv(item_id, ad_key, 1.2)
 			var hp_ratio: float = ItemFxBruiser.dv(item_id, hp_key, 0.05)
-			if not melee:
-				hp_ratio *= ad_ratio / maxf(0.01, ItemFxBruiser.dv(item_id, ad_key, 1.2))
-			ItemFxBruiser.proc_lifesteal(self, t, ad_ratio * owner.stats.base_ad + hp_ratio * ItemFx.bonus_hp(owner), G.DmgType.PHYSICAL, "skipper")
+			var rng_mult := 1.0 if melee else 0.7
+			ItemFxBruiser.proc_lifesteal(self, t, (ad_ratio * owner.stats.base_ad + hp_ratio * owner.stats.max_hp) * rng_mult, G.DmgType.PHYSICAL, "skipper")
 			Vfx.hit_spark(owner.match_ref, t.global_position + Vector3(0, 1.1, 0), Color(0.9, 0.7, 0.3), 0.9)
 		else:
 			stacks = mini(4, stacks + 1)
