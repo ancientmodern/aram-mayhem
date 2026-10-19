@@ -107,8 +107,7 @@ func ping(world: Vector3, kind: String, unit = null) -> void:
 	if active_pings.size() > 8:
 		active_pings.pop_front()
 	var info: Dictionary = KINDS.get(kind, KINDS.ping)
-	if hud.match_ref != null and hud.match_ref.audio != null:
-		hud.match_ref.audio.play(info.sfx, null, -4.0, 0.0)
+	hud.hud_sfx(info.sfx, 0.0, 250)   # [ui-feel] League's ping gain (Sfx.hud)
 
 
 func process(_delta: float) -> void:

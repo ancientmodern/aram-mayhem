@@ -1,0 +1,1005 @@
+{
+ "_doc": "League HUD mix: g = Wwise Volume+MakeUpGain (dB) summed over the parent chain; p = peak of the file (dBFS)",
+ "events": {
+  "Play_sfx_Death_Self": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_death_self_1.wav",
+     "g": -16.0,
+     "p": -2.8,
+     "len": 3.83
+    }
+   ],
+   "src": "misc"
+  },
+  "Play_sfx_GoldAquisition_P_cast": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_goldaquisition_p_cast_1.wav",
+     "g": -24.5,
+     "p": -0.0,
+     "len": 1.6
+    },
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_goldaquisition_p_cast_2.wav",
+     "g": -24.5,
+     "p": -0.0,
+     "len": 1.67
+    },
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_goldaquisition_p_cast_3.wav",
+     "g": -24.5,
+     "p": -0.0,
+     "len": 1.61
+    },
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_goldaquisition_p_cast_4.wav",
+     "g": -24.5,
+     "p": -0.0,
+     "len": 1.25
+    },
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_goldaquisition_p_cast_5.wav",
+     "g": -24.5,
+     "p": -0.0,
+     "len": 1.32
+    }
+   ],
+   "src": "misc"
+  },
+  "Play_sfx_Respawn_respawn": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_respawn_respawn_1.wav",
+     "g": -11.5,
+     "p": -0.1,
+     "len": 1.48
+    }
+   ],
+   "src": "misc"
+  },
+  "Play_sfx_hud_Store_Buy": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_store_buy_1.wav",
+     "g": -13.0,
+     "p": -0.0,
+     "len": 0.79
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_Store_Close": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_store_close_1.wav",
+     "g": -15.0,
+     "p": -2.9,
+     "len": 1.54
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_Store_Open": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_store_open_1.wav",
+     "g": -13.0,
+     "p": -0.1,
+     "len": 1.23
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_Store_Sell": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_store_sell_1.wav",
+     "g": -13.0,
+     "p": -3.7,
+     "len": 0.67
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_Store_Undo": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_store_undo_1.wav",
+     "g": -14.0,
+     "p": -10.1,
+     "len": 0.37
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_Store_Upgrade": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_store_upgrade_1.wav",
+     "g": -6.0,
+     "p": -0.0,
+     "len": 0.79
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_Turret_targetingwarning": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_turret_targetingwarning_1.wav",
+     "g": -3.0,
+     "p": -7.0,
+     "len": 0.94
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_AttackFail_Disarm": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/hud/play_sfx_hud_base_attackfail_disarm.wav",
+     "g": -15.0,
+     "p": -9.7,
+     "len": 0.45
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Chat_All": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_chat_all_1.wav",
+     "g": -10.0,
+     "p": -0.3,
+     "len": 0.17
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Chat_Team": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_chat_team_1.wav",
+     "g": -11.0,
+     "p": -0.2,
+     "len": 0.2
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Generic_button": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav",
+     "g": -18.0,
+     "p": -0.8,
+     "len": 0.56
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Generic_button_click": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav",
+     "g": -18.0,
+     "p": -0.8,
+     "len": 0.56
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_LevelUp_click": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_levelup_click_1.wav",
+     "g": -16.0,
+     "p": -0.0,
+     "len": 0.6
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_LevelUp_layer": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_levelup_layer_1.wav",
+     "g": 0.0,
+     "p": -1.3,
+     "len": 1.17
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_LevelUp_release": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_levelup_release_1.wav",
+     "g": -12.0,
+     "p": -0.0,
+     "len": 1.42
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Map_Close": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_map_close_1.wav",
+     "g": 0.0,
+     "p": -21.5,
+     "len": 0.39
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Map_Open": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_map_open_1.wav",
+     "g": 0.0,
+     "p": -28.7,
+     "len": 0.3
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_AreaIsWarded": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_areaiswarded_1.wav",
+     "g": -4.0,
+     "p": -0.3,
+     "len": 1.11
+    },
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_areaiswarded_2.wav",
+     "g": -4.0,
+     "p": -1.4,
+     "len": 2.15
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_Attack": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_attack_1.wav",
+     "g": -5.0,
+     "p": -1.9,
+     "len": 1.15
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_Base": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_base_1.wav",
+     "g": 3.0,
+     "p": -5.9,
+     "len": 0.98
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_Click": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav",
+     "g": -9.0,
+     "p": -0.8,
+     "len": 0.56
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_ComeHere": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_comehere_1.wav",
+     "g": -8.0,
+     "p": -3.4,
+     "len": 1.22
+    },
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_comehere_2.wav",
+     "g": -8.0,
+     "p": -2.2,
+     "len": 2.08
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_Danger": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_danger_1.wav",
+     "g": -3.0,
+     "p": -2.1,
+     "len": 1.81
+    },
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_danger_2.wav",
+     "g": -2.0,
+     "p": -1.7,
+     "len": 1.0
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_Defend": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_defend_1.wav",
+     "g": -7.0,
+     "p": -4.7,
+     "len": 1.04
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_GetBack": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_getback_1.wav",
+     "g": -3.0,
+     "p": -0.3,
+     "len": 1.83
+    },
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_getback_2.wav",
+     "g": -2.0,
+     "p": -0.4,
+     "len": 0.92
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_MIA": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_mia_1.wav",
+     "g": -1.5,
+     "p": -1.2,
+     "len": 0.8
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_OnMyWay": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_onmyway_1.wav",
+     "g": -9.0,
+     "p": -4.6,
+     "len": 1.29
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_OnMyWay_Close": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_onmyway_caster_1.wav",
+     "g": -9.0,
+     "p": -4.6,
+     "len": 1.29
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_OnMyWay_Far": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_onmyway_far_1.wav",
+     "g": -9.0,
+     "p": -5.9,
+     "len": 2.84
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_OnMyWay_caster": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_onmyway_caster_1.wav",
+     "g": -9.0,
+     "p": -4.6,
+     "len": 1.29
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_OnMyWay_recipient": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_onmyway_caster_1.wav",
+     "g": -9.0,
+     "p": -4.6,
+     "len": 1.29
+    },
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_pings_onmyway_far_1.wav",
+     "g": -9.0,
+     "p": -5.9,
+     "len": 2.84
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Pings_button": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav",
+     "g": -9.0,
+     "p": -0.8,
+     "len": 0.56
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Recall_Select": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav",
+     "g": -12.0,
+     "p": -0.8,
+     "len": 0.56
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Score_Open": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_score_open_1.wav",
+     "g": -8.0,
+     "p": -9.4,
+     "len": 0.94
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_SpellFail_Cooldown": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/hud/play_sfx_hud_base_spellfail_cooldown.wav",
+     "g": -15.0,
+     "p": -9.7,
+     "len": 0.45
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_SpellFail_Grounded": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_spellfail_grounded_1.wav",
+     "g": -9.0,
+     "p": -0.0,
+     "len": 0.59
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_SpellFail_NoMana": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_spellfail_nomana_1.wav",
+     "g": -10.0,
+     "p": -2.9,
+     "len": 0.33
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_SpellFail_Silence": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/hud/play_sfx_hud_base_spellfail_silence.wav",
+     "g": -9.0,
+     "p": -5.8,
+     "len": 0.45
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Store_Click": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_click_1.wav",
+     "g": -20.0,
+     "p": -0.8,
+     "len": 0.56
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Store_Select": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_select_1.wav",
+     "g": -18.0,
+     "p": -0.8,
+     "len": 0.56
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_Store_Undo": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_undo_1.wav",
+     "g": -11.0,
+     "p": -0.9,
+     "len": 1.05
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_button": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav",
+     "g": -18.0,
+     "p": -0.8,
+     "len": 0.56
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_camera_lock": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/hud/play_sfx_hud_base_camera_lock_1.wav",
+     "g": -16.0,
+     "p": -3.8,
+     "len": 0.45
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_camera_unlock": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/hud/play_sfx_hud_base_camera_unlock_1.wav",
+     "g": -16.0,
+     "p": -3.5,
+     "len": 0.29
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_champ_stats_close": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav",
+     "g": -20.0,
+     "p": -0.8,
+     "len": 0.56
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_champ_stats_open": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav",
+     "g": -20.0,
+     "p": -0.8,
+     "len": 0.56
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_generic_click": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_button_1.wav",
+     "g": -18.0,
+     "p": -0.8,
+     "len": 0.56
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_item_slot_drop": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_item_slot_drop_1.wav",
+     "g": -12.0,
+     "p": -9.1,
+     "len": 0.32
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_item_slot_grab": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_item_slot_grab_1.wav",
+     "g": -10.0,
+     "p": -9.4,
+     "len": 0.32
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_menu_close": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_menu_close_1.wav",
+     "g": -6.0,
+     "p": -1.1,
+     "len": 0.92
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_menu_open": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_menu_open_1.wav",
+     "g": -6.0,
+     "p": -2.6,
+     "len": 0.73
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_spell_generic_use": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_spell_generic_use_1.wav",
+     "g": -18.0,
+     "p": -0.8,
+     "len": 0.39
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_spell_levelup": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_spell_levelup_1.wav",
+     "g": -3.0,
+     "p": -2.7,
+     "len": 2.88
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_spell_summoner_use": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_spell_summoner_use_1.wav",
+     "g": -20.0,
+     "p": -2.9,
+     "len": 0.39
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_spell_upgrade": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_hud_base_spell_upgrade_1.wav",
+     "g": -4.0,
+     "p": -1.6,
+     "len": 2.01
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_expand_open": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_expand_open_1.wav",
+     "g": -6.0,
+     "p": -10.1,
+     "len": 0.89
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_filter_invert": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/hud/play_sfx_hud_base_store_filter_invert.wav",
+     "g": -18.0,
+     "p": -3.6,
+     "len": 0.91
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_filter_remove": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_filter_remove_1.wav",
+     "g": -18.0,
+     "p": -3.4,
+     "len": 0.79
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_filter_select": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_filter_select_1.wav",
+     "g": -18.0,
+     "p": -0.2,
+     "len": 0.9
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_filter_stat_select": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/hud/play_sfx_hud_base_store_filter_stat_select.wav",
+     "g": -20.0,
+     "p": -0.9,
+     "len": 0.8
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_generic_close": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_generic_close_1.wav",
+     "g": -6.0,
+     "p": -5.4,
+     "len": 1.72
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_generic_open": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_generic_open_1.wav",
+     "g": -6.0,
+     "p": -4.5,
+     "len": 2.13
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_inventorytab_close": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_inventorytab_close_1.wav",
+     "g": -7.0,
+     "p": -18.7,
+     "len": 0.3
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_inventorytab_open": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_inventorytab_open_1.wav",
+     "g": -7.0,
+     "p": -18.3,
+     "len": 0.28
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_item_buy_basic": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_item_buy_basic_1.wav",
+     "g": -8.0,
+     "p": -1.4,
+     "len": 0.78
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_item_buy_components": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_item_buy_components_1.wav",
+     "g": -6.0,
+     "p": -3.0,
+     "len": 1.44
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_item_buy_legendary": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_item_buy_legendary_1.wav",
+     "g": 1.0,
+     "p": -2.0,
+     "len": 2.89
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_item_buy_upgrade": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_item_buy_upgrade_1.wav",
+     "g": -2.0,
+     "p": -2.1,
+     "len": 2.31
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_item_hover_blue": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_item_hover_blue_1.wav",
+     "g": -11.0,
+     "p": -10.9,
+     "len": 2.14
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_item_hover_mythic": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_item_hover_mythic_1.wav",
+     "g": -12.0,
+     "p": -1.6,
+     "len": 2.51
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_item_sell": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_item_sell_1.wav",
+     "g": -10.0,
+     "p": -1.1,
+     "len": 1.12
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_item_with_debt": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_item_with_debt_1.wav",
+     "g": 2.0,
+     "p": -5.7,
+     "len": 1.12
+    }
+   ],
+   "src": "misc"
+  },
+  "Play_sfx_hud_base_store_quicktab_close": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_quicktab_close_1.wav",
+     "g": -7.0,
+     "p": -18.7,
+     "len": 0.3
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_quicktab_open": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_quicktab_open_1.wav",
+     "g": -7.0,
+     "p": -18.3,
+     "len": 0.28
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_quicktab_open_highlight": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/hud/play_sfx_hud_base_store_quicktab_open_highlight.wav",
+     "g": -5.0,
+     "p": -25.8,
+     "len": 0.8
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_quicktab_pin": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/hud/play_sfx_hud_base_store_quicktab_pin.wav",
+     "g": -18.0,
+     "p": -1.5,
+     "len": 0.62
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_rec_select": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_rec_select_1.wav",
+     "g": -17.0,
+     "p": -4.8,
+     "len": 0.89
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_base_store_tab_select": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_base_store_tab_select_1.wav",
+     "g": -13.0,
+     "p": -1.6,
+     "len": 1.12
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_item_slot_drop": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_item_slot_drop_1.wav",
+     "g": -6.0,
+     "p": -9.1,
+     "len": 0.32
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_item_slot_grab": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_item_slot_grab_1.wav",
+     "g": -6.0,
+     "p": -9.4,
+     "len": 0.32
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_hud_objectivevote_click_deny": {
+   "v": [
+    {
+     "f": "res://assets/audio/ui/shop/hud_objectivevote_click_deny_1.wav",
+     "g": 0.0,
+     "p": -0.5,
+     "len": 0.83
+    }
+   ],
+   "src": "hud"
+  },
+  "Play_sfx_levelup_levelup": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_sfx_levelup_levelup_1.wav",
+     "g": -11.0,
+     "p": -0.6,
+     "len": 3.03
+    }
+   ],
+   "src": "misc"
+  },
+  "Play_ui_hud_base_levelup_release_02": {
+   "v": [
+    {
+     "f": "res://assets/audio/game/shared/play_ui_hud_base_levelup_release_02_1.wav",
+     "g": 0.0,
+     "p": -0.0,
+     "len": 2.29
+    }
+   ],
+   "src": "hud"
+  }
+ }
+}

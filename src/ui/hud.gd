@@ -104,7 +104,11 @@ var _was_ready := [true, true, true, true, true, true]
 var _could_level := [false, false, false, false]
 var _ab_levels := [0, 0, 0, 0]
 var _fail_snd_t := -10.0
-var _item_cd := {}                   ## item instance id -> previous active cooldown (item-used sound)
+var _press := {}                     ## [ui-feel] LMB held on a HUD button {key, t0}: drawn pressed, acts on release (League MouseDown/MouseUp)
+var _kpress := {}                    ## [ui-feel] hotkey held / just pressed: slot (0-5 spells, 10-15 items) -> {t0, down}
+var _prev_cd := [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+var _item_prev := {}                 ## [ui-feel] item instance id -> previous active_left (use / recovery detection)
+const KEY_PRESS_MIN := 0.14          ## a tap stays visibly pressed at least this long (s)
 var _glow_t0 := [0.0, 0.0, 0.0, 0.0]
 var _drag := {}                      ## inventory drag {slot, start, active}
 var _fx_was_active := false
@@ -245,7 +249,7 @@ func _process_frame(delta: float) -> void:
 		scoreboard_visible = sb
 		cv_top.sig = null
 		if sb:
-			hud_sfx("Play_sfx_hud_base_Score_Open", -4.0)
+			hud_sfx("Play_sfx_hud_base_Score_Open")
 	_fps_t -= delta
 	if _fps_t <= 0.0:
 		_fps_t = 1.0
@@ -315,22 +319,22 @@ func _unhandled_input(event: InputEvent) -> void:
 			cv_info.sig = null
 		elif k.keycode == KEY_C and not k.ctrl_pressed:
 			advanced_stats = not advanced_stats
-			hud_sfx("Play_sfx_hud_base_champ_stats_open" if advanced_stats else "Play_sfx_hud_base_champ_stats_close", -8.0)
+			hud_sfx("Play_sfx_hud_base_champ_stats_open" if advanced_stats else "Play_sfx_hud_base_champ_stats_close")
 			cv_base.queue_redraw()
 			cv_info.sig = null
 
 
-## [ui-polish] League's in-game HUD sound events (data/audio/shared.json) through GameAudio, 2D, rate-limited there.
-func hud_sfx(ev: String, vol_db: float = -4.0) -> void:
-	if match_ref != null and match_ref.audio != null:
-		match_ref.audio.play(ev, null, vol_db, 0.0)
+## [ui-feel] League's in-game HUD sound events at their own Wwise gain (data/audio/hud_sfx.json), 2D on the UI voices.
+## `extra_db` is a trim on top of League's mix; `gap_ms` guards against the same event being reported twice.
+func hud_sfx(ev: String, extra_db: float = 0.0, gap_ms: int = 60) -> void:
+	Sfx.hud(ev, extra_db, gap_ms)
 
 
 func toggle_shop() -> void:
 	shop_panel.visible = not shop_panel.visible
 	if shop_panel.visible:
 		shop_panel.refresh()
-	Sfx.ui("gold_click")
+	# the open / close sound is ShopPanel's own cue (store_generic_open / close)
 
 
 ## Static helper kept for other scripts (kit_util, champ select).
@@ -339,12 +343,13 @@ static func _clean(s: String) -> String:
 
 
 func _on_cast_failed(_ab, reason: String) -> void:
+	# [ui-feel] League's own status strings (Global.en_US stringtable)
 	match reason:
-		"cooldown": fail_msg = "Ability on cooldown"
-		"mana": fail_msg = "Not enough mana"
-		"not learned": fail_msg = "Ability not learned"
-		"no target": fail_msg = "No target"
-		"cc": fail_msg = "Can't cast right now"
+		"cooldown": fail_msg = "That ability is not ready yet!"
+		"mana": fail_msg = "Not enough mana to cast that!"
+		"not learned": fail_msg = "You have not learned that ability yet!"
+		"no target": fail_msg = "Invalid target selected; select a valid target."
+		"cc": fail_msg = "You cannot cast that right now!"
 		_: fail_msg = ""
 	fail_t = 1.5 if fail_msg != "" else 0.0
 	# [ui-polish] League's SpellFail sounds (on cooldown / no mana / silenced-CC / not learned), not spammed on key repeat
@@ -352,7 +357,7 @@ func _on_cast_failed(_ab, reason: String) -> void:
 		"cc": "Play_sfx_hud_base_SpellFail_Silence", "not learned": "Play_sfx_hud_base_SpellFail_Cooldown"}.get(reason, "")
 	if ev != "" and _now - _fail_snd_t > 0.35:
 		_fail_snd_t = _now
-		hud_sfx(ev, -5.0)
+		hud_sfx(ev)
 
 
 func _on_kill(victim, killer, assisters) -> void:
@@ -385,6 +390,10 @@ func _on_announce(text: String, sub: String, col: Color) -> void:
 
 # ===================================================================== input
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey and not event.echo:
+		_track_key_press(event as InputEventKey)
+		if event.is_action_pressed("toggle_camera_lock") and not chat.typing:
+			_camera_lock_sfx.call_deferred()   # after the camera rig has flipped its lock
 	# pings and target selection see world clicks before the player controller (which only uses LMB for casts)
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not chat.typing:
 		var mb := event as InputEventMouseButton
@@ -404,7 +413,7 @@ func _gui_input(event: InputEvent) -> void:
 			_minimap_camera(_mouse)
 		if not _drag.is_empty() and not _drag.active and _mouse.distance_to(_drag.start) > 6.0:
 			_drag.active = true
-			hud_sfx("Play_sfx_hud_base_item_slot_grab", -4.0)
+			hud_sfx("Play_sfx_hud_base_item_slot_grab")
 		_update_hover()
 		return
 	if not (event is InputEventMouseButton):
@@ -414,6 +423,7 @@ func _gui_input(event: InputEvent) -> void:
 	if not mb.pressed:
 		if mb.button_index == MOUSE_BUTTON_LEFT:
 			_mm_drag = false
+			_release_press(mp)
 			if not _drag.is_empty():
 				_end_drag(mp)
 		return
@@ -433,30 +443,120 @@ func _gui_input(event: InputEvent) -> void:
 	var hk := _hit_at(mp)
 	if hk != "":
 		if mb.button_index == MOUSE_BUTTON_LEFT:
-			if hk.begins_with("lvl"):
-				if champ.level_ability(int(hk.substr(3))):
-					hud_sfx("Play_sfx_hud_base_LevelUp_click", -3.0)
-				else:
-					Sfx.ui("locked")
-			elif hk == "shop":
-				toggle_shop()
+			if hk.begins_with("lvl") or hk == "shop" or hk == "stats_btn":
+				_press_begin(hk)
 			elif hk.begins_with("spec:"):
 				_set_spectate(_ally_by_uid(int(hk.substr(5))))
-				Sfx.ui("gold_click")
+				hud_sfx("Play_sfx_hud_base_button")
 			elif hk == "spec_exit":
 				_set_spectate(null)
-				Sfx.ui("gold_click")
-			elif hk == "stats_btn":
-				advanced_stats = not advanced_stats
-				hud_sfx("Play_sfx_hud_base_champ_stats_open" if advanced_stats else "Play_sfx_hud_base_champ_stats_close", -8.0)
-				cv_base.queue_redraw()
-				cv_info.sig = null
+				hud_sfx("Play_sfx_hud_base_button")
 			elif hk.begins_with("item") and not hk.begins_with("item_t"):
 				_drag = {"slot": int(hk.substr(4)), "start": mp, "active": false}
+		elif mb.button_index == MOUSE_BUTTON_RIGHT and hk.begins_with("item") and not hk.begins_with("item_t"):
+			_use_item_slot(int(hk.substr(4)))   # [ui-feel] League: right-click an inventory slot to use the item
 		accept_event()
 		return
 	if _over_ui(mp):
 		accept_event()
+
+
+# ------------------------------------------------------------------ [ui-feel] press feedback
+## League's HUD buttons are four-state (default / hover / clicked / disabled) and fire their sound events on MouseDown
+## and MouseUp (UiElementGroupButtonData SoundEvents: MouseDownEvent / MouseUpEvent / RollOverEvent). The button is
+## drawn "clicked" while LMB is held over it and acts on release, if the cursor is still on it.
+func _press_begin(key: String) -> void:
+	_press = {"key": key, "t0": _now}
+	if key.begins_with("lvl"):
+		hud_sfx("Play_sfx_hud_base_LevelUp_click")
+	elif key == "stats_btn":
+		hud_sfx("Play_sfx_hud_base_champ_stats_close" if advanced_stats else "Play_sfx_hud_base_champ_stats_open")
+	_refresh_press_layers()
+
+
+func _refresh_press_layers() -> void:
+	for c in [cv_levelup, cv_player, cv_info]:
+		c.sig = null
+		c.check_t = -100.0
+
+
+func _release_press(mp: Vector2) -> void:
+	if _press.is_empty():
+		return
+	var key: String = _press.key
+	_press = {}
+	_refresh_press_layers()
+	if _hit_at(mp) != key:
+		return   # dragged off the button before releasing: no action (League buttons cancel)
+	if key.begins_with("lvl"):
+		_do_levelup(int(key.substr(3)))
+	elif key == "shop":
+		toggle_shop()
+	elif key == "stats_btn":
+		advanced_stats = not advanced_stats
+		cv_base.queue_redraw()
+		cv_info.sig = null
+
+
+func _pressed(key: String) -> bool:
+	return not _press.is_empty() and _press.key == key and _hover_key == key
+
+
+## Spend a skill point from the "+" button: League plays MouseUp, the clicked button bursts out (SelectedOut), the
+## buttons that disappear fade (UnselectedOut) and the ability slot flashes (AbilityIn, spell_levelup in _track_fx).
+func _do_levelup(i: int) -> void:
+	var avail: Array = []
+	for j in 4:
+		if champ.can_level_ability(j):
+			avail.append(j)
+	if not champ.level_ability(i):
+		return
+	hud_sfx("Play_sfx_hud_base_LevelUp_release")
+	_fx.append({"key": PF + "LevelUp%d_SelectedOut" % i, "t0": _now})
+	for j in avail:
+		if j != i and not champ.can_level_ability(j):
+			_fx.append({"key": PF + "LevelUp%d_UnselectedOut" % j, "t0": _now})
+
+
+func _use_item_slot(i: int) -> void:
+	if i >= champ.items.size() or champ.dead or match_ref == null or match_ref.player_controller == null:
+		return
+	_kpress[10 + i] = {"t0": _now, "down": false}
+	match_ref.player_controller._use_item(i)
+
+
+## Hotkeys: the slot is drawn pressed while the key is down (and for at least KEY_PRESS_MIN after a tap).
+func _track_key_press(k: InputEventKey) -> void:
+	if chat.typing or k.ctrl_pressed or k.alt_pressed or k.meta_pressed or (shop_panel != null and shop_panel.search_focus):
+		return
+	var pk: Key = k.physical_keycode if k.physical_keycode != KEY_NONE else k.keycode
+	var slot := -1
+	match pk:
+		KEY_Q: slot = 0
+		KEY_W: slot = 1
+		KEY_E: slot = 2
+		KEY_R: slot = 3
+		KEY_D: slot = 4
+		KEY_F: slot = 5
+		KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6: slot = 10 + int(pk) - int(KEY_1)
+	if slot < 0:
+		return
+	if slot >= 10 and (slot - 10 >= champ.items.size() or not champ.items[slot - 10].has_active()):
+		return   # passive items / empty slots do not react (League)
+	if k.pressed:
+		_kpress[slot] = {"t0": _now, "down": true}
+	elif _kpress.has(slot):
+		_kpress[slot].down = false
+
+
+func _camera_lock_sfx() -> void:
+	if match_ref != null and match_ref.camera_rig != null:
+		hud_sfx("Play_sfx_hud_base_camera_lock" if match_ref.camera_rig.locked else "Play_sfx_hud_base_camera_unlock")
+
+
+func _slot_pressed(slot: int) -> bool:
+	var e = _kpress.get(slot)
+	return e != null and (e.down or _now - float(e.t0) < KEY_PRESS_MIN)
 
 
 func _end_drag(mp: Vector2) -> void:
@@ -485,7 +585,7 @@ func _end_drag(mp: Vector2) -> void:
 				champ.items.remove_at(from)
 				champ.items.append(it)
 			champ.items_changed.emit()
-			hud_sfx("Play_sfx_hud_base_item_slot_drop", -4.0)
+			hud_sfx("Play_sfx_hud_base_item_slot_drop")
 			return
 
 
@@ -590,7 +690,7 @@ func _sig_info() -> Array:
 	var k: Array = match_ref.kills
 	var s := [k[0], k[1], champ.kills, champ.deaths, champ.assists, champ.cs, int(match_ref.time), _fps_shown if fps_visible else -1,
 		int(st.ad), int(st.ap), int(st.armor), int(st.mr), int(st.attack_speed * 100.0), int(st.ability_haste),
-		int(st.crit_chance * 100.0), int(st.move_speed), advanced_stats]
+		int(st.crit_chance * 100.0), int(st.move_speed), advanced_stats, _hover_key == "stats_btn", _pressed("stats_btn")]
 	if advanced_stats:
 		s.append_array([int(st.hp_regen * 50.0), int(st.heal_power * 100.0), int(st.lethality), int(st.armor_pen_pct * 100.0),
 			int(st.magic_pen), int(st.magic_pen_pct * 100.0), int(st.lifesteal * 100.0), int(st.omnivamp * 100.0),
@@ -608,7 +708,7 @@ func _sig_player() -> Array:
 	var s := [int(champ.xp_ratio() * 120.0), champ.level, champ.dead, int(ceil(champ.respawn_timer)), int(champ.gold),
 		champ.can_shop(), shop_panel.visible,
 		_hover_key if _hover_key.begins_with("item") or _hover_key == "shop" else "", _drag.get("slot", -1) if _drag.get("active", false) else -1,
-		int(_level_flash * 10.0)]
+		int(_level_flash * 10.0), _pressed("shop"), _items_pressed_mask()]
 	for it in champ.items:
 		s.append(it.item_id)
 		s.append(int(it.active_left * 10.0) if it.active_left > 0.0 else -1)
@@ -629,8 +729,10 @@ func _sig_slot(slot: int, part: int) -> Array:
 	var on_cd := ab != null and learned and not ab.is_ready() and ab.cd > 0.0
 	var oom := ab != null and learned and not on_cd and not ab.can_afford()
 	if part == 0:
-		return [learned, oom, ab.icon if ab != null else (champ.passive.get("icon") if champ.passive != null else null)]
-	var s := [learned, on_cd, oom, _hover_key == key]
+		return [learned, oom, ab.icon if ab != null else (champ.passive.get("icon") if champ.passive != null else null), _slot_pressed(slot)]
+	var s := [learned, on_cd, oom, _hover_key == key, _slot_pressed(slot)]
+	if ab != null and ab.toggled:
+		s.append(int(_now * 30.0) % 39)   # [ui-feel] ToggleFX flipbook frame
 	if slot < 0:
 		if champ.passive != null and champ.passive.has_method("hud_counter"):
 			s.append(champ.passive.hud_counter())
@@ -641,7 +743,15 @@ func _sig_slot(slot: int, part: int) -> Array:
 
 func _sig_levelup() -> Array:
 	return [champ.can_level_ability(0), champ.can_level_ability(1), champ.can_level_ability(2), champ.can_level_ability(3),
-		_hover_key if _hover_key.begins_with("lvl") else ""]
+		_hover_key if _hover_key.begins_with("lvl") else "", _press.get("key", "") if _hover_key == _press.get("key", "-") else ""]
+
+
+func _items_pressed_mask() -> int:
+	var m := 0
+	for i in 6:
+		if _slot_pressed(10 + i):
+			m |= 1 << i
+	return m
 
 
 func _sig_buffs() -> Array:
@@ -884,7 +994,12 @@ func _draw_stats(ci: Canvas) -> void:
 		L.draw(ci, S + "Stats_%s_Icon" % row[0])
 		L.ltext(ci, S + "Stats_%s_Text" % row[0], row[1], C_TEXT, 0)   # [hud-ref] real frames: cream stat numbers
 		ci.hits.append([L.r(S + "Stats_%s_HitArea" % row[0]), "stat:%s: %s" % [row[2], row[1]]])
-	var br := L.draw(ci, PF + ("Stats_ButtonSelected" if advanced_stats else "Stats_ButtonDefault"))
+	var bk := "Stats_ButtonSelected" if advanced_stats else "Stats_ButtonDefault"
+	if _pressed("stats_btn"):
+		bk = "Stats_ButtonClicked"
+	elif _hover_key == "stats_btn" and not advanced_stats:
+		bk = "Stats_ButtonHover"
+	var br := L.draw(ci, PF + bk)
 	ci.hits.append([br, "stats_btn"])
 
 
@@ -955,13 +1070,17 @@ func _draw_inventory(ci: Canvas) -> void:
 		if it == null:
 			continue
 		var ir := L.r(P + "Border").grow(-L.s() * 2.0)
+		var ipress := _slot_pressed(10 + i)
 		if it.icon != null:
-			ci.draw_texture_rect(it.icon, ir, false, Color(1, 1, 1, 0.35) if i == dslot else Color.WHITE)
+			var irc := ir.grow(-ir.size.x * 0.05) if ipress else ir   # [ui-feel] the icon sinks while its key is down
+			ci.draw_texture_rect(it.icon, irc, false, Color(1, 1, 1, 0.35) if i == dslot else (Color(0.86, 0.86, 0.86) if ipress else Color.WHITE))
 		if it.active_left > 0.0 and it.cooldown_ratio() > 0.0:
 			var el := L.e(P + "CooldownFX")
 			HudLayout.radial(ci, ir, it.cooldown_ratio(), Color(1, 1, 1, 0.92), el.get("t", ""), L.uv_of(P + "CooldownFX"))
 			L.ltext(ci, P + "Cooldown", str(int(ceil(it.active_left))), C_CD, 1)
-		if _hover_key == "item%d" % i:
+		if ipress:
+			L.draw(ci, P + "Mouseover", Color(1, 1, 1, 0.55))
+		elif _hover_key == "item%d" % i:
 			L.draw(ci, P + "Mouseover", Color(1, 1, 1, 0.3))
 		L.draw(ci, P + ("Enabled" if it.has_active() else "Border"))
 		ci.hits.append([r, "item%d" % i])
@@ -973,7 +1092,7 @@ func _draw_inventory(ci: Canvas) -> void:
 	var can := champ.can_shop()
 	var hov := _hover_key == "shop"
 	var key := "Shop_ButtonDisabled"
-	if shop_panel.visible:
+	if shop_panel.visible or _pressed("shop"):
 		key = "Shop_ButtonClicked"
 	elif hov:
 		key = "Shop_ButtonHover"
@@ -1009,7 +1128,10 @@ func _draw_levelup(ci: Canvas) -> void:
 		if champ.can_level_ability(i):
 			var key := PF + "LevelUp%d_Button" % i
 			var r := L.r(key + "Default")
-			L.draw(ci, key + ("Hover" if _hover_key == "lvl%d" % i else "Default"))
+			var st := "Default"
+			if _hover_key == "lvl%d" % i:
+				st = "Clicked" if _pressed(_hover_key) else "Hover"   # [ui-feel] pressed art while LMB is held
+			L.draw(ci, key + st)
 			ci.hits.append([r, "lvl%d" % i])
 
 
@@ -1036,7 +1158,11 @@ func _draw_spell_slot(ci: Canvas, base: String, slot: int, part: int) -> void:
 				mod = Color(0.35, 0.35, 0.35)
 			elif oom:
 				mod = Color(0.5, 0.62, 1.0)
-			ci.draw_texture_rect(icon, icon_r, false, mod)
+			var irc := icon_r
+			if slot >= 0 and _slot_pressed(slot):
+				irc = icon_r.grow(-icon_r.size.x * 0.05)   # [ui-feel] the icon sinks while its key is down
+				mod = mod.darkened(0.14)
+			ci.draw_texture_rect(icon, irc, false, mod)
 		if not learned:
 			L.draw(ci, P + "_OverlayUnavailable")
 		if oom:
@@ -1061,7 +1187,9 @@ func _draw_spell_slot(ci: Canvas, base: String, slot: int, part: int) -> void:
 		return
 	if ab != null and ab.toggled:
 		draw_toggle(ci, P, icon_r)
-	if _hover_key == key:
+	if slot >= 0 and _slot_pressed(slot):
+		L.draw(ci, P + "_Mouseover", Color(1, 1, 1, 0.5))   # [ui-feel] pressed: the mouse-over glow at full strength
+	elif _hover_key == key:
 		L.draw(ci, P + "_Mouseover", Color(1, 1, 1, 0.35))
 	L.draw(ci, P + ("_BorderAvailable" if learned and not on_cd else "_BorderUnavailable"))
 	if ab != null and ab.max_charges > 0 and learned:
@@ -1084,10 +1212,10 @@ func _draw_spell_slot(ci: Canvas, base: String, slot: int, part: int) -> void:
 	ci.hits.append([L.r(P + "_BorderAvailable"), key])
 
 
-## Toggle border (League ToggleFX: a looping gold flipbook; static frame here, the fx layer animates nothing for it).
+## Toggle border (League ToggleFX: a looping gold flipbook, the slot frame layer redraws on its frame index, _sig_slot).
 func draw_toggle(ci: CanvasItem, P: String, icon_r: Rect2) -> void:
 	if L.has(P + "_ToggleFX"):
-		L.draw_fx(ci, P + "_ToggleFX", 0)
+		L.draw_fx(ci, P + "_ToggleFX", L.fx_frame(P + "_ToggleFX", _now, true))
 	else:
 		ci.draw_rect(icon_r.grow(-1.0), Color(0.45, 0.85, 1.0, 0.85), false, maxf(2.0, icon_r.size.x * 0.05))
 
@@ -1202,10 +1330,19 @@ func draw_unit_glyph(ci: CanvasItem, r: Rect2, u, a: float) -> void:
 func _track_fx() -> void:
 	for i in 6:
 		var ab := _ability_for(i)
+		var P := PF + ("Ability%d" % i if i < 4 else "Summoner%d" % (i - 4))
+		var cd: float = ab.cd if ab != null else 0.0
+		# cooldown just started = the spell was used: League's HUD "spell use" tick (summoner variant for D / F)
+		if ab != null and cd > _prev_cd[i] + 0.25 and not champ.dead:
+			hud_sfx("Play_sfx_hud_base_spell_summoner_use" if i >= 4 else "Play_sfx_hud_base_spell_generic_use")
+		# a cooldown wiped in one step (not a normal tick) is a reset: League's ResetAttentionFX ring
+		var reset: bool = ab != null and _prev_cd[i] - cd > 1.0 and cd <= 0.0 and L.has(P + "_ResetAttentionFX")
+		_prev_cd[i] = cd
 		var ready := ab == null or ab.is_ready() or (i < 4 and ab.level <= 0)
+		if reset:
+			_fx.append({"key": P + "_ResetAttentionFX", "t0": _now})
 		if ready and not _was_ready[i] and ab != null:
 			# cooldown finished: League's GlintFX + SheenFX flash over the slot
-			var P := PF + ("Ability%d" % i if i < 4 else "Summoner%d" % (i - 4))
 			_fx.append({"key": P + "_SheenFX", "t0": _now})
 			_fx.append({"key": P + "_GlintFX", "t0": _now})
 		_was_ready[i] = ready
@@ -1221,18 +1358,26 @@ func _track_fx() -> void:
 		var lv := ab.level if ab != null else 0
 		if lv > _ab_levels[i]:
 			_fx.append({"key": PF + "LevelUp%d_AbilityIn" % i, "t0": _now})
-			hud_sfx("Play_sfx_hud_base_spell_levelup", -7.0)
+			hud_sfx("Play_sfx_hud_base_spell_levelup")
 		_ab_levels[i] = lv
 	# skill point available (not for the free first point at match start; the level-up sting itself is GameAudio's)
 	if point_ready and match_ref != null and match_ref.time > 2.0:
-		hud_sfx("Play_sfx_hud_base_LevelUp_layer", -8.0)
-	# item active used (its cooldown just started)
-	for it in champ.items:
+		hud_sfx("Play_sfx_hud_base_LevelUp_layer")
+	# inventory actives: used (cooldown just started) -> HitFX flash + use tick; recovered -> Glint + Sheen
+	for k in champ.items.size():
+		var it = champ.items[k]
 		var iid: int = it.get_instance_id()
 		var al: float = it.active_left
-		if _item_cd.has(iid) and al > float(_item_cd[iid]) + 0.5 and it.has_active():
-			hud_sfx("Play_sfx_hud_base_spell_generic_use", -6.0)
-		_item_cd[iid] = al
+		if _item_prev.has(iid) and it.has_active():
+			var prev: float = _item_prev[iid]
+			var IP := INV + "InventoryItem%d_" % k
+			if al > prev + 0.5:
+				hud_sfx("Play_sfx_hud_base_spell_generic_use")
+				_fx.append({"key": IP + "HitFX", "t0": _now})
+			elif prev > 0.0 and al <= 0.0:
+				_fx.append({"key": IP + "SheenFX", "t0": _now})
+				_fx.append({"key": IP + "GlintFX", "t0": _now})
+		_item_prev[iid] = al
 	for j in range(_fx.size() - 1, -1, -1):
 		var f: Dictionary = _fx[j]
 		if L.fx_frame(f.key, _now - f.t0) < 0:
@@ -1251,6 +1396,10 @@ func _draw_fx_add(ci: Canvas) -> void:
 			var age: float = _now - _glow_t0[i]
 			if L.fx_frame(PF + "LevelUp%d_ButtonIn" % i, age) < 0:
 				L.draw_fx(ci, PF + "LevelUp%d_IdleGlow" % i, L.fx_frame(PF + "LevelUp%d_IdleGlow" % i, age, true))
+				# [ui-feel] ButtonAfterFXIn: the rising glow that follows the button's intro, once
+				var af := L.fx_frame(PF + "LevelUp%d_ButtonAfterFXIn" % i, age - L.fx_info(PF + "LevelUp%d_ButtonIn" % i).y)
+				if af >= 0:
+					L.draw_fx(ci, PF + "LevelUp%d_ButtonAfterFXIn" % i, af)
 
 
 func _draw_fx(ci: Canvas) -> void:

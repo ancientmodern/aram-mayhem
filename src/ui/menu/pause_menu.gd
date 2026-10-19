@@ -16,8 +16,9 @@ func _ready() -> void:
 
 ## League's in-game menu sounds (Play_sfx_hud_base_menu_open/close) through GameAudio, client sounds otherwise.
 func _menu_sfx(ev: String, fallback: String) -> void:
-	if match_ref != null and match_ref.audio != null and match_ref.audio.has(ev):
-		match_ref.audio.play(ev, null, -3.0, 0.0)
+	# [ui-feel] League's menu open/close at its own Wwise gain (-6 dB), not an eyeballed offset
+	if Sfx.has_hud(ev):
+		Sfx.hud(ev, 0.0, 120)
 	else:
 		Sfx.ui(fallback)
 

@@ -54,8 +54,11 @@ Owner tags: [motion] [vfx] [world-ui] [hud] [env] [kits-a] [kits-b]
 - [hud] Done: HUD rebuilt from League's own UI bins + atlases (tools/lol/extract_hud.py -> assets/ui/hud/layout.json,
   tex/, icons/, minimap_map12.png); src/ui/hud.gd draws every element at League's position/anchor/UV via
   src/ui/hud/hud_layout.gd. Shop rebuilt from the ItemShop layout (src/ui/shop_panel.gd). Augment UI removed.
-- [hud] Still below League: EffectAnimation sprite sheets (glint/sheen/level-up/item-complete FX) are not played
-  (frame counts sit in unnamed bin fields); ~55 standalone UI textures (e.g. the HUD gold button, Shop_Button*)
+- [hud] Done [ui-feel]: EffectAnimation flipbooks decoded (fr = [frames, per row, fps]) and played: ready glint/sheen (spells +
+  items), reset ring, level-up ButtonIn/AfterFX/IdleGlow/SelectedOut/UnselectedOut/AbilityIn, item HitFX, toggle border; pressed
+  states for the level-up / shop / stats buttons and hotkey presses; HUD sounds at League's Wwise gain (data/audio/hud_sfx.json,
+  tools/lol/extract_hud_audio.py, Sfx.hud). No recall (B) mechanic exists yet, so its sound is unwired.
+- [hud] Still below League: ~55 standalone UI textures (e.g. the HUD gold button, Shop_Button*)
   are referenced by hash only and could not be resolved (gold bar from clarity_hudatlas used instead); TextData
   font descriptions are links to entries we could not find, so sizes/colours are chosen by eye; minimap bounds
   (-28,-19)-(12849,12858) are Riot's published Map12 values, not read from map12.bin; no target frame, no pings,

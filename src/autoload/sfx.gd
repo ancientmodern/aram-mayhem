@@ -17,6 +17,8 @@ const ROLE_TARGET := {
 	"tick": -17.0,      ## countdown ticks
 	"notify": -12.0,    ## chat / notification dings
 }
+const HUD_TRIM_DB := 10.0       ## [ui-feel] League HUD mix -> our output (see hud())
+const HUD_PEAK_CAP_DB := -1.0
 const ROLE_GAP_MS := {"hover": 70, "click": 25, "big": 60, "stinger": 120, "tick": 60, "notify": 80}
 
 const UI_SOUNDS := {
@@ -155,6 +157,8 @@ var _last_play := {}          ## name -> time (rate limiting)
 var _last_role := {}          ## role -> time (global per-role rate limit)
 var _log := false             ## --sfxlog: print every UI sound with its resolved gain (verification without ears)
 var stats := {}               ## name/path -> play count (for harnesses)
+var hud_log: Array = []       ## [ui-feel] [msec, event, applied dB, file] of the last 400 HUD sounds (harnesses / --sfxlog)
+var _hud := {}                ## [ui-feel] Wwise event -> {"v": [{f, g, p, len}]} from data/audio/hud_sfx.json
 var music_a: AudioStreamPlayer
 var music_b: AudioStreamPlayer
 var _music_cur: AudioStreamPlayer = null
@@ -185,6 +189,7 @@ func _ready() -> void:
 		add_child(m)
 	apply_volumes()
 	_load_gain()
+	_load_hud()
 	_prewarm()
 
 
@@ -203,6 +208,21 @@ func _prewarm() -> void:
 		if not _cache.has(path) and not _req.has(path) and ResourceLoader.exists(path):
 			if ResourceLoader.load_threaded_request(path, "", false) == OK:
 				_req[path] = true
+
+
+## [ui-feel] League's HUD mix (tools/lol/extract_hud_audio.py): per event the WAVs, their Wwise gain and peak.
+func _load_hud() -> void:
+	var path := "res://data/audio/hud_sfx.json"
+	if FileAccess.file_exists(path):
+		var d = JSON.parse_string(FileAccess.get_file_as_string(path))
+		if d is Dictionary and d.get("events") is Dictionary:
+			_hud = d.events
+	for ev in _hud:
+		for v in _hud[ev].v:
+			var p: String = v.f
+			if not _cache.has(p) and not _req.has(p) and ResourceLoader.exists(p):
+				if ResourceLoader.load_threaded_request(p, "", false) == OK:
+					_req[p] = true
 
 
 func _path_of(file: String) -> String:
@@ -290,13 +310,47 @@ func ui_file(path: String, volume_db: float = 0.0, min_gap_ms: int = 45, role: S
 	_play_ui(path, role, volume_db, path)
 
 
+func has_hud(ev: String) -> bool:
+	return _hud.has(ev)
+
+
+## [ui-feel] HUD sounds are mastered per event in League's Wwise banks (data/audio/hud_sfx.json: "g" is the summed
+## Volume + MakeUpGain, "p" the file's peak). Level = peak + g + HUD_TRIM_DB, never above HUD_PEAK_CAP_DB, so the
+## relative loudness between HUD events is League's (level-up click -16 dB, shop open -6 dB, champion level-up -11 dB)
+## while the whole HUD sits above the in-match SFX the way the real client mixes it. Returns the dB applied
+## (-INF when the event is unknown / muted / rate-limited). `extra_db` is a per-call trim, `min_gap_ms` the per-event
+## repeat guard (no double-play when two code paths report the same press).
+func hud(ev: String, extra_db: float = 0.0, min_gap_ms: int = 60) -> float:
+	var e = _hud.get(ev)
+	if e == null or e.v.is_empty():
+		if _log:
+			push_warning("Sfx.hud: unknown HUD event '%s'" % ev)
+		return -INF
+	var now := Time.get_ticks_msec()
+	if now - int(_last_play.get(ev, -1000)) < min_gap_ms:
+		return -INF
+	var v: Dictionary = e.v[G.rng.randi() % e.v.size()]
+	if float(v.g) <= -60.0:
+		return -INF
+	_last_play[ev] = now
+	var db := minf(float(v.p) + float(v.g) + HUD_TRIM_DB, HUD_PEAK_CAP_DB) - float(v.p) + extra_db
+	hud_log.append([now, ev, db, v.f])
+	if hud_log.size() > 400:
+		hud_log.pop_front()
+	_voice(v.f, db, "click", ev)
+	return db
+
+
 func _play_ui(path: String, role: String, volume_db: float, tag: String) -> void:
+	_voice(path, gain_for(path, role) + volume_db, role, tag)
+
+
+func _voice(path: String, db: float, role: String, tag: String) -> void:
 	var s := stream(path)
 	if s == null:
 		if _log:
 			push_warning("Sfx: missing UI sound %s" % path)
 		return
-	var db := gain_for(path, role) + volume_db
 	# hovers restart their own voice instead of stacking into a wash
 	var idx := -1
 	if role == "hover":

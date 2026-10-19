@@ -135,7 +135,7 @@ func _on_submit(txt: String) -> void:
 	if t != "":
 		var c = hud.champ
 		add([["[All] ", C_WHITE], [_unit_name(c), C_ALLY], [": " + t, C_WHITE]])
-		hud.hud_sfx("Play_sfx_hud_base_Chat_All", -6.0)   # [ui-polish]
+		hud.hud_sfx("Play_sfx_hud_base_Chat_All")   # [ui-polish] League gain via Sfx.hud [ui-feel]
 	close()
 
 

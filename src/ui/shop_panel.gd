@@ -41,6 +41,7 @@ var session := ShopSession.new()
 var tab := "rec"
 var search := ""
 var search_focus := false
+var _lmb := false                ## [ui-feel] LMB held inside the shop: buttons under the cursor draw their "Clicked" art
 var type_filter := 0
 var stat_filter := -1
 var popular_only := false
@@ -121,6 +122,8 @@ func _process(delta: float) -> void:
 		return
 	msg_t = maxf(0.0, msg_t - delta)
 	_caret_t += delta
+	if _lmb and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		_lmb = false   # [ui-feel] a release the panel never saw (it closed on the press)
 	var c = champ()
 	if c != null:
 		session.tick(c)   # leaving the base clears the undo history
@@ -288,6 +291,8 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		_mouse = event.position
 		return
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		_lmb = event.pressed and (panel.has_point(event.position) or _in_side_panels(event.position))
 	if not (event is InputEventMouseButton and event.pressed):
 		return
 	var mb := event as InputEventMouseButton
@@ -530,7 +535,7 @@ func _draw() -> void:
 	L.draw(self, SH + "ItemShop_KeyLine_Tabs")
 	L.draw(self, SH + "ItemShop_KeyLine_Footer")
 	var cr := L.r(SH + "ItemShop_MenuClose_ButtonDefault")
-	L.draw(self, SH + ("ItemShop_MenuClose_ButtonHover" if cr.grow(4).has_point(_mouse) else "ItemShop_MenuClose_ButtonDefault"))
+	L.draw(self, SH + ("ItemShop_MenuClose_ButtonClicked" if _lmb and cr.grow(4).has_point(_mouse) else ("ItemShop_MenuClose_ButtonHover" if cr.grow(4).has_point(_mouse) else "ItemShop_MenuClose_ButtonDefault")))
 	_hits.append([cr.grow(6.0), "close", 0])
 	_draw_tabs()
 	_draw_search()
@@ -551,7 +556,7 @@ func _draw() -> void:
 		if _hover_sound_id != _tip_id:
 			_hover_sound_id = _tip_id
 			_tip_since = Time.get_ticks_msec()
-			ShopSfx.cue("hover", -6.0, 120)
+			ShopSfx.cue("hover", 0.0, 120)   # [ui-feel] League gain (-11 dB) is applied by Sfx.hud
 		if Time.get_ticks_msec() - _tip_since > 150:
 			ItemTip.draw(self, _tip_id, c, _tip_rect, size, size.y / 1080.0, _tip_owned)
 	else:
@@ -1137,7 +1142,7 @@ func _draw_purchase_and_details(c) -> void:
 	var br := L.r(SH + "ItemShop_PurchaseButton_Default")
 	var hov := br.has_point(_mouse)
 	var can: bool = st.enabled
-	L.draw(self, SH + ("ItemShop_PurchaseButton_Disabled" if not can else ("ItemShop_PurchaseButton_Hover" if hov else "ItemShop_PurchaseButton_Default")))
+	L.draw(self, SH + ("ItemShop_PurchaseButton_Disabled" if not can else ("ItemShop_PurchaseButton_Clicked" if hov and _lmb else ("ItemShop_PurchaseButton_Hover" if hov else "ItemShop_PurchaseButton_Default"))))
 	L.text(self, SH + "ItemShop_PurchaseButton_Text", st.label, f_title, 14, C_TEXT if can else Color(0.6, 0.58, 0.55), 1, Vector2(-30, 0), 0.0)
 	var pr := L.r(SH + "ItemShop_PurchaseButton_Text")
 	var price: int = st.price
@@ -1182,13 +1187,13 @@ func _draw_purchase_and_details(c) -> void:
 func _draw_footer(c) -> void:
 	var can_sell: bool = selected_owned != null and c.can_shop() and selected_owned in c.items and ItemDB.can_sell(selected_owned)
 	var sr := L.r(SH + "ItemShop_SellButton_ButtonDefault")
-	L.draw(self, SH + ("ItemShop_SellButton_ButtonDisabled" if not can_sell else ("ItemShop_SellButton_ButtonHover" if sr.has_point(_mouse) else "ItemShop_SellButton_ButtonDefault")))
+	L.draw(self, SH + ("ItemShop_SellButton_ButtonDisabled" if not can_sell else ("ItemShop_SellButton_ButtonClicked" if _lmb and sr.has_point(_mouse) else ("ItemShop_SellButton_ButtonHover" if sr.has_point(_mouse) else "ItemShop_SellButton_ButtonDefault"))))
 	var sell_txt := "SELL" if selected_owned == null else "SELL %d" % ItemDB.sell_price(selected_owned)
 	L.text(self, SH + "ItemShop_SellButton_Text", sell_txt, f_title, 13, C_TEXT if can_sell else Color(0.5, 0.5, 0.5), 1, Vector2.ZERO, 0.0)
 	_hits.append([sr, "sell", 0])
 	var ur := L.r(SH + "ItemShop_UndoButton_ButtonDefault")
 	var can_undo: bool = session.can_undo() and c.can_shop()
-	L.draw(self, SH + ("ItemShop_UndoButton_ButtonDisabled" if not can_undo else ("ItemShop_UndoButton_ButtonHover" if ur.has_point(_mouse) else "ItemShop_UndoButton_ButtonDefault")))
+	L.draw(self, SH + ("ItemShop_UndoButton_ButtonDisabled" if not can_undo else ("ItemShop_UndoButton_ButtonClicked" if _lmb and ur.has_point(_mouse) else ("ItemShop_UndoButton_ButtonHover" if ur.has_point(_mouse) else "ItemShop_UndoButton_ButtonDefault"))))
 	L.text(self, SH + "ItemShop_UndoButton_Text", "UNDO", f_title, 13, C_TEXT if can_undo else Color(0.5, 0.5, 0.5), 1, Vector2.ZERO, 0.0)
 	_hits.append([ur, "undo", 0])
 	L.draw(self, SH + "ItemShop_Footer_GoldIcon")

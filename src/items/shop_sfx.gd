@@ -36,6 +36,10 @@ static func files_of(action: String) -> Array:
 
 ## Play a shop action's sound (random variant). `min_gap_ms` rate-limits repeats of the same file.
 static func cue(action: String, volume_db := 0.0, min_gap_ms := 60) -> void:
+	var ev := event_of(action)
+	if ev != "" and Sfx.has_hud(ev):   # [ui-feel] League's own Wwise gain for the event (data/audio/hud_sfx.json)
+		Sfx.hud(ev, volume_db, min_gap_ms)
+		return
 	var files := files_of(action)
 	if files.is_empty():
 		return

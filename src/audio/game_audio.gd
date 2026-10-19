@@ -566,14 +566,17 @@ func emote(u, kind: String) -> void:
 # ===================================================================== global events
 func _on_level_up(c, _lvl) -> void:
 	if c == G.player:
-		play("Play_sfx_levelup_levelup", null, -4.0, 0.0)
+		# [ui-feel] 2D HUD-mix voice at League's own gain (Sfx.hud), not an eyeballed offset
+		Sfx.hud("Play_sfx_levelup_levelup")
+		_note("Play_sfx_levelup_levelup", "hud")
 
 
 func _on_gold(c, amount, src) -> void:
 	# League's coin pickup chime for gold the player earns from kills (minion last hits, champion takedowns)
 	if c == G.player and src != null and is_instance_valid(src) and amount > 0 \
 			and (src.kind == G.Kind.MINION or src.kind == G.Kind.CHAMPION):
-		play("Play_sfx_GoldAquisition_P_cast", null, -8.0 if src.kind == G.Kind.MINION else -4.0, 0.02)
+		Sfx.hud("Play_sfx_GoldAquisition_P_cast", -4.0 if src.kind == G.Kind.MINION else 0.0, 40)   # [ui-feel] League gain
+		_note("Play_sfx_GoldAquisition_P_cast", "hud")
 
 
 func _on_champion_killed(victim, killer, _assisters) -> void:
