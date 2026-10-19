@@ -183,8 +183,9 @@ out = float4(c, d.a * kGrassFade.w);   out1 = (0,0,0,1);                     // 
 ### 3.1 Light grid data (feeds LIGHTGRID_COLORS)
 `Map12.wad: assets/maps/lightmaps/maps/mapgeometry/map12/base/lightgrid.dat` (1,572,896 bytes) **[exact layout]**:
 header `u32 version=3, u32 headerSize=32, u32 w=256, u32 h=256, f32 12877.53, f32 12877.53 (world extent),
-f32 0.8501, f32 0.5`, then `256*256 cells x 6 faces x 4 bytes`. Face order is presumably the same +X,-X,+Y,-Y,+Z,-Z.
-Byte order is probably BGRA (D3DCOLOR), which gives a cool tint. Typical values: +Y ≈ 0.18-0.20, sides ≈ 0.08-0.14.
+f32 0.8501, f32 0.5`, then `256*256 cells x 6 faces x 4 bytes`. [look2, verified from data, docs/ENV_LOOK.md
+section 6] Face order +X,-X,+Y,-Y,+Z,-Z (League axes); byte order BGRA (alpha always 255); rows = League z, columns
+= League x, cell (0,0) at `MapContainer.boundsMin` (-28.43, -19.03), whose extent to boundsMax is the header 12877.5. Typical values: +Y ≈ 0.18-0.20, sides ≈ 0.08-0.14.
 `MapBakeProperties.lightGridCharacterFullBrightIntensity = 0.5` (the last header float) suggests the grid is stored at
 half intensity, i.e. `LIGHTGRID_SCALE.x ≈ 1/0.5 = 2`. **[cpu? / guess]** The map also has
 `MapSunProperties.lightMapColorScale = 2.0`, sun colour (0.365,0.384,0.392), dir (-0.38,0.707,0.05), fog

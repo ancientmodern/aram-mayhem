@@ -26,6 +26,18 @@ uniform float lightgrid_scale = 2.0;
 // selfIllumination 0.7 it gives the constant term 0.595 (an earlier hand fit landed at 0.55)
 uniform float self_illum_scale = 0.8501;
 const float GRID_EXTENT = 12877.525;   // League units covered by the 256 x 256 grid
+// [look2] the grid starts at MapContainer.boundsMin (-28.43, -19.03), not at the League origin: boundsMax - boundsMin
+// = 12877.5 = the header extent, and the brazier light spots in the grid only line up with the brazier placements
+// with this origin (docs/ENV_LOOK.md section 6)
+const vec2 GRID_ORIGIN = vec2(-28.43, -19.028);
+// [look2] probe views (src/debug/env_look_probe.gd --el_cviews): 1 = diffuse d, 2 = ambient cube (raw grid),
+// 3 = L, 4 / 5 = flat white / black (unit mask)
+uniform int debug_view = 0;
+// [look2] CALIBRATION, NOT League math: the per-channel gain fitted on the map (docs/ENV_LOOK.md section 3). The same
+// cool shift shows on lit_uber objects: turrets registered on refs 2 / 5 measure League / ours = (0.78, 0.98, 1.13) and
+// (0.61, 0.98, 1.14) with matching luma (section 6), so characters take the map's gain too. false = pure lit_uber.
+uniform bool calibrate = true;
+const vec3 CALIB_GAIN = vec3(0.911, 1.049, 1.151);
 
 // explicit indices: the ink next_pass shares the instance uniform buffer
 instance uniform float flash : instance_index(0) = 0.0;
@@ -46,7 +58,7 @@ vec3 grid_face(vec2 uv, float face) {
 void vertex() {
 	// Godot (x, y, z) = League (x, y, -z) * 0.01
 	vec3 o = NODE_POSITION_WORLD;
-	vec2 uv = vec2(o.x, -o.z) * 100.0 / GRID_EXTENT;
+	vec2 uv = (vec2(o.x, -o.z) * 100.0 - GRID_ORIGIN) / GRID_EXTENT;
 	vec3 n = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
 	n.z = -n.z;
 	vec3 n2 = n * n;
@@ -71,10 +83,16 @@ void fragment() {
 	// hit flash = League SELF_ILLUMINATION: raises L toward full-bright texture, never past it
 	vec3 L = clamp(vec3(flash + self_illum_scale * self_illum) + amb * lightgrid_scale, 0.0, 1.0);
 	vec3 col = clamp(d * L, 0.0, 1.0);
+	if (calibrate && debug_view == 0) {
+		col = min(col * CALIB_GAIN, vec3(1.0));   // [look2] the map's fitted gain (see CALIB_GAIN), before the fog like the map's
+	}
 	// [fow] lit_uber_ps: c = lerp(FOW.rgb, c, FOW.a)
 	vec4 fw = fow_map((INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz);
 	col = mix(fw.rgb, col, fw.a);
 	// our own highlight (player selection glow), not a League shader term
 	col += glow.rgb * glow.a * 0.35;
+	if (debug_view != 0) {
+		col = debug_view == 1 ? d : (debug_view == 2 ? amb : (debug_view == 3 ? L : vec3(debug_view == 5 ? 0.0 : 1.0)));
+	}
 	ALBEDO = gamma_out > 0.5 ? col : gamma_dec(col);
 }

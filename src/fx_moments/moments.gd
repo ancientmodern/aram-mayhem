@@ -15,7 +15,9 @@ const SET := "moments"
 # ---- death screen (League desaturates the world the moment you die and lifts it as soon as you respawn)
 const GRAY_IN := 0.55          ## seconds to full desaturation
 const GRAY_OUT := 0.3          ## seconds to colour once respawned
-const GRAY_MAX := 1.0
+## [look2] DEATH_EFFECT_APPLY_FRACTION while dead: 0.8, measured on the live dead frame (docs/ENV_LOOK.md section 6:
+## chroma kept 0.485 = 1 - 0.8 * F^2). Every map's DeathRecapGreyscaleConfig carries 0.2 (= 1 - F?) next to 3.0 / 1.5.
+const GRAY_MAX := 0.8
 
 var m = null
 var gray := 0.0

@@ -59,9 +59,12 @@ static func unit_model(unit_name: String, skin: int) -> Node3D:
 	return _instance_model(unit_model_path(unit_name, skin), 0.0)
 
 
-## League skinMeshProperties.selfIllumination (skin bins): 0.7 for all our champions except Veigar (0.75);
-## chaos melee/siege minions 0.6; everything else uses the 0.7 default.
-const SELF_ILLUM := {"veigar": 0.75, "chaosminionmelee": 0.6, "chaosminionsiege": 0.6}
+## League skinMeshProperties.selfIllumination (skin bins): 0.7 for all our champions except Veigar (0.75).
+## [look2] the units re-read from Map12.wad skin bins: melee / siege / super minions of BOTH teams 0.6 (casters 0.7),
+## Tibbers 0.8, the Viking shopkeeper 1.0, the chaos shrine turret (Turret skin31) 1.0, inhibitors, nexuses, hexgates
+## and health relics 0.5; turrets 28/29, poros, the hermit and every level prop 0.7 (the default).
+const SELF_ILLUM := {"veigar": 0.75, "annietibbers": 0.8, "minionmelee": 0.6, "minionsiege": 0.6, "minionsuper": 0.6,
+		"ha_ap_viking": 1.0, "turret_skin31": 1.0, "inhibitor": 0.5, "nexus": 0.5, "hexgate": 0.5, "healthrelic": 0.5}
 static var _cur_self_illum := 0.7
 
 

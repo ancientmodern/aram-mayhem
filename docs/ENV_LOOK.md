@@ -72,7 +72,7 @@ formula. Because `g·(D·L) = (g·D)·L`, applying the gain to the albedo is exa
 The residual RMS of about 21 is mostly registration error, compression and unmasked effects. Saturation now matches
 within 0.04 on every live frame.
 
-## 5. Open items (not fixed here)
+## 5. Open items (not fixed here; see section 6 for the follow-up)
 
 * **Death screen ([hud-ref], `death_gray.gdshader`).** In ref 3 ("BACK IN 17", fully dead) League keeps about
   60% of the live saturation (S 0.34-0.37 vs about 0.60). With `g = mix(c, 0.8·lum+0.2·c, F)` that means
@@ -88,3 +88,70 @@ within 0.04 on every live frame.
   camera snow stands in ([vfx], `map_ambient.gd` `_strip_snow_quads`).
 * **Turret size.** The model scale is right: skinScale 750/770 is applied, and the placement transforms have no
   scale. No change.
+
+## 6. Follow-up [look2]: characters, base glow, death screen, snow
+
+Side-by-sides (League | before = HEAD | after): `docs/env_look/look2_ref{1,2,3,5}_league_before_after.jpg` and
+`look2_structures_league_before_after.jpg` (nexus, shopkeeper, turret crops). Tools: `env_look_probe.gd` now takes
+`--el_cviews=1,2,3,4,5` (champion-shader views: diffuse, ambient cube, L, white / black unit mask), `--el_cset=` and
+`--el_novfx=1`; `src/debug/look2_cset.gd` freezes a sim at `--l2_at=` and shoots one frame per lit_uber constant pair.
+
+### 6.1 Characters (lit_uber inputs)
+Settled from data, not fits:
+* **Light grid layout.** BGRA is right: the brazier fire spots in the grid come out orange only with BGRA, and they
+  agree with the independent `RmaStaticLightGridTexture` (`file:90275ef5e60b3d84`, 8 x 256² BC1, slices 0-5 =
+  the same 6 faces, slice 6 a mask). Rows = League z, columns = League x (row=z/col=x scores 95 against the 26
+  brazier placements, every flip/transpose 10-75). Face order: the orange centroid of face 0 sits 3.6 cells west of
+  the braziers and face 4 3.7 cells south, so faces are +X,-X,+Y,-Y,+Z,-Z. **Origin = MapContainer.boundsMin
+  (-28.43, -19.03)** (boundsMax - boundsMin = the header extent; peak offset -0.3 / 0.0 cells). Fixed in
+  `champion.gdshader` (was the League origin, half a cell off).
+* **selfIllumination per unit** (Map12 skin bins): melee / siege / super minions of both teams 0.6 (only chaos
+  melee/siege had it), casters 0.7, Tibbers 0.8, Viking shopkeeper 1.0, Turret skin31 1.0, inhibitor / nexus /
+  hexgate / health relic 0.5. `Assets.SELF_ILLUM` now carries them (was 0.7 for all of these).
+* `LIGHTGRID_SCALE` is CPU-side; no bin carries it (MapBakeProperties only has lightGridCharacterFullBrightIntensity
+  0.5 and the RMA grid's intensity 3.224, which belongs to the PBR permutations: lit_uber blobs 32+ sample
+  `LIGHT_GRID_TEXTURE` with `LIGHT_GRID_TEXTURE_SCALE`; the legacy blob uses `LIGHTGRID_SCALE` only). Kept 2.0 / 0.8501.
+
+Measured on registered structures (turrets on refs 2 / 5, per-pixel after local ECC alignment): luma League / ours
+= 0.99 and 0.93, so brightness is right; colour = (0.79, 1.01, 1.17) and (0.61, 0.98, 1.14), the same cool shift the
+map has (section 3). Characters now take the map's CALIB_GAIN (`champion.gdshader` `calibrate`, flagged as a fit).
+A free (a, b) fit of L = a + b*amb on the same pixels prefers a lower constant (a 0.2-0.3, b 2.7-4.8), but the
+turret error surface is flat (rms 10.5 vs 10.7) and only one poro supports it, so the constants were not changed.
+Ref 5's "vivid" caster minions stand inside a frost VFX (pale additive haze over them); ref 1's casters match ours
+within the YouTube 4:2:0 chroma blur. Level props (bridge statues) render near L = 1 in ours but dark blue in
+League: their origin cell holds the brazier light; League may sample elsewhere (open, [render]).
+
+### 6.2 The blue base glow (ref 2) = the Order NEXUS, not the inhibitor or fountain
+The glowing cradle at the top of ref 2 is the nexus (1867, 1981). Its only particle source is the skin's
+idleParticlesEffects `HA_Order_Nexus_Idle` (resolver hash 4cf7b870 -> Characters/Nexus/Skins/Skin24/Particles/...),
+already attached by `Structure`; the death clip has the only other particle events. League measures (11, 126, 233)
+median over the crystal, R ≈ 0; ours (68, 135, 203). R = 0 cannot come from additive layers on the cyan crystal
+texture (43, 152, 181), so part of the look is unexplained. Data findings for [vfx]: `sparkles1` emits from
+`emissionMeshName = sru_order_crystalemitter.scb` (scale 1.1; LolVfx/extract_vfx ignore emission meshes, so ours
+emit from a point); `Temp_Mesh1` has `texDiv (0.5, 0.5)` (extracted as [0, 0]); `Temp_Mesh` / `Temp_Mesh1` carry
+`reflectionDefinition.fresnelColor = (-1, -1, -1, 0)` with no exponent (LolVfx ignores negative colours; tested a
+darkening fresnel with exponent 1 and 3, inconclusive, reverted). The nexus/inhibitor selfIllumination 0.5 fix
+darkens the crystal toward League. Not finished.
+
+### 6.3 Death screen
+`ps_gamma` blob 6 re-read: `g = c + F*(grey - c)`, `out = t + F*(g - t)`, so with TINT.a = 0 the grey fraction is
+F², not F (ours applied F once). Ref 3 keeps 0.485 of the live chroma (cell fit against our live frame; live refs
+1 / 2 / 5 give 0.98 / 1.05 / 0.98), i.e. F² = 0.64, **F = 0.80**. `death_gray.gdshader` now does the double lerp and
+`Moments.GRAY_MAX` = 0.8. Ref 3 chroma League / ours 2.37 -> 0.98, RMS 21.6 -> 18.6. Every map's
+`DeathRecapExtrasConfig.GreyscaleConfig` (class DeathRecapGreyscaleConfig, map11 / 12 / 453 identical) holds
+3.0 / 1.5 / 0.2 under unnamed fields (2ac8249e, fdf7c618, 9044f758); 0.2 = 1 - F fits, the other two are probably the
+timing (not verified, the 0.55 s ease-in was kept). The only MapSkinColorizationPostEffect / GammaParameters are on the
+Jade map skin (RGB x1.05/1.1/1.1, saturation 1.2), not the base map.
+
+### 6.4 Snow
+League's flakes (`HA_Env_Snow_01` "Snow": 8-unit quads of env_mb_snow_flakes, RGB max 41/255, blendMode 0, times
+color-bellramp over life) add at most ~31/255; no flake is visible in any reference. Our camera snow drew white soft
+dots at alpha 0.45 (~ +90/255). `MapBuilder.build_snow` now draws League's texture and ramp additively on gamma
+values (`src/render/snow_flake.gdshader`, 8 cm quads); League's own snow emitters stay stripped in map_ambient.
+
+### 6.5 Still open
+* Nexus glow (6.2) and the turret's blue weapon ring (ref 5, `HA_Order_Turret_Weapon_Glow` on joint2): both far
+  weaker in ours; ours also shows a grey dust puff at the nexus and the ref-5 turret that League doesn't ([vfx]).
+* lit_uber constants (6.1) need a clean champion capture (same skin, open lane, no VFX) to decide between 0.595 + 2a
+  and a lower constant.
+* Bridge statues / level props: lighting sample point ([render]).

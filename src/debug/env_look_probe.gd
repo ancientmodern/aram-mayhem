@@ -9,6 +9,9 @@ extends Node
 ##   --el_units=1        keep champions/minions visible (default: hidden, the map alone)
 ##   --el_shaders=DIR    use DIR/map_lightmap.gdshader and DIR/map_blend.gdshader instead (before/after shots)
 ##   --el_nocal=1        disable the fitted colour calibration of the map shaders (pure League formula)
+##   --el_cviews=1,2,4,5 [look2] champion-shader debug views (VFX hidden): 1 diffuse, 2 ambient cube, 3 L, 4 white, 5 black
+##   --el_cset=k=v,...   [look2] champion-shader uniforms for every shot (e.g. lightgrid_scale=2,self_illum_scale=1)
+##   --el_novfx=1        [look2] hide every LolVfx in the normal shot too
 var main = null
 var match_ref = null
 
@@ -80,6 +83,9 @@ func _run() -> void:
 			fp += Vector3(g1.x - g0.x, 0.0, g1.z - g0.z)
 		print("ELPROBE pin err px ", rig.cam.unproject_position(pw) - px)
 	await get_tree().create_timer(0.5, true, false, true).timeout
+	_apply_cset()
+	if _arg("el_novfx", "0") == "1":
+		_hide_vfx()
 	var dir := "user://%s" % _arg("el_dir", "envlook")
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(dir))
 	var mats := _map_materials()
@@ -93,7 +99,7 @@ func _run() -> void:
 				(m as ShaderMaterial).shader = sh
 		print("ELPROBE map shaders from ", before)
 	if _arg("el_nocal", "0") == "1":   # the pure League formula, without the fitted calibration
-		for m in mats + _map_materials(true):
+		for m in mats + _map_materials(true) + _champ_materials():
 			(m as ShaderMaterial).set_shader_parameter("calibrate", false)
 	for v in _arg("el_views", "0").split(",", false):
 		for m in mats:
@@ -106,4 +112,51 @@ func _run() -> void:
 		print("ELPROBE shot ", ProjectSettings.globalize_path(path))
 	for m in mats:
 		(m as ShaderMaterial).set_shader_parameter("debug_view", 0)
+	# [look2] champion-shader views: d, ambient, L and a unit mask, with every VFX hidden
+	var cv := _arg("el_cviews", "")
+	if cv != "":
+		_hide_vfx()
+		var cm := _champ_materials()
+		for v in cv.split(",", false):
+			for m in cm:
+				(m as ShaderMaterial).set_shader_parameter("debug_view", int(v))
+			for f in 3:
+				await get_tree().process_frame
+			await RenderingServer.frame_post_draw
+			var cpath := "%s/cview%s.png" % [dir, v]
+			get_viewport().get_texture().get_image().save_png(cpath)
+			print("ELPROBE shot ", ProjectSettings.globalize_path(cpath))
+		for m in cm:
+			(m as ShaderMaterial).set_shader_parameter("debug_view", 0)
 	get_tree().quit()
+
+
+func _champ_materials() -> Array:
+	var out: Array = []
+	for mi in get_tree().root.find_children("*", "MeshInstance3D", true, false):
+		var m := mi as MeshInstance3D
+		for i in m.get_surface_override_material_count():
+			var mat := m.get_surface_override_material(i)
+			if mat is ShaderMaterial and (mat as ShaderMaterial).shader == Assets.CHAMP_SHADER and not out.has(mat):
+				out.append(mat)
+	return out
+
+
+func _hide_vfx() -> void:
+	var stack: Array = [get_tree().root]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		if n is LolVfx:
+			(n as Node3D).visible = false
+			continue
+		stack.append_array(n.get_children())
+
+
+func _apply_cset() -> void:
+	var cs := _arg("el_cset", "")
+	if cs == "":
+		return
+	for m in _champ_materials():
+		for kv in cs.split(",", false):
+			var p := kv.split("=")
+			(m as ShaderMaterial).set_shader_parameter(p[0], float(p[1]))

@@ -227,14 +227,15 @@ static func build_snow(parent: Node3D) -> GPUParticles3D:
 	pm.scale_min = 0.6
 	pm.scale_max = 1.4
 	p.process_material = pm
+	# [look2] the flakes are League's HA_Env_Snow_01 "Snow" emitter look: 8-unit quads of env_mb_snow_flakes added
+	# on gamma values (RGB max 41/255) times color-bellramp over life, i.e. at most ~+31/255 per flake. The old
+	# stand-in (white soft dots at alpha 0.45, ~+90/255) read as clear white snow, which live frames don't show.
 	var quad := QuadMesh.new()
-	quad.size = Vector2(0.045, 0.045)
-	var mat := StandardMaterial3D.new()
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.albedo_color = Color(0.92, 0.95, 1.0, 0.45)
-	mat.albedo_texture = Vfx.soft_circle_texture()
+	quad.size = Vector2(0.08, 0.08)
+	var mat := ShaderMaterial.new()
+	mat.shader = preload("res://src/render/snow_flake.gdshader")
+	mat.set_shader_parameter("flakes", load("res://assets/vfx/assets/shared/particles/env_mb_snow_flakes.png"))
+	mat.set_shader_parameter("ramp", load("res://assets/vfx/assets/shared/particles/color-bellramp.png"))
 	quad.material = mat
 	p.draw_pass_1 = quad
 	parent.add_child(p)
