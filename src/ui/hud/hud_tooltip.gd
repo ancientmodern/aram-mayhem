@@ -62,7 +62,7 @@ static func ability(champ, key: String) -> Dictionary:
 		var info: Dictionary = ChampionDB.client_data(champ.alias).get("passive", {})
 		var p = champ.passive
 		return {"key": "P", "title": info.get("name", "Passive"), "icon": p.icon if p != null and p.get("icon") != null else Assets.ability_icon(champ.alias, "p"),
-			"cost": -1, "sub": "Passive", "lines": [[clean(info.get("description", "")), C_TEXT, false]]}
+			"cost": -1, "sub": "Passive", "lines": [], "markup": String(info.get("description", ""))}
 	var ab: Ability = champ.ability("QWER".find(key)) if key in ["Q", "W", "E", "R"] else champ.summoners[0 if key == "D" else 1]
 	if ab == null:
 		return {}
@@ -78,19 +78,15 @@ static func ability(champ, key: String) -> Dictionary:
 		sub += ("   " if sub != "" else "") + "Cooldown: %s" % _num(cdv)
 	if ab.cost() > 0.0 and champ.stats.uses_mana:
 		sub += "   Cost: %d %s" % [int(ab.cost()), champ.resource_name]
-	var lines := []
-	for para in clean(ab.tooltip_text()).split("\n"):
-		lines.append([para, C_TEXT, false])
-	return {"key": key, "title": ab.display_name + ("  [%s]" % key), "icon": ab.icon, "cost": -1, "sub": sub, "lines": lines}
+	return {"key": key, "title": ab.display_name + ("  [%s]" % key), "icon": ab.icon, "cost": -1, "sub": sub, "lines": [],
+		"markup": ab.tooltip_text()}
 
 
 static func buff(b) -> Dictionary:
-	var lines := []
-	if b.description != "":
-		lines.append([clean(b.description), C_TEXT, false])
+	var sub := ""
 	if not b.permanent and b.duration > 0.0:
-		lines.append(["%.1fs remaining" % b.remaining, C_SUB, false])
-	return {"key": "buff" + b.id, "title": b.display_name, "icon": b.icon, "cost": -1, "lines": lines,
+		sub = "%.1fs remaining" % b.remaining
+	return {"key": "buff" + b.id, "title": b.display_name, "icon": b.icon, "cost": -1, "lines": [], "sub": sub, "markup": String(b.description),
 		"border": C_WARN if b.is_debuff else C_BORDER}
 
 
@@ -131,8 +127,17 @@ static func draw(ci: CanvasItem, t: Dictionary, anchor: Rect2, vs: Vector2, k: f
 				out.append([wl, ln[1], f])
 		t[wkey] = out
 	var lines: Array = t[wkey]
+	# [hud-ref] League tooltip markup (<attention>, <magicDamage>, <font color=..>, <passive> ...) is laid out by ItemText
+	var rws: Array = []
+	if t.has("markup") and String(t.markup) != "":
+		var rkey := "_rows%d_%d" % [px, int(w)]
+		if not t.has(rkey):
+			t[rkey] = ItemText.rows([t.markup], f_body, f_bold, px, w - pad * 2.0)
+		rws = t[rkey]
+	var body_h := lines.size() * lh + ItemText.height(rws, px)
+	var has_body := not lines.is_empty() or not rws.is_empty()
 	var head := maxf(icon_sz, tpx + (lh if t.get("sub", "") != "" or t.get("cost", -1) >= 0 else 0.0))
-	var h := pad * 2.0 + head + (pad * 0.8 + lines.size() * lh if not lines.is_empty() else 0.0)
+	var h := pad * 2.0 + head + (pad * 0.8 + body_h if has_body else 0.0)
 	var pos := Vector2(anchor.get_center().x - w * 0.5, anchor.position.y - h - 8.0 if above else anchor.end.y + 8.0)
 	if above and pos.y < 4.0:
 		pos.y = anchor.end.y + 8.0
@@ -163,12 +168,14 @@ static func draw(ci: CanvasItem, t: Dictionary, anchor: Rect2, vs: Vector2, k: f
 	if t.get("sub", "") != "":
 		ci.draw_string(f_body, Vector2(sx, sy), String(t.sub), HORIZONTAL_ALIGNMENT_LEFT, r.end.x - sx - pad, px, C_SUB)
 	y = r.position.y + pad + head + pad * 0.8
-	if not lines.is_empty():
+	if has_body:
 		ci.draw_line(Vector2(r.position.x + pad, y - pad * 0.45), Vector2(r.end.x - pad, y - pad * 0.45), Color(C_BORDER.r, C_BORDER.g, C_BORDER.b, 0.6), 1.0)
 	for ln in lines:
 		y += lh
 		if ln[0] != "":
 			ci.draw_string(ln[2], Vector2(r.position.x + pad, y - lh * 0.28), ln[0], HORIZONTAL_ALIGNMENT_LEFT, -1, px, ln[1])
+	if not rws.is_empty():
+		ItemText.draw(ci, rws, Vector2(r.position.x + pad, y + lh * 0.05), px, f_body, f_bold)
 
 
 static func wrap_text(text: String, f: Font, px: int, width: float) -> Array:

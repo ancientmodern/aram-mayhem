@@ -35,6 +35,7 @@ var trauma := 0.0
 var _mmb_drag := false
 var _mmb_last := Vector2.ZERO
 var _follow_override: Node3D = null   ## F2-F5 ally being followed while the key is held
+var spectate: Node3D = null           ## [hud-ref] ally followed from the dead player's BACK IN portraits (HUD clears it)
 var _relock_t := 1.0                  ## 0..1 blend after re-locking so the jump is not a hard cut
 var bounds := Rect2(Vector2(5, -125), Vector2(122, 120))   ## x, z range in world
 
@@ -110,11 +111,13 @@ func _process(delta: float) -> void:
 	var follow: Node3D = null
 	if _follow_override != null and is_instance_valid(_follow_override):
 		follow = _follow_override
+	elif spectate != null and is_instance_valid(spectate):
+		follow = spectate
 	elif target != null and is_instance_valid(target) and (locked or centering):
 		follow = target
 	if follow != null:
 		var tp := follow.global_position
-		if centering or _follow_override != null:
+		if centering or _follow_override != null or follow == spectate:
 			focus = tp
 		else:
 			# rigid lock like League; right after re-locking, glide in for a moment

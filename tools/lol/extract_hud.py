@@ -58,6 +58,8 @@ GROUPS = {
     "Tooltip": "ClientStates/LoLCommon/UX/Tooltips/UIBase/",
     "Ping": "ClientStates/Gameplay/UX/LoL/LoLPingRadial/UIBase/",
     "Chat": "ClientStates/Gameplay/UX/Chat/UIBase/",
+    "Spectate": "ClientStates/Gameplay/UX/DeathRecap/UIBase/DRTeammateSpectate",   # [hud-ref] dead-player BACK IN + teammate portraits
+    "Respawn": "ClientStates/Gameplay/UX/LoL/EnemyRespawnTimers/UIBase/RespawnTimers/",
 }
 
 PING_ICONS = """ping ping_cb ping_gray all_in assist on_my_way_new mia_new retreat push need_ward area_is_warded_small_red_new

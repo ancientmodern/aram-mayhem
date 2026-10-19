@@ -538,7 +538,7 @@ static func resolve_tooltip(ab: Ability, text: String) -> String:
 			var v: float = float(val) * mult
 			rep = str(int(round(v))) if absf(v - round(v)) < 0.05 or absf(v) >= 20.0 else ("%.2f" % v).rstrip("0").rstrip(".")
 		out = out.substr(0, mt.get_start()) + rep + out.substr(mt.get_end())
-	return Hud._clean(out)
+	return out   # [hud-ref] keeps League's tooltip markup; HudTooltip renders it (ItemText), plain-text callers use Hud._clean
 
 
 static func fnv1a(s: String) -> int:

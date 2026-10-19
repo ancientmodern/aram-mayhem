@@ -11,16 +11,24 @@ extends RefCounted
 ## HUD scale: League's game.cfg [HUD] GlobalScale (0..1, the in-game "HUD Scale" slider / 100) and MinimapScale.
 ## The engine's slider -> scale curve is code-side (HudScaleSettingsData min/max are not in the shipped bins), so
 ## GlobalScale is mapped linearly onto [MIN_GLOBAL_SCALE, 1]; at 1 every atlas texel maps 1:1 on a 1200p screen.
+## [hud-ref] Measured on the player's real live-ARAM frames (tools/extracted/reference, 2000 px wide): the centre HUD
+## (stats..inventory) is 672 px = 0.66 x its 1600x1200-space size scaled to the frame height, the minimap frame 340 px =
+## 1.2 x. MinimapScale also scales everything docked to the minimap (ally team frames, enemy respawn timers); header,
+## scoreboard and the other IgnoreGlobalScale elements stay at 1.0.
 
 const LAYOUT_PATH := "res://assets/ui/hud/layout.json"
 const FONTS_PATH := "res://assets/ui/hud/fonts.json"
 const TEX_DIR := "res://assets/ui/hud/tex/"
-const MIN_GLOBAL_SCALE := 0.65
+const MIN_GLOBAL_SCALE := 0.66
 const FONT_DEFAULT_SCREEN_H := 1080.0   ## FontResolution.screenHeight default
+## [hud-ref] League's GameFontDescription sizes are typographic points: on the real frames every HUD number / label measures
+## 1.2-1.3x the size value in pixels (HP text, stats, header, BACK IN countdown), i.e. the usual 96/72.
+const FONT_PX_K := 1.3
 
-## League settings (game.cfg [HUD]); defaults match the player's own League config (GlobalScale=0.6).
-static var global_scale_setting := 0.6
-static var minimap_scale_setting := 1.0
+## League settings (game.cfg [HUD]); [hud-ref] defaults reproduce the real live frames (GlobalScale slider at its
+## minimum, MinimapScale 1.2). Both are overridable from G.settings via the HUD (hud_scale / minimap_scale).
+static var global_scale_setting := 0.0
+static var minimap_scale_setting := 1.2
 
 static var _data := {}
 static var _fonts := {}
@@ -31,6 +39,7 @@ static var _font_files := {}
 var vs := Vector2(1280, 720)
 var hud_scale := 1.0
 var mm_scale := 1.0
+var font_k := FONT_PX_K   ## [hud-ref] point -> px factor for League font sizes (the item shop keeps its tuned 1.0)
 var _rc := {}           ## key -> Rect2 (offset-free rects, rebuilt when the viewport / scale changes)
 var _fx := {}           ## key -> {t, uv Rect2, n, per_row, fps, rc}
 
@@ -89,12 +98,30 @@ func e(key: String) -> Dictionary:
 ## Scale factor (screen px per source px) of an element.
 func scale_of(el: Dictionary) -> float:
 	var src: Array = el.get("src", [1600, 1200])
-	return vs.y / float(src[1]) * (1.0 if el.has("g") else hud_scale)
+	return vs.y / float(src[1]) * (_docked_scale(el) if el.has("g") else hud_scale)
+
+
+## IgnoreGlobalScale elements anchored to the bottom-right corner (minimap, ally team frames, enemy respawn timers)
+## follow MinimapScale; every other IgnoreGlobalScale element stays at 1.
+func _docked_scale(el: Dictionary) -> float:
+	var a: Array = el.get("a", [0.5, 0.5])
+	return mm_scale if float(a[0]) >= 1.0 and float(a[1]) >= 1.0 else 1.0
 
 
 ## Global scale for the 1600x1200 HUD space.
 func s() -> float:
 	return vs.y / 1200.0 * hud_scale
+
+
+## Scale of IgnoreGlobalScale elements (scoreboard, item shop, header): independent of the HUD slider.
+func gs() -> float:
+	return vs.y / 1200.0
+
+
+## [hud-ref] Content scale of the item shop's hand-laid grids / buttons (they were tuned at the old HUD scale 0.86 against the
+## shop frame, which is an IgnoreGlobalScale element).
+func shop_s() -> float:
+	return vs.y / 1200.0 * 0.86
 
 
 ## Screen rect of an element; `off` is an offset in source pixels, `grow` extra size in source px.
@@ -340,7 +367,7 @@ static func _c8(a, fallback: Color) -> Color:
 ## {font, color, shadow (Color, a=0 none), sh (Vector2 shadow offset, px), outline (Color), ol (int px), px (int)}
 ## `size_px` is the style's font size in League's reference resolution, already converted to screen px.
 func style(fd: String, scale := 1.0) -> Dictionary:
-	var ck := "%s|%d|%d" % [fd, int(vs.y), int(scale * 1000.0)]
+	var ck := "%s|%d|%d|%d" % [fd, int(vs.y), int(scale * 1000.0), int(font_k * 100.0)]
 	var c = _style_cache.get(ck)
 	if c != null:
 		return c
@@ -378,7 +405,7 @@ func style(fd: String, scale := 1.0) -> Dictionary:
 		"sh": (sh * maxf(1.0, k)).round(),
 		"outline": _c8(d.get("outline"), Color(0, 0, 0, 0.9)),
 		"ol": int(round(ol * 2.0 * maxf(1.0, k))) if ol > 0.0 else 0,
-		"px": maxi(8, int(round(fs * k))) if fs > 0.0 else 0,
+		"px": maxi(8, int(round(fs * k * font_k))) if fs > 0.0 else 0,
 		"k": k,
 	}
 	_style_cache[ck] = st
@@ -393,7 +420,7 @@ func ltext(ci: CanvasItem, key: String, s_txt: String, col := Color(0, 0, 0, 0),
 	if el.is_empty() or not el.has("p"):
 		return Rect2()
 	var rc := r(key, off)
-	var sc := (1.0 if el.has("g") else hud_scale)
+	var sc := (_docked_scale(el) if el.has("g") else hud_scale)
 	var st := style(String(el.get("fd", "HUD_Default")), sc)
 	var px: int = st.px
 	if px <= 0 or px_src > 0.0:
@@ -463,7 +490,7 @@ func text(ci: CanvasItem, key: String, s_txt: String, font: Font, size: float, c
 	var ha: int = halign if halign >= 0 else int(el.get("ha", 0))
 	if el.has("fd"):
 		# the element has a League font style: its typeface, size and shadow win; the caller's colour is kept
-		var st := style(String(el.fd), 1.0 if el.has("g") else hud_scale)
+		var st := style(String(el.fd), _docked_scale(el) if el.has("g") else hud_scale)
 		var spx: int = st.px if int(st.px) > 0 else maxi(9, int(round(size * scale_of(el))))
 		styled_in(ci, rc, s_txt, st, spx, col, ha)
 		return rc

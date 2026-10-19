@@ -33,7 +33,7 @@ const TICK_COL := Color(0.0, 0.0, 0.0, 0.85)
 const MICRO_COL := Color(0.0, 0.0, 0.0, 0.7)
 const NAME_OUTLINE := Color(0, 0, 0, 0.85)
 const LEVEL_UP_FX := ["LevelUp_glb", "LevelUp", "Global_LevelUp", "LevelUp_Global", "Jade_LevelUp", "Global_Levelup"]
-const CC_MASK := Buff.CC.STUN | Buff.CC.AIRBORNE | Buff.CC.SUPPRESS | Buff.CC.CHARM | Buff.CC.FEAR | Buff.CC.TAUNT | Buff.CC.SLEEP
+const CC_MASK := Buff.CC.STUN | Buff.CC.ROOT | Buff.CC.AIRBORNE | Buff.CC.SUPPRESS | Buff.CC.CHARM | Buff.CC.FEAR | Buff.CC.TAUNT | Buff.CC.SLEEP
 const DEFAULT_HBH := 100.0           ## CharacterRecord.healthBarHeight class default (lol-meta-classes)
 
 ## One League FHB element, pre-placed relative to its bar's anchor at our canvas scale.
@@ -168,6 +168,11 @@ var _c_par_tex := {}                 ## resource kind -> El
 var _c_level: El
 var _c_name: El
 var _c_status: El
+var _c_status_icon: El               ## [hud-ref] CC icon left of the status text (healthbaricons atlas)
+var _status_icons: Texture2D = null
+## [hud-ref] rows (y0, y1) of the 32 px wide icons in assets/ux/floatinghealthbars/healthbaricons.tex
+const STATUS_ICON_ROWS := {"silence": [9, 32], "disarm": [58, 80], "airborne": [105, 128], "blind": [129, 151], "charm": [153, 175],
+	"fear": [181, 197], "root": [200, 223], "stun": [225, 246], "suppress": [250, 271], "taunt": [321, 343], "sleep": [377, 401]}
 var _c_status_bar: El
 var _c_death: Array[El] = []         ## Blue (ally/self), Red (enemy)
 var _m_border: Array[El] = []        ## Small, Med
@@ -206,6 +211,7 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	ft = FloatingTextSystem.new()
 	atlas = load("res://assets/ui/world/fhb_atlas.png")
+	_status_icons = load("res://assets/ui/world/fhb_status_icons.png")
 	var lp := "res://assets/ui/world/fhb_layout.json"
 	if FileAccess.file_exists(lp):
 		L = JSON.parse_string(FileAccess.get_file_as_string(lp))
@@ -337,6 +343,7 @@ func _build_layout() -> void:
 	_c_level = _el("ChampFHB_Text_Level", A)
 	_c_name = _el("ChampFHB_Text_Name", A)
 	_c_status = _el("ChampFHB_Text_Status", A)
+	_c_status_icon = _el("ChampFHB_Icon_Status", A)
 	_c_status_bar = _el("ChampFHB_BarTextureStatus", A)
 	_c_death = [_el("ChampFHB_DeathBlue", A), _el("ChampFHB_DeathRed", A)]
 	for sz in ["Small", "Med"]:
@@ -718,6 +725,14 @@ func _draw_champion_bar(u, b: BarState, sp: Vector2, my_team: int, dt: float, ho
 	if cc_frac >= 0.0:
 		var cl := _cc_line(_cc_name(u.cc))
 		var srr := _c_status.at(sp)
+		var ik: String = _cc_icon_key(u.cc)
+		if _status_icons != null and _c_status_icon.ok and STATUS_ICON_ROWS.has(ik):
+			var row: Array = STATUS_ICON_ROWS[ik]
+			var ir := _c_status_icon.at(sp)
+			var hh: float = row[1] - row[0]
+			var sc := minf(ir.size.x / 32.0, ir.size.y / hh) * 1.3   # the real frames draw the icon about text-cap height
+			var isz := Vector2(32.0, hh) * sc
+			draw_texture_rect_region(_status_icons, Rect2((ir.get_center() - isz * 0.5).round(), isz), Rect2(0, row[0], 32, hh))
 		var cp := Vector2(srr.position.x, roundf(srr.end.y - 1.0 - cl.get_line_ascent()))
 		cl.draw_outline(_ci, cp, 3, Color(0, 0, 0, 0.9))
 		cl.draw(_ci, cp, Color.WHITE)
@@ -789,7 +804,7 @@ func _prewarm_names() -> void:
 		b.name_line.add_string(b.name_str, font_name, _name_fs)
 		b.name_line.draw_outline(_ci, Vector2(-4000, -4000), 3, NAME_OUTLINE)
 		b.name_line.draw(_ci, Vector2(-4000, -4000))
-	for t in ["STUNNED", "AIRBORNE", "SUPPRESSED", "CHARMED", "FEARED", "TAUNTED", "ASLEEP"]:
+	for t in ["STUNNED", "ROOTED", "AIRBORNE", "SUPPRESSED", "CHARMED", "FEARED", "TAUNTED", "ASLEEP"]:
 		var cl := _cc_line(t)
 		cl.draw_outline(_ci, Vector2(-4000, -4000), 3, Color.BLACK)
 		cl.draw(_ci, Vector2(-4000, -4000))
@@ -802,6 +817,14 @@ func _cc_line(t: String) -> TextLine:
 		tl.add_string(t, font_level, maxi(int(round(13.0 * REF_SCALE * 1.1)), 9))   # fits the 13 px Text_Status slot
 		_cc_lines[t] = tl
 	return tl
+
+
+func _cc_icon_key(c: int) -> String:
+	for k in [[Buff.CC.SUPPRESS, "suppress"], [Buff.CC.STUN, "stun"], [Buff.CC.AIRBORNE, "airborne"], [Buff.CC.CHARM, "charm"],
+			[Buff.CC.FEAR, "fear"], [Buff.CC.TAUNT, "taunt"], [Buff.CC.SLEEP, "sleep"], [Buff.CC.ROOT, "root"]]:
+		if c & int(k[0]):
+			return k[1]
+	return ""
 
 
 func _cc_name(c: int) -> String:
@@ -819,6 +842,8 @@ func _cc_name(c: int) -> String:
 		return "TAUNTED"
 	if c & Buff.CC.SLEEP:
 		return "ASLEEP"
+	if c & Buff.CC.ROOT:
+		return "ROOTED"
 	return ""
 
 

@@ -35,12 +35,25 @@ const STYLE := {
 }
 
 static var _re_tag: RegEx = null
+static var _re_fcol: RegEx = null
 
 
 static func _tag_re() -> RegEx:
 	if _re_tag == null:
-		_re_tag = RegEx.create_from_string("<(/?)([A-Za-z0-9_]+)\\s*/?>")
+		# [hud-ref] tags may carry attributes: <font color = '#FF0000'>, <br/>, <li>
+		_re_tag = RegEx.create_from_string("<(/?)([A-Za-z0-9_]+)([^<>]*?)/?>")
 	return _re_tag
+
+
+## Colour of a <font color='#RRGGBB'> tag (quotes optional, spaces around "=" allowed); Color(0,0,0,0) when absent.
+static func _font_color(attrs: String) -> Color:
+	if _re_fcol == null:
+		_re_fcol = RegEx.create_from_string("(?i)color\\s*=\\s*[\"']?\\s*(#?[0-9a-f]{6,8})")
+	var m := _re_fcol.search(attrs)
+	if m == null:
+		return Color(0, 0, 0, 0)
+	var h := m.get_string(1)
+	return Color.html(h if h.begins_with("#") else "#" + h)
 
 
 ## Markup -> plain text (paragraph breaks kept as "\n").
@@ -74,11 +87,12 @@ static func paragraphs(markup: String, base_col := C_BODY, base_bold := false) -
 				out.append(cur)
 				cur = [["• ", base_col, false]]
 		elif closing:
-			var i := stack.rfind(name)
-			if i >= 0:
-				stack.remove_at(i)
+			for i in range(stack.size() - 1, -1, -1):
+				if stack[i][0] == name:
+					stack.remove_at(i)
+					break
 		else:
-			stack.append(name)
+			stack.append([name, _font_color(m.get_string(3)) if name == "font" else Color(0, 0, 0, 0)])
 	var tail := markup.substr(pos)
 	if tail != "":
 		cur.append(_span(tail, stack, base_col, base_bold))
@@ -90,13 +104,17 @@ static func _span(txt: String, stack: Array, base_col: Color, base_bold: bool) -
 	var col := base_col
 	var bold := base_bold
 	for i in range(stack.size() - 1, -1, -1):
-		var st = STYLE.get(stack[i])
+		var fc: Color = stack[i][1]
+		if fc.a > 0.0:
+			col = fc
+			break
+		var st = STYLE.get(stack[i][0])
 		if st != null:
 			col = st[0]
 			bold = bold or st[1]
 			break
 	for tg in stack:
-		var st2 = STYLE.get(tg)
+		var st2 = STYLE.get(tg[0])
 		if st2 != null and st2[1]:
 			bold = true
 	return [txt.replace("&nbsp;", " "), col, bold]

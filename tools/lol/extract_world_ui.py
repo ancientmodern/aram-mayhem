@@ -98,6 +98,8 @@ for v in fib.values():
     layout[short.split("/")[-1]] = e
 json.dump(layout, open(os.path.join(OUT, "fhb_layout.json"), "w"), indent=1, sort_keys=True)
 print("fhb elements", len(layout), "atlas", save_tex(ui, 0x37b03fb998093e20, "fhb_atlas.png"))
+# [hud-ref] status icons next to the CC text (assets/ux/floatinghealthbars/healthbaricons.tex, 32x512, 18 icons ~24 px apart)
+save_tex(ui, 0x4529486963fbc8a5, "fhb_status_icons.png")
 for key, name in DEATH_TEX.items():
     print(name, save_tex(ui, int(key[5:], 16), name))
 

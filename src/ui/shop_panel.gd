@@ -76,6 +76,7 @@ var _was_visible := false
 
 
 func _ready() -> void:
+	L.font_k = 1.0   # [hud-ref] the shop layout was tuned with League font sizes taken as plain px
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	f_title = Assets.font("beaufort", "Bold")
@@ -620,9 +621,9 @@ func _draw_recommended(c) -> void:
 		L.text(self, CE + "BriefText", ItemDB.brief(id), f_body, 13, C_DIM, 1, off, 0.0)
 		_hits.append([slot, "rec_item", id])   # [ui-fix] before the component cells: hits are searched last-first, so the small component icons win
 		var comps := ItemDB.components_of(id)
-		var cx := slot.get_center().x - (comps.size() * 40.0 * L.s()) * 0.5
+		var cx := slot.get_center().x - (comps.size() * 40.0 * L.shop_s()) * 0.5
 		for ci in comps.size():
-			var r := Rect2(cx + ci * 40.0 * L.s(), slot.position.y + 395.0 * L.s(), 34.0 * L.s(), 34.0 * L.s())
+			var r := Rect2(cx + ci * 40.0 * L.shop_s(), slot.position.y + 395.0 * L.shop_s(), 34.0 * L.shop_s(), 34.0 * L.shop_s())
 			_item_cell_small(r, comps[ci])
 		_hover(id, slot)
 	if cards.is_empty():
@@ -635,7 +636,7 @@ func _draw_recommended(c) -> void:
 		_item_cell(r, cb[i], false)
 		if i < cb.size() - 1:
 			var y := r.get_center().y
-			draw_line(Vector2(r.end.x + 3, y), Vector2(r.end.x + 13.0 * L.s(), y), C_GOLD * Color(1, 1, 1, 0.6), 1.0)
+			draw_line(Vector2(r.end.x + 3, y), Vector2(r.end.x + 13.0 * L.shop_s(), y), C_GOLD * Color(1, 1, 1, 0.6), 1.0)
 
 
 # --------------------------------------------------------------------- all items tab
@@ -648,7 +649,7 @@ func _draw_filters() -> void:
 			continue
 		var on := type_filter == i
 		var r := L.r(key)
-		var hit := Rect2(r.get_center() - Vector2(20, 18) * L.s(), Vector2(40, 36) * L.s())
+		var hit := Rect2(r.get_center() - Vector2(20, 18) * L.shop_s(), Vector2(40, 36) * L.shop_s())
 		var active := on and (i != 0 or (type_filter == 0 and stat_filter < 0 and not popular_only))
 		L.draw(self, key, C_GOLD if active else (C_TEXT if hit.has_point(_mouse) else C_DIM))
 		if active:
@@ -686,7 +687,7 @@ func _draw_all_items(c) -> void:
 		var r := L.r(dk)
 		if r.size.x <= 0.0:
 			continue
-		var hit := Rect2(r.get_center() - Vector2(17, 15) * L.s(), Vector2(34, 30) * L.s())
+		var hit := Rect2(r.get_center() - Vector2(17, 15) * L.shop_s(), Vector2(34, 30) * L.shop_s())
 		var on := stat_filter == i
 		if on:
 			L.draw_in(self, F + _stat_key(sk, "SelectionHighlight"), hit)
@@ -695,7 +696,7 @@ func _draw_all_items(c) -> void:
 		if hit.has_point(_mouse):
 			_tip_text(ItemDB.STAT_FILTERS[i][1], hit)
 	# tiered grid
-	var area := Rect2(L.pt(F + "ItemShop_AllItems_HeaderText", Vector2(343, 350)), Vector2(565, 535) * L.s())
+	var area := Rect2(L.pt(F + "ItemShop_AllItems_HeaderText", Vector2(343, 350)), Vector2(565, 535) * L.shop_s())
 	var items := _all_items()
 	var groups := {}
 	for id in items:
@@ -703,7 +704,7 @@ func _draw_all_items(c) -> void:
 		if not groups.has(t):
 			groups[t] = []
 		groups[t].append(id)
-	var s := L.s()
+	var s := L.shop_s()
 	var cols := maxi(1, int(area.size.x / (CELL_PITCH.x * s)))
 	var y: float = area.position.y - scroll["all"] * s
 	var y0 := y
@@ -737,7 +738,7 @@ func _draw_all_items(c) -> void:
 
 
 func _scrollbar(key: String, area: Rect2) -> void:
-	var s := L.s()
+	var s := L.shop_s()
 	if _scroll_max[key] <= 0.0:
 		return
 	var track := Rect2(area.end.x + 2 * s, area.position.y, 6 * s, area.size.y)
@@ -796,8 +797,8 @@ func _draw_sets(c) -> void:
 	draw_rect(cb, C_LINE, false, 1.0)
 	L.text(self, F + "ItemSets_ComboBox_ButtonText", "%s  -  Recommended" % c.display_name, f_body, 14, C_TEXT, 0, Vector2.ZERO, 0.0)
 	L.draw(self, F + "ItemShop_ItemSets_Keyline")
-	var area := Rect2(L.pt(F + "ItemShop_ItemSets_HeaderText", Vector2(342, 350)), Vector2(597, 538) * L.s())
-	var s := L.s()
+	var area := Rect2(L.pt(F + "ItemShop_ItemSets_HeaderText", Vector2(342, 350)), Vector2(597, 538) * L.shop_s())
+	var s := L.shop_s()
 	var y: float = area.position.y - scroll["sets"] * s
 	var y0 := y
 	for blk in _set_blocks(c):
@@ -825,7 +826,7 @@ func _draw_search_view(c) -> void:
 	draw_rect(L.r(F + "ItemShop_SearchDimBackdrop"), Color(0, 0, 0, 0.55))
 	var bd := L.draw(self, F + "ItemShop_SearchMenu_Backdrop")
 	_hits.append([bd, "search_bg", 0])
-	var s := L.s()
+	var s := L.shop_s()
 	var res := _search_results()
 	var area := L.r(F + "ItemShop_SearchView_ItemRegion")
 	L.text(self, F + "ItemShop_SearchView_Rec_Label", "%d RESULTS" % res.size() if not res.is_empty() else "NO RESULTS", f_title, 13, C_GOLD, 0, Vector2.ZERO, 0.0)
@@ -899,22 +900,22 @@ func _item_cell(r: Rect2, id: int, with_cost: bool) -> void:
 	var sel := selected == id and selected_owned == null
 	var T := SH + "ItemShop_ItemPageTemplate_Item_"
 	if sel:
-		L.draw_in(self, T + "SelectedMajor", Rect2(r.position - Vector2(4, 5) * L.s(), Vector2(52, 74) * L.s()))
+		L.draw_in(self, T + "SelectedMajor", Rect2(r.position - Vector2(4, 5) * L.shop_s(), Vector2(52, 74) * L.shop_s()))
 	elif hov:
-		L.draw_in(self, T + "HoverMajor", Rect2(r.position - Vector2(4, 5) * L.s(), Vector2(52, 74) * L.s()), Color(1, 1, 1, 0.7))
+		L.draw_in(self, T + "HoverMajor", Rect2(r.position - Vector2(4, 5) * L.shop_s(), Vector2(52, 74) * L.shop_s()), Color(1, 1, 1, 0.7))
 	var icon := _item_icon(id)
-	var ir := r.grow(-2.0 * L.s())
+	var ir := r.grow(-2.0 * L.shop_s())
 	if icon != null:
 		draw_texture_rect(icon, ir, false, Color.WHITE if afford or owned else Color(0.48, 0.48, 0.5))
 	L.draw_in(self, T + ("FrameHover" if hov or sel else "Frame"), r)
 	if owned:
-		L.draw_in(self, T + "Purchased", Rect2(r.get_center() - Vector2(13, 10.5) * L.s(), Vector2(26, 21) * L.s()))
+		L.draw_in(self, T + "Purchased", Rect2(r.get_center() - Vector2(13, 10.5) * L.shop_s(), Vector2(26, 21) * L.shop_s()))
 	var reason := ItemDB.buy_block_reason(c, id)
 	if reason == "unique" or reason == "level":
-		L.draw_in(self, T + "Locked", Rect2(r.get_center() - Vector2(11, 11) * L.s(), Vector2(22, 22) * L.s()), Color(1, 1, 1, 0.9))
+		L.draw_in(self, T + "Locked", Rect2(r.get_center() - Vector2(11, 11) * L.shop_s(), Vector2(22, 22) * L.shop_s()), Color(1, 1, 1, 0.9))
 	if with_cost:
-		var cr := Rect2(r.position.x - 6 * L.s(), r.end.y + 2 * L.s(), r.size.x + 12 * L.s(), 14 * L.s())
-		HudLayout.text_in(self, cr, str(price), f_bold, maxi(10, int(13 * L.s())), C_GOLD_TXT if afford else C_GOLD_POOR, 1, 0.0)
+		var cr := Rect2(r.position.x - 6 * L.shop_s(), r.end.y + 2 * L.shop_s(), r.size.x + 12 * L.shop_s(), 14 * L.shop_s())
+		HudLayout.text_in(self, cr, str(price), f_bold, maxi(10, int(13 * L.shop_s())), C_GOLD_TXT if afford else C_GOLD_POOR, 1, 0.0)
 	_hits.append([r.grow(3.0), "item", id])
 	_hover(id, r)
 
@@ -930,7 +931,7 @@ func _item_cell_small(r: Rect2, id: int) -> void:
 
 
 func _gold_amount(r: Rect2, amount: int, size_src: float, col: Color, align := 1) -> void:
-	var px := maxi(10, int(size_src * L.s()))
+	var px := maxi(10, int(size_src * L.shop_s()))
 	var s := str(amount)
 	var w := f_bold.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
 	var coin := Vector2(px * 0.95, px * 0.85)
@@ -974,7 +975,7 @@ func _draw_side_panels(c) -> void:
 					if i < ids.size():
 						_draw_slot(r, ids[i], null, k)
 			# the tab is still clickable (folds the panel)
-			var fold := Rect2(L.r(SH + p[1] + "_ExpandedRegion").end.x - 18 * L.s(), L.r(SH + p[1] + "_ExpandedRegion").position.y, 26 * L.s(), L.r(SH + p[1] + "_ExpandedRegion").size.y)
+			var fold := Rect2(L.r(SH + p[1] + "_ExpandedRegion").end.x - 18 * L.shop_s(), L.r(SH + p[1] + "_ExpandedRegion").position.y, 26 * L.shop_s(), L.r(SH + p[1] + "_ExpandedRegion").size.y)
 			_hits.append([fold, "panel_tab", k])
 		else:
 			var hov := tab_r.has_point(_mouse)
@@ -1002,7 +1003,7 @@ func _draw_slot(r: Rect2, id: int, owned_item, panel_key: String) -> void:
 	if owned_item != null:
 		var st = owned_item.get("stacks")
 		if st != null and int(st) > 1 or (st != null and ItemDB.max_stack(id) > 1):
-			HudLayout.text_in(self, Rect2(r.end - Vector2(18, 14) * L.s(), Vector2(16, 12) * L.s()), str(int(st)), f_bold, maxi(9, int(11 * L.s())), C_TEXT, 2, 2.0)
+			HudLayout.text_in(self, Rect2(r.end - Vector2(18, 14) * L.shop_s(), Vector2(16, 12) * L.shop_s()), str(int(st)), f_bold, maxi(9, int(11 * L.shop_s())), C_TEXT, 2, 2.0)
 		_hits.append([r, "inv_item", owned_item])
 		_hover(id, r, owned_item)
 	else:
@@ -1039,7 +1040,7 @@ func _draw_build_panel(c) -> void:
 
 
 func _draw_droplist(c, ids: Array) -> void:
-	var s := L.s()
+	var s := L.shop_s()
 	var bd := L.r(SH + "ItemShop_BuildsInto_Droplist_Backdrop")
 	var row_h := 60.0 * s
 	var rect := Rect2(bd.position, Vector2(bd.size.x, maxf(bd.size.y, 14 * s + row_h * ids.size())))
@@ -1063,7 +1064,7 @@ func _draw_droplist(c, ids: Array) -> void:
 
 ## Build tree: selected item on top, recipe components below (duplicates shown once per slot), owned parts ticked.
 func _draw_tree(c) -> void:
-	var s := L.s()
+	var s := L.shop_s()
 	var tree_top := L.pt(SH + "ItemShop_KeyLine_ItemDetailsTop", Vector2(1131, 306))
 	var node := Vector2(40, 40) * s
 	var root_r := Rect2(tree_top - Vector2(node.x * 0.5, 0), node)
@@ -1077,7 +1078,7 @@ func _draw_tree(c) -> void:
 
 
 func _tree_children(parent_r: Rect2, comps: Array, cx: float, span: float, consumed: Array, depth: int, node: Vector2) -> void:
-	var s := L.s()
+	var s := L.shop_s()
 	var n := comps.size()
 	var line_col := C_LINE
 	var gap := 52.0 * s if depth == 1 else 46.0 * s
@@ -1120,18 +1121,18 @@ func _tree_node(r: Rect2, id: int, root: bool, consumed: Array, depth: int) -> v
 		draw_texture_rect(icon, r, false, Color.WHITE if owned or c.gold >= price else Color(0.55, 0.55, 0.58))
 	if owned:
 		draw_rect(r.grow(1.0), C_TEAL, false, 2.0)
-		L.draw_in(self, SH + "ItemShop_ItemPageTemplate_Item_Purchased", Rect2(r.get_center() - Vector2(13, 10.5) * L.s(), Vector2(26, 21) * L.s()))
+		L.draw_in(self, SH + "ItemShop_ItemPageTemplate_Item_Purchased", Rect2(r.get_center() - Vector2(13, 10.5) * L.shop_s(), Vector2(26, 21) * L.shop_s()))
 	else:
-		L.draw_in(self, SH + "ItemShop_ItemPageTemplate_Item_" + ("FrameHover" if hov or selected == id else "Frame"), r.grow(2.0 * L.s()))
-	var cr := Rect2(r.position.x - 10 * L.s(), r.end.y + 1 * L.s(), r.size.x + 20 * L.s(), 13 * L.s())
+		L.draw_in(self, SH + "ItemShop_ItemPageTemplate_Item_" + ("FrameHover" if hov or selected == id else "Frame"), r.grow(2.0 * L.shop_s()))
+	var cr := Rect2(r.position.x - 10 * L.shop_s(), r.end.y + 1 * L.shop_s(), r.size.x + 20 * L.shop_s(), 13 * L.shop_s())
 	var label := "Owned" if owned else str(price)
-	HudLayout.text_in(self, cr, label, f_bold, maxi(10, int(12 * L.s())), C_TEAL if owned else (C_GOLD_TXT if c.gold >= price else C_GOLD_POOR), 1, 0.0)
+	HudLayout.text_in(self, cr, label, f_bold, maxi(10, int(12 * L.shop_s())), C_TEAL if owned else (C_GOLD_TXT if c.gold >= price else C_GOLD_POOR), 1, 0.0)
 	_hits.append([r, "item", id])   # [ui-fix] the tree root is clickable too (double-click / right-click buys it)
 	_hover(id, r)
 
 
 func _draw_purchase_and_details(c) -> void:
-	var s := L.s()
+	var s := L.shop_s()
 	var st := session.button_state(c, selected)
 	var br := L.r(SH + "ItemShop_PurchaseButton_Default")
 	var hov := br.has_point(_mouse)
@@ -1192,21 +1193,21 @@ func _draw_footer(c) -> void:
 	_hits.append([ur, "undo", 0])
 	L.draw(self, SH + "ItemShop_Footer_GoldIcon")
 	L.text(self, SH + "ItemShop_Footer_GoldText", str(int(c.gold)), f_bold, 18, C_GOLD_TXT, 0, Vector2(0, 2), 0.0)
-	var info := Rect2(L.pt(SH + "ItemShop_Footer_GoldText", Vector2(660, 900)), Vector2(250, 34) * L.s())
+	var info := Rect2(L.pt(SH + "ItemShop_Footer_GoldText", Vector2(660, 900)), Vector2(250, 34) * L.shop_s())
 	if not c.can_shop():
 		_draw_lock(info)
 	if msg_t > 0.0:
 		var a := minf(1.0, msg_t * 2.0)
-		var mr := Rect2(L.pt(SH + "ItemShop_Footer_GoldText", Vector2(940, 900)), Vector2(382, 34) * L.s())
-		HudLayout.text_in(self, mr, msg, f_bold, maxi(11, int(14 * L.s())), Color(C_RED.r, C_RED.g, C_RED.b, a), 1, 2.0)
-	var hint := Rect2(L.pt(SH + "ItemShop_Footer_GoldText", Vector2(660, 930)), Vector2(250, 20) * L.s())
-	HudLayout.text_in(self, hint, "Right-click or double-click to buy  |  Ctrl+Z undo  |  Ctrl+L search", f_body, maxi(9, int(11 * L.s())), Color(0.5, 0.5, 0.48), 0, 0.0)
+		var mr := Rect2(L.pt(SH + "ItemShop_Footer_GoldText", Vector2(940, 900)), Vector2(382, 34) * L.shop_s())
+		HudLayout.text_in(self, mr, msg, f_bold, maxi(11, int(14 * L.shop_s())), Color(C_RED.r, C_RED.g, C_RED.b, a), 1, 2.0)
+	var hint := Rect2(L.pt(SH + "ItemShop_Footer_GoldText", Vector2(660, 930)), Vector2(250, 20) * L.shop_s())
+	HudLayout.text_in(self, hint, "Right-click or double-click to buy  |  Ctrl+Z undo  |  Ctrl+L search", f_body, maxi(9, int(11 * L.shop_s())), Color(0.5, 0.5, 0.48), 0, 0.0)
 
 
 func _draw_lock(r: Rect2) -> void:
-	var px := maxi(10, int(13 * L.s()))
-	HudLayout.region(self, "itemshop_texture_atlas", Rect2(38, 2, 68, 68), Rect2(r.position + Vector2(0, (r.size.y - 22 * L.s()) * 0.5), Vector2(22, 22) * L.s()))
-	HudLayout.text_in(self, Rect2(r.position + Vector2(26 * L.s(), 0), r.size), "Shopping only while dead or in base", f_bold, px, C_RED, 0, 0.0)
+	var px := maxi(10, int(13 * L.shop_s()))
+	HudLayout.region(self, "itemshop_texture_atlas", Rect2(38, 2, 68, 68), Rect2(r.position + Vector2(0, (r.size.y - 22 * L.shop_s()) * 0.5), Vector2(22, 22) * L.shop_s()))
+	HudLayout.text_in(self, Rect2(r.position + Vector2(26 * L.shop_s(), 0), r.size), "Shopping only while dead or in base", f_bold, px, C_RED, 0, 0.0)
 
 
 # --------------------------------------------------------------------- sell overlay (dragging an inventory item onto the shop)

@@ -49,7 +49,7 @@ func draw(ci: CanvasItem, L: HudLayout) -> void:
 	var t: float = m.time
 	var tr := L.r(S + "SB_TeamKills_Icon1", Vector2(0, -24))
 	HudLayout.text_in(ci, Rect2(tr.position.x - 40, tr.position.y, tr.size.x + 80, tr.size.y), "%02d:%02d" % [int(t / 60.0), int(t) % 60],
-		f_num, maxi(10, int(14 * L.s())), C_DIM, 1, 2.0)
+		f_num, maxi(10, int(14 * L.gs())), C_DIM, 1, 2.0)
 	for side in 2:
 		var team: int = my if side == 0 else 1 - my
 		var i := 0

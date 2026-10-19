@@ -15,6 +15,7 @@ extends Control
 signal open_shop
 signal open_augments
 
+const SP := "Spectate:"
 const PF := "PlayerFrame:"
 const INV := "Inventory:"
 const C_TEXT := Color(0.941, 0.902, 0.824)
@@ -28,7 +29,9 @@ const ITEM_KEYS := ["1", "2", "3", "4", "5", "6"]
 const MM_MIN := Vector2(-28.0, -19.0)
 const MM_MAX := Vector2(12849.0, 12858.0)
 const ANN_TIME := 3.2
-const ANN_K := 1.45                  ## [ui-polish] announcement banner scale
+const ANN_K := 1.89                  ## [ui-polish] announcement banner scale ([hud-ref] retuned 1.45 -> 1.89 for the smaller HUD scale)
+const TEAM_FRAME_PITCH := 72.0       ## [hud-ref] ally frame spacing in source px (TeamFrameLayoutRegion fits 5 frames in 363 px)
+static var _grey_icons := {}         ## champion alias -> desaturated square icon (dead ally frames)
 const SLOT_KEYS := ["Q", "W", "E", "R", "D", "F"]
 
 
@@ -107,6 +110,7 @@ var _drag := {}                      ## inventory drag {slot, start, active}
 var _fx_was_active := false
 var _vis_buffs: Array = []
 var _vis_buffs_frame := -1
+var spectating = null                ## ally the dead player watches (BACK IN portraits)
 
 var cv_mm: Canvas
 var cv_base: Canvas
@@ -118,6 +122,7 @@ var cv_levelup: Canvas
 var cv_buffs: Canvas
 var cv_target: Canvas
 var cv_feed: Canvas
+var cv_dead: Canvas                ## [hud-ref] BACK IN countdown + teammate spectate portraits while dead
 var cv_fx: Canvas
 var cv_fxadd: Canvas               ## additive flipbooks (League UI effects are additive)
 var cv_top: Canvas
@@ -158,6 +163,7 @@ func _ready() -> void:
 	cv_buffs = _layer(_draw_buffs, "Buffs")
 	cv_target = _layer(target_frame.draw, "Target")
 	cv_feed = _layer(_draw_feed, "Feed")
+	cv_dead = _layer(_draw_dead, "Dead")
 	cv_fxadd = _layer(_draw_fx_add, "FxAdd")
 	var add_mat := CanvasItemMaterial.new()
 	add_mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
@@ -217,6 +223,8 @@ func _process_frame(delta: float) -> void:
 		for c in _layers:
 			c.sig = null
 			c.queue_redraw()
+	if spectating != null and (not champ.dead or not is_instance_valid(spectating) or spectating.dead):
+		_set_spectate(null)
 	fail_t = maxf(0.0, fail_t - delta)
 	_level_flash = maxf(0.0, _level_flash - delta)
 	if champ.level != _last_level:
@@ -263,6 +271,7 @@ func _schedule() -> void:
 	_maybe(cv_buffs, 1.0 / 15.0, _sig_buffs)
 	_maybe(cv_target, 1.0 / 15.0, target_frame.sig)
 	_maybe(cv_feed, 1.0 / 30.0, _sig_feed)
+	_maybe(cv_dead, 0.1, _sig_dead)
 	var fx_active := _fx_active()
 	if fx_active or _fx_was_active:
 		_redraw(cv_fx)
@@ -431,6 +440,12 @@ func _gui_input(event: InputEvent) -> void:
 					Sfx.ui("locked")
 			elif hk == "shop":
 				toggle_shop()
+			elif hk.begins_with("spec:"):
+				_set_spectate(_ally_by_uid(int(hk.substr(5))))
+				Sfx.ui("gold_click")
+			elif hk == "spec_exit":
+				_set_spectate(null)
+				Sfx.ui("gold_click")
 			elif hk == "stats_btn":
 				advanced_stats = not advanced_stats
 				hud_sfx("Play_sfx_hud_base_champ_stats_open" if advanced_stats else "Play_sfx_hud_base_champ_stats_close", -8.0)
@@ -546,6 +561,8 @@ func _build_tip(k: String) -> Dictionary:
 			else "You are in base: you can buy items now.")
 	if k.begins_with("stat:"):
 		return HudTooltip.simple(k.substr(5), "")
+	if k == "spec_exit":
+		return HudTooltip.simple("Return to your champion", "")
 	if k.begins_with("ally:"):
 		var c = _ally_by_uid(int(k.substr(5)))
 		if c != null:
@@ -724,36 +741,122 @@ func _draw_header(ci: Canvas) -> void:
 		HudLayout.styled_in(ci, Rect2(size.x - w - 10.0, fr.end.y + fr.size.y * 0.4, w, px), s, st, px, Color(0.8, 0.8, 0.8), 0)
 
 
+func _set_spectate(ally) -> void:
+	spectating = ally
+	if match_ref != null and match_ref.camera_rig != null:
+		match_ref.camera_rig.spectate = ally
+	cv_dead.sig = null
+
+
+func _spectate_allies() -> Array:
+	var out := []
+	for c in match_ref.champions:
+		if c.team == champ.team and c != champ and not c.dead:
+			out.append(c)
+	return out
+
+
+func _sig_dead() -> Array:
+	if not champ.dead:
+		return [false]
+	var ids := []
+	for c in _spectate_allies():
+		ids.append(c.uid)
+	return [true, int(ceil(champ.respawn_timer)), ids, spectating.uid if spectating != null else -1, _hover_key]
+
+
+## [hud-ref] League's dead-player widget (DeathRecap DRTeammateSpectate): "BACK IN" + respawn seconds over a row of the
+## living allies' portraits (click one to watch them) and the return-to-champion button; layout straight from the bins.
+func _draw_dead(ci: Canvas) -> void:
+	L.begin(size)
+	if not champ.dead:
+		return
+	L.draw(ci, SP + "TeammateSpectateBackground")
+	L.ltext(ci, SP + "RespawnText", "BACK IN")
+	L.ltext(ci, SP + "RespawnTimer", str(int(ceil(champ.respawn_timer))))
+	var allies := _spectate_allies()
+	for j in allies.size():
+		var c = allies[j]
+		var off := Vector2((j - (allies.size() - 1) * 0.5) * 76.0, 312.0)
+		var rc := L.r(SP + "TeammatePortrait_ButtonDefaultFrame", off)
+		HudLayout.circle_tex(ci, Assets.champion_square(c.alias), rc.get_center(), rc.size.x * 0.5 * 0.9, Color.WHITE, 1.08)
+		var sel: bool = c == spectating
+		var hov: bool = _hover_key == "spec:%d" % c.uid
+		L.draw(ci, SP + ("TeammatePortrait_ButtonSelected" if sel else ("TeammatePortrait_ButtonHovered" if hov else "TeammatePortrait_ButtonDefaultFrame")), Color.WHITE, off)
+		var hit := L.r(SP + "TeammatePortrait_Region", off)
+		ci.hits.append([Rect2(hit.position.x, rc.position.y, hit.size.x, rc.size.y), "spec:%d" % c.uid])
+		ci.solid.append(hit)
+	L.draw(ci, SP + "TeammateSpectate_KeyLine")
+	var kl2 := L.r(SP + "TeammateSpectate_KeyLine2")
+	ci.draw_set_transform(Vector2(kl2.position.x * 2.0 + kl2.size.x, 0.0), 0.0, Vector2(-1.0, 1.0))
+	L.draw(ci, SP + "TeammateSpectate_KeyLine2")
+	ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	var br := L.draw(ci, SP + ("TeammateSpectateExit_ButtonHovered" if _hover_key == "spec_exit" else "TeammateSpectateExit_ButtonDefault"))
+	ci.hits.append([br, "spec_exit"])
+	ci.solid.append(br)
+
+
+## [hud-ref] League's ally team frames: one horizontal row right-aligned above the minimap (TeamFrameLayoutRegion), the
+## first ally in the rightmost slot. A dead ally shows a desaturated portrait in the silver dead ring with its respawn
+## seconds in red over the ring's bottom edge (HUD_RespawnTimer); bars and the ult ball only exist while alive.
 func _draw_team_frames(ci: Canvas) -> void:
 	var T := "TeamFrames:"
 	var i := 0
 	for c in match_ref.champions:
 		if c.team != champ.team or c == champ:
 			continue
-		var off := Vector2(0, -82.0 * i)
+		var off := Vector2(-TEAM_FRAME_PITCH * i, 0)
 		var dead: bool = c.dead
 		L.draw(ci, T + ("TeamFrame0_FrameDeadUnderlay" if dead else "TeamFrame0_FrameUnderlay"), Color.WHITE, off)
 		var ir := L.r(T + "TeamFrame0_Icon_Data", off)
-		HudLayout.square_icon(ci, Assets.champion_square(c.alias), ir, Color(0.4, 0.4, 0.4) if dead else Color.WHITE)
-		L.draw(ci, T + "TeamFrame0_HPBackdrop", Color.WHITE, off)
-		_fill_h_off(ci, T + "TeamFrame0_HPBarTextureGreen", c.hp_ratio(), off)
-		if c.stats.max_mana > 0.0:
-			_fill_h_off(ci, T + "TeamFrame0_PARBarTextureBlue", c.mana / maxf(1.0, c.stats.max_mana), off)
-		L.draw(ci, T + "TeamFrame0_HPFrame", Color.WHITE, off)
+		HudLayout.circle_tex(ci, _grey_square(c.alias) if dead else Assets.champion_square(c.alias), ir.get_center(), ir.size.x * 0.5 * 0.94,
+			Color(0.85, 0.85, 0.85) if dead else Color.WHITE, 1.08)
+		if not dead:
+			L.draw(ci, T + "TeamFrame0_HPBackdrop", Color.WHITE, off)
+			_fill_h_off(ci, T + "TeamFrame0_HPBarTextureGreen", c.hp_ratio(), off)
+			if c.stats.max_mana > 0.0:
+				_fill_h_off(ci, T + "TeamFrame0_PARBarTextureBlue", c.mana / maxf(1.0, c.stats.max_mana), off)
+			L.draw(ci, T + "TeamFrame0_HPFrame", Color.WHITE, off)
 		var fr := L.draw(ci, T + ("TeamFrame0_FrameDead" if dead else "TeamFrame0_Frame"), Color.WHITE, off)
-		var ult: Ability = c.abilities[3]
-		if ult != null and ult.level > 0:
-			L.draw(ci, T + "TeamFrame0_UltBg", Color.WHITE, off)
-			if ult.is_ready():
-				L.draw(ci, T + "TeamFrame0_Ult", Color.WHITE, off)
-			else:
-				var ur := L.r(T + "TeamFrame0_UltCooldownFX", off)
-				HudLayout.radial(ci, ur, ult.cd / maxf(ult.cd_total, 0.01), Color(0, 0, 0, 0.75))
-		L.ltext(ci, T + "TeamFrame0_Level", str(c.level), Color(0, 0, 0, 0), 1, off)
-		if dead:
-			L.ltext(ci, T + "TeamFrame0_Timer", str(int(ceil(c.respawn_timer))), Color.WHITE, 1, off + Vector2(0, -30))
+		if not dead:
+			var ult: Ability = c.abilities[3]
+			L.draw(ci, T + "TeamFrame0_UltBg", Color.WHITE, off)   # the black ball is there even before the ult is learned
+			if ult != null and ult.level > 0:
+				if ult.is_ready():
+					L.draw(ci, T + "TeamFrame0_Ult", Color.WHITE, off)
+				else:
+					var ur := L.r(T + "TeamFrame0_UltCooldownFX", off)
+					HudLayout.radial(ci, ur, ult.cd / maxf(ult.cd_total, 0.01), Color(0, 0, 0, 0.75))
+			L.ltext(ci, T + "TeamFrame0_Level", str(c.level), Color(0, 0, 0, 0), 1, off)
+		else:
+			L.ltext(ci, T + "TeamFrame0_Timer", str(int(ceil(c.respawn_timer))), Color(0, 0, 0, 0), 1, off)
 		ci.hits.append([fr, "ally:%d" % c.uid])
 		i += 1
+
+
+## Desaturated copy of a champion square icon (Rec.601 luma), built once per champion the first time it dies.
+static func _grey_square(alias: String) -> Texture2D:
+	if _grey_icons.has(alias):
+		return _grey_icons[alias]
+	var src := Assets.champion_square(alias)
+	var out: Texture2D = src
+	if src != null:
+		var img := src.get_image()
+		if img != null:
+			img = img.duplicate()
+			if img.is_compressed():
+				img.decompress()
+			img.convert(Image.FORMAT_RGBA8)
+			var d := img.get_data()
+			for p in range(0, d.size(), 4):
+				var l := int(0.299 * d[p] + 0.587 * d[p + 1] + 0.114 * d[p + 2])
+				d[p] = l
+				d[p + 1] = l
+				d[p + 2] = l
+			img = Image.create_from_data(img.get_width(), img.get_height(), false, Image.FORMAT_RGBA8, d)
+			out = ImageTexture.create_from_image(img)
+	_grey_icons[alias] = out
+	return out
 
 
 func _fill_h_off(ci: CanvasItem, key: String, frac: float, off: Vector2) -> void:
@@ -779,7 +882,7 @@ func _draw_stats(ci: Canvas) -> void:
 		])
 	for row in rows:
 		L.draw(ci, S + "Stats_%s_Icon" % row[0])
-		L.ltext(ci, S + "Stats_%s_Text" % row[0], row[1], Color(0, 0, 0, 0), 0)
+		L.ltext(ci, S + "Stats_%s_Text" % row[0], row[1], C_TEXT, 0)   # [hud-ref] real frames: cream stat numbers
 		ci.hits.append([L.r(S + "Stats_%s_HitArea" % row[0]), "stat:%s: %s" % [row[2], row[1]]])
 	var br := L.draw(ci, PF + ("Stats_ButtonSelected" if advanced_stats else "Stats_ButtonDefault"))
 	ci.hits.append([br, "stats_btn"])
@@ -789,8 +892,8 @@ func _draw_stats(ci: Canvas) -> void:
 func _draw_player(ci: Canvas) -> void:
 	L.begin(size)
 	var pr := L.r(PF + "PlayerIcon_Base")
-	var sq := Assets.champion_square(champ.alias)
-	HudLayout.circle_tex(ci, sq, pr.get_center(), pr.size.x * 0.5, Color(0.38, 0.38, 0.38) if champ.dead else Color.WHITE, 1.08)
+	var sq := _grey_square(champ.alias) if champ.dead else Assets.champion_square(champ.alias)   # [hud-ref] dead = desaturated, not dimmed
+	HudLayout.circle_tex(ci, sq, pr.get_center(), pr.size.x * 0.5, Color(0.92, 0.92, 0.92) if champ.dead else Color.WHITE, 1.08)
 	L.draw(ci, PF + "PlayerExp_Backdrop")
 	L.fill_v(ci, PF + "PlayerExp_BarTexture", champ.xp_ratio() if champ.level < 18 else 1.0)
 	var frame := L.draw(ci, PF + "PortraitFrame_Default")
@@ -798,7 +901,7 @@ func _draw_player(ci: Canvas) -> void:
 	var lvl_col := Color.WHITE.lerp(Color(1.0, 0.9, 0.45), _level_flash)
 	L.ltext(ci, PF + "PlayerLevel", str(champ.level), lvl_col, 1)
 	if champ.dead:
-		L.ltext(ci, PF + "PlayerRespawnTimer", str(int(ceil(champ.respawn_timer))), Color.WHITE, 1, Vector2(-13, 0))
+		L.ltext(ci, PF + "PlayerRespawnTimer", str(int(ceil(champ.respawn_timer))), Color(0, 0, 0, 0), 1, Vector2(-13, 0))   # [hud-ref] League red
 	_draw_inventory(ci)
 
 
