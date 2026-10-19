@@ -80,7 +80,12 @@ func init_ability(a: Ability, key: String, script_name: String = "") -> Ability:
 		if an.begins_with("spell"):
 			a.anim = an.substr(0, 6)
 	a.tooltip_raw = sd.get("tooltip", "")
-	if sd.has("missileSpeed"):
+	# [timing] missile speed of the slot's real missile (mMissileSpec.movementComponent from data/timing/<champ>.json); the
+	# legacy `missileSpeed` field is stale for many spells (Ezreal W 1200 vs 1700, Jinx W 1200 vs 3300). Bots lead with it.
+	var ms := missile_speed_of(script_name if script_name != "" else str(c.data.get("spell_slots", {}).get(key, key)))
+	if ms > 0.0:
+		a.set_meta("missile_speed", ms * G.U)
+	elif sd.has("missileSpeed"):
 		a.set_meta("missile_speed", _first(sd.missileSpeed) * G.U)
 	var cd := ChampionDB.client_data(c.alias)
 	for s in cd.get("spells", []):
@@ -90,6 +95,36 @@ func init_ability(a: Ability, key: String, script_name: String = "") -> Ability:
 	if a.display_name == "":
 		a.display_name = sd.get("name", key)
 	return a
+
+
+## [timing] data/timing/<alias>.json (tools/lol/extract_timing.py): raw bin timing of every spell / missile / attack.
+static var _timing_cache := {}
+
+
+static func timing_data(alias: String) -> Dictionary:
+	var k := alias.to_lower()
+	if not _timing_cache.has(k):
+		var path := "res://data/timing/%s.json" % k
+		var d = JSON.parse_string(FileAccess.get_file_as_string(path)) if FileAccess.file_exists(path) else null
+		_timing_cache[k] = d if d is Dictionary else {}
+	return _timing_cache[k]
+
+
+## Initial missile speed (League units / s) of a spell's missile: the spell's own mMissileSpec, else its helper missile
+## spell ("JinxW" -> "JinxWMissile", "AhriQ" -> "AhriQMissile"); 0 when it has none.
+func missile_speed_of(script_name: String) -> float:
+	var sp: Dictionary = timing_data(c.alias).get("spells", {})
+	var cands := [script_name]
+	for k in sp.keys():
+		if String(k).begins_with(script_name) and k != script_name:
+			cands.append(k)
+	for n in cands:
+		var mi = sp.get(n, {}).get("missile")
+		if mi is Dictionary:
+			var v := float(mi.get("Speed", mi.get("InitialSpeed", 0.0)))
+			if v > 0.0:
+				return v
+	return 0.0
 
 
 func _ranks(v, is_ult: bool) -> Array:

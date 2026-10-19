@@ -1,0 +1,221 @@
+{
+ "alias": "MasterYi",
+ "attack": {
+  "attackRange": 175.0,
+  "attackSpeed": 0.679,
+  "attackSpeedRatio": 0.679,
+  "attacks": {
+   "MasterYiBasicAttack": {
+    "castFrameTime": 0.26667,
+    "legacySpeed": 0.0,
+    "speed": null
+   },
+   "MasterYiBasicAttack2": {
+    "castFrameTime": 0.26667,
+    "legacySpeed": 0.0,
+    "speed": null
+   },
+   "MasterYiCritAttack": {
+    "castFrameTime": 0.23333,
+    "legacySpeed": 0.0,
+    "speed": null
+   },
+   "MasterYiDoubleStrike": {
+    "castFrameTime": 0.23333,
+    "legacySpeed": 0.0,
+    "speed": null
+   }
+  },
+  "castOffset": -0.056,
+  "castOffsetRatio": null,
+  "castTime": null,
+  "totalTime": null,
+  "windupPct": 0.244
+ },
+ "spells": {
+  "AlphaStrike": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.935,
+   "castRadius": 300.0,
+   "castRange": 600.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 4000.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "AlphaStrikeBounce": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.935,
+   "castRadius": 300.0,
+   "castRange": 3000.0,
+   "castTime": 0.1,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 4000.0,
+   "mCastTime": 0.1,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "TravelTime": 0.18,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedTime",
+    "width": null
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "AlphaStrikeMissile": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.935,
+   "castRadius": 300.0,
+   "castRange": 2000.0,
+   "castTime": 0.1,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 4000.0,
+   "mCastTime": 0.1,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "TravelTime": 0.2,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedTime",
+    "width": null
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "AlphaStrikeMissileReturn": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.935,
+   "castRadius": 300.0,
+   "castRange": 2000.0,
+   "castTime": 0.1,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 4000.0,
+   "mCastTime": 0.1,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "TravelTime": 0.15,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedTime",
+    "width": null
+   },
+   "spellCastTime": 0.0,
+   "spellTotalTime": 0.0
+  },
+  "AlphaStrikeTeleport": {
+   "autoattackCastTime": false,
+   "castFrame": 10.0,
+   "castRadius": 100.0,
+   "castRange": 10000.0,
+   "castTime": 0.33333,
+   "castTimeSrc": "castFrame/30",
+   "legacyMissileSpeed": 0.0
+  },
+  "Highlander": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 5.395,
+   "castRadius": 100.0,
+   "castRange": 1.0,
+   "castTime": 0.4043,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 20.0,
+   "spellCastTime": 0.4043,
+   "spellTotalTime": 1.2462
+  },
+  "MasterYiBasicAttack": {
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "castFrame": 8.0,
+   "castRadius": 100.0,
+   "castRange": 20.0,
+   "castTime": 0.35,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.35
+  },
+  "MasterYiBasicAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "castFrame": 8.0,
+   "castRadius": 100.0,
+   "castRange": 20.0,
+   "castTime": 0.35,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.35
+  },
+  "MasterYiCritAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "castFrame": 7.0,
+   "castRadius": 100.0,
+   "castRange": 20.0,
+   "castTime": 0.35,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.35
+  },
+  "MasterYiDoubleStrike": {
+   "animation": "Passive",
+   "autoattackCastTime": true,
+   "castFrame": 7.0,
+   "castRadius": 100.0,
+   "castRange": 20.0,
+   "castTime": 0.225,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.225
+  },
+  "MasterYiPassive": {
+   "autoattackCastTime": false,
+   "castRange": 0.0
+  },
+  "MasterYi_Q_Reposition": {
+   "autoattackCastTime": false,
+   "canMoveWhileChanneling": true,
+   "cantCancelWhileWindingUp": true,
+   "castRange": 25000.0,
+   "castTime": 0.0,
+   "castTimeSrc": "spellCastTime",
+   "missile": {
+    "Speed": 2000.0,
+    "TracksTarget": false,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.0,
+   "spellTotalTime": 0.0
+  },
+  "Meditate": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 3.25,
+   "castRadius": 550.0,
+   "castRange": 20.0,
+   "castTime": 0.0,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 828.5,
+   "spellCastTime": 0.0,
+   "useAnimatorFramerate": true
+  },
+  "WujuStyle": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 20.21,
+   "castRadius": 210.0,
+   "castRange": 20.0,
+   "castTime": 0.38125,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 347.79999,
+   "spellCastTime": 0.38125,
+   "spellTotalTime": 1.54
+  }
+ }
+}

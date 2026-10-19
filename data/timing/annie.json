@@ -1,0 +1,212 @@
+{
+ "alias": "Annie",
+ "attack": {
+  "attackRange": 625.0,
+  "attackSpeed": 0.61,
+  "attackSpeedRatio": 0.625,
+  "attacks": {
+   "AnnieBasicAttack": {
+    "castFrameTime": 0.25,
+    "legacySpeed": 1200.0,
+    "speed": 1500.0
+   },
+   "AnnieBasicAttack2": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 1200.0,
+    "speed": 1500.0
+   },
+   "AnnieCritAttack": {
+    "castFrameTime": 0.36667,
+    "legacySpeed": 1200.0,
+    "speed": 1500.0
+   }
+  },
+  "castOffset": -0.10421,
+  "castOffsetRatio": null,
+  "castTime": null,
+  "totalTime": null,
+  "windupPct": 0.19579
+ },
+ "spells": {
+  "AnnieBasicAttack": {
+   "autoattackCastTime": false,
+   "castFrame": 7.5,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.4327,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4327
+  },
+  "AnnieBasicAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.4327,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4327
+  },
+  "AnnieCritAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "castFrame": 11.0,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.4327,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4327
+  },
+  "AnnieE": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castRange": 800.0
+  },
+  "AnniePassive": {
+   "autoattackCastTime": false
+  },
+  "AnnieQ": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 8.7,
+   "castRadius": 710.0,
+   "castRange": 625.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1400.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1400.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "AnnieR": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 10.0,
+   "castRadius": 250.0,
+   "castRange": 600.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "AnnieRController": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "cantCancelWhileWindingUp": true,
+   "castRadius": 250.3,
+   "castRange": 20000.0
+  },
+  "AnnieW": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castConeAngle": 24.76,
+   "castFrame": 7.5,
+   "castRadius": 210.0,
+   "castRange": 600.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 0.0,
+   "mCastTime": 0.25,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "Disintegrate": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 8.7,
+   "castRadius": 710.0,
+   "castRange": 625.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1400.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1400.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "Incinerate": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castConeAngle": 24.76,
+   "castFrame": 7.5,
+   "castRadius": 210.0,
+   "castRange": 600.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 0.0,
+   "mCastTime": 0.25,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "InfernalGuardian": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 10.0,
+   "castRadius": 250.0,
+   "castRange": 600.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "InfernalGuardianGuide": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 20.8,
+   "castRadius": 250.3,
+   "castRange": 20000.0,
+   "castTime": 0.69333,
+   "castTimeSrc": "castFrame/30",
+   "legacyMissileSpeed": 0.0
+  }
+ }
+}

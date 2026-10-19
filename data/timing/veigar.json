@@ -1,0 +1,195 @@
+{
+ "alias": "Veigar",
+ "attack": {
+  "attackRange": 550.0,
+  "attackSpeed": 0.625,
+  "attackSpeedRatio": 0.625,
+  "attacks": {
+   "VeigarBasicAttack": {
+    "castFrameTime": 0.3,
+    "legacySpeed": 1100.0,
+    "speed": 1500.0
+   },
+   "VeigarBasicAttack2": {
+    "castFrameTime": 0.3,
+    "legacySpeed": 1100.0,
+    "speed": 1500.0
+   },
+   "VeigarCritAttack": {
+    "castFrameTime": 0.3,
+    "legacySpeed": 1100.0,
+    "speed": 1500.0
+   }
+  },
+  "castOffset": -0.10906,
+  "castOffsetRatio": null,
+  "castTime": null,
+  "totalTime": null,
+  "windupPct": 0.19094
+ },
+ "spells": {
+  "VeigarBalefulStrike": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 1.98,
+   "castRadius": 210.0,
+   "castRange": 10000.0,
+   "castRangeDisplayOverride": 1000.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "lineWidth": 70.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "VeigarBalefulStrikeMis": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.53,
+   "castRadius": 100.0,
+   "castRange": 1050.0,
+   "castRangeDisplayOverride": 925.0,
+   "castTime": 0.251,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 2200.0,
+   "lineWidth": 70.0,
+   "mCastTime": 0.251,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "ProjectTargetToCastRange": true,
+    "Speed": 2200.0,
+    "TracksTarget": false,
+    "UseHeightOffsetAtEnd": true,
+    "type": "FixedSpeed",
+    "width": 70.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "VeigarBasicAttack": {
+   "autoattackCastTime": false,
+   "castFrame": 9.0,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1100.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4236
+  },
+  "VeigarBasicAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": false,
+   "castFrame": 9.0,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1100.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4236
+  },
+  "VeigarCritAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "castFrame": 9.0,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1100.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4236
+  },
+  "VeigarDarkMatter": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 13.0,
+   "castRadius": 225.0,
+   "castRange": 950.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 20.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "VeigarDarkMatterCastLockout": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 13.0,
+   "castRadius": 225.0,
+   "castRange": 950.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 20.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "VeigarEventHorizon": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 20.16,
+   "castRadius": 390.0,
+   "castRange": 700.0,
+   "castRangeDisplayOverride": 725.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 20.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "VeigarPassive": {
+   "autoattackCastTime": false,
+   "castRange": 0.0
+  },
+  "VeigarR": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.96,
+   "castRange": 650.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "missile": {
+    "Acceleration": 4000.0,
+    "InitialSpeed": 500.0,
+    "MaxSpeed": 4000.0,
+    "MinSpeed": 500.0,
+    "OffsetInitialTargetHeight": 100.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "Accelerating",
+    "width": null
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  }
+ }
+}

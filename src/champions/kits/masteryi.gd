@@ -226,7 +226,7 @@ class AlphaStrike extends YiAbility:
 			o.model.visible = false
 		var strikes := int(dv("AlphaStrikeBounces", 4.0))
 		var interval := 0.231   # League: one strike every 0.231 s, marks detonate when Yi reappears
-		var total := strikes * interval + 0.08
+		var total := strikes * interval + 0.165   # [timing] wiki: reappears 0.165 s after the last mark; 1.087 s total with 4 marks (was +0.08)
 		start_channel(total, {})
 		o.channel_disarm = true
 		LolVfx.spawn(m, "MasterYi_Base_Q_Cas", o.global_position + Vector3(0, 1.0, 0), {"dir": G.flat_dir(o.global_position, u.global_position)})

@@ -1,0 +1,301 @@
+{
+ "alias": "Ahri",
+ "attack": {
+  "attackRange": 550.0,
+  "attackSpeed": 0.668,
+  "attackSpeedRatio": 0.625,
+  "attacks": {
+   "AhriBasicAttack": {
+    "castFrameTime": 0.3,
+    "legacySpeed": 1750.0,
+    "speed": 1750.0
+   },
+   "AhriBasicAttack2": {
+    "castFrameTime": 0.3,
+    "legacySpeed": 1750.0,
+    "speed": 1750.0
+   },
+   "AhriCritAttack": {
+    "castFrameTime": 0.33333,
+    "legacySpeed": 1750.0,
+    "speed": 1750.0
+   }
+  },
+  "castOffset": -0.1,
+  "castOffsetRatio": null,
+  "castTime": null,
+  "totalTime": null,
+  "windupPct": 0.2
+ },
+ "spells": {
+  "AhriBasicAttack": {
+   "autoattackCastTime": false,
+   "castFrame": 9.0,
+   "castRadius": 100.0,
+   "castRange": 550.0,
+   "castTime": 0.3821,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1750.0,
+   "missile": {
+    "Speed": 1750.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.3821
+  },
+  "AhriBasicAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": false,
+   "castFrame": 9.0,
+   "castRadius": 100.0,
+   "castRange": 550.0,
+   "castTime": 0.3821,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1750.0,
+   "missile": {
+    "Speed": 1750.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.3821
+  },
+  "AhriCritAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "castFrame": 10.0,
+   "castRadius": 100.0,
+   "castRange": 550.0,
+   "castTime": 0.3821,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1750.0,
+   "missile": {
+    "Speed": 1750.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.3821
+  },
+  "AhriE": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castRadius": 210.0,
+   "castRange": 10000.0,
+   "castRangeDisplayOverride": 975.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "lineWidth": 60.0,
+   "mCastTime": 0.25,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "AhriEMissile": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 210.0,
+   "castRange": 1000.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1550.0,
+   "lineWidth": 60.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "ProjectTargetToCastRange": true,
+    "Speed": 1550.0,
+    "TracksTarget": false,
+    "UseHeightOffsetAtEnd": true,
+    "type": "FixedSpeed",
+    "width": 60.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "AhriPassive": {
+   "autoattackCastTime": false,
+   "castRange": 0.0
+  },
+  "AhriPassiveCounter": {
+   "autoattackCastTime": false
+  },
+  "AhriPassiveMissile": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castRadius": 710.0,
+   "castRange": 25000.0,
+   "castTime": 0.425,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1300.0,
+   "missile": {
+    "Acceleration": 800.0,
+    "InitialSpeed": 1800.0,
+    "MaxSpeed": 8000.0,
+    "MinSpeed": 1200.0,
+    "type": "Accelerating",
+    "width": null
+   },
+   "spellCastTime": 0.425,
+   "spellTotalTime": 0.8
+  },
+  "AhriQ": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castRadius": 275.0,
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 970.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 1100.0,
+   "lineWidth": 100.0,
+   "mCastTime": 0.25,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "AhriQMissile": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 275.0,
+   "castRange": 1000.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2500.0,
+   "lineWidth": 100.0,
+   "missile": {
+    "Acceleration": -3200.0,
+    "InitialSpeed": 2500.0,
+    "MaxSpeed": 2500.0,
+    "MinSpeed": 400.0,
+    "TracksTarget": false,
+    "UseHeightOffsetAtEnd": true,
+    "type": "Accelerating",
+    "width": 100.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "AhriQReturnMissile": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 275.0,
+   "castRange": 25000.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 60.0,
+   "lineWidth": 100.0,
+   "missile": {
+    "Acceleration": 1900.0,
+    "InitialSpeed": 60.0,
+    "MaxSpeed": 2600.0,
+    "MinSpeed": 60.0,
+    "ProjectTargetToCastRange": true,
+    "UseHeightOffsetAtEnd": true,
+    "type": "Accelerating",
+    "width": 100.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "AhriR": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 15.0,
+   "castRadius": 300.0,
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 450.0,
+   "castTime": 0.5,
+   "castTimeSrc": "castFrame/30",
+   "legacyMissileSpeed": 2200.0
+  },
+  "AhriRMissile": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 710.0,
+   "castRange": 800.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1400.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1400.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "AhriSkin86Manager": {
+   "autoattackCastTime": false
+  },
+  "AhriW": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 15.0,
+   "castRadius": 1000.0,
+   "castRange": 600.0,
+   "castRangeDisplayOverride": 700.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 1800.0,
+   "mCastTime": 0.25,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "AhriWDamageMissile": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 710.0,
+   "castRange": 25000.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 1400.0,
+   "mCastTime": 0.25,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "Parametric",
+    "width": null
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "AhriWMissile": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 710.0,
+   "castRange": 300.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 900.0,
+   "missile": {
+    "mAngularVelocity": -2.65,
+    "mLifetime": 5.0,
+    "mLinearVelocity": 900.0,
+    "type": "Circle",
+    "width": null
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  }
+ }
+}

@@ -1,0 +1,181 @@
+{
+ "alias": "Garen",
+ "attack": {
+  "attackRange": 175.0,
+  "attackSpeed": 0.625,
+  "attackSpeedRatio": 0.625,
+  "attacks": {
+   "GarenBasicAttack": {
+    "castFrameTime": 0.33333,
+    "legacySpeed": 347.79999,
+    "speed": null
+   },
+   "GarenBasicAttack2": {
+    "castFrameTime": 0.33333,
+    "legacySpeed": 347.79999,
+    "speed": null
+   },
+   "GarenBasicAttack3": {
+    "castFrameTime": 0.33333,
+    "legacySpeed": 347.79999,
+    "speed": null
+   },
+   "GarenCritAttack": {
+    "castFrameTime": 0.26667,
+    "legacySpeed": 347.79999,
+    "speed": null
+   }
+  },
+  "castOffset": -0.12,
+  "castOffsetRatio": 0.5,
+  "castTime": null,
+  "totalTime": null,
+  "windupPct": 0.18
+ },
+ "spells": {
+  "GarenBasicAttack": {
+   "autoattackCastTime": false,
+   "castFrame": 10.0,
+   "castRadius": 100.0,
+   "castRange": 200.0,
+   "castTime": 0.3161,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 347.79999,
+   "spellCastTime": 0.3161
+  },
+  "GarenBasicAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": false,
+   "castFrame": 10.0,
+   "castRadius": 100.0,
+   "castRange": 200.0,
+   "castTime": 0.3161,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 347.79999,
+   "spellCastTime": 0.3161
+  },
+  "GarenBasicAttack3": {
+   "animation": "Attack3",
+   "autoattackCastTime": false,
+   "castFrame": 10.0,
+   "castRadius": 100.0,
+   "castRange": 200.0,
+   "castTime": 0.3161,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 347.79999,
+   "spellCastTime": 0.3161
+  },
+  "GarenCritAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "castFrame": 8.0,
+   "castRadius": 100.0,
+   "castRange": 200.0,
+   "castTime": 0.3161,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 347.79999,
+   "spellCastTime": 0.3161
+  },
+  "GarenE": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 9.75,
+   "castRadius": 35.0,
+   "castRange": 660.0,
+   "castRangeDisplayOverride": 325.0,
+   "castTime": 0.325,
+   "castTimeSrc": "castFrame/30",
+   "legacyMissileSpeed": 700.0,
+   "lineWidth": 160.0
+  },
+  "GarenECancel": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 0.66,
+   "castRadius": 100.0,
+   "castRange": 0.0,
+   "castTime": 0.022,
+   "castTimeSrc": "castFrame/30",
+   "legacyMissileSpeed": 0.0
+  },
+  "GarenPassive": {
+   "autoattackCastTime": false,
+   "castRange": 0.0
+  },
+  "GarenQ": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 5.265,
+   "castRadius": 210.0,
+   "castRange": 300.0,
+   "castTime": 0.52175,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.52175,
+   "spellTotalTime": 1.5334
+  },
+  "GarenQAttack": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 10.0,
+   "castRadius": 210.0,
+   "castRange": 1000.0,
+   "castTime": 0.39,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 20.0,
+   "overrideAttackTime": {
+    "__class": "OverrideAttackTimeData",
+    "mCastTimePercent": 0.20000000298023224,
+    "mTotalAttackTimeSecs": {
+     "__class": "GameCalculation",
+     "mFormulaParts": [
+      {
+       "__class": "NumberCalculationPart",
+       "mNumber": 1.7000000476837158
+      },
+      {
+       "__class": "StatByCoefficientCalculationPart",
+       "mCoefficient": -0.20000000298023224,
+       "mStat": 4,
+       "mStatFormula": 2
+      }
+     ]
+    }
+   },
+   "spellCastTime": 0.39,
+   "spellTotalTime": 1.56
+  },
+  "GarenR": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 18.5,
+   "castRadius": 100.0,
+   "castTime": 0.435,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 900.0,
+   "spellCastTime": 0.435,
+   "spellTotalTime": 1.74,
+   "useAnimatorFramerate": true
+  },
+  "GarenW": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 16.095,
+   "castRadius": 20.0,
+   "castRange": 0.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  }
+ }
+}

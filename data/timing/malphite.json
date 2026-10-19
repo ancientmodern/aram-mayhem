@@ -1,0 +1,179 @@
+{
+ "alias": "Malphite",
+ "attack": {
+  "attackRange": 125.0,
+  "attackSpeed": 0.736,
+  "attackSpeedRatio": 0.638,
+  "attacks": {
+   "MalphiteBasicAttack": {
+    "castFrameTime": 0.3915,
+    "legacySpeed": 1000.0,
+    "speed": null
+   },
+   "MalphiteBasicAttack2": {
+    "castFrameTime": 0.38567,
+    "legacySpeed": 1000.0,
+    "speed": null
+   },
+   "MalphiteCritAttack": {
+    "castFrameTime": 0.405,
+    "legacySpeed": 1000.0,
+    "speed": null
+   }
+  },
+  "castOffset": -0.05032,
+  "castOffsetRatio": null,
+  "castTime": null,
+  "totalTime": null,
+  "windupPct": 0.24968
+ },
+ "spells": {
+  "Landslide": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 400.0,
+   "castTime": 0.2419,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 0.0,
+   "mCastTime": 0.2419,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "MalphiteBasicAttack": {
+   "autoattackCastTime": false,
+   "castFrame": 11.745,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1000.0,
+   "spellCastTime": 0.4236
+  },
+  "MalphiteBasicAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": false,
+   "castFrame": 11.57,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1000.0,
+   "spellCastTime": 0.4236
+  },
+  "MalphiteCleave": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 13.32,
+   "castRadius": 350.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "MalphiteCritAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "castFrame": 12.15,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1000.0,
+   "spellCastTime": 0.4236
+  },
+  "MalphiteShield": {
+   "autoattackCastTime": false,
+   "castRange": 0.0
+  },
+  "MalphiteThunderclap": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 13.32,
+   "castRadius": 350.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "Obduracy": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 13.32,
+   "castRadius": 350.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "ObduracyAttack": {
+   "animation": "Spell1_Attack",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 11.745,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1000.0,
+   "spellCastTime": 0.4236
+  },
+  "SeismicShard": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 10.0,
+   "castRadius": 780.0,
+   "castRange": 625.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "channelIsInterruptedByAttacking": false,
+   "channelIsInterruptedByDisables": false,
+   "legacyMissileSpeed": 1200.0,
+   "missile": {
+    "InitialSpeed": 1200.0,
+    "MaxSpeed": 1200.0,
+    "MinSpeed": 1200.0,
+    "type": "Accelerating",
+    "width": null
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "SeismicShardBuff": {
+   "autoattackCastTime": false
+  },
+  "UFSlash": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 9.75,
+   "castRadius": 270.0,
+   "castRange": 1000.0,
+   "castTime": 0.325,
+   "castTimeSrc": "castFrame/30",
+   "legacyMissileSpeed": 700.0,
+   "lineWidth": 160.0
+  },
+  "UnstoppableForceStun": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 9.75,
+   "castRadius": 20.0,
+   "castRange": 1200.0,
+   "castTime": 0.325,
+   "castTimeSrc": "castFrame/30",
+   "legacyMissileSpeed": 700.0,
+   "lineWidth": 160.0
+  }
+ }
+}

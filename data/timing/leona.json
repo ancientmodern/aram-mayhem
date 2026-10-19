@@ -1,0 +1,203 @@
+{
+ "alias": "Leona",
+ "attack": {
+  "attackRange": 125.0,
+  "attackSpeed": 0.625,
+  "attackSpeedRatio": 0.625,
+  "attacks": {
+   "LeonaBasicAttack": {
+    "castFrameTime": 0.36667,
+    "legacySpeed": 347.79999,
+    "speed": null
+   },
+   "LeonaBasicAttack2": {
+    "castFrameTime": 0.36667,
+    "legacySpeed": 347.79999,
+    "speed": null
+   },
+   "LeonaBasicAttack3": {
+    "castFrameTime": 0.36667,
+    "legacySpeed": 347.79999,
+    "speed": null
+   },
+   "LeonaBasicAttack4": {
+    "castFrameTime": 0.36667,
+    "legacySpeed": 347.79999,
+    "speed": null
+   },
+   "LeonaCritAttack": {
+    "castFrameTime": 0.33333,
+    "legacySpeed": 347.79999,
+    "speed": null
+   }
+  },
+  "castOffset": -0.07083,
+  "castOffsetRatio": null,
+  "castTime": null,
+  "totalTime": null,
+  "windupPct": 0.22917
+ },
+ "spells": {
+  "LeonaBasicAttack": {
+   "autoattackCastTime": false,
+   "castFrame": 11.0,
+   "castRadius": 100.0,
+   "castRange": 200.0,
+   "castTime": 0.3161,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 347.79999,
+   "spellCastTime": 0.3161
+  },
+  "LeonaBasicAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": false,
+   "castFrame": 11.0,
+   "castRadius": 100.0,
+   "castRange": 200.0,
+   "castTime": 0.3161,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 347.79999,
+   "spellCastTime": 0.3161
+  },
+  "LeonaBasicAttack3": {
+   "animation": "Attack3",
+   "autoattackCastTime": false,
+   "castFrame": 11.0,
+   "castRadius": 100.0,
+   "castRange": 200.0,
+   "castTime": 0.3161,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 347.79999,
+   "spellCastTime": 0.3161
+  },
+  "LeonaBasicAttack4": {
+   "animation": "Spell2_attack",
+   "autoattackCastTime": false,
+   "castFrame": 11.0,
+   "castRadius": 100.0,
+   "castRange": 200.0,
+   "castTime": 0.3161,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 347.79999,
+   "spellCastTime": 0.3161
+  },
+  "LeonaCritAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "castFrame": 10.0,
+   "castRadius": 100.0,
+   "castRange": 200.0,
+   "castTime": 0.3161,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 347.79999,
+   "spellCastTime": 0.3161
+  },
+  "LeonaShieldOfDaybreak": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 210.0,
+   "castRange": 100.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 0.0,
+   "mCastTime": 0.25,
+   "spellCastTime": 0.52175,
+   "spellTotalTime": 1.5334,
+   "useAnimatorFramerate": true
+  },
+  "LeonaShieldOfDaybreakAttack": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 210.0,
+   "castRange": 450.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 20.0,
+   "mCastTime": 0.25,
+   "spellCastTime": 0.39,
+   "spellTotalTime": 1.56,
+   "useAnimatorFramerate": true
+  },
+  "LeonaSolarBarrier": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castRadius": 500.0,
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 450.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 828.5,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "LeonaSolarFlare": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 120.0,
+   "castRange": 1200.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 20.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "LeonaSunlight": {
+   "autoattackCastTime": false
+  },
+  "LeonaSunlightPassive": {
+   "autoattackCastTime": false,
+   "castRange": 0.0
+  },
+  "LeonaZenithBlade": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 210.0,
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 875.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "lineWidth": 80.0,
+   "mCastTime": 0.25,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "LeonaZenithBladeMissile": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 210.0,
+   "castRange": 900.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2000.0,
+   "lineWidth": 70.0,
+   "missile": {
+    "ProjectTargetToCastRange": true,
+    "Speed": 2000.0,
+    "TracksTarget": false,
+    "UseHeightOffsetAtEnd": true,
+    "mTargetHeightAugment": 78.0,
+    "type": "FixedSpeed",
+    "width": 70.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  }
+ }
+}

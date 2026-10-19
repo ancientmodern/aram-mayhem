@@ -1,0 +1,379 @@
+{
+ "alias": "Lux",
+ "attack": {
+  "attackRange": 550.0,
+  "attackSpeed": 0.669,
+  "attackSpeedRatio": 0.625,
+  "attacks": {
+   "LuxBasicAttack": {
+    "castFrameTime": 0.25,
+    "legacySpeed": 1600.0,
+    "speed": 1600.0
+   },
+   "LuxBasicAttack2": {
+    "castFrameTime": 0.25,
+    "legacySpeed": 1600.0,
+    "speed": 1600.0
+   },
+   "LuxCritAttack": {
+    "castFrameTime": 0.25,
+    "legacySpeed": 1600.0,
+    "speed": 1600.0
+   }
+  },
+  "castOffset": -0.14375,
+  "castOffsetRatio": null,
+  "castTime": null,
+  "totalTime": null,
+  "windupPct": 0.15625
+ },
+ "spells": {
+  "LuxBasicAttack": {
+   "autoattackCastTime": false,
+   "castFrame": 7.5,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.42815,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1600.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1600.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.42815
+  },
+  "LuxBasicAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": false,
+   "castFrame": 7.5,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.42815,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1600.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1600.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.42815
+  },
+  "LuxCritAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "castFrame": 7.5,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.42812,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1600.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1600.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.42812
+  },
+  "LuxIlluminatingFraulein": {
+   "autoattackCastTime": false,
+   "castFrame": 10.95,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.4327,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1400.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1400.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4327
+  },
+  "LuxIlluminationPassive": {
+   "autoattackCastTime": false,
+   "castFrame": 10.95,
+   "castRadius": 100.0,
+   "castRange": 0.0,
+   "castTime": 0.4327,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1400.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1400.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4327
+  },
+  "LuxLightBinding": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 210.0,
+   "castRange": 10000.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "lineWidth": 80.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "LuxLightBindingDummy": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 8.1,
+   "castRadius": 210.0,
+   "castRange": 1300.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "lineWidth": 50.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "ProjectTargetToCastRange": true,
+    "Speed": 1200.0,
+    "TracksTarget": false,
+    "UseHeightOffsetAtEnd": true,
+    "type": "FixedSpeed",
+    "width": 70.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "LuxLightBindingMis": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 8.1,
+   "castRadius": 210.0,
+   "castRange": 1300.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "lineWidth": 70.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "ProjectTargetToCastRange": true,
+    "Speed": 1200.0,
+    "TracksTarget": false,
+    "UseHeightOffsetAtEnd": true,
+    "type": "FixedSpeed",
+    "width": 70.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "LuxLightStrikeKugel": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 295.0,
+   "castRange": 1100.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1300.0,
+   "missile": {
+    "Speed": 1200.0,
+    "TracksTarget": false,
+    "UseHeightOffsetAtEnd": true,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "LuxLightstrikeToggle": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 10.005,
+   "castRadius": 250.0,
+   "castRange": 1200.0,
+   "castTime": 0.425,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1400.0,
+   "spellCastTime": 0.425,
+   "spellTotalTime": 0.8
+  },
+  "LuxPrismaticWave": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 10.845,
+   "castRadius": 299.29999,
+   "castRange": 10000.0,
+   "castRangeDisplayOverride": 1150.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "lineWidth": 150.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "LuxPrismaticWaveMissile": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 10.845,
+   "castRadius": 299.29999,
+   "castRange": 1175.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2200.0,
+   "lineWidth": 110.0,
+   "missile": {
+    "Acceleration": -2300.0,
+    "InitialSpeed": 2200.0,
+    "MaxSpeed": 2200.0,
+    "MinSpeed": 500.0,
+    "OffsetInitialTargetHeight": 100.0,
+    "TracksTarget": false,
+    "UseHeightOffsetAtEnd": true,
+    "type": "Accelerating",
+    "width": 110.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "LuxPrismaticWaveReturn": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 10.845,
+   "castRadius": 299.29999,
+   "castRange": 25000.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 50.0,
+   "lineWidth": 110.0,
+   "missile": {
+    "Acceleration": 1800.0,
+    "InitialSpeed": 50.0,
+    "MaxSpeed": 2400.0,
+    "MinSpeed": 50.0,
+    "OffsetInitialTargetHeight": 100.0,
+    "ProjectTargetToCastRange": true,
+    "UseHeightOffsetAtEnd": true,
+    "type": "Accelerating",
+    "width": 110.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "LuxPrismaticWaveReturnDead": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 10.845,
+   "castRadius": 299.29999,
+   "castRange": 25000.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 50.0,
+   "lineWidth": 110.0,
+   "missile": {
+    "Acceleration": 1800.0,
+    "InitialSpeed": 50.0,
+    "MaxSpeed": 2400.0,
+    "MinSpeed": 50.0,
+    "OffsetInitialTargetHeight": 100.0,
+    "UseHeightOffsetAtEnd": true,
+    "type": "Accelerating",
+    "width": 110.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "LuxR": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 74.0,
+   "castRadius": 250.0,
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 3340.0,
+   "castTime": 1.375,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 3000.0,
+   "lineWidth": 190.0,
+   "spellCastTime": 1.375,
+   "useAnimatorFramerate": true
+  },
+  "LuxRMis": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 80.0,
+   "castRadius": 299.29999,
+   "castRange": 3500.0,
+   "castTime": 1.0,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 3000.0,
+   "lineWidth": 250.0,
+   "spellCastTime": 1.0,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "LuxRVfxMis": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.53,
+   "castRadius": 100.0,
+   "castRange": 10000.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 3600.0,
+   "lineWidth": 60.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 3600.0,
+    "TracksTarget": false,
+    "UseHeightOffsetAtEnd": true,
+    "type": "FixedSpeed",
+    "width": 60.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "LuxUltimateSkinElementMissile": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castConeAngle": 0.0,
+   "castRange": 25000.0,
+   "missile": {
+    "TravelTime": 0.002,
+    "type": "FixedTime",
+    "width": null
+   }
+  },
+  "LuxUltimateSkinTransformAnimation": {
+   "autoattackCastTime": false,
+   "castTime": 0.0,
+   "castTimeSrc": "spellCastTime",
+   "channelDuration": 2.5,
+   "spellCastTime": 0.0,
+   "spellTotalTime": 0.0
+  }
+ }
+}

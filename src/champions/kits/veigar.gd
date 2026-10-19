@@ -5,7 +5,7 @@ const HOLD := {"hold": true}
 
 
 func build_kit() -> void:
-	c.attack_missile_speed = 1100.0
+	c.attack_missile_speed = 1500.0   # [timing] VeigarBasicAttack mMissileSpec 1500 (legacy field 1100; wiki 1500)
 	c.attack_color = Color(0.65, 0.42, 1.0)
 	c.role = "mage"
 	c.level_order = "QWEQQRQWQWRWWEEREE"
@@ -216,11 +216,17 @@ class DarkMatter extends KAbility:
 	func damage() -> float:
 		return dv("BaseDamage") + dv("APRatio", 0.7) * ap()
 
+	## [timing] League wiki (Veigar, Dark Matter): "strikes the target location after a 1.221 seconds delay", the delay
+	## "starts at the beginning of the cast time" (data ImpactDelay 1.2); so the meteor lands 1.221 s after the button press,
+	## i.e. 1.221 - cast time after the windup ends (was a full 1.2 s after the windup: 1.45 s from the press).
+	func impact_delay() -> float:
+		return maxf(0.05, 1.221 - cast_time)
+
 	func execute(t: Dictionary) -> void:
 		var o = owner
 		var m = o.match_ref
 		var pos: Vector3 = t.pos
-		var delay := dv("ImpactDelay", 1.2)
+		var delay := impact_delay()
 		var rad := ind_radius
 		var r_m := rad * G.U
 		var self_ref := self
@@ -245,7 +251,7 @@ class DarkMatter extends KAbility:
 		var p: Vector3 = o.global_position
 		var rng := range_m()
 		var rad := ind_radius * G.U
-		var total := cast_time + dv("ImpactDelay", 1.2)
+		var total := cast_time + impact_delay()
 		# 1) guaranteed hits on immobilised champions (Event Horizon combo)
 		for e in ctx.enemies:
 			if G.flat_dist(p, e.global_position) > rng + rad * 0.5:
@@ -431,7 +437,8 @@ class PrimordialBurst extends KAbility:
 			var gp: Vector3 = tgt.global_position
 			if m.camera_rig != null and G.player != null and G.flat_dist(G.player.global_position, gp) < 14.0:
 				m.camera_rig.shake(0.35)
-		K.homing_missile(self, K.cast_pos(o, 1.4), u, 1100.0, on_hit, {"lol": mis_name})
+		# [timing] VeigarR mMissileSpec AcceleratingMovement: 500 u/s initial, +4000 u/s^2, min 500, max 4000 (was a flat 1100)
+		K.homing_missile(self, K.cast_pos(o, 1.4), u, 500.0, on_hit, {"lol": mis_name, "accel": 4000.0, "min_speed": 500.0, "max_speed": 4000.0})
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:

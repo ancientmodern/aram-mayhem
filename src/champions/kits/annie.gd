@@ -5,7 +5,7 @@ const HOLD := {"hold": true}
 
 
 func build_kit() -> void:
-	c.attack_missile_speed = 1200.0
+	c.attack_missile_speed = 1500.0   # [timing] AnnieBasicAttack mMissileSpec 1500 (legacy missileSpeed field says 1200; wiki 1500)
 	c.attack_color = Color(1.0, 0.55, 0.2)
 	c.role = "mage"
 	c.level_order = "QWEQQRQWQWRWWEEREE"
@@ -316,15 +316,15 @@ class Incinerate extends KAbility:
 		var dmg := damage()
 		LolVfx.spawn(m, "Annie_Base_W_cas_Right", AnnieUtil.ground_at(m, origin), {"dir": dir})
 		var self_ref := self
+		# [timing] Incinerate has no missile / delay in the bin (SpellData: cast time 0.25, no mMissileSpec, no delay data
+		# value): the whole cone is hit when the cast completes (was a per-target delay of distance / 2800 u/s, up to 0.2 s)
 		for u in K.enemies_cone(self, origin, dir, cast_range + 40.0, ANGLE):
-			var delay := G.flat_dist(origin, u.global_position) / 28.0
 			var tgt: Unit = u
-			m.after(delay, func():
-				if not is_instance_valid(tgt) or tgt.dead or not is_instance_valid(o):
-					return
-				self_ref.hit(tgt, dmg, G.DmgType.MAGIC, {"is_aoe": true, "tag": "w"})
-				if stun > 0.0:
-					K.stun(tgt, stun, o))
+			if not is_instance_valid(tgt) or tgt.dead:
+				continue
+			self_ref.hit(tgt, dmg, G.DmgType.MAGIC, {"is_aoe": true, "tag": "w"})
+			if stun > 0.0:
+				K.stun(tgt, stun, o)
 		AnnieUtil.shake(o, 0.08)
 		notify_cast(t)
 

@@ -67,6 +67,8 @@ func setup(p_team: int, p_tier: int) -> void:
 	recompute_stats()
 	hp = stats.max_hp
 	attack_missile_speed = 1200.0 if p_tier != Tier.FOUNTAIN else 3000.0   # [numbers] TurretBasicAttack missileSpeed 1200 (was 1300)
+	if p_tier == Tier.FOUNTAIN:
+		windup_pct = 0.4   # [timing] HA_AP_OrderShrineTurret mAttackDelayCastOffsetPercent +0.1 -> 0.3 + 0.1 (the lane turrets use 0.139)
 	var skin := 28 if team == G.Team.ORDER else (31 if p_tier == Tier.FOUNTAIN else 29)
 	var m := Assets.unit_model("Turret", skin)
 	if m == null:

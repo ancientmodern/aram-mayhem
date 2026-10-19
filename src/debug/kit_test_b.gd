@@ -366,7 +366,9 @@ func _lux() -> void:
 	_cast(1, spot)
 	await _wait(0.4)
 	_check("w_shield", c.total_shield() > 0.0, "%.0f" % c.total_shield())
-	await _wait(3.5)
+	# [timing] the wand now decelerates out (~1.1 s) and accelerates back from rest (~1.1 s): the return pass re-shields Lux
+	# at ~2.3 s (League), so the shield is gone ~5 s after the cast
+	await _wait(5.4)
 	_check("w_shield_ends", c.total_shield() <= 0.0 and _attached_fx(c).filter(func(n): return n.contains("W_tar")).is_empty())
 	# E: slow zone then recast detonation
 	_place(7.0)

@@ -467,6 +467,8 @@ class SwitcherooHook extends Effect:
 		var rocket := _pending == 2
 		_pending = 0
 		if rocket:
+			# [timing] JinxQAttack / JinxQCritAttack mMissileSpec speed 2000 (the minigun JinxBasicAttack is 2750)
+			mi.speed = 2000.0 * G.U
 			var orig: Callable = mi.on_hit
 			var self_ref := self
 			mi.on_hit = func(m2, u):

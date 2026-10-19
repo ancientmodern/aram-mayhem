@@ -1,0 +1,543 @@
+{
+ "alias": "Jinx",
+ "attack": {
+  "attackRange": 525.0,
+  "attackSpeed": 0.625,
+  "attackSpeedRatio": 0.625,
+  "attacks": {
+   "JinxBasicAttack": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 2750.0,
+    "speed": 2750.0
+   },
+   "JinxBasicAttack2": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 2750.0,
+    "speed": 2750.0
+   },
+   "JinxBasicAttack3": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 2750.0,
+    "speed": 2750.0
+   },
+   "JinxBasicAttack4": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 2750.0,
+    "speed": 2750.0
+   },
+   "JinxBasicAttack5": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 2750.0,
+    "speed": 2750.0
+   },
+   "JinxBasicAttack6": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 2750.0,
+    "speed": 2750.0
+   },
+   "JinxCritAttack": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 2750.0,
+    "speed": 2750.0
+   },
+   "JinxCritAttack2": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 2750.0,
+    "speed": 2750.0
+   },
+   "JinxCritAttack3": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 2750.0,
+    "speed": 2750.0
+   },
+   "JinxCritAttack4": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 2750.0,
+    "speed": 2750.0
+   },
+   "JinxCritAttack5": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 2750.0,
+    "speed": 2750.0
+   },
+   "JinxCritAttack6": {
+    "castFrameTime": 0.28333,
+    "legacySpeed": 2750.0,
+    "speed": 2750.0
+   },
+   "JinxQAttack": {
+    "castFrameTime": 0.23333,
+    "legacySpeed": 2000.0,
+    "speed": 2000.0
+   },
+   "JinxQAttack2": {
+    "castFrameTime": 0.23333,
+    "legacySpeed": 2000.0,
+    "speed": 2000.0
+   },
+   "JinxQCritAttack": {
+    "castFrameTime": 0.23333,
+    "legacySpeed": 2000.0,
+    "speed": 2000.0
+   }
+  },
+  "castOffset": null,
+  "castOffsetRatio": null,
+  "castTime": 0.28333,
+  "totalTime": 1.6,
+  "windupPct": 0.17708
+ },
+ "spells": {
+  "Crepe_JinxVsCaitlyn_CaitlynLose": {
+   "autoattackCastTime": false
+  },
+  "Crepe_JinxVsCaitlyn_JinxDescription": {
+   "autoattackCastTime": false
+  },
+  "Crepe_JinxVsCaitlyn_JinxReward": {
+   "autoattackCastTime": false
+  },
+  "Crepe_JinxVsCaitlyn_JinxStart": {
+   "autoattackCastTime": false
+  },
+  "Crepe_JinxVsEkko_JinxPoroTracker": {
+   "autoattackCastTime": false
+  },
+  "Crepe_JinxVsEkko_JinxReward": {
+   "autoattackCastTime": false
+  },
+  "Crepe_JinxVsEkko_JinxStart": {
+   "autoattackCastTime": false
+  },
+  "ItemHurricaneJinxAttack": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 8.7,
+   "castRadius": 710.0,
+   "castRange": 1400.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2000.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2000.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "JinxBasicAttack": {
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2750.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2750.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.25
+  },
+  "JinxBasicAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2750.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2750.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.25
+  },
+  "JinxBasicAttack3": {
+   "animation": "Attack3",
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2750.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2750.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.25
+  },
+  "JinxBasicAttack4": {
+   "animation": "Attack4",
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2750.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2750.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.25
+  },
+  "JinxBasicAttack5": {
+   "animation": "Attack5",
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2750.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2750.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.25
+  },
+  "JinxBasicAttack6": {
+   "animation": "Attack6",
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2750.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2750.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.25
+  },
+  "JinxCritAttack": {
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.45965,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2750.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2750.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.45965
+  },
+  "JinxCritAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.45965,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2750.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2750.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.45965
+  },
+  "JinxCritAttack3": {
+   "animation": "Attack3",
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.45965,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2750.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2750.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.45965
+  },
+  "JinxCritAttack4": {
+   "animation": "Attack4",
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.45965,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2750.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2750.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.45965
+  },
+  "JinxCritAttack5": {
+   "animation": "Attack5",
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.45965,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2750.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2750.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.45965
+  },
+  "JinxCritAttack6": {
+   "animation": "Attack6",
+   "autoattackCastTime": false,
+   "castFrame": 8.5,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.45965,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2750.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 2750.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.45965
+  },
+  "JinxE": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 15.0,
+   "castRadius": 315.0,
+   "castRange": 925.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 1750.0,
+   "mCastTime": 0.25,
+   "spellCastTime": 0.375,
+   "spellTotalTime": 1.5,
+   "useAnimatorFramerate": true
+  },
+  "JinxEFireBurn": {
+   "autoattackCastTime": false
+  },
+  "JinxEHit": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "castFrame": 7.975,
+   "castRange": 1200.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1100.0,
+   "lineWidth": 120.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 60.0,
+    "TravelTime": 0.4,
+    "mTargetHeightAugment": 60.0,
+    "type": "FixedTime",
+    "width": 120.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "JinxEMine": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 100.0,
+   "castRange": 800.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1450.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "JinxEMineSnare": {
+   "autoattackCastTime": false
+  },
+  "JinxPassiveKillAttackSpeed": {
+   "autoattackCastTime": false
+  },
+  "JinxPassiveMarker": {
+   "autoattackCastTime": false,
+   "castRange": 0.0
+  },
+  "JinxQ": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 22.605,
+   "castRadius": 100.0,
+   "castRange": 600.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 2000.0,
+   "mCastTime": 0.25,
+   "spellCastTime": 0.485
+  },
+  "JinxQAttack": {
+   "autoattackCastTime": true,
+   "castFrame": 7.0,
+   "castRadius": 710.0,
+   "castRange": 10000.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2000.0,
+   "lineWidth": 20.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 50.0,
+    "Speed": 2000.0,
+    "mTargetHeightAugment": 50.0,
+    "type": "FixedSpeed",
+    "width": 20.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "JinxQAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": true,
+   "castFrame": 7.0,
+   "castRadius": 710.0,
+   "castRange": 10000.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2000.0,
+   "lineWidth": 20.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 50.0,
+    "Speed": 2000.0,
+    "mTargetHeightAugment": 50.0,
+    "type": "FixedSpeed",
+    "width": 20.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "JinxQCritAttack": {
+   "autoattackCastTime": true,
+   "castFrame": 7.0,
+   "castRadius": 710.0,
+   "castRange": 10000.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2000.0,
+   "lineWidth": 20.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 50.0,
+    "Speed": 2000.0,
+    "mTargetHeightAugment": 50.0,
+    "type": "FixedSpeed",
+    "width": 20.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "JinxR": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 100.0,
+   "castRange": 25000.0,
+   "castTime": 0.6,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 1700.0,
+   "lineWidth": 140.0,
+   "mCastTime": 0.6,
+   "missile": {
+    "ProjectTargetToCastRange": true,
+    "Speed": 1700.0,
+    "TracksTarget": false,
+    "UseHeightOffsetAtEnd": true,
+    "type": "FixedSpeed",
+    "width": 140.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "JinxW": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 1.98,
+   "castRadius": 210.0,
+   "castRange": 10000.0,
+   "castRangeDisplayOverride": 1450.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "lineWidth": 60.0,
+   "mCastTime": 0.25,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 0.0
+  },
+  "JinxWMissile": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.53,
+   "castRadius": 100.0,
+   "castRange": 1500.0,
+   "castRangeDisplayOverride": 1175.0,
+   "castTime": 0.6,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 3300.0,
+   "lineWidth": 60.0,
+   "mCastTime": 0.6,
+   "missile": {
+    "ProjectTargetToCastRange": true,
+    "Speed": 3300.0,
+    "TracksTarget": false,
+    "UseHeightOffsetAtEnd": true,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": 60.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  }
+ }
+}

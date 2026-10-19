@@ -1,0 +1,208 @@
+{
+ "alias": "Darius",
+ "attack": {
+  "attackRange": 175.0,
+  "attackSpeed": 0.625,
+  "attackSpeedRatio": 0.625,
+  "attacks": {
+   "DariusBasicAttack": {
+    "castFrameTime": 0.36667,
+    "legacySpeed": 0.0,
+    "speed": null
+   },
+   "DariusBasicAttack2": {
+    "castFrameTime": 0.3,
+    "legacySpeed": 0.0,
+    "speed": null
+   },
+   "DariusCritAttack": {
+    "castFrameTime": 0.3,
+    "legacySpeed": 0.0,
+    "speed": null
+   }
+  },
+  "castOffset": -0.1,
+  "castOffsetRatio": 0.5,
+  "castTime": null,
+  "totalTime": null,
+  "windupPct": 0.2
+ },
+ "spells": {
+  "DariusAxeGrabCone": {
+   "animation": "Spell3",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castConeAngle": 25.0,
+   "castFrame": 11.625,
+   "castRadius": 225.0,
+   "castRange": 550.0,
+   "castRangeDisplayOverride": 535.0,
+   "castTime": 0.25,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 1500.0,
+   "mCastTime": 0.25,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "DariusBasicAttack": {
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "castFrame": 11.0,
+   "castRadius": 100.0,
+   "castRange": 20.0,
+   "castTime": 0.3667,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 0.0,
+   "mCastTime": 0.3667,
+   "spellCastTime": 0.35
+  },
+  "DariusBasicAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "castFrame": 9.0,
+   "castRadius": 100.0,
+   "castRange": 20.0,
+   "castTime": 0.3,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 0.0,
+   "mCastTime": 0.3,
+   "spellCastTime": 0.35
+  },
+  "DariusCleave": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRange": 270.0,
+   "castRangeDisplayOverride": 1.0,
+   "castTime": 0.2344,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 0.0,
+   "mCastTime": 0.2344,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "DariusCritAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "cantCancelWhileChanneling": true,
+   "castFrame": 9.0,
+   "castRadius": 100.0,
+   "castRange": 20.0,
+   "castTime": 0.3,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 0.0,
+   "mCastTime": 0.3,
+   "spellCastTime": 0.35
+  },
+  "DariusExecute": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 11.0,
+   "castRadius": 475.0,
+   "castRange": 475.0,
+   "castRangeDisplayOverride": 460.0,
+   "castTime": 0.3667,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 20.0,
+   "mCastTime": 0.3667,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "DariusHemo": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 9.57,
+   "castRadius": 210.0,
+   "castRange": 300.0,
+   "castTime": 0.52175,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.52175,
+   "spellTotalTime": 1.5334
+  },
+  "DariusHemoInternal": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 210.0,
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 1050.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "lineWidth": 80.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "DariusHemoMarker": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "DariusHemoVisual": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 7.5,
+   "castRadius": 210.0,
+   "castRange": 25000.0,
+   "castRangeDisplayOverride": 1050.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1200.0,
+   "lineWidth": 80.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0,
+   "useAnimatorFramerate": true
+  },
+  "DariusNoxianTacticsONH": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 11.0,
+   "castRadius": 210.0,
+   "castRange": 300.0,
+   "castTime": 0.3667,
+   "castTimeSrc": "mCastTime",
+   "legacyMissileSpeed": 0.0,
+   "mCastTime": 0.3667,
+   "spellCastTime": 0.52175,
+   "spellTotalTime": 1.5334,
+   "useAnimatorFramerate": true
+  },
+  "DariusNoxianTacticsONHAttack": {
+   "animation": "Spell2",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 6.0,
+   "castRadius": 175.0,
+   "castTime": 0.35,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 20.0,
+   "spellCastTime": 0.35,
+   "useAnimatorFramerate": true
+  },
+  "DariusNoxianTacticsSlow": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 14.82,
+   "castRadius": 210.0,
+   "castRange": 700.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 0.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  }
+ }
+}

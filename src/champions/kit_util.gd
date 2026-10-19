@@ -20,6 +20,8 @@ static func line_missile(ab: Ability, from: Vector3, dir: Vector3, speed: float,
 	mi.accel = opts.get("accel", 0.0) * G.U
 	if opts.has("max_speed"):
 		mi.max_speed = opts.max_speed * G.U
+	if opts.has("min_speed"):
+		mi.min_speed = opts.min_speed * G.U   # [timing] AcceleratingMovement mMinSpeed (a decelerating missile never stops)
 	if opts.has("on_hit"):
 		mi.on_hit = opts.on_hit
 	if opts.has("on_end"):
@@ -55,13 +57,20 @@ static func _lol_visual(mi: Missile, opts: Dictionary) -> void:
 			mi.custom["keep_visual"] = true
 
 
-## Homing missile to a unit (cannot miss). on_hit(missile, unit).
+## Homing missile to a unit (cannot miss). on_hit(missile, unit). opts: height, on_end, lol, accel / min_speed / max_speed
+## (League units / s, for AcceleratingMovement missiles: `speed` is the initial speed).
 static func homing_missile(ab: Ability, from: Vector3, target: Unit, speed: float, on_hit: Callable, opts: Dictionary = {}) -> Missile:
 	var o = ab.owner
 	var mi := Missile.new()
 	mi.ability = ab
 	mi.setup_homing(o, from, target, speed * G.U)
 	mi.height = opts.get("height", 1.0)
+	# [timing] accelerating homing missiles (League AcceleratingMovement: mInitialSpeed / mAcceleration / mMinSpeed / mMaxSpeed)
+	mi.accel = opts.get("accel", 0.0) * G.U
+	if opts.has("min_speed"):
+		mi.min_speed = opts.min_speed * G.U
+	if opts.has("max_speed"):
+		mi.max_speed = opts.max_speed * G.U
 	mi.on_hit = on_hit
 	if opts.has("on_end"):
 		mi.on_end = opts.on_end

@@ -546,14 +546,16 @@ class BulletTime extends KitAbility:
 		var dir: Vector3 = t.dir
 		var waves := int(dv("BaseWaves", 14.0))
 		var dur := dv("BaseChannelDuration", 3.0)
-		var interval := maxf(0.05, dur / float(maxi(waves, 1)))
+		# [timing] League wiki (Bullet Time): waves 0.2036 / 0.1781 / 0.1583 s apart at ranks 1-3, the first at 0.066 s
+		# (was dur / waves = 0.214 / 0.1875 / 0.167 s, the first wave at 0 s)
+		var interval: float = [0.2036, 0.1781, 0.1583][clampi(level - 1, 0, 2)]
 		# a previous Bullet Time still marked active (its channel was replaced without channel_end): clean it first
 		_cleanup()
 		_token += 1
 		o.stop_moving()
 		o.cancel_windup()
 		o.face_toward(o.global_position + dir, 1000.0)
-		start_channel(dur, {"dir": dir, "interval": interval, "acc": interval, "left": clampi(waves, 0, 64), "n": 0, "token": _token})
+		start_channel(dur, {"dir": dir, "interval": interval, "acc": interval - 0.066, "left": clampi(waves, 0, 64), "n": 0, "token": _token})
 		o.channel_disarm = true
 		o.play_anim("spell4", 1.0, 0.1)
 		o.anim_lock = dur

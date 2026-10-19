@@ -1,0 +1,320 @@
+{
+ "alias": "Sona",
+ "attack": {
+  "attackRange": 550.0,
+  "attackSpeed": 0.644,
+  "attackSpeedRatio": 0.644,
+  "attacks": {
+   "SonaBasicAttack": {
+    "castFrameTime": 0.36667,
+    "legacySpeed": 1500.0,
+    "speed": 1500.0
+   },
+   "SonaBasicAttack2": {
+    "castFrameTime": 0.36667,
+    "legacySpeed": 1500.0,
+    "speed": 1500.0
+   },
+   "SonaCritAttack": {
+    "castFrameTime": 0.26667,
+    "legacySpeed": 1500.0,
+    "speed": 1500.0
+   }
+  },
+  "castOffset": -0.12818,
+  "castOffsetRatio": null,
+  "castTime": null,
+  "totalTime": null,
+  "windupPct": 0.17182
+ },
+ "spells": {
+  "SonaBasicAttack": {
+   "autoattackCastTime": false,
+   "castFrame": 11.0,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1500.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4236
+  },
+  "SonaBasicAttack2": {
+   "animation": "Attack2",
+   "autoattackCastTime": false,
+   "castFrame": 11.0,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1500.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4236
+  },
+  "SonaCritAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "castFrame": 8.0,
+   "castRadius": 100.0,
+   "castRange": 622.70001,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1500.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4236
+  },
+  "SonaDJTransition": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 13.0,
+   "castRadius": 20.0,
+   "castTime": 0.5,
+   "castTimeSrc": "mCastTime",
+   "mCastTime": 0.5,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "SonaE": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 8.5,
+   "castRadius": 1000.0,
+   "castRange": 1000.0,
+   "castRangeDisplayOverride": 430.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1500.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "SonaEPassiveAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "castFrame": 11.0,
+   "castRange": 550.0,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1500.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4236
+  },
+  "SonaPMissile": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castRange": 25000.0,
+   "castTime": 0.425,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1300.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1280.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.425,
+   "spellTotalTime": 0.8
+  },
+  "SonaPMissile2": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castRange": 25000.0,
+   "castTime": 0.425,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1300.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1280.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.425,
+   "spellTotalTime": 0.8
+  },
+  "SonaPMissile3": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castRange": 25000.0,
+   "castTime": 0.425,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1300.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1280.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.425,
+   "spellTotalTime": 0.8
+  },
+  "SonaPassive": {
+   "autoattackCastTime": false,
+   "castRange": 0.0
+  },
+  "SonaPassiveAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "castFrame": 11.0,
+   "castRange": 550.0,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1500.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4236
+  },
+  "SonaQ": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 8.5,
+   "castRadius": 850.0,
+   "castRange": 825.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1500.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "SonaQMissile": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castRadius": 710.0,
+   "castRange": 10000.0,
+   "castTime": 0.425,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1300.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1300.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.425,
+   "spellTotalTime": 0.8
+  },
+  "SonaQPassiveAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "castFrame": 11.0,
+   "castRange": 550.0,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1500.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4236
+  },
+  "SonaR": {
+   "animation": "Spell4",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 8.5,
+   "castRadius": 600.0,
+   "castRange": 1000.0,
+   "castRangeDisplayOverride": 900.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 2400.0,
+   "lineWidth": 140.0,
+   "missile": {
+    "OffsetInitialTargetHeight": -50.0,
+    "ProjectTargetToCastRange": true,
+    "Speed": 2400.0,
+    "TracksTarget": false,
+    "UseHeightOffsetAtEnd": true,
+    "mTargetHeightAugment": -50.0,
+    "type": "FixedSpeed",
+    "width": 140.0
+   },
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "SonaW": {
+   "animation": "Spell1",
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castFrame": 8.5,
+   "castRadius": 1000.0,
+   "castRange": 1000.0,
+   "castTime": 0.25,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1500.0,
+   "spellCastTime": 0.25,
+   "spellTotalTime": 1.0
+  },
+  "SonaWMissile": {
+   "autoattackCastTime": false,
+   "cantCancelWhileWindingUp": true,
+   "castRadius": 710.0,
+   "castRange": 10000.0,
+   "castTime": 0.425,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1300.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1300.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.425,
+   "spellTotalTime": 0.8
+  },
+  "SonaWPassiveAttack": {
+   "animation": "Crit",
+   "autoattackCastTime": false,
+   "castFrame": 11.0,
+   "castRange": 550.0,
+   "castTime": 0.4236,
+   "castTimeSrc": "spellCastTime",
+   "legacyMissileSpeed": 1500.0,
+   "missile": {
+    "OffsetInitialTargetHeight": 100.0,
+    "Speed": 1500.0,
+    "mTargetHeightAugment": 100.0,
+    "type": "FixedSpeed",
+    "width": null
+   },
+   "spellCastTime": 0.4236
+  }
+ }
+}

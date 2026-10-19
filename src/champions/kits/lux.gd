@@ -260,8 +260,10 @@ class PrismaticBarrier extends KitAbility:
 		var o = owner
 		var self_ref := self
 		_shield(o)
+		# [timing] LuxPrismaticWaveMissile AcceleratingMovement: 2200 u/s out, decelerating 2300 u/s^2 down to 500 u/s
+		# (was a flat 2200: the wand reached max range in 0.5 s instead of ~1.1 s)
 		var mi := K.line_missile(self, K.cast_pos(o, 1.2), t.dir, 2200.0, cast_range, {
-			"width": 110.0, "pierce": true, "visual": LuxFx.pair("Lux_Base_W_mis", "Lux_Base_W_mis_child"), "keep_visual": true, "height": 1.2,
+			"accel": -2300.0, "max_speed": 2200.0, "min_speed": 500.0, "width": 110.0, "pierce": true, "visual": LuxFx.pair("Lux_Base_W_mis", "Lux_Base_W_mis_child"), "keep_visual": true, "height": 1.2,
 			"on_hit": func(_m, u): self_ref._shield(u),
 			"on_end": func(_m, pos): self_ref._return(pos),
 		})
@@ -281,9 +283,11 @@ class PrismaticBarrier extends KitAbility:
 			return
 		var mi := Missile.new()
 		mi.ability = self
-		mi.setup_homing(o, pos, o, 1400.0 * G.U)
+		# [timing] LuxPrismaticWaveReturn AcceleratingMovement: starts at 50 u/s, +1800 u/s^2, max 2400 (was 1400, +1500)
+		mi.setup_homing(o, pos, o, 50.0 * G.U)
 		mi.mode = Missile.Mode.FOLLOW
-		mi.accel = 1500.0 * G.U
+		mi.accel = 1800.0 * G.U
+		mi.min_speed = 50.0 * G.U
 		mi.max_speed = 2400.0 * G.U
 		mi.collides = true
 		mi.pierce = true
@@ -379,7 +383,7 @@ class LucentSingularity extends KitAbility:
 			return
 		var pos := ground(t.pos)
 		var from: Vector3 = K.cast_pos(o, 1.2)
-		var fly := maxf(0.15, G.flat_dist(from, pos) / 13.0)
+		var fly := maxf(0.15, G.flat_dist(from, pos) / 12.0)   # [timing] LuxLightStrikeKugel FixedSpeed 1200 (was 1300)
 		zone = {"pos": pos, "landed": false, "node": null, "detonate_on_land": false, "land_time": -1.0}
 		var st := zone
 		recast_window = fly + dv("SlowZoneDuration", 5.0)

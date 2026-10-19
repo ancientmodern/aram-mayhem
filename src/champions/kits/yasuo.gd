@@ -275,7 +275,11 @@ class SteelTempest extends YAbility:
 		elif not owner.dead and is_q3() and ready_fx == null:
 			ready_fx = LolVfx.attach(owner, "Yasuo_Base_Q_wind_ready_buff", {"loop": true, "height": 0.3})
 		var bas: float = owner.stats.bonus_as
-		cast_time = maxf(0.175, 0.35 / (1.0 + maxf(0.0, bas)))
+		# [timing] League wiki (Steel Tempest): cast time 0.35 -> 0.175 (thrust) / 0.35 -> 0.28 (whirlwind) with bonus attack
+		# speed; the floor is reached where the cooldown floor is (1.33 s = 4 s x (1 - 0.667), i.e. 111.3% bonus AS). Linear in
+		# between (the wiki gives the end points only). Was 0.35 / (1 + bonus AS) with a 0.175 floor for the whirlwind too.
+		var qk := clampf(maxf(0.0, bas) / 1.113, 0.0, 1.0)
+		cast_time = 0.35 - (0.07 if is_q3() else 0.175) * qk
 		if is_q3():
 			cast_range = dv("TornadoRange", 1100.0)
 			ind_width = 180.0

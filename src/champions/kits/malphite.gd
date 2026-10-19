@@ -418,7 +418,7 @@ class GroundSlam extends MAbility:
 		indicator = Ind.CIRCLE
 		ind_radius = 400.0
 		cast_range = 0.0
-		cast_time = 0.24
+		cast_time = 0.2419   # [timing] Landslide mCastTime 0.2419
 		anim = "spell3"
 		anim_lock = 0.45
 

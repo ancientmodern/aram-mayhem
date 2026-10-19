@@ -75,8 +75,9 @@ class EssenceTheft extends Effect:
 		# League: the victim's essence flies to Ahri (P_mis), lands on her (P_tar) and heals (P_Heal_champion)
 		var o = owner
 		if is_instance_valid(victim):
-			K.homing_missile(o.abilities[0], victim.global_position + Vector3(0, victim.height * 0.5, 0), o, 1400.0, func(_mm, _u):
-				K.attach_fx(o, "Ahri_Base_P_tar", false), {"lol": "Ahri_Base_P_mis"})
+			# [timing] AhriPassiveMissile AcceleratingMovement: 1800 u/s initial, +800 u/s^2, min 1200, max 8000 (was a flat 1400)
+			K.homing_missile(o.abilities[0], victim.global_position + Vector3(0, victim.height * 0.5, 0), o, 1800.0, func(_mm, _u):
+				K.attach_fx(o, "Ahri_Base_P_tar", false), {"lol": "Ahri_Base_P_mis", "accel": 800.0, "min_speed": 1200.0, "max_speed": 8000.0})
 		K.attach_fx(owner, "Ahri_Base_P_Heal_champion", false)
 		var r: Ability = owner.abilities[3]
 		if r != null and r.recast_window > 0.0:
@@ -187,7 +188,8 @@ class FoxFire extends Ability:
 			holder.add_child(f)
 			flames.append(f)
 		var spin := holder.create_tween().set_loops()
-		spin.tween_property(holder, "rotation:y", TAU, 1.2).from(0.0)
+		# [timing] AhriWMissile CircleMovement mAngularVelocity 2.65 rad/s (wiki lists 75.92 deg/s): one orbit per 2.37 s (was 1.2 s)
+		spin.tween_property(holder, "rotation:y", TAU, TAU / 2.65).from(0.0)
 		for i in 3:
 			flames[i].position = Vector3(cos(i * TAU / 3.0), 0, sin(i * TAU / 3.0)) * 1.5
 		var dmg := fire_damage()
@@ -361,7 +363,8 @@ class SpiritRush extends Ability:
 		var dest: Vector3 = o.global_position + G.flat_dir(o.global_position, t.pos) * minf(G.flat_dist(o.global_position, t.pos), dv("RDashDistance", 500.0) * G.U)
 		var self_ref := self
 		var trail := LolVfx.attach(o, "Ahri_Base_R_mis", {"dir": G.flat_dir(o.global_position, dest)})
-		o.start_dash(dest, {"speed": dv("RBaseDashSpeed", 1200.0) * G.U, "on_arrive": func(_u):
+		# [timing] League wiki (Ahri R): dash speed "1200 + 100% movement speed" (data RBaseDashSpeed 1200; was a flat 1200)
+		o.start_dash(dest, {"speed": (dv("RBaseDashSpeed", 1200.0) + o.stats.move_speed) * G.U, "on_arrive": func(_u):
 			if trail != null and is_instance_valid(trail):
 				trail.stop()
 			self_ref._bolts()})
