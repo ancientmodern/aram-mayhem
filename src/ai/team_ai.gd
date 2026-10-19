@@ -21,11 +21,17 @@ var enemy_strength := 0.0
 var stance := "hold"                ## "engage", "hold", "retreat"
 var focus: Unit = null
 var safe_point := Vector3.ZERO      ## where to regroup when retreating (our first standing turret)
+var _noise_by_bot := {}             ## [bot-diff] BotBrain instance id -> judge_noise (the team misreads fights by the average)
+var _team_judge := 0.0
 
 
 func setup(p_team: int, p_match) -> void:
 	team = p_team
 	m = p_match
+
+
+func set_bot_noise(bot_id: int, v: float) -> void:
+	_noise_by_bot[bot_id] = v
 
 
 func lane_coord(p: Vector3) -> float:
@@ -81,6 +87,13 @@ func refresh() -> void:
 		enemy_strength += BotBrain.power_of(e) * _presence(e, mid)
 	# stance with hysteresis so the team doesn't flip-flop every refresh
 	var ratio := strength / maxf(enemy_strength, 1.0)
+	if not _noise_by_bot.is_empty():   # [bot-diff] weaker teams misjudge who is stronger (slowly drifting error)
+		var jn := 0.0
+		for v in _noise_by_bot.values():
+			jn += v
+		jn /= _noise_by_bot.size()
+		_team_judge = lerpf(_team_judge, G.rng.randf_range(-1.0, 1.0), 0.3)
+		ratio *= 1.0 + jn * _team_judge
 	var down := enemy_alive - alive
 	match stance:
 		"engage":

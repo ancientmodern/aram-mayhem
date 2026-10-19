@@ -33,11 +33,14 @@ func _ready() -> void:
 	_tip = TIPS[G.rng.randi() % TIPS.size()]
 	var order: Array = [cfg.get("player_champion", "Ahri")] + cfg.get("ally_champions", [])
 	var chaos: Array = cfg.get("enemy_champions", [])
+	var lv := {}   # [champ-select] bot level per (team, champion) from the lineup, shown on the card ("Hard Bot")
+	for e in cfg.get("lineup", []):
+		lv["%d:%s" % [int(e.get("team", 0)), str(e.get("champion", ""))]] = int(e.get("difficulty", -1))
 	for i in order.size():
-		_cards.append({"alias": order[i], "team": 0, "is_player": i == 0,
+		_cards.append({"alias": order[i], "team": 0, "is_player": i == 0, "level": lv.get("0:" + str(order[i]), -1),
 				"summoners": cfg.get("player_summoners", ["Flash", "Mark"]) if i == 0 else []})
 	for a in chaos:
-		_cards.append({"alias": a, "team": 1, "is_player": false, "summoners": []})
+		_cards.append({"alias": a, "team": 1, "is_player": false, "level": lv.get("1:" + str(a), -1), "summoners": []})
 	for i in _cards.size():
 		_disp[i] = 0.0
 		_speed[i] = G.rng.randf_range(0.34, 0.62)
@@ -161,7 +164,7 @@ func _draw_card(i: int, r: Rect2) -> void:
 		grad_border(rr, 2.0, [[0.0, Color("463714")], [1.0, Color("785a28")]], a)
 	var nm: String = ChampionDB.client_data(c.alias).get("name", c.alias)
 	label(nm, Vector2(rr.get_center().x, rr.end.y - 84), "h4", 1, Color(C_GOLD_BRIGHT.r, C_GOLD_BRIGHT.g, C_GOLD_BRIGHT.b, a) if c.is_player else Color(C_TEXT.r, C_TEXT.g, C_TEXT.b, a), 25.0, true, 0.0, rr.size.x - 12)
-	label("You" if c.is_player else "%s Bot" % nm, Vector2(rr.get_center().x, rr.end.y - 56), "label", 1, Color(C_TEAL.r, C_TEAL.g, C_TEAL.b, a) if c.is_player else Color(C_DIM.r, C_DIM.g, C_DIM.b, a), 18.0, true)
+	label("You" if c.is_player else ("%s Bot" % DIFFS[c.level] if c.level >= 0 and c.level < DIFFS.size() else "%s Bot" % nm), Vector2(rr.get_center().x, rr.end.y - 56), "label", 1, Color(C_TEAL.r, C_TEAL.g, C_TEAL.b, a) if c.is_player else Color(C_DIM.r, C_DIM.g, C_DIM.b, a), 18.0, true)
 	var sp: Array = c.summoners if not c.summoners.is_empty() else ["Flash", "Mark"]
 	for s in 2:
 		icon(Assets.summoner_icon(str(sp[s]).to_lower()), Rect2(rr.position.x + 10 + s * 40, rr.position.y + 16, 34, 34), C_GOLD_DARK, Color(1, 1, 1, a))

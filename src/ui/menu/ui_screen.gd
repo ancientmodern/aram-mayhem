@@ -814,7 +814,7 @@ func _draw_tip() -> void:
 
 
 # ===================================================================== settings (shared)
-const DIFFS := ["Easy", "Normal", "Hard", "Insane"]
+const DIFFS := ["Intro", "Beginner", "Intermediate", "Hard"]   ## bot levels (docs/BOT_DIFFICULTY.md)
 const SET_TABS := ["Gameplay", "Video", "Sound"]
 var _drag_slider := ""
 var _slider_last := -1.0
@@ -839,8 +839,9 @@ func draw_settings(r: Rect2) -> void:
 	var row := 62.0
 	match settings_tab:
 		0:
-			label("Bot difficulty", Vector2(x, y + 22), "label", 0, C_TEXT, 21.0)
+			label("Default bot level", Vector2(x, y + 22), "label", 0, C_TEXT, 21.0)   # [champ-select] champion select sets each bot's own level; this is the default
 			radio_row("set:diff:", Rect2(x + 230, y, w - 230, 44), DIFFS, int(G.settings.difficulty), 20.0)
+			set_tip("set:diff:0", "Default bot level", "Level for bots that were not set individually (champion select sets every bot).")
 			y += row
 			label("Ability casting", Vector2(x, y + 22), "label", 0, C_TEXT, 21.0)
 			var modes := ["Quick", "Indicator", "Normal"]

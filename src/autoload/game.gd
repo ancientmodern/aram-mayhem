@@ -52,10 +52,17 @@ var settings := {
 	"master_volume": 0.8,
 	"sfx_volume": 0.9,
 	"music_volume": 0.5,
-	"difficulty": 1,             # 0 easy, 1 normal, 2 hard, 3 insane
+	"difficulty": 2,             # bot level for every bot without a G.lineup entry: 0 Intro, 1 Beginner, 2 Intermediate, 3 Hard
 	"fullscreen": true,
 	"show_fps": false,
+	"lineup_prefs": {},          # [champ-select] last champion-select setup: per-slot bot levels + pinned champions
 }
+
+## [bot-diff] Per-bot lineup for the next match, filled by champion select (see docs/BOT_DIFFICULTY.md):
+## Array of 10 Dictionaries {"team": G.Team.ORDER|CHAOS, "champion": alias, "difficulty": -1 (the human) | 0..3}.
+## Empty = every bot uses settings.difficulty. [champ-select] written by ChampSelect on lock-in (cfg.lineup) and by
+## Match._spawn_champions (so it always reflects the champions actually spawned); human first, ORDER entries then CHAOS.
+var lineup: Array = []
 
 # Configuration for the next match, set by the menus.
 var next_match := {

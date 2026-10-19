@@ -945,6 +945,8 @@ static func restore(c, snap: Dictionary) -> void:
 ## Next purchase for a bot following its build. Returns item id or -1. (Sells the starter item when a slot is needed.)
 static func bot_next_purchase(c) -> int:
 	var build: Array = BUILDS.get(c.alias, DEFAULT_BUILD)
+	if c.controller != null and c.controller.has_method("shape_build"):   # [bot-diff] the bot's difficulty level shapes its build
+		build = c.controller.shape_build(build)
 	for target in build:
 		if _owns(c, target) or _owns_upgrade(c, target):
 			continue

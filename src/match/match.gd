@@ -924,29 +924,83 @@ func _update_hexgates() -> void:
 
 
 func _spawn_champions(cfg: Dictionary) -> void:
-	var ally: Array = cfg.get("ally_champions", []).duplicate()
-	var enemy: Array = cfg.get("enemy_champions", []).duplicate()
+	# [champ-select] cfg.lineup (or a preset G.lineup) = 10 {team, champion, difficulty} entries from champion select: the
+	# match spawns exactly those champions and each bot gets its own level (read by BotBrain from G.lineup).
+	var lu: Array = cfg.get("lineup", [])
+	if lu.is_empty() and G.lineup.size() == 10:
+		lu = G.lineup
+	var player_champ: String = cfg.player_champion
+	var ally: Array = []
+	var enemy: Array = []
+	var ally_d: Array = []
+	var enemy_d: Array = []
+	var dflt := clampi(int(G.settings.get("difficulty", 1)), 0, 3)
+	if lu.is_empty():
+		ally = cfg.get("ally_champions", []).duplicate()
+		enemy = cfg.get("enemy_champions", []).duplicate()
+	else:
+		var have_human := false
+		for e in lu:
+			var ch := str(e.get("champion", ""))
+			var d := int(e.get("difficulty", dflt))
+			if int(e.get("team", 0)) == G.Team.CHAOS:
+				enemy.append(ch)
+				enemy_d.append(d if d >= 0 else dflt)
+			elif d < 0 and not have_human:
+				have_human = true
+				player_champ = ch
+			else:
+				ally.append(ch)
+				ally_d.append(d if d >= 0 else dflt)
 	cfg_summoners = cfg.get("player_summoners", [])
 	var pool: Array = ChampionDB.ROSTER.duplicate()
 	pool.shuffle()
-	var used := {cfg.player_champion: true}
-	for a in ally + enemy:
-		used[a] = true
+	var used := {player_champ: true}
 	var pick := func() -> String:
 		for p in pool:
 			if not used.has(p):
 				used[p] = true
 				return p
 		return pool[G.rng.randi() % pool.size()]
+	# no duplicates in a game (League ARAM): a repeated or unknown champion is replaced by a free one
+	var bad: Array = []   # [list, index]
+	for lst in [ally, enemy]:
+		for i in lst.size():
+			var a: String = lst[i]
+			if a in ChampionDB.ROSTER and (not used.has(a) or lu.is_empty()):
+				used[a] = true   # (a legacy cfg without a lineup keeps what the caller asked for, even a repeat)
+			else:
+				bad.append([lst, i])
+	for b in bad:
+		b[0][b[1]] = pick.call()
 	while ally.size() < 4:
 		ally.append(pick.call())
+		ally_d.append(dflt)
 	while enemy.size() < 5:
 		enemy.append(pick.call())
-	var order_list: Array = [cfg.player_champion] + ally
+		enemy_d.append(dflt)
+	if lu.is_empty():
+		G.lineup = []    # BotBrain falls back to --botlevels / settings.difficulty; the resolved levels are recorded below
+	else:
+		var out: Array = [{"team": G.Team.ORDER, "champion": player_champ, "difficulty": -1}]
+		for i in 4:
+			out.append({"team": G.Team.ORDER, "champion": ally[i], "difficulty": ally_d[i]})
+		for i in 5:
+			out.append({"team": G.Team.CHAOS, "champion": enemy[i], "difficulty": enemy_d[i]})
+		G.lineup = out
+	var order_list: Array = [player_champ] + ally
 	for i in order_list.size():
 		_spawn_champion(order_list[i], G.Team.ORDER, cfg.get("player_skin", 0) if i == 0 else 0, i == 0, i)
 	for i in enemy.size():
 		_spawn_champion(enemy[i], G.Team.CHAOS, 0, false, i)
+	if lu.is_empty():
+		var rec: Array = []
+		for c in champions:
+			if c.is_player:
+				rec.append({"team": c.team, "champion": c.alias, "difficulty": -1})
+			else:
+				rec.append({"team": c.team, "champion": c.alias, "difficulty": int(c.controller.level) if c.controller != null and "level" in c.controller else dflt})
+		G.lineup = rec
 
 
 func _spawn_champion(alias: String, team: int, skin: int, is_player: bool, idx: int) -> Champion:
@@ -1001,6 +1055,9 @@ var end_screen: EndScreen = null
 func _bot_summoner(c: Champion) -> String:
 	if G.rng.randf() < 0.55:
 		return "Mark"
+	# [bot-diff] Hard bots sometimes bring Exhaust (used on melee divers, see BotBrain.exhaust_decision)
+	if BotBrain.level_for(c) >= 3 and G.rng.randf() < 0.25:
+		return "Exhaust"
 	var melee: bool = c.stats.attack_range < 300.0
 	var opts := ["Ghost", "Ignite", "Barrier"] if melee else ["Heal", "Barrier", "Ignite", "Cleanse"]
 	return opts[G.rng.randi() % opts.size()]

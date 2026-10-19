@@ -146,6 +146,9 @@ static func roll(c, rarity: String, count: int, exclude: Dictionary) -> Array:
 
 ## Bot choice among offered ids: power + champion synergy + noise.
 static func bot_pick(c, ids: Array) -> int:
+	# [bot-diff] Intro / Beginner bots often just take whatever is on the left / a random card
+	if c.controller is BotBrain and c.controller.level <= 1 and not ids.is_empty() and G.rng.randf() < (0.7 if c.controller.level == 0 else 0.35):
+		return G.rng.randi() % ids.size()
 	var best := 0
 	var best_s := -INF
 	for i in ids.size():

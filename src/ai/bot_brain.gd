@@ -4,6 +4,43 @@ extends RefCounted
 ## Team-level decisions (engage / hold / retreat, focus target) come from a shared TeamAI.
 ## Also serves as the `ctx` object passed to Ability.ai_consider() (see docs/KIT_GUIDE.md).
 
+## [bot-diff] difficulty tiers (docs/BOT_DIFFICULTY.md). Every bot has its own level 0..3:
+## 0 Intro, 1 Beginner, 2 Intermediate, 3 Hard. Resolved by level_for(): G.lineup entry > --botlevels=A,B > G.settings.difficulty.
+const LEVEL_NAMES := ["Intro", "Beginner", "Intermediate", "Hard"]
+## Parameter table: name -> value per level [Intro, Beginner, Intermediate, Hard].
+const LV := {
+	"reaction":      [0.55, 0.38, 0.26, 0.10],   ## decision interval (s)
+	"aim_error":     [2.0, 1.3, 0.8, 0.04],     ## skillshot aim scatter (m)
+	"lead":          [0.0, 0.5, 0.8, 1.0],       ## fraction of the target's movement the aim leads (3 = follows the move path)
+	"dodge":         [0.0, 0.10, 0.3, 0.88],    ## chance to sidestep a skillshot that would hit
+	"dodge_react":   [9.0, 0.45, 0.3, 0.09],    ## missile age (s) before the bot can react to it
+	"retreat_hp":    [0.10, 0.20, 0.28, 0.32],   ## base retreat threshold (hp ratio)
+	"ability_gap":   [1.2, 0.6, 0.3, 0.15],      ## pause after a cast (s)
+	"ability_skip":  [0.45, 0.30, 0.15, 0.0],    ## chance to hesitate instead of casting a ready ability
+	"hesitate":      [0.22, 0.12, 0.05, 0.0],     ## chance per decision to freeze for ~0.4-1.0 s
+	"kite":          [0.0, 0.25, 0.5, 1.0],      ## fraction of attack cycles a ranged bot orb-walks
+	"turret_aware":  [0.0, 0.5, 0.75, 1.0],       ## chance (per decision) to respect enemy turret range
+	"relic_hp":      [0.0, 0.3, 0.5, 0.7],       ## health relic is used below this hp ratio
+	"relic_range":   [0.0, 10.0, 16.0, 22.0],
+	"lasthit":       [0.0, 0.4, 0.75, 1.0],       ## last-hit skill (else: nearest minion)
+	"team_focus":    [0.0, 0.2, 0.5, 1.0],      ## chance per decision to adopt the team's focus target
+	"back_scale":    [0.3, 0.65, 1.0, 1.1],      ## how far behind the wave front it stands
+	"caution_scale": [0.2, 0.6, 1.0, 1.2],
+	"wander_scale":  [1.6, 1.3, 1.0, 0.8],
+	"push":          [0.0, 0.0, 0.0, 1.0],       ## 1 = sieges / pushes after winning a fight (numbers advantage)
+	"judge_noise":   [0.55, 0.45, 0.3, 0.0],      ## misjudgement of fight strength (power ratio) in retreat / engage decisions
+	"mana_floor":    [0.0, 0.0, 0.15, 0.3],      ## mana ratio kept in reserve in lane (no non-ult casts below it)
+	"cc_hold":       [0.0, 0.0, 0.0, 1.0],       ## 1 = holds crowd control for engages and never stacks it
+	"ult_wait":      [0.0, 0.0, 5.0, 8.0],       ## seconds an ultimate may wait for a worthwhile target (0 = casts whenever ready)
+}
+
+## Slot indices (0..3 = QWER) of each champion's crowd-control abilities (hard bots hold / chain them).
+const CC_SLOTS := {"Ahri": [2], "Darius": [2], "Jinx": [2], "Leona": [0, 2, 3], "Lux": [0], "Malphite": [3], "Sona": [3], "Veigar": [2]}
+
+static var _cli_levels = null    ## --botlevels=<order>,<chaos> (bench / tests), parsed once
+static var _cli_lv = null        ## --botlv=<level>:<key>=<value>[,<level>:<key>=<value>] overrides LV entries (tuning / ablations)
+
+var level := 1
 var c: Champion
 var m = null
 var team_ai: TeamAI = null
@@ -50,6 +87,34 @@ var _mode_since := 0.0
 var _retreat_until := -1.0
 var _kite_target: Unit = null
 var _kite_goal := Vector3.INF
+# --- [bot-diff] level-dependent state
+var lead := 1.0
+var dodge_react := 0.1
+var ability_gap := 0.25
+var ability_skip := 0.0
+var hesitate := 0.0
+var kite := 1.0
+var turret_aware := 1.0
+var relic_hp := 0.6
+var relic_range := 22.0
+var lasthit := 1.0
+var team_focus := 1.0
+var back_scale := 1.0
+var _aware := true               ## respects enemy turret range this decision
+var _stance := "hold"            ## the team stance as this bot perceives it
+var _kiting := true              ## orb-walks the current attack cycle
+var _build_perm: Array = []      ## level 1: a stable shuffled build order
+var _incoming := 0.0             ## smoothed damage taken per second
+var _dtt := 0.0
+var _gather_t := 0.0
+var _ult_hold_since := -1.0
+var _next_shop := 0.0
+# stats for tools/bot_bench.sh
+var stat_casts := 0
+var stat_threats := 0            ## enemy skillshots that were about to hit us
+var stat_dodges := 0             ## ... of which we decided to sidestep
+var stat_flash := 0
+var stat_summ := 0
 
 
 func setup(champ: Champion, p_match) -> void:
@@ -60,11 +125,6 @@ func setup(champ: Champion, p_match) -> void:
 	frontline = not is_ranged or "tank" in roles
 	aggression = clampf(0.45 + G.rng.randf_range(-0.15, 0.2) + (0.15 if frontline else 0.0), 0.2, 0.9)
 	personal_offset = G.rng.randf_range(-2.5, 2.5)
-	var diff: int = G.settings.get("difficulty", 1)
-	reaction = [0.4, 0.25, 0.16, 0.1][diff]
-	aim_error = [1.0, 0.5, 0.25, 0.1][diff]
-	retreat_hp = [0.2, 0.26, 0.3, 0.3][diff]
-	dodge_chance = [0.0, 0.3, 0.6, 0.85][diff]
 	if c.kit != null and c.kit.has_method("ai_tuning"):
 		var t: Dictionary = c.kit.ai_tuning()
 		aggression = t.get("aggression", aggression)
@@ -76,6 +136,105 @@ func setup(champ: Champion, p_match) -> void:
 	emote_chance = G.rng.randf_range(0.1, 0.6)
 	harass = clampf(G.rng.randf_range(0.2, 1.0) * (0.5 + aggression), 0.0, 1.0)
 	_next_harass = G.rng.randf_range(2.0, 6.0)
+	_persona_forward = forward_bias
+	_persona_caution = caution
+	_persona_wander = wander
+	set_level(level_for(c))
+
+
+## [bot-diff] (Re)apply a difficulty level 0..3 to this bot (setup() calls it; tests / the bench may call it again).
+func set_level(lv: int) -> void:
+	level = clampi(lv, 0, 3)
+	judge_noise = LV.judge_noise[level]
+	push_on = LV.push[level] > 0.0
+	mana_floor = LV.mana_floor[level]
+	cc_hold = LV.cc_hold[level]
+	ult_wait = LV.ult_wait[level]
+	reaction = LV.reaction[level]
+	aim_error = LV.aim_error[level]
+	lead = LV.lead[level]
+	dodge_chance = LV.dodge[level]
+	dodge_react = LV.dodge_react[level]
+	retreat_hp = LV.retreat_hp[level]
+	ability_gap = LV.ability_gap[level]
+	ability_skip = LV.ability_skip[level]
+	hesitate = LV.hesitate[level]
+	kite = LV.kite[level]
+	turret_aware = LV.turret_aware[level]
+	relic_hp = LV.relic_hp[level]
+	relic_range = LV.relic_range[level]
+	lasthit = LV.lasthit[level]
+	team_focus = LV.team_focus[level]
+	back_scale = LV.back_scale[level]
+	if _cli_lv == null:
+		_cli_lv = {}
+		for a in OS.get_cmdline_user_args():
+			if a.begins_with("--botlv="):
+				for part in a.substr(8).split(","):
+					var kv := part.split("=")
+					var lk := kv[0].split(":")
+					if kv.size() == 2 and lk.size() == 2:
+						_cli_lv[[int(lk[0]), lk[1]]] = float(kv[1])
+	if not _cli_lv.is_empty():
+		for k in LV.keys():
+			if _cli_lv.has([level, k]):
+				set(_param_var(k), _cli_lv[[level, k]])
+	push_on = push_f > 0.0 if _cli_lv.has([level, "push"]) else push_on
+	forward_bias = clampf(_persona_forward * [1.3, 1.1, 1.0, 0.95][level], 0.05, 1.0)
+	caution = _persona_caution * LV.caution_scale[level]
+	wander = _persona_wander * LV.wander_scale[level]
+	_build_perm = []
+	if team_ai != null:
+		team_ai.set_bot_noise(get_instance_id(), judge_noise)
+
+
+## LV key -> member variable (only used by the --botlv tuning override).
+static func _param_var(k: String) -> String:
+	match k:
+		"reaction", "aim_error", "lead", "dodge_react", "retreat_hp", "ability_gap", "ability_skip", "hesitate", "kite", 		"turret_aware", "relic_hp", "relic_range", "lasthit", "team_focus", "back_scale", "mana_floor", "cc_hold", "ult_wait", "judge_noise":
+			return k
+		"push":
+			return "push_f"
+		"dodge":
+			return "dodge_chance"
+	return "_unused"
+
+
+var judge_noise := 0.0
+var push_on := false
+var push_f := 0.0
+var _judge := 0.0
+var mana_floor := 0.0
+var cc_hold := 0.0
+var ult_wait := 0.0
+var _unused := 0.0
+var _persona_forward := 0.5
+var _persona_caution := 1.0
+var _persona_wander := 1.4
+
+
+## Difficulty of a bot: G.lineup entry {team, champion, difficulty} > --botlevels=<order>,<chaos> > G.settings.difficulty.
+static func level_for(champ) -> int:
+	var d := lineup_difficulty(champ.team, champ.alias)
+	if d >= 0:
+		return clampi(d, 0, 3)
+	if _cli_levels == null:
+		_cli_levels = []
+		for a in OS.get_cmdline_user_args():
+			if a.begins_with("--botlevels="):
+				for part in a.substr(12).split(","):
+					_cli_levels.append(clampi(int(part), 0, 3))
+	if _cli_levels.size() >= 2 and champ.team < 2:
+		return _cli_levels[champ.team]
+	return clampi(int(G.settings.get("difficulty", 1)), 0, 3)
+
+
+## Difficulty stored in G.lineup for (team, champion alias): 0..3, -1 for the human, -2 when there is no entry.
+static func lineup_difficulty(team: int, alias: String) -> int:
+	for e in G.lineup:
+		if e is Dictionary and int(e.get("team", -1)) == team and str(e.get("champion", "")) == alias:
+			return int(e.get("difficulty", -2))
+	return -2
 
 
 # ===================================================================== main loop
@@ -102,8 +261,13 @@ func think(dt: float) -> void:
 	if think_timer > 0.0:
 		return
 	think_timer = reaction * G.rng.randf_range(0.8, 1.2)
+	# [bot-diff] low levels freeze for a moment now and then (not while in real trouble)
+	if hesitate > 0.0 and c.hp_ratio() > 0.2 and G.rng.randf() < hesitate:
+		think_timer += G.rng.randf_range(0.4, 1.0)
+		return
 	team_ai.refresh()
 	_gather()
+	_perceive()
 	if c.in_fountain:
 		_shop_and_augments()
 	if c.is_busy() and not c.casting.is_empty():
@@ -112,13 +276,14 @@ func think(dt: float) -> void:
 		return
 	# focus fire: adopt the team's target when it's within reach
 	var tf := team_ai.focus
-	if tf != null and is_instance_valid(tf) and not tf.dead and G.flat_dist(tf.global_position, c.global_position) < c.attack_range_m() + 6.0:
+	if tf != null and is_instance_valid(tf) and not tf.dead and G.flat_dist(tf.global_position, c.global_position) < c.attack_range_m() + 6.0 			and (team_focus >= 1.0 or G.rng.randf() < team_focus):
 		focus = tf
 	elif focus != null and (not is_instance_valid(focus) or focus.dead):
 		focus = null
 	if _ability_timer <= 0.0:
 		if _try_abilities():
-			_ability_timer = 0.25
+			_ability_timer = ability_gap
+			stat_casts += 1
 	_try_summoners()
 	for it in c.items:
 		if it.has_active() and it.active_left <= 0.0 and it.ai_should_activate(self):
@@ -134,7 +299,7 @@ func think(dt: float) -> void:
 	if want_retreat:
 		if mode != "retreat":
 			_set_mode("retreat")
-			_retreat_until = m.time + G.rng.randf_range(1.4, 2.2)
+			_retreat_until = m.time + G.rng.randf_range(1.4, 2.2) * (0.45 if level == 0 else 1.0)
 		_retreat()
 		return
 	var t := _pick_fight_target()
@@ -160,7 +325,27 @@ func _set_mode(md: String) -> void:
 
 ## Retreat reasons that override any commitment.
 func _must_retreat() -> bool:
-	return c.hp_ratio() < 0.15 or (_turret_targeting_me() and not _minions_tanking(enemy_turret))
+	if level == 0:
+		return c.hp_ratio() < 0.08
+	return c.hp_ratio() < 0.15 or (_turret_targeting_me() and not _minions_tanking(enemy_turret) and not _push_ok())
+
+
+## [bot-diff] Hard bots close out a won fight: with at least 2 more champions alive than the enemy they take the turret
+## down without waiting for minions to tank it (and keep going while the turret shoots them, as long as they stay healthy).
+func _push_ok() -> bool:
+	return push_on and team_ai.alive >= 3 and team_ai.alive - team_ai.enemy_alive >= 2 and c.hp_ratio() > 0.55
+
+
+func _enemy_front_turret() -> Unit:
+	var best: Unit = null
+	var bd := INF
+	for s in m.structures:
+		if s.team != c.team and s.kind == G.Kind.TURRET and not s.dead and not s.is_invulnerable():
+			var d := G.flat_dist(c.global_position, s.global_position)
+			if d < bd:
+				bd = d
+				best = s
+	return best
 
 
 func think_dead(_dt: float) -> void:
@@ -196,6 +381,42 @@ func _gather() -> void:
 				G.Kind.TURRET:
 					if not u.dead and G.flat_dist(p, u.global_position) < u.attack_range_m() + 4.0:
 						enemy_turret = u
+
+
+## [bot-diff] Item build this bot follows (ItemDB.bot_next_purchase asks): Hard / Intermediate = the curated build,
+## Beginner = the same items in a scrambled order, Intro = the generic bruiser build whatever the champion.
+func shape_build(build: Array) -> Array:
+	match level:
+		0:
+			return ItemDB.DEFAULT_BUILD
+		1:
+			if _build_perm.is_empty():
+				var rest := build.slice(1)
+				rest.shuffle()   # (Array.shuffle uses the global RNG, which --seed fixes)
+				_build_perm = [build[0]] + rest
+			return _build_perm
+	return build
+
+
+## [bot-diff] Per-decision perception: turret awareness roll, the team stance as this level reads it, incoming damage.
+func _perceive() -> void:
+	_aware = turret_aware >= 1.0 or G.rng.randf() < turret_aware
+	_judge = lerpf(_judge, G.rng.randf_range(-1.0, 1.0), 0.35)
+	var st := team_ai.stance
+	if st == "engage" and level <= 1:
+		st = "hold" if level == 0 or G.rng.randf() < 0.6 else "engage"
+	_stance = st
+	var now: float = m.time
+	var dt := maxf(now - _gather_t, 0.05)
+	if _gather_t > 0.0:
+		_incoming = lerpf(_incoming, maxf(c.damage_taken_total - _dtt, 0.0) / dt, clampf(dt / 1.2, 0.2, 1.0))
+	_dtt = c.damage_taken_total
+	_gather_t = now
+
+
+## Expected damage taken over the next second (smoothed), in hp.
+func incoming_dps() -> float:
+	return _incoming
 
 
 # ===================================================================== evaluation
@@ -242,15 +463,15 @@ func _burst() -> float:
 
 func _should_retreat() -> bool:
 	var hp := c.hp_ratio()
-	if _turret_targeting_me() and (not _minions_tanking(enemy_turret) or hp < 0.6):
+	if level >= 1 and _turret_targeting_me() and (not _minions_tanking(enemy_turret) or hp < 0.6) and not (_push_ok() and hp > 0.6):
 		return true
 	if enemies.is_empty():
-		return hp < 0.15 and _nearest_relic() == null
+		return hp < (0.1 if level == 0 else 0.15) and _nearest_relic() == null
 	var p := c.global_position
 	var near_allies := allies.filter(func(a): return G.flat_dist(a.global_position, p) < 11.0)
 	var near_enemies := enemies.filter(func(e): return G.flat_dist(e.global_position, p) < 12.0)
 	var ally_p := team_power(near_allies, true)
-	var enemy_p := team_power(near_enemies, false)
+	var enemy_p := team_power(near_enemies, false) * (1.0 - judge_noise * _judge)   # [bot-diff] low levels misjudge the fight
 	# finishing a kill is worth staying for
 	if focus != null and is_instance_valid(focus) and not focus.dead and focus.hp < _burst() * 0.8 and hp > 0.12 \
 			and c.in_attack_range(focus, 1.5):
@@ -259,11 +480,18 @@ func _should_retreat() -> bool:
 	if hp < threshold and (enemy_p > ally_p * 0.55 or hp < 0.1):
 		return true
 	# outnumbered and alone
-	if near_allies.is_empty() and near_enemies.size() >= 2 and enemy_p > ally_p * 1.3:
+	if level >= 1 and near_allies.is_empty() and near_enemies.size() >= 2 and enemy_p > ally_p * 1.3:
 		return true
 	# the team is falling back and the fight here is not winnable
-	if team_ai.stance == "retreat" and not near_enemies.is_empty() and enemy_p > ally_p * 0.9:
+	if level >= 2 and team_ai.stance == "retreat" and not near_enemies.is_empty() and enemy_p > ally_p * 0.9:
 		return true
+	if level >= 3:
+		# numbers disadvantage in the fight (not just a power ratio)
+		if near_enemies.size() >= 2 and near_allies.size() + 1 < near_enemies.size() and enemy_p > ally_p * 1.1:
+			return true
+		# a ranged caster with no mana left is dead weight in a fight
+		if c.stats.uses_mana and is_ranged and c.mana < c.stats.max_mana * 0.06 and hp < 0.75 and not near_enemies.is_empty():
+			return true
 	return false
 
 
@@ -271,7 +499,7 @@ func _pick_fight_target() -> Unit:
 	if enemies.is_empty():
 		return null
 	var p := c.global_position
-	var st := team_ai.stance
+	var st := _stance
 	var reach := c.attack_range_m() + c.radius
 	var engage := reach + 1.0
 	match st:
@@ -284,29 +512,48 @@ func _pick_fight_target() -> Unit:
 	var burst := _burst()
 	var best: Unit = null
 	var best_s := -INF
+	var w_hp: float = [0.0, 1.0, 3.0, 3.0][level]
+	var w_kill: float = [0.0, 2.0, 4.0, 5.0][level]
+	var w_focus: float = [0.0, 0.0, 2.0, 3.0][level]
+	var w_ranged: float = [0.0, 0.0, 0.6, 1.5][level]
 	for e in enemies:
 		var d := G.flat_dist(p, e.global_position)
 		var killable: bool = e.hp < burst and d < reach + 4.0
 		var attacking_me: bool = c.damage_log.has(e) and m.time - float(c.damage_log[e]) < 2.0
 		if d > engage and not killable and not (attacking_me and d < reach + 2.0):
 			continue
-		# don't dive under their turret unless it's a sure thing
-		if _under_enemy_turret(e.global_position) and not (killable and c.hp_ratio() > 0.5) \
-				and not (st == "engage" and e.hp_ratio() < 0.3 and enemy_turret != null and _minions_tanking(enemy_turret)):
-			continue
-		var s := -d * 0.15
-		s += (1.0 - e.hp_ratio()) * 3.0
-		s += 4.0 if killable else 0.0
-		s += 1.5 if (e.cc & Buff.IMMOBILIZE) != 0 else 0.0
-		s += 2.0 if e == team_ai.focus else 0.0
-		s += 1.0 if e == focus else 0.0
-		s += 0.6 if e.stats.attack_range > 300.0 else 0.0
+		# do not dive under their turret unless it is a sure thing (only hard bots take real dives)
+		if _under_enemy_turret(e.global_position):
+			var dive_ok := false
+			if level >= 3:
+				dive_ok = (killable and c.hp_ratio() > 0.5 and (_minions_tanking(enemy_turret) if enemy_turret != null else true)) \
+						or (st == "engage" and e.hp_ratio() < 0.3 and enemy_turret != null and _minions_tanking(enemy_turret))
+			elif level == 2:
+				dive_ok = killable and c.hp_ratio() > 0.6 and enemy_turret != null and _minions_tanking(enemy_turret)
+			if not dive_ok:
+				continue
+		var s := -d * (0.5 if level == 0 else 0.15)
+		s += (1.0 - e.hp_ratio()) * w_hp
+		s += w_kill if killable else 0.0
+		s += 1.5 if (e.cc & Buff.IMMOBILIZE) != 0 and level >= 2 else 0.0
+		s += w_focus if e == team_ai.focus else 0.0
+		s += 1.0 if e == focus and level >= 1 else 0.0
+		s += w_ranged if e.stats.attack_range > 300.0 else 0.0
 		s += 1.0 if attacking_me else 0.0
+		if level >= 3:
+			# squishy / low effective-hp targets first, isolated ones are safer to commit to
+			s -= (e.hp * (1.0 + (e.stats.armor + e.stats.mr) * 0.004) + e.total_shield()) / 700.0
+			var isolated := true
+			for e2 in enemies:
+				if e2 != e and G.flat_dist(e2.global_position, e.global_position) < 6.0:
+					isolated = false
+					break
+			s += 1.0 if isolated else 0.0
 		if s > best_s:
 			best_s = s
 			best = e
 	# melee: give up long chases of something we can't catch
-	if best != null and best == focus and not is_ranged and _chase_since > 0.0 and m.time - _chase_since > 3.0 \
+	if best != null and best == focus and not is_ranged and _chase_since > 0.0 and m.time - _chase_since > [1.5, 2.0, 3.0, 4.0][level] \
 			and G.flat_dist(p, best.global_position) > reach + 2.5 and best.stats.move_speed >= c.stats.move_speed and best.hp_ratio() > 0.25:
 		_chase_since = m.time + 2.0   # cool off
 		return null
@@ -314,6 +561,8 @@ func _pick_fight_target() -> Unit:
 
 
 func _under_enemy_turret(pos: Vector3) -> bool:
+	if not _aware:   # [bot-diff] low levels do not keep track of turret range
+		return false
 	for s in m.structures:
 		if s.team != c.team and s.kind == G.Kind.TURRET and not s.dead:
 			if G.flat_dist(pos, s.global_position) < s.attack_range_m() + s.radius:
@@ -349,8 +598,10 @@ func _retreat() -> void:
 
 
 func _nearest_relic():
+	if relic_range <= 0.0:   # [bot-diff] Intro bots never use health relics
+		return null
 	var best = null
-	var bd := 22.0
+	var bd := relic_range
 	for r in m.relics:
 		if r.active:
 			var d := G.flat_dist(r.global_position, c.global_position)
@@ -372,10 +623,13 @@ func _fight(t: Unit) -> void:
 	if not c.in_attack_range(t) or c.attack_timer <= 0.05:
 		_attack(t)
 		return
+	if kite <= 0.0:
+		return   # [bot-diff] Intro bots stand still and trade
 	if _kite_cycle != c.attack_count or _kite_target != t:
 		_kite_cycle = c.attack_count
 		_kite_target = t
-		_kite_goal = _pick_kite_goal(t)
+		_kiting = kite >= 1.0 or G.rng.randf() < kite
+		_kite_goal = _pick_kite_goal(t) if _kiting else Vector3.INF
 	if _kite_goal == Vector3.INF:
 		# holding position: cancel the attack order so we don't walk in, but stay put
 		if c.moving:
@@ -390,7 +644,7 @@ func _pick_kite_goal(t: Unit) -> Vector3:
 	var p := c.global_position
 	var spd: float = c.stats.move_speed * G.U
 	# how far we can walk and still turn back to attack on time
-	var budget := clampf(spd * c.attack_timer * 0.75, 0.0, 3.0)
+	var budget := clampf(spd * c.attack_timer * (0.88 if level >= 3 else 0.75), 0.0, 3.0)
 	if budget < 0.35:
 		return Vector3.INF
 	var threat: Unit = null
@@ -434,7 +688,7 @@ func _lane() -> void:
 	var ta := team_ai
 	var lane_dir := ta.lane_dir
 	# health relic when hurt and it's on our side of the fight
-	if c.hp_ratio() < 0.6:
+	if c.hp_ratio() < relic_hp:
 		var relic = _nearest_relic()
 		if relic != null and ta.lane_coord(relic.global_position) < ta.lane_coord(ta.contact) + 3.0:
 			_move(relic.global_position)
@@ -445,10 +699,11 @@ func _lane() -> void:
 			threat_close = true
 			break
 	# farm: last hits first, then push the wave if it's safe
-	if not enemy_minions.is_empty() and ta.stance != "retreat":
+	if not enemy_minions.is_empty() and _stance != "retreat":
 		var best: Unit = null
 		var best_s := INF
 		var ad := c.stats.ad
+		var skilled := lasthit >= 1.0 or G.rng.randf() < lasthit
 		for e in enemy_minions:
 			if _under_enemy_turret(e.global_position) and (enemy_turret == null or not _minions_tanking(enemy_turret) or _turret_targeting_me()):
 				continue
@@ -456,11 +711,13 @@ func _lane() -> void:
 			if d > c.attack_range_m() + 6.0:
 				continue
 			# while enemy champions are close, only farm what's already in range
-			if threat_close and not c.in_attack_range(e):
+			if threat_close and level >= 2 and not c.in_attack_range(e):
 				continue
 			var dmg: float = ad * Combat.resist_multiplier(e.stats.armor, c, true)
 			var s: float = e.hp + d * 15.0
-			if e.hp <= dmg * 1.05:
+			if not skilled:
+				s = d   # [bot-diff] attacks whatever is nearest
+			elif e.hp <= dmg * 1.05:
 				s -= 1000.0
 			if s < best_s:
 				best_s = s
@@ -469,10 +726,17 @@ func _lane() -> void:
 			_attack(best)
 			return
 	# siege the turret while our minions tank it
-	if enemy_turret != null and not enemy_turret.is_invulnerable() and _minions_tanking(enemy_turret) and enemy_turret.attack_target != c \
-			and ta.stance != "retreat":
+	var pushing := _push_ok()
+	if enemy_turret != null and not enemy_turret.is_invulnerable() and (_minions_tanking(enemy_turret) or pushing) \
+			and (enemy_turret.attack_target != c or pushing) and _stance != "retreat":
 		_attack(enemy_turret)
 		return
+	if pushing and enemy_turret == null and enemies.is_empty():
+		var tt := _enemy_front_turret()
+		if tt != null:   # walk up to the turret's edge together with the team
+			var dir := G.flat_dir(tt.global_position, c.global_position)
+			_move(tt.global_position + dir * (c.attack_range_m() + tt.radius - 0.6))
+			return
 	# hit exposed inhibitor / nexus
 	for s in m.structures:
 		if s.team != c.team and (s.kind == G.Kind.INHIBITOR or s.kind == G.Kind.NEXUS) and not s.dead and not s.is_invulnerable():
@@ -481,19 +745,20 @@ func _lane() -> void:
 				return
 	# position relative to our wave front
 	var goal: Vector3
-	if ta.stance == "retreat":
+	if _stance == "retreat":
 		goal = ta.safe_point
 	else:
 		var back := (1.5 if frontline else 4.5)
-		if ta.stance == "hold" and not ta.enemies.is_empty():
+		if _stance == "hold" and not ta.enemies.is_empty():
 			back += 1.0 if frontline else 2.0
+		back *= back_scale   # [bot-diff] low levels stand at / in front of the wave
 		var k := minf(ta.front, ta.enemy_front + (1.0 if frontline else -2.0)) - back
 		goal = ta.lane_point(k)
 	var side := Vector3(-lane_dir.z, 0, lane_dir.x)
 	goal += side * personal_offset
 	if _under_enemy_turret(goal) and (enemy_turret == null or not _minions_tanking(enemy_turret)):
 		goal -= lane_dir * 4.0
-	if enemy_minions.is_empty() and ally_minions.is_empty() and ta.stance != "retreat":
+	if enemy_minions.is_empty() and ally_minions.is_empty() and _stance != "retreat":
 		_opening(goal)
 		return
 	_hold_area(goal)
@@ -501,7 +766,7 @@ func _lane() -> void:
 
 # ===================================================================== dodging
 func _try_dodge() -> bool:
-	if dodge_chance <= 0.0 or m.missiles.is_empty() or c.dead:
+	if m.missiles.is_empty() or c.dead:
 		return false
 	if not c.casting.is_empty() or not c.channel.is_empty() or not c.dash.is_empty() or (c.cc & Buff.BLOCK_MOVE) != 0:
 		return false
@@ -514,8 +779,6 @@ func _try_dodge() -> bool:
 			continue
 		if mi.mode != Missile.Mode.LINEAR or not mi.collides or not mi.hits_champions:
 			continue
-		if mi.age < reaction:
-			continue
 		var to := Vector3(p.x - mi.global_position.x, 0, p.z - mi.global_position.z)
 		var along := to.dot(mi.dir)
 		if along < -0.5 or along > maxf(mi.speed, 1.0) * 0.9 + 1.0 or along > mi.max_dist - mi.traveled + c.radius:
@@ -525,13 +788,17 @@ func _try_dodge() -> bool:
 		var clear: float = mi.width + c.radius + 0.35
 		if perp > clear:
 			continue
-		if _dodged.has(mi):
+		if not _dodged.has(mi):
+			if _dodged.size() > 64:
+				_dodged.clear()
+			_dodged[mi] = false
+			stat_threats += 1
+		if _dodged[mi] or mi.age < dodge_react:   # [bot-diff] reaction time to a skillshot depends on the level
 			continue
 		_dodged[mi] = true
-		if _dodged.size() > 64:
-			_dodged.clear()
 		if G.rng.randf() > dodge_chance:
 			continue
+		stat_dodges += 1
 		var side: Vector3 = Vector3(-mi.dir.z, 0, mi.dir.x)
 		if perp_v.dot(side) < 0.0:
 			side = -side
@@ -551,16 +818,92 @@ func _try_abilities() -> bool:
 	if not c.can_cast():
 		return false
 	var order := [3, 0, 2, 1]
+	if level >= 3:
+		# hard bots open with their crowd control, then the ultimate, then the damage abilities
+		order = []
+		for sl in CC_SLOTS.get(c.alias, []):
+			if sl != 3:
+				order.append(sl)
+		order.append(3)
+		for sl in [0, 2, 1]:
+			if not order.has(sl):
+				order.append(sl)
 	for slot in order:
 		var ab: Ability = c.abilities[slot]
 		if ab == null or ab.cast_block_reason() != "":
+			continue
+		if not _ability_allowed(ab, slot):
 			continue
 		var t := ab.ai_consider(self)
 		if t.get("_default", false):
 			t = default_consider(ab)
 		if not t.is_empty():
+			if ability_skip > 0.0 and ab.recast_window <= 0.0 and G.rng.randf() < ability_skip:
+				continue   # [bot-diff] hesitation: the ability is simply not used this time
 			if ab.try_cast(t):
 				return true
+	return false
+
+
+## [bot-diff] Level gates in front of a ready ability: ultimate patience, mana discipline, holding / chaining crowd control.
+func _ability_allowed(ab: Ability, slot: int) -> bool:
+	if slot == 3:
+		return _ult_worth()
+	if level < 2 or enemies.is_empty() and mode != "lane":
+		return true
+	if mode == "lane" and c.stats.uses_mana and mana_floor > 0.0:
+		if c.mana < c.stats.max_mana * mana_floor and not _focus_killable():
+			return false
+	if cc_hold > 0.0 and slot in CC_SLOTS.get(c.alias, []):
+		var all_held := not enemies.is_empty()
+		for e in enemies:
+			if G.flat_dist(e.global_position, c.global_position) < 12.0 and (e.cc & Buff.IMMOBILIZE) == 0:
+				all_held = false
+				break
+		if all_held:
+			return false   # chain: do not stack a second CC on someone who is already locked down
+		if mode == "lane" and not _recently_attacked() and not _focus_killable():
+			return false   # hold the CC for an engage / a pick
+	return true
+
+
+func _focus_killable() -> bool:
+	return focus != null and is_instance_valid(focus) and not focus.dead and focus.hp < _burst()
+
+
+func _recently_attacked() -> bool:
+	return m.time - c.last_damaged_time < 2.0
+
+
+func _ult_worth() -> bool:
+	if enemies.is_empty() or level == 1:
+		return true
+	if level == 0:
+		return G.rng.randf() < 0.5
+	if ult_wait <= 0.0:
+		return true
+	var worth := c.hp_ratio() < 0.4 and mode != "lane"
+	if not worth:
+		var near_n := count_enemies_near(c.global_position, 9.0)
+		worth = near_n >= 2
+		if not worth:
+			var burst := _burst() * 1.3 if level >= 3 else 0.0
+			for e in enemies:
+				if e.hp_ratio() < 0.5 or e.hp < burst:
+					worth = true
+					break
+		if not worth and level >= 3 and mode == "fight" and _stance == "engage":
+			worth = true
+	if worth:
+		_ult_hold_since = -1.0
+		return true
+	if mode == "fight":
+		if _ult_hold_since < 0.0:
+			_ult_hold_since = m.time
+		elif m.time - _ult_hold_since > ult_wait:
+			return true   # do not sit on it forever
+	else:
+		_ult_hold_since = -1.0
 	return false
 
 
@@ -570,6 +913,7 @@ func _try_summoners() -> bool:
 			continue
 		var t: Dictionary = sm.ai_consider(self)
 		if not t.is_empty() and not t.get("_default", false):
+			stat_summ += 1
 			return sm.try_cast(t)
 	return false
 
@@ -609,31 +953,73 @@ func ab_speed(ab: Ability) -> float:
 
 
 func aim_at(pos: Vector3, ab: Ability) -> Dictionary:
-	var err := Vector3(G.rng.randf_range(-1, 1), 0, G.rng.randf_range(-1, 1)) * aim_error
+	var scale := 1.0
+	if level >= 2:   # [bot-diff] a locked-down target is an easy shot
+		for e in enemies:
+			if G.flat_dist(e.global_position, pos) < 2.5 and (e.cc & Buff.BLOCK_MOVE) != 0:
+				scale = 0.15
+				break
+	var err := Vector3(G.rng.randf_range(-1, 1), 0, G.rng.randf_range(-1, 1)) * aim_error * scale
 	var p := pos + err
 	return ab.make_target(p, null)
 
 
-## Predicted position of a unit after `t` seconds (linear).
+## Predicted position of a unit after `t` seconds. Lead quality depends on the level: none (Intro) -> half the
+## velocity (Beginner) -> full velocity (Intermediate) -> follows the target's actual move path (Hard).
 func predict(u: Unit, t: float) -> Vector3:
-	var v: Vector3 = u.velocity
-	if (u.cc & Buff.BLOCK_MOVE) != 0:
-		v = Vector3.ZERO
-	return u.global_position + v * clampf(t, 0.0, 1.5)
+	if (u.cc & Buff.BLOCK_MOVE) != 0 or lead <= 0.0:
+		return u.global_position
+	if level >= 3:
+		if not u.casting.is_empty() and not u.casting.ability.can_move_while_casting:
+			return u.global_position
+		if u.moving and u.dash.is_empty() and (u.cc & Buff.FORCED_MOVE) == 0 and u.path_i < u.path.size():
+			return _along_path(u, u.stats.move_speed * G.U * clampf(t, 0.0, 2.0))
+	return u.global_position + u.velocity * clampf(t, 0.0, 1.5) * lead
+
+
+func _along_path(u: Unit, dist: float) -> Vector3:
+	var pos := u.global_position
+	var i: int = u.path_i
+	while i < u.path.size() and dist > 0.0:
+		var wp: Vector3 = u.path[i]
+		var to := Vector3(wp.x - pos.x, 0.0, wp.z - pos.z)
+		var d := to.length()
+		if d <= dist:
+			dist -= d
+			pos = Vector3(wp.x, pos.y, wp.z)
+			i += 1
+		else:
+			pos += to / d * dist
+			dist = 0.0
+	return pos
 
 
 func best_enemy_in_range(r: float, champs_only: bool = true) -> Unit:
 	var p := c.global_position
-	if focus != null and is_instance_valid(focus) and not focus.dead and focus.is_targetable_by(c.team) \
+	if level >= 1 and focus != null and is_instance_valid(focus) and not focus.dead and focus.is_targetable_by(c.team) \
 			and G.flat_dist(p, focus.global_position) <= r + focus.radius:
 		return focus
 	var best: Unit = null
 	var best_s := INF
+	var burst := _burst() if level >= 3 else 0.0
 	for e in enemies:
 		var d := G.flat_dist(p, e.global_position)
 		if d > r + e.radius:
 			continue
-		var s: float = e.hp_ratio() * 10.0 + d * 0.3
+		var s: float
+		match level:
+			0:
+				s = d   # Intro: whoever is nearest
+			1:
+				s = e.hp_ratio() * 4.0 + d * 0.6
+			2:
+				s = e.hp_ratio() * 10.0 + d * 0.3
+			_:
+				# Hard: lowest effective hp, kills first, locked-down and ranged carries preferred
+				s = (e.hp * (1.0 + (e.stats.armor + e.stats.mr) * 0.004) + e.total_shield()) / 60.0 + d * 0.5
+				s -= 30.0 if e.hp < burst else 0.0
+				s -= 12.0 if (e.cc & Buff.IMMOBILIZE) != 0 else 0.0
+				s -= 6.0 if e.stats.attack_range > 300.0 else 0.0
 		if s < best_s:
 			best_s = s
 			best = e
@@ -682,42 +1068,144 @@ func best_cluster_point(rng: float, r: float, min_count: int = 1) -> Vector3:
 
 
 # ===================================================================== summoner decisions
-func flash_decision(ab) -> Dictionary:
-	if mode == "retreat" and c.hp_ratio() < 0.2 and in_danger():
-		var away := G.flat_dir(enemies[0].global_position, c.global_position)
-		return {"pos": c.global_position + away * 4.0, "dir": away}
-	if mode == "fight" and focus != null and focus.hp_ratio() < 0.15 and c.hp_ratio() > 0.4:
-		var d := G.flat_dist(c.global_position, focus.global_position)
-		if d > c.attack_range_m() + 1.0 and d < c.attack_range_m() + 4.5:
-			return {"pos": focus.global_position, "dir": G.flat_dir(c.global_position, focus.global_position)}
+func flash_decision(_ab) -> Dictionary:
+	if level == 0:
+		return {}
+	var hp := c.hp_ratio()
+	if not enemies.is_empty() and mode == "retreat":
+		var danger_hp: float = [0.0, 0.12, 0.2, 0.3][level]
+		var doomed := level >= 3 and _incoming * 1.5 > c.hp and hp < 0.5
+		if (hp < danger_hp and in_danger()) or doomed:
+			var away := G.flat_dir(enemies[0].global_position, c.global_position)
+			if level >= 3:   # hard bots flash toward safety, not just away
+				away = (away * 0.6 + G.flat_dir(c.global_position, team_ai.safe_point) * 0.4).normalized()
+			var goal := c.global_position + away * 4.0
+			if level < 3 or not _under_enemy_turret(goal):
+				return {"pos": goal, "dir": away}
+	if level >= 2 and mode == "fight" and focus != null and is_instance_valid(focus) and not focus.dead:
+		var secure := focus.hp_ratio() < 0.15 and c.hp_ratio() > 0.4 if level == 2 else (focus.hp < _burst() * 0.8 and hp > 0.35 \
+				and not _under_enemy_turret(focus.global_position))
+		if secure:
+			var d := G.flat_dist(c.global_position, focus.global_position)
+			if d > c.attack_range_m() + 1.0 and d < c.attack_range_m() + 4.5:
+				return {"pos": focus.global_position, "dir": G.flat_dir(c.global_position, focus.global_position)}
 	return {}
 
 
+func heal_decision(ab) -> Dictionary:
+	var hp := c.hp_ratio()
+	var thr: float = [0.10, 0.20, 0.28, 0.40][level]
+	if not enemies.is_empty():
+		if hp < thr:
+			return {"pos": c.global_position}
+		if level >= 3 and hp < 0.6 and (c.hp - _incoming * 1.2) < c.stats.max_hp * 0.12:
+			return {"pos": c.global_position}   # burst coming in: heal before it lands
+	if level >= 2 and not enemies.is_empty():
+		var ally_thr := 0.22 if level == 2 else 0.32
+		for a in allies:
+			if not a.dead and a.hp_ratio() < ally_thr and G.flat_dist(a.global_position, c.global_position) < ab.range_m():
+				return {"pos": c.global_position}
+	return {}
+
+
+func barrier_decision(_ab) -> Dictionary:
+	if enemies.is_empty():
+		return {}
+	var hp := c.hp_ratio()
+	if hp < [0.10, 0.20, 0.27, 0.38][level]:
+		return {"pos": c.global_position}
+	if level >= 3 and hp < 0.65 and _incoming * 2.0 > c.stats.max_hp * 0.25:
+		return {"pos": c.global_position}
+	return {}
+
+
+const _HARD_CC := Buff.CC.STUN | Buff.CC.ROOT | Buff.CC.CHARM | Buff.CC.FEAR | Buff.CC.TAUNT | Buff.CC.SLEEP
+
+
+func cleanse_decision(_ab) -> Dictionary:
+	if level == 0 or (c.cc & _HARD_CC) == 0:
+		return {}
+	if level == 1 and G.rng.randf() > 0.4:
+		return {}
+	if level == 2 and enemies.is_empty():
+		return {}
+	if level >= 3 and enemies.is_empty() and c.hp_ratio() > 0.8:
+		return {}
+	return {"pos": c.global_position}
+
+
+func ghost_decision(_ab) -> Dictionary:
+	return {} if level == 0 or not wants_speed() else {"pos": c.global_position}
+
+
+## Exhaust the melee diver that is on top of a hurt bot (Intermediate and up).
+func exhaust_decision(ab) -> Dictionary:
+	if level < 2 or enemies.is_empty():
+		return {}
+	var best = null
+	var best_hp := INF
+	var hp_lim := 0.55 if level >= 3 else 0.35
+	for e in enemies:
+		var d := G.flat_dist(e.global_position, c.global_position)
+		if d > ab.range_m() + e.radius or e.has_buff("exhaust"):
+			continue
+		var attacking_me: bool = c.damage_log.has(e) and m.time - float(c.damage_log[e]) < 1.5
+		var diver: bool = e.stats.attack_range < 300.0 or "assassin" in ChampionDB.roles(e.alias)
+		if diver and attacking_me and d < 6.0 and c.hp_ratio() < hp_lim and e.hp_ratio() > 0.3 and e.hp < best_hp:
+			best_hp = e.hp
+			best = e
+	if best == null:
+		return {}
+	return {"unit": best, "pos": best.global_position}
+
+
 func mark_decision(ab) -> Dictionary:
+	if level == 0:
+		return {}
 	if ab.recast_window > 0.0:
 		var tgt = ab.marked
+		var hp_lim := 0.3 if level == 1 else 0.5
 		if tgt != null and is_instance_valid(tgt) and tgt.kind == G.Kind.CHAMPION and mode == "fight" \
-				and (tgt.hp_ratio() < 0.5 or (frontline and team_ai.stance == "engage")) and c.hp_ratio() > 0.45 \
+				and (tgt.hp_ratio() < hp_lim or (level >= 2 and frontline and _stance == "engage")) and c.hp_ratio() > 0.45 \
 				and not _under_enemy_turret(tgt.global_position):
 			return {"pos": tgt.global_position, "dir": G.flat_dir(c.global_position, tgt.global_position)}
 		return {}
 	var t := best_enemy_in_range(ab.range_m() * 0.85)
 	if t != null and mode != "retreat":
-		var aim := predict(t, G.flat_dist(c.global_position, t.global_position) / 13.0)
+		var aim := predict(t, G.flat_dist(c.global_position, t.global_position) / 12.0)
+		if level >= 3:   # minions in the way eat the snowball
+			for mn in enemy_minions:
+				if G.flat_dist(c.global_position, mn.global_position) < G.flat_dist(c.global_position, aim) \
+						and NavGrid._dist_to_segment(mn.global_position, c.global_position, aim) <= 0.5 + mn.radius:
+					return {}
 		return aim_at(aim, ab)
 	return {}
 
 
 func ignite_decision(ab) -> Dictionary:
+	if level == 0:
+		return {}
+	if level == 3:
+		# burn whoever the burst plus the burn will kill
+		var lv: int = c.level
+		var total: float = 70.0 + 20.0 * (mini(lv, 5) - 1) + 25.0 * maxi(lv - 5, 0)
+		var burst := _burst() * 0.5 if mode == "fight" else 0.0
+		var pick = null
+		for e in enemies:
+			if G.flat_dist(e.global_position, c.global_position) <= ab.range_m() + e.radius \
+					and (e.hp <= total * 0.85 + burst or e.hp_ratio() < 0.25) and (pick == null or e.hp < pick.hp):
+				pick = e
+		return {"unit": pick, "pos": pick.global_position} if pick != null else {}
 	var t := best_enemy_in_range(ab.range_m())
-	if t != null and t.hp_ratio() < 0.35:
+	if t != null and t.hp_ratio() < (0.2 if level == 1 else 0.35):
 		return {"unit": t, "pos": t.global_position}
 	return {}
 
 
 # ===================================================================== shop / augments
 func _shop_and_augments() -> void:
-	if m.has_method("bot_shop"):
+	if m.has_method("bot_shop") and m.time >= _next_shop:
+		_next_shop = m.time + [40.0, 15.0, 0.0, 0.0][level]   # [bot-diff] low levels visit the shop late and rarely
 		m.bot_shop(c)
 	if c.augments_pending > 0 and m.has_method("bot_choose_augment"):
 		m.bot_choose_augment(c)

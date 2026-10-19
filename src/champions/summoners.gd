@@ -220,7 +220,7 @@ class GhostSpell extends Ability:
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
-		return {} if not ctx.wants_speed() else {"pos": owner.global_position}
+		return ctx.ghost_decision(self)   # [bot-diff]
 
 
 class HealSpell extends Ability:
@@ -261,7 +261,7 @@ class HealSpell extends Ability:
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
-		return {"pos": owner.global_position} if owner.hp_ratio() < 0.25 and ctx.in_danger() else {}
+		return ctx.heal_decision(self)   # [bot-diff]
 
 
 class BarrierSpell extends Ability:
@@ -284,7 +284,7 @@ class BarrierSpell extends Ability:
 		notify_cast(t)
 
 	func ai_consider(ctx) -> Dictionary:
-		return {"pos": owner.global_position} if owner.hp_ratio() < 0.25 and ctx.in_danger() else {}
+		return ctx.barrier_decision(self)   # [bot-diff]
 
 
 class CleanseSpell extends Ability:
@@ -311,8 +311,8 @@ class CleanseSpell extends Ability:
 		K.attach_fx(owner, "Jade_Summoner_Cleanse", false)
 		notify_cast(t)
 
-	func ai_consider(_ctx) -> Dictionary:
-		return {"pos": owner.global_position} if (owner.cc & (Buff.CC.STUN | Buff.CC.ROOT | Buff.CC.CHARM | Buff.CC.FEAR | Buff.CC.TAUNT | Buff.CC.SLEEP)) != 0 else {}
+	func ai_consider(ctx) -> Dictionary:
+		return ctx.cleanse_decision(self)   # [bot-diff]
 
 
 class IgniteSpell extends Ability:
@@ -395,8 +395,8 @@ class ExhaustSpell extends Ability:
 		u.add_buff(ExhaustDebuff.new(), owner)
 		notify_cast(t)
 
-	func ai_consider(_ctx) -> Dictionary:
-		return {}
+	func ai_consider(ctx) -> Dictionary:
+		return ctx.exhaust_decision(self)   # [bot-diff]
 
 
 class ClaritySpell extends Ability:
