@@ -7,8 +7,9 @@ render_mode unshaded, cull_disabled, blend_mix, depth_draw_never;
 #include "res://src/render/gamma.gdshaderinc"
 #include "res://src/render/fow.gdshaderinc"   // [fow]
 
-uniform sampler2D diffuse_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
-uniform sampler2D lightmap_tex : source_color, filter_linear, repeat_disable;
+// [env-look] raw sampling like League (see map_lightmap.gdshader); gamma_dec for the linear-space terms
+uniform sampler2D diffuse_tex : filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D lightmap_tex : filter_linear, repeat_disable;
 uniform vec4 tint : source_color = vec4(0.5, 0.5, 0.5, 1.0);
 uniform bool use_lightmap = true;
 uniform float lightmap_strength = 4.59;
@@ -24,6 +25,10 @@ uniform vec4 pushers[12];               // xyz = unit position, w = 1 when activ
 uniform vec4 see_through = vec4(0.0);   // xyz = local player position, w = 1 while the player is in brush
 uniform float see_alpha_min = 0.25;
 uniform float see_radius = 2.6;         // meters around the player that turn see-through
+// [env-look] same fitted calibration as map_lightmap.gdshader (a per-channel gain fitted to captured League frames,
+// docs/ENV_LOOK.md), so blended map pieces and brush keep the same colour balance as the ground
+uniform bool calibrate = true;
+const vec3 CALIB_GAIN = vec3(0.911, 1.049, 1.151);
 
 varying vec3 world_pos;
 
@@ -54,8 +59,21 @@ void vertex() {
 
 void fragment() {
 	vec4 d = texture(diffuse_tex, UV);
-	vec3 lm = use_lightmap ? texture(lightmap_tex, UV2).rgb * lightmap_strength : vec3(1.0);
-	ALBEDO = to_out(d.rgb * lm * tint.rgb * 4.59 * brightness);
+	if (use_lightmap && gamma_out > 0.5) {
+		// [env-look] League DefaultEnv_Flat_AlphaTest (blended): overlay(d, TintColor) * lightmap.rgb * 2, gamma values
+		vec3 t = gamma_enc(tint.rgb);
+		vec3 o = mix(2.0 * d.rgb * t, 1.0 - 2.0 * (1.0 - d.rgb) * (1.0 - t), step(vec3(0.5), d.rgb));
+		ALBEDO = o * texture(lightmap_tex, UV2).rgb * 2.0 * brightness * (calibrate ? CALIB_GAIN : vec3(1.0));
+	} else if (grass && gamma_out > 0.5) {
+		// [env-look] League brush = staticmesh/vertexdeform, NO_BAKED_LIGHTING permutation (b0030/b0038, decompiled):
+		//   c = diffuse.rgb * TintColor.rgb [* GRASS_TINT_MAP] * (SHADOW_COLOR + pcf * SHADOW_COLOR_COMPLEMENT)
+		// a plain multiply by the raw TintColor (0.636, 0.641, 0.723), fully lit outside unit shadows. The old
+		// linear-space tint * 4.59 * 0.5 came out ~0.92 (40% too bright, the ice coral read white).
+		ALBEDO = d.rgb * gamma_enc(tint.rgb) * (calibrate ? CALIB_GAIN : vec3(1.0));
+	} else {
+		vec3 lm = use_lightmap ? gamma_dec(texture(lightmap_tex, UV2).rgb) * lightmap_strength : vec3(1.0);
+		ALBEDO = to_out(gamma_dec(d.rgb) * lm * tint.rgb * 4.59 * brightness);
+	}
 	// [fow] DefaultEnv_Flat: c = lerp(FOW.rgb, c, k)
 	vec4 fw = fow_map(world_pos);
 	ALBEDO = mix(fow_out(fw.rgb), ALBEDO, fow_env_k(fw, world_pos.y));

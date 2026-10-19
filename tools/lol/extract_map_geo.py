@@ -125,6 +125,26 @@ def read_stream(data: bytes, vb, stride, layout, vcount):
     return np.frombuffer(data, dtype=dtype, count=vcount, offset=off)
 
 
+def _write_import(png_path, mipmaps):
+    """[env-look] Godot import params for map textures: lossless and with the RGB of alpha-0 texels left untouched.
+    Godot's default fix_alpha_border rewrites those texels with neighbouring colours; League samples them raw (the
+    lightmap alpha is the baked sun mask, 30-60% zero, so the default recoloured shadow edges)."""
+    p = png_path + ".import"
+    params = {"compress/mode": "0", "mipmaps/generate": "true" if mipmaps else "false",
+              "process/fix_alpha_border": "false"}
+    if os.path.exists(p):
+        lines = open(p, encoding="utf-8").read().split("\n")
+        for i, ln in enumerate(lines):
+            k = ln.split("=", 1)[0]
+            if k in params:
+                lines[i] = f"{k}={params[k]}"
+        open(p, "w", encoding="utf-8", newline="\n").write("\n".join(lines))
+    else:
+        body = "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\n\n[params]\n\n"
+        body += "".join(f"{k}={v}\n" for k, v in params.items())
+        open(p, "w", encoding="utf-8", newline="\n").write(body)
+
+
 def export_mapgeo(w: Wad, variant="base"):
     raw = w.get(f"data/maps/mapgeometry/map12/{variant}.mapgeo")
     g = read_mapgeo(raw)
@@ -151,6 +171,7 @@ def export_mapgeo(w: Wad, variant="base"):
         img = any_texture_to_image(data)
         rel = f"assets/map/{folder}/{name}.png"
         img.save(out(*rel.split("/")))
+        _write_import(out(*rel.split("/")), mipmaps=(folder == "textures"))
         tex_cache[key_or_path] = rel
         return rel
 

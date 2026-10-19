@@ -7,8 +7,12 @@ render_mode cull_disabled, ambient_light_disabled, specular_disabled;
 #include "res://src/render/gamma.gdshaderinc"
 #include "res://src/render/fow.gdshaderinc"   // [fow]
 
-uniform sampler2D diffuse_tex : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
-uniform sampler2D lightmap_tex : source_color, filter_linear, repeat_disable;
+// [env-look] sampled RAW (no source_color): League samples every texture without sRGB decode and filters
+// (bilinear / trilinear / anisotropic) on the stored gamma values. With source_color the GPU decoded to linear,
+// filtered there and gamma_enc re-encoded: same texel values but averaged in the wrong space (lighter edges and
+// minified detail). The legacy linear path decodes by hand.
+uniform sampler2D diffuse_tex : filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D lightmap_tex : filter_linear, repeat_disable;
 uniform vec4 tint : source_color = vec4(0.5, 0.5, 0.5, 1.0);
 uniform bool use_lightmap = true;
 uniform float lightmap_strength = 4.59;
@@ -31,6 +35,17 @@ uniform vec3 sun_color = vec3(0.365, 0.384, 0.392);   // Map12 MapSunProperties.
 uniform float lightmap_color_scale = 2.0;             // Map12 MapSunProperties.lightMapColorScale
 varying vec3 v_bake;
 varying float v_sunmask;
+// [env-look] debug views for src/debug/env_look_probe.gd (exact path only): 1 = overlay(diffuse, tint) only,
+// 2 = baked light (lightmap.rgb * scale) * 0.5, 3 = live sun term only, 4 = lightmap alpha (sun mask)
+uniform int debug_view = 0;
+// [env-look] CALIBRATION, NOT League math: a per-channel gain fitted to captured League frames (docs/ENV_LOOK.md).
+// Everything above is exact (shader cache formula, bit-exact textures, output chain proven exact), yet on matched map
+// surfaces of reference frames 1, 2 and 5 League is cooler: R x0.91, G x1.05, B x1.15 (luminance x1.02; equal in
+// sun-lit and baked-shadow cells, so not the sun term). The capture path was checked on flat UI (shop icons: neutral,
+// +9/255 black lift, removed before fitting); the source of the shift (CPU constant, patch re-bake, stream) is unknown.
+// gain * (D * L) == (gain * D) * L, so applying it to the albedo is exact. false = the pure League formula.
+uniform bool calibrate = true;
+const vec3 CALIB_GAIN = vec3(0.911, 1.049, 1.151);
 
 bool exact() {
 	return league_exact && use_lightmap && gamma_out > 0.5;
@@ -47,12 +62,18 @@ void fragment() {
 	}
 	if (exact()) {
 		vec4 lmt = texture(lightmap_tex, UV2);
-		v_bake = gamma_enc(lmt.rgb) * lightmap_color_scale;
+		v_bake = lmt.rgb * lightmap_color_scale;
 		v_sunmask = lmt.a;
-		ALBEDO = overlay(gamma_enc(d.rgb), gamma_enc(tint.rgb)) * brightness;
+		ALBEDO = overlay(d.rgb, gamma_enc(tint.rgb)) * brightness;
+		if (calibrate && debug_view == 0) {
+			ALBEDO *= CALIB_GAIN;
+		}
+		if (debug_view > 1) {
+			ALBEDO = vec3(1.0);
+		}
 	} else {
-		vec3 lm = use_lightmap ? texture(lightmap_tex, UV2).rgb * lightmap_strength : vec3(1.0);
-		vec3 col = d.rgb * lm * tint.rgb * 4.59 * brightness;
+		vec3 lm = use_lightmap ? gamma_dec(texture(lightmap_tex, UV2).rgb) * lightmap_strength : vec3(1.0);
+		vec3 col = gamma_dec(d.rgb) * lm * tint.rgb * 4.59 * brightness;
 		float l = dot(col, vec3(0.299, 0.587, 0.114));
 		col = mix(vec3(l), col, saturation);
 		vec3 g = pow(max(col, vec3(0.0)), vec3(1.0 / 2.2));
@@ -70,7 +91,18 @@ void fragment() {
 void light() {
 	if (exact()) {
 		if (LIGHT_IS_DIRECTIONAL) {
-			DIFFUSE_LIGHT += v_bake + sun_color * max(dot(NORMAL, LIGHT), 0.0) * min(ATTENUATION, v_sunmask);
+			vec3 sun = sun_color * max(dot(NORMAL, LIGHT), 0.0) * min(ATTENUATION, v_sunmask);
+			if (debug_view == 0) {
+				DIFFUSE_LIGHT += v_bake + sun;
+			} else if (debug_view == 1) {
+				DIFFUSE_LIGHT += vec3(1.0);
+			} else if (debug_view == 2) {
+				DIFFUSE_LIGHT += v_bake * 0.5;
+			} else if (debug_view == 3) {
+				DIFFUSE_LIGHT += sun;
+			} else {
+				DIFFUSE_LIGHT += vec3(v_sunmask);
+			}
 		}
 	} else if (LIGHT_IS_DIRECTIONAL) {
 		// ATTENUATION carries the shadow term; the light's colour/angle are already baked into the lightmap
