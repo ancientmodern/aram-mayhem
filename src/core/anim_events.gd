@@ -29,7 +29,7 @@ enum K { PARTICLE, SOUND, SUBMESH, FADE, IDLE_VIS, SNAP }
 const _JointSnap := preload("res://src/core/joint_snap.gd")
 
 static var _tables := {}      ## file (lower) -> table dictionary
-static var stats := {"fired": 0, "particles": 0, "sounds": 0}   ## counters (harnesses / --animevlog)
+static var stats := {"fired": 0, "particles": 0, "sounds": 0, "clip_end": {}}   ## counters (harnesses / --animevlog); clip_end: clip -> times its particles were ended at the clip end
 static var _log: bool = "--animevlog" in OS.get_cmdline_user_args()
 static var disabled: bool = "--noanimev" in OS.get_cmdline_user_args()   ## A/B: run without clip events
 static var _abl_idle: bool = "--animev_noidle" in OS.get_cmdline_user_args()   ## ablation (perf A/B)
@@ -309,6 +309,8 @@ func tick(dt: float, speed: float, ap: AnimationPlayer) -> void:
 		_pass += 1
 	if _next < _evs.size():
 		_fire_until(_t)
+	if not _looping and not _live.is_empty() and _t >= _len + 0.05:
+		_end_clip_particles()
 	if tracked:
 		_check_ends()
 	if not _orphans.is_empty():
@@ -355,6 +357,24 @@ func _check_ends() -> void:
 			_reverts.remove_at(i)
 			continue
 		i += 1
+
+
+## [vfx-leak] A non-looping clip ran to its end and the unit is still on it (a death clip holds its last pose): that is
+## the clip exit for particles. Without this, kill-flagged persistent death effects (Leona's / Ahri's / Yasuo's death
+## particles) hung on the corpse until the respawn restarted the graph.
+func _end_clip_particles() -> void:
+	var now := _now()
+	stats.clip_end[_clip] = int(stats.clip_end.get(_clip, 0)) + 1
+	for l in _live:
+		var fx = l[1]
+		if not is_instance_valid(fx):
+			continue
+		var ev: Dictionary = l[0]
+		if ev.kill:
+			fx.stop()
+		elif LolVfx.is_looping(String(ev.fx)):
+			_orphans.append([fx, now + ORPHAN_LIFE])
+	_live.clear()
 
 
 ## The clip ended or was interrupted: kill events stop, persistent leftovers get a short grace, visibility reverts.

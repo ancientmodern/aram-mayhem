@@ -319,16 +319,25 @@ static func knockup(target: Unit, duration: float, src) -> Buff:
 static func slow(target: Unit, amount: float, duration: float, src, decays: bool = false, id: String = "") -> Buff:
 	if target == null or target.dead:
 		return null
-	var b := FxBuff.new(id if id != "" else "slow_" + str(src.get_instance_id() if src != null else 0), duration)
+	var b := SlowFxBuff.new(id if id != "" else "slow_" + str(src.get_instance_id() if src != null else 0), duration)
 	b.display_name = "Slowed"
 	b.slow_amount = amount
 	b.slow_decays = decays
 	b.is_debuff = true
 	b.stack_mode = Buff.Stack.REFRESH
 	var got := target.add_buff(b, src)
-	if got != null and got.vfx == null and target.kind == G.Kind.CHAMPION:
+	# [vfx-leak] League shows one slow indicator per unit however many slows are on it: the first slow owns the
+	# effect (handed on to a remaining slow when it ends, see SlowFxBuff) and later slows don't stack a second copy
+	if got != null and got.vfx == null and target.kind == G.Kind.CHAMPION and not _slow_fx_shown(target, got):
 		got.vfx = attach_fx(target, "Global_Slow")
 	return got
+
+
+static func _slow_fx_shown(target: Unit, except: Buff) -> bool:
+	for x in target.buffs:
+		if x != except and x is SlowFxBuff and x.vfx != null and is_instance_valid(x.vfx):
+			return true
+	return false
 
 
 ## Generic timed stat buff (positive unless is_debuff).
@@ -438,6 +447,18 @@ class FxBuff extends Buff:
 		for x in extra_fx:
 			K.kill_fx(x, kill_fade)
 		extra_fx.clear()
+
+
+## Slow: its (shared) indicator moves to another slow still on the unit instead of dying with this one.
+class SlowFxBuff extends FxBuff:
+	func on_removed(u) -> void:
+		if vfx != null and is_instance_valid(vfx) and u != null and not u.dead:
+			for x in u.buffs:
+				if x != self and x is SlowFxBuff and (x.vfx == null or not is_instance_valid(x.vfx)):
+					x.vfx = vfx
+					vfx = null
+					break
+		super(u)
 
 
 static func grievous(target: Unit, duration: float, src, amount: float = 0.4) -> void:
