@@ -296,7 +296,11 @@ void fragment() {
 	ALBEDO = to_out(c.rgb * intensity);
 	ALPHA = clamp(c.a, 0.0, 1.0);
 #endif
-#ifndef DISTORT
+#if defined(SUBTRACT)
+	// [fow] a subtractive layer's ALBEDO is "how much of the background survives" (blend_mul): scaling it by FOW.a
+	// darkened the whole quad into a black patch inside fog (Ezreal Q). Fade the subtraction instead.
+	ALBEDO = mix(vec3(1.0), ALBEDO, fow_particle_mul((INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz));
+#elif !defined(DISTORT)
 	ALBEDO *= fow_particle_mul((INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz);   // [fow] quad_ps: rgb *= FOW.a
 #endif
 }
